@@ -35,8 +35,8 @@ export function getPageNumber(router: any) {
 }
 
 export const LeaderBoardOutlet = () => {
-  useEffect(() => {
+  /*useEffect(() => {
     document.title = 'Buffer | Competitions';
-  }, []);
+  }, []);*/
   return <Outlet />;
 };

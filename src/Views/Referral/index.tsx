@@ -36,7 +36,7 @@ import { useActiveChain } from '@Hooks/useActiveChain';
 import { snackAtom } from 'src/App';
 import { useSearchParams } from 'react-router-dom';
 
-interface IReferral {}
+interface IReferral { }
 
 // status 1 - go ahead
 // status 2 - NA
@@ -70,14 +70,14 @@ const useUserAffilateCode = (activeChain: Chain) => {
 
   const calls = referralAddress
     ? [
-        {
-          address: referralAddress,
-          abi: ReferralABI,
-          functionName: 'traderReferralCodes',
-          args: [address],
-          chainId: activeChain.id,
-        },
-      ]
+      {
+        address: referralAddress,
+        abi: ReferralABI,
+        functionName: 'traderReferralCodes',
+        args: [address],
+        chainId: activeChain.id,
+      },
+    ]
     : [];
 
   const { data } = useContractReads({
@@ -104,7 +104,7 @@ export const useRefferalTab = () => {
 };
 
 export const tabs = ['Use a Referral', 'Create your Referral'];
-const Referral: React.FC<IReferral> = ({}) => {
+const Referral: React.FC<IReferral> = ({ }) => {
   const { configContracts } = useActiveChain();
   const [showCodeModal, setShowCodeModal] = useAtom(showCodeModalAtom);
   const { writeTXN } = useReferralWriteCall();
@@ -283,13 +283,13 @@ const Referral: React.FC<IReferral> = ({}) => {
       {shouldConnectWallet
         ? 'Connect Wallet'
         : checking
-        ? 'Checking...'
-        : btnText}
+          ? 'Checking...'
+          : btnText}
     </BlueBtn>
   );
-  useEffect(() => {
+  /*useEffect(() => {
     document.title = 'Buffer | Referrals';
-  }, []);
+  }, []);*/
 
   return (
     <>
@@ -368,7 +368,7 @@ const Referral: React.FC<IReferral> = ({}) => {
                   onChange={setip}
                   className="bg-5 ip-border "
                   placeholder="Enter your code"
-                  // unit={<img className="" src="/EditIcon.svg"></img>}
+                // unit={<img className="" src="/EditIcon.svg"></img>}
                 ></BufferInput>
                 {!referralCodes[0] && referralCodes[1] && (
                   <PlainCard.Description className="my-3 flex items-center gap-2">
