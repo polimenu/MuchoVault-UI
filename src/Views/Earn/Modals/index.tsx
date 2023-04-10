@@ -40,7 +40,7 @@ function ModalChild() {
   return (
     <DepositModal
       inWallet={poolInfo.userAvailableInWallet}
-      staked={Number(poolInfo.userMuchoInWallet * poolInfo.totalStaked / poolInfo.muchoTotalSupply)}
+      staked={Number(poolInfo.muchoTotalSupply) > 0 ? Number(poolInfo.userMuchoInWallet * poolInfo.totalStaked / poolInfo.muchoTotalSupply) : 0}
       head={(activeModal.deposit ? 'Deposit ' : 'Withdraw ') + activeModal.primaryToken}
       deposit={activeModal.deposit}
       tokenContract={{
@@ -52,7 +52,7 @@ function ModalChild() {
       vaultId={activeModal.vaultId}
       decimals={activeModal.decimals}
       precision={activeModal.precision}
-      muchoConversion={Number(poolInfo.muchoTotalSupply / poolInfo.totalStaked)}
+      muchoConversion={Number(poolInfo.totalStaked) > 0 ? Number(poolInfo.muchoTotalSupply / poolInfo.totalStaked) : 1}
     />
   );
 }

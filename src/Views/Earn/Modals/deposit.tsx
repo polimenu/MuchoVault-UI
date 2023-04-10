@@ -42,17 +42,17 @@ export const DepositModal = ({
   precision: number;
   muchoConversion: number;
 }) => {
-  /*console.log("Allowance: " + allowance)
-  console.log("Max: " + max)*/
+  //console.log("Allowance: " + allowance)
   const { validations, depositCall, withdrawCall } = useEarnWriteCalls(vaultId, decimals);
 
-  if (!inWallet || !staked)
+  /*if (!inWallet || !staked)
     return (
       <Skeleton
         variant="rectangular"
         className="w-[350px] sm:w-full !h-8 !transform-none"
       />
-    );
+    );*/
+  //console.log("Staked: " + staked)
   if (deposit)
     return (
       <Deposit
@@ -87,7 +87,7 @@ const Common = ({ val, setVal, head, max, unit, deposit, precision }) => {
           decimals: { val: 6 },
           max: {
             val: max.toString(),
-            error: `Not enough funds!`,
+            error: (deposit ? 'Not enough funds!' : 'Not enough deposited'),
           },
           min: { val: '0', error: 'Enter a poistive value' },
         }}
