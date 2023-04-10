@@ -3,6 +3,7 @@ import { useWriteCall } from '@Hooks/useWriteCall';
 import { multiply } from '@Utils/NumString/stringArithmatics';
 import EarnRouterABI from '../Config/Abis/RewardRouterV2.json';
 import VesterABI from '../Config/Abis/Vester.json';
+import MuchoVaultABI from '../Config/Abis/MuchoVault.json'
 import { CONTRACTS } from '../Config/Address';
 import { useAtom } from 'jotai';
 import { writeEarnAtom } from '../earnAtom';
@@ -10,20 +11,11 @@ import { toFixed } from '@Utils/NumString';
 import { useContext } from 'react';
 import { EarnContext } from '..';
 
-export const useEarnWriteCalls = (
-  contractType: 'Router' | 'Vester',
-  vesterType?: 'BLP' | 'BFR'
-) => {
+
+
+export const useEarnWriteCalls = (vaultId: number, decimals: number) => {
   const { activeChain } = useContext(EarnContext);
-  const EarnRouterContract = CONTRACTS[activeChain?.id].RewardRouter;
-  const EarnVesterContract =
-    vesterType === 'BFR'
-      ? CONTRACTS[activeChain?.id].BfrVester
-      : CONTRACTS[activeChain?.id].BlpVester;
-  const routerContract = { contract: EarnRouterContract, abi: EarnRouterABI };
-  const vesterContract = { contract: EarnVesterContract, abi: VesterABI };
-  const contract = contractType === 'Router' ? routerContract : vesterContract;
-  const { writeCall } = useWriteCall(contract.contract, contract.abi);
+  const { writeCall } = useWriteCall(CONTRACTS[activeChain?.id].MuchoVault, MuchoVaultABI);
   const toastify = useToast();
   const [, setPageState] = useAtom(writeEarnAtom);
 
@@ -34,6 +26,7 @@ export const useEarnWriteCalls = (
         activeModal: null,
       });
   }
+
   function validations(amount) {
     if (!amount || amount === '0' || amount === '') {
       toastify({
@@ -44,78 +37,21 @@ export const useEarnWriteCalls = (
       return true;
     }
   }
-  function stakeUnstakeiBFR(amount: string, methodName: string) {
+
+  function depositCall(amount: string) {
     if (validations(amount)) return;
-    writeCall(callBack, methodName, [toFixed(multiply(amount, 18), 0)]);
+    writeCall(callBack, "enter", [toFixed(multiply(amount, decimals), 0), vaultId]);
   }
 
-  function buyBLP(amount: string) {
+  function withdrawCall(amount: string) {
     if (validations(amount)) return;
-    writeCall(callBack, 'mintAndStakeBlp', [
-      toFixed(multiply(amount, 6), 0),
-      0,
-    ]);
-  }
-
-  function sellBLP(amount: string) {
-    if (validations(amount)) return;
-    writeCall(callBack, 'unstakeAndRedeemBlp', [
-      toFixed(multiply(amount, 6), 0),
-    ]);
-  }
-  function deposit(amount: string, vesterContract: string) {
-    if (validations(amount)) return;
-    writeCall(callBack, 'deposit', [toFixed(multiply(amount, 18), 0)]);
-  }
-
-  function withdraw(vesterContract: string) {
-    // if(validations(amount)) return;
-    writeCall(callBack, 'withdraw', []);
-  }
-  function compound(
-    shouldClaimiBFR,
-    shouldStakeiBFR,
-    shouldCLaimesBFR,
-    shouldStakeesBFR,
-    shouldStakeMultiplierPoints,
-    shouldClaimWeth
-  ) {
-    writeCall(callBack, 'handleRewards', [
-      shouldClaimiBFR || shouldStakeiBFR,
-      shouldStakeiBFR,
-      shouldCLaimesBFR || shouldStakeesBFR,
-      shouldStakeesBFR,
-      shouldStakeMultiplierPoints,
-      shouldClaimWeth,
-    ]);
-  }
-
-  function claim(
-    shouldClaimiBFR,
-    shouldCLaimesBFR,
-    shouldClaimWeth,
-    shouldConvertWeth
-  ) {
-    writeCall(callBack, 'handleRewards', [
-      shouldClaimiBFR,
-      false,
-      shouldCLaimesBFR,
-      false,
-      false,
-      shouldClaimWeth,
-      // shouldConvertWeth,
-    ]);
+    writeCall(callBack, "leave", [toFixed(multiply(amount, 18), 0), vaultId]);
   }
 
   return {
-    stakeUnstakeiBFR,
-    buyBLP,
-    sellBLP,
-    deposit,
-    withdraw,
-    compound,
-    claim,
     validations,
+    depositCall,
+    withdrawCall
   };
 };
 

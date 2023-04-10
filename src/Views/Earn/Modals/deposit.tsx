@@ -3,126 +3,91 @@ import { useContext, useState } from 'react';
 import BufferInput from '@Views/Common/BufferInput';
 import { Display } from '@Views/Common/Tooltips/Display';
 import { BlueBtn } from '@Views/Common/V2-Button';
-import { CONTRACTS } from '../Config/Address';
-import { readEarnData } from '../earnAtom';
-import iBFRABI from '../Config/Abis/BFR.json';
+import { earnAtom } from '../earnAtom';
 import {
   useEarnWriteCalls,
   useGetApprovalAmount,
 } from '../Hooks/useEarnWriteCalls';
-import {
-  add,
-  getPosInf,
-  gt,
-  gte,
-  subtract,
-} from '@Utils/NumString/stringArithmatics';
+import { CONTRACTS } from '../Config/Address';
 import { toFixed } from '@Utils/NumString';
+import { getPosInf, gt, gte } from '@Utils/NumString/stringArithmatics';
 import { useGlobal } from '@Contexts/Global';
 import { useToast } from '@Contexts/Toast';
 import { Skeleton } from '@mui/material';
-import { getNewReserve } from '../Hooks/useTokenomicsMulticall';
-import { TableAligner } from '@Views/V2-Leaderboard/Components/TableAligner';
-import {
-  tooltipKeyClasses,
-  tooltipValueClasses,
-  underLineClass,
-} from '../Components/VestCards';
-import NumberTooltip from '@Views/Common/Tooltips';
 import { EarnContext } from '..';
+import { IContract } from 'src/Interfaces/interfaces';
 
 export const DepositModal = ({
+  inWallet,
+  staked,
   head,
-  type,
+  deposit,
+  tokenContract,
+  unit,
+  allowance,
+  vaultId,
+  decimals,
+  precision,
+  muchoConversion
 }: {
+  inWallet: string;
+  staked: string;
   head: string;
-  type: 'ibfr' | 'blp';
+  deposit: boolean;
+  tokenContract?: IContract;
+  unit: string;
+  allowance?: string;
+  vaultId: number;
+  decimals: number;
+  precision: number;
+  muchoConversion: number;
 }) => {
-  const [val, setVal] = useState('');
-  const [pageState] = useAtom(readEarnData);
-  const { deposit, validations } = useEarnWriteCalls(
-    'Vester',
-    type === 'ibfr' ? 'BFR' : 'BLP'
-  );
-  const { state } = useGlobal();
-  const { activeChain } = useContext(EarnContext);
-  const vesterContract =
-    type === 'ibfr'
-      ? CONTRACTS[activeChain?.id].BfrVester
-      : CONTRACTS[activeChain?.id].BlpVester;
-  const tokenContract =
-    type === 'ibfr'
-      ? CONTRACTS[activeChain?.id].StakedBfrTracker
-      : CONTRACTS[activeChain?.id].StakedBlpTracker;
-  const { approve } = useGetApprovalAmount(
-    iBFRABI,
-    CONTRACTS[activeChain?.id].ES_BFR,
-    tokenContract
-  );
-  const toastify = useToast();
+  /*console.log("Allowance: " + allowance)
+  console.log("Max: " + max)*/
+  const { validations, depositCall, withdrawCall } = useEarnWriteCalls(vaultId, decimals);
 
-  if (!pageState.vest)
+  if (!inWallet || !staked)
     return (
       <Skeleton
         variant="rectangular"
         className="w-[350px] sm:w-full !h-8 !transform-none"
       />
     );
-  const isApproved = gte(pageState.vest[type].allowance, val || '1');
-  const currentVault = pageState.vest[type];
-  const max = pageState.vest[type].maxVestableAmount;
-  const reserveAmount = getNewReserve(
-    val,
-    currentVault.averageStakedAmount,
-    currentVault.maxVestableAmountExact,
-    currentVault.reserved_for_vesting[0],
-    currentVault.vesting_status.vested
-  );
-  const [approveState, setApprovalState] = useState(false);
+  if (deposit)
+    return (
+      <Deposit
+        head={head}
+        max={inWallet}
+        unit={unit}
+        tokenContract={tokenContract}
+        allowance={allowance}
+        validations={validations}
+        call={depositCall}
+        precision={precision}
+      />
+    );
+  else return <Withdraw head={head} max={staked} unit={unit} validations={validations} call={withdrawCall} precision={precision} muchoConversion={muchoConversion} />;
+};
 
-  const clickHandler = () => {
-    if (validations(val)) return;
-
-    if (gt(val, pageState.earn.esBfr.user.wallet_balance.token_value))
-      return toastify({
-        type: 'error',
-        msg: 'Amount exceeds balance.',
-        id: '007',
-      });
-    else if (
-      gt(val, max) ||
-      gt(
-        subtract(reserveAmount, currentVault.reserved_for_vesting[0]),
-        pageState.vest[type].staked_tokens.value
-      )
-    )
-      return toastify({
-        type: 'error',
-        msg: 'Not enough tokens to reserve',
-        id: '008',
-      });
-    return deposit(val, vesterContract);
-  };
-
+const Common = ({ val, setVal, head, max, unit, deposit, precision }) => {
   return (
     <div>
       <div className="text-f15 mb-5">{head}</div>
-      {/* <Divider className="bg-4" /> */}
       <BufferInput
         header={
           <div className="flex flex-row justify-between w-full text-3 text-f14 mt-2">
-            <span>Deposit</span>
+            <span>{deposit ? 'Deposit' : 'Withdraw'}</span>
             <span className="flex flex-row items-center">
               Max:
-              <Display data={max} unit="esBFR" />
+              <Display data={max} unit={unit} precision={precision} />
             </span>
           </div>
         }
         numericValidations={{
           decimals: { val: 6 },
           max: {
-            val: max,
-            error: `Not enough tokens to reserve`,
+            val: max.toString(),
+            error: `Not enough funds!`,
           },
           min: { val: '0', error: 'Enter a poistive value' },
         }}
@@ -130,7 +95,9 @@ export const DepositModal = ({
         bgClass="!bg-1"
         ipClass="mt-1"
         value={val}
-        onChange={(val) => setVal(val)}
+        onChange={(val) => {
+          setVal(val);
+        }}
         unit={
           <span className="text-f16 flex justify-between w-fit">
             <BlueBtn
@@ -142,91 +109,54 @@ export const DepositModal = ({
             >
               Max
             </BlueBtn>
-            esBFR
+            {unit}
           </span>
         }
       />
+    </div>
+  );
+};
 
-      <div className="flex justify-between text-f14 mt-3">
-        <div className="text-3">Wallet</div>
-        <div>
-          <Display
-            data={pageState.earn.esBfr.user.wallet_balance.token_value}
-            unit={'esBFR'}
-          />
-        </div>
-      </div>
-      <div className="flex justify-between text-f14 mt-2">
-        <div className="text-3">Vault Capacity</div>
-        <NumberTooltip
-          content={
-            <TableAligner
-              className=""
-              keysName={['Deposited', 'Max Capacity']}
-              keyStyle={tooltipKeyClasses}
-              valueStyle={tooltipValueClasses}
-              values={[
-                <Display
-                  className="!justify-end"
-                  data={currentVault.vesting_status.vested}
-                  unit="esBFR"
-                />,
-                <Display
-                  className="!justify-end"
-                  data={currentVault.maxVestableAmountExact}
-                  unit="esBFR"
-                />,
-              ]}
-            ></TableAligner>
-          }
-        >
-          <div className={`flex ${underLineClass}`}>
-            <Display
-              data={add(pageState.vest[type].vesting_status.vested, val || '0')}
-              disable
-            />
-            &nbsp;/&nbsp;
-            <Display
-              data={pageState.vest[type].maxVestableAmountExact}
-              disable
-            />
-          </div>
-        </NumberTooltip>
-      </div>
-      <div className="flex justify-between text-f14 mt-2">
-        <div className="text-3">Reserve Amount</div>
-        <NumberTooltip
-          className="flex"
-          content={
-            <TableAligner
-              keysName={['Current Reserved', 'Additional Reserve Required']}
-              keyStyle={tooltipKeyClasses}
-              valueStyle={tooltipValueClasses}
-              values={[
-                <Display
-                  className="!justify-end"
-                  data={currentVault.reserved_for_vesting[0]}
-                />,
-                <Display
-                  className="!justify-end"
-                  data={subtract(
-                    reserveAmount,
-                    currentVault.reserved_for_vesting[0]
-                  )}
-                />,
-              ]}
-            ></TableAligner>
-          }
-        >
-          <div className={`flex ${underLineClass}`}>
-            <Display data={reserveAmount} disable />
-            &nbsp;/&nbsp;
-            <Display data={pageState.vest[type].staked_tokens.value} disable />
-          </div>
-        </NumberTooltip>
-      </div>
+const Deposit = ({ tokenContract, max, head, unit, allowance, validations, call, precision }) => {
+  //console.log("DEPOSIT CALL:"); console.log(call);
+  const [val, setVal] = useState('');
+  const { activeChain } = useContext(EarnContext);
+  const { approve } = useGetApprovalAmount(
+    tokenContract?.abi,
+    tokenContract?.contract,
+    CONTRACTS[activeChain.id]?.MuchoVault
+  );
+  const [pageState] = useAtom(earnAtom);
+  const toastify = useToast();
+  const [approveState, setApprovalState] = useState(false);
+  const { state } = useGlobal();
+  const isApproved = gte(allowance, val || '1');
 
-      <div className="flex whitespace-nowrap mt-4">
+  const clickHandler = () => {
+    if (validations(val)) return;
+    if (gt(val, max))
+      return toastify({
+        type: 'error',
+        msg: 'Amount exceeds balance.',
+        id: '007',
+      });
+
+    return call(val);
+  };
+
+
+  return (
+    <>
+      <Common
+        head={head}
+        deposit={true}
+        max={max}
+        unit={unit}
+        val={val}
+        setVal={setVal}
+        precision={precision}
+      />
+      <div className="flex whitespace-nowrap mt-5">
         <BlueBtn
           onClick={() => approve(toFixed(getPosInf(), 0), setApprovalState)}
           className="mr-4 rounded"
@@ -244,6 +174,46 @@ export const DepositModal = ({
           Deposit
         </BlueBtn>
       </div>
-    </div>
+    </>
+  );
+};
+
+const Withdraw = ({ max, head, unit, validations, call, precision, muchoConversion }) => {
+  const [val, setVal] = useState('');
+  const [pageState] = useAtom(earnAtom);
+  const toastify = useToast();
+  const { state } = useGlobal();
+
+  const clickHandler = () => {
+    if (validations(val)) return;
+    if (gt(val, max))
+      return toastify({
+        type: 'error',
+        msg: 'Amount exceeds max withdrawable value.',
+        id: '007',
+      });
+
+    return call(val * muchoConversion);
+  };
+  return (
+    <>
+      <Common
+        head={head}
+        deposit={false}
+        max={max}
+        unit={unit}
+        val={val}
+        setVal={setVal}
+        precision={precision}
+      />
+      <BlueBtn
+        className={'px-4 rounded-sm !h-7 w-full mt-5'}
+        onClick={clickHandler}
+        isDisabled={state.txnLoading > 1}
+        isLoading={state.txnLoading === 1}
+      >
+        Withdraw
+      </BlueBtn>
+    </>
   );
 };

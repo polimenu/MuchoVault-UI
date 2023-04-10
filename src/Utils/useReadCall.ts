@@ -55,7 +55,11 @@ export const useReadCall = ({
 export function convertBNtoString(data) {
   if (!data) return;
 
+  //console.log("convertBNtoString DATA: ");
+  //console.log(data);
+
   Object.keys(data)?.forEach((key) => {
+    //console.log("Leyendo " + key);
     if (typeof data[key] === 'object' && data[key] && !data[key].type) {
       convertBNtoString(data[key]);
     }
@@ -64,6 +68,18 @@ export function convertBNtoString(data) {
       data[key] = ethers.utils.formatUnits(data[key]._hex, 0);
     }
   });
+}
+
+export function getBNtoStringCopy(data) {
+  if (!data) return;
+
+  let copy = getDeepCopy(data);
+  convertBNtoString(copy);
+  /*if (debug) {
+    console.log(`${method}-res: `, copy);
+    console.log(`${method}-arg: `, args);
+  }*/
+  return copy;
 }
 
 export const contractRead = async (contract, method, args, debug = false) => {

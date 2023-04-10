@@ -19,8 +19,8 @@ import { connectorsForWallets } from '@rainbow-me/rainbowkit';
 
 export const getChains = () =>
   import.meta.env.VITE_ENV.toLowerCase() == 'testnet'
-    ? [arbitrumGoerli,polygonMumbai]
-    : [arbitrum,polygon];
+    ? [arbitrumGoerli/*,polygonMumbai*/]
+    : [arbitrum/*,polygon*/];
 
 const getWallets = (chains: Chain[]) => {
   const bothSupported = [
@@ -35,27 +35,27 @@ const getWallets = (chains: Chain[]) => {
   return import.meta.env.VITE_ENV.toLowerCase() == 'testnet'
     ? [...bothSupported]
     : [
-        {
-          groupName: bothSupported[0].groupName,
-          wallets: [
-            ...bothSupported[0].wallets,
-            trustWallet({ chains }),
-            injectedWallet({ chains }),
-            walletConnectWallet({ chains }),
-          ],
-        },
-        {
-          groupName: 'Others',
-          wallets: [
-            rainbowWallet({ chains }),
-            imTokenWallet({ chains }),
-            ledgerWallet({ chains }),
-            omniWallet({ chains }),
-            braveWallet({ chains }),
-            // argentWallet({ chains }),
-          ],
-        },
-      ];
+      {
+        groupName: bothSupported[0].groupName,
+        wallets: [
+          ...bothSupported[0].wallets,
+          trustWallet({ chains }),
+          injectedWallet({ chains }),
+          walletConnectWallet({ chains }),
+        ],
+      },
+      {
+        groupName: 'Others',
+        wallets: [
+          rainbowWallet({ chains }),
+          imTokenWallet({ chains }),
+          ledgerWallet({ chains }),
+          omniWallet({ chains }),
+          braveWallet({ chains }),
+          // argentWallet({ chains }),
+        ],
+      },
+    ];
 };
 
 const { chains, provider } = configureChains(getChains(), [publicProvider()]);

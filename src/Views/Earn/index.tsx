@@ -8,14 +8,12 @@ import Drawer from '@Views/Common/V2-Drawer';
 import { Chain } from 'wagmi';
 import { getEarnCards } from './Components/EarnCards';
 import { Section } from './Components/Section';
-import { getVestCards } from './Components/VestCards';
 import { IEarn, writeEarnData } from './earnAtom';
 import { useGetTokenomics } from './Hooks/useTokenomicsMulticall';
 import { EarnModals } from './Modals';
 import { useActiveChain } from '@Hooks/useActiveChain';
 import {
   ArbitrumOnly,
-  ChainNotSupported,
 } from '@Views/Common/ChainNotSupported';
 
 const EarnStyles = styled.div`
@@ -35,7 +33,7 @@ const EarnContextProvider = EarnContext.Provider;
 export const Earn = () => {
   const { activeChain } = useActiveChain();
   useEffect(() => {
-    document.title = 'Buffer | Earn';
+    document.title = 'Mucho.finance | MuchoVaults';
   }, []);
   return (
     <ArbitrumOnly>
@@ -55,6 +53,10 @@ export const EarnPage = () => {
   const [, setEarnData] = useAtom(writeEarnData);
   const data: IEarn = useGetTokenomics();
 
+  //console.log("got tokenomics");
+  //console.log(data);
+  //console.log("tokenomics end");
+
   setEarnData(data);
 
   return (
@@ -64,71 +66,17 @@ export const EarnPage = () => {
         Heading={
           <div className={topStyles}>
             <EarnIcon className="mr-3" />
-            Earn
+            (mucho) Vaults
           </div>
         }
         Cards={getEarnCards(data)}
         subHeading={
           <div className={descStyles}>
-            Stake BFR and BLP to earn rewards.
-            <span
-              className="light-blue-text  whitespace-nowrap ml6  hover:underline  cursor-pointer"
-              onClick={() => {
-                window.open(
-                  'https://buffer-finance.medium.com/introducing-all-new-bfr-staking-and-liqudity-pool-ba4b888ba470',
-                  '_blank'
-                );
-              }}
-            >
-              <span className="whitespace-nowrap">
-                Learn more
-                <FrontArrow className="tml w-fit inline" />
-              </span>
-            </span>
+            Haz staking de USDC, WETH y WBTC para ganar el yield de GLP. Recibirás los tokens muchoUSDC, muchoETH y muchoBTC como "recibo" de tu depósito,
+            cuyo valor se irá incrementando gracias a los rewards.
           </div>
         }
       />
-      <Section
-        Heading={
-          <div className={topStyles}>
-            {/* <ShieldIcon className="mr-[8px] " /> */}
-            <img src="/Earn/Shield.svg" alt="shield" className="mr-3" />
-            Vest
-          </div>
-        }
-        Cards={getVestCards(data)}
-        subHeading={
-          <div className={descStyles}>
-            Convert esBFR tokens to BFR tokens.
-            <span
-              className="light-blue-text ml6 whitespace-nowrap  hover:underline  cursor-pointer"
-              onClick={() => {
-                window.open(
-                  'https://buffer-finance.medium.com/introducing-all-new-bfr-staking-and-liqudity-pool-ba4b888ba470',
-                  '_blank'
-                );
-              }}
-            >
-              <span className="whitespace-nowrap">
-                Learn more
-                <FrontArrow className="tml w-fit inline" />
-              </span>
-            </span>
-          </div>
-        }
-      />
-      {
-        <div className="pr-3 text-3 text-f13 m-auto w-full text-center mt-6">
-          &#127860; Staking is forked from{' '}
-          <a
-            href="https://app.gmx.io/#/earn"
-            target={'_blank'}
-            className="hover:text-1 underline underline-offset-2"
-          >
-            GMX
-          </a>
-        </div>
-      }
     </EarnStyles>
   );
 };

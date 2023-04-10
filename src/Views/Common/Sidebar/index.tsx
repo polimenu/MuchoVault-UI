@@ -6,7 +6,7 @@ import SidebarCollapseIcon from 'src/SVG/Elements/sidebarCollpaseIcon';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Fade from 'react-reveal/Fade';
 import { getTabs, ITab } from 'src/Config/getTabs';
-import { BufferLogoComponent } from '../Navbar/BufferLogo';
+import { MuchoFinanceLogoComponent } from '../Navbar/MuchoFinanceLogo';
 import { NavLink } from 'react-router-dom';
 import Twitter from 'public/Social/twitter';
 import Discord from 'public/Social/discord';
@@ -63,9 +63,8 @@ const SideBar: React.FC<any> = () => {
       )}
 
       <div
-        className={`bg-1 sidebar ${
-          state.sidebar_active ? '' : 'sidebar-closed'
-        } min1000:!hidden`}
+        className={`bg-1 sidebar ${state.sidebar_active ? '' : 'sidebar-closed'
+          } min1000:!hidden`}
       >
         <div className="sidebar_container flex-col">
           <div className="icon_container mb-6">
@@ -73,13 +72,13 @@ const SideBar: React.FC<any> = () => {
               className="flex items-center justify-center"
               role={'button'}
               onClick={
-                () => {}
+                () => { }
                 // router.push({
                 //   pathname: "/",
                 // })
               }
             >
-              <BufferLogoComponent />
+              <MuchoFinanceLogoComponent />
             </div>
             <IconButton className="collapse-icon" onClick={handleClose}>
               <SidebarCollapseIcon />
