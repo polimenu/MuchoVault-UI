@@ -113,7 +113,7 @@ const VaultInfo = ({ poolInfo, unit, primaryUnit, precision }: { poolInfo: IPool
             &nbsp;=&nbsp;
             <Display
               className="!justify-end"
-              data={Number(poolInfo.totalStaked / poolInfo.muchoTotalSupply)}
+              data={Number(poolInfo.muchoTotalSupply) > 0 ? Number(poolInfo.totalStaked / poolInfo.muchoTotalSupply) : 1}
               unit={primaryUnit}
               precision={4}
             />
@@ -130,7 +130,7 @@ const VaultInfo = ({ poolInfo, unit, primaryUnit, precision }: { poolInfo: IPool
           <div className={`${wrapperClasses}`}>
             <Display
               className="!justify-end"
-              data={Number(poolInfo.userMuchoInWallet * poolInfo.totalStaked / poolInfo.muchoTotalSupply)}
+              data={Number(poolInfo.muchoTotalSupply) > 0 ? Number(poolInfo.userMuchoInWallet * poolInfo.totalStaked / poolInfo.muchoTotalSupply) : 0}
               unit={primaryUnit}
               precision={precision}
             />
