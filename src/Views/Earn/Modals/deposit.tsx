@@ -20,6 +20,8 @@ import { IContract } from 'src/Interfaces/interfaces';
 export const DepositModal = ({
   inWallet,
   staked,
+  maxCap,
+  totalStaked,
   head,
   deposit,
   tokenContract,
@@ -32,6 +34,8 @@ export const DepositModal = ({
 }: {
   inWallet: string;
   staked: string;
+  maxCap: string;
+  totalStaked: string;
   head: string;
   deposit: boolean;
   tokenContract?: IContract;
@@ -53,11 +57,17 @@ export const DepositModal = ({
       />
     );*/
   //console.log("Staked: " + staked)
-  if (deposit)
+  if (deposit) {
+    /*console.log("DEPOSIT!");
+    console.log(Number(inWallet));
+    console.log(Number(maxCap));
+    console.log(Number(staked));
+    console.log(Number(Math.min(Number(inWallet), Number(maxCap - totalStaked))));*/
+    const maxToDeposit = Number(Math.min(Number(inWallet), Number(maxCap - totalStaked)));
     return (
       <Deposit
         head={head}
-        max={inWallet}
+        max={maxToDeposit}
         unit={unit}
         tokenContract={tokenContract}
         allowance={allowance}
@@ -66,6 +76,7 @@ export const DepositModal = ({
         precision={precision}
       />
     );
+  }
   else return <Withdraw head={head} max={staked} unit={unit} validations={validations} call={withdrawCall} precision={precision} muchoConversion={muchoConversion} />;
 };
 

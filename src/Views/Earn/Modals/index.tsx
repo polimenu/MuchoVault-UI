@@ -41,6 +41,8 @@ function ModalChild() {
     <DepositModal
       inWallet={poolInfo.userAvailableInWallet}
       staked={Number(poolInfo.muchoTotalSupply) > 0 ? Number(poolInfo.userMuchoInWallet * poolInfo.totalStaked / poolInfo.muchoTotalSupply) : 0}
+      maxCap={poolInfo.vaultcap}
+      totalStaked={poolInfo.totalStaked}
       head={(activeModal.deposit ? 'Deposit ' : 'Withdraw ') + activeModal.primaryToken}
       deposit={activeModal.deposit}
       tokenContract={{
