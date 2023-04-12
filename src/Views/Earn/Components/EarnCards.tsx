@@ -35,7 +35,7 @@ export const getEarnCards = (data: IEarn) => {
   return [
     <EarnCard token="USDC" muchoToken="muchoUSDC" poolInfo={data.earn.USDCPoolInfo} vaultId={0} decimals={6} precision={2} />,
     <EarnCard token="WETH" muchoToken="muchoETH" poolInfo={data.earn.WETHPoolInfo} vaultId={1} decimals={18} precision={5} />,
-    <EarnCard token="WBTC" muchoToken="muchoBTC" poolInfo={data.earn.WBTCPoolInfo} vaultId={2} decimals={10} precision={6} />,
+    <EarnCard token="WBTC" muchoToken="muchoBTC" poolInfo={data.earn.WBTCPoolInfo} vaultId={2} decimals={8} precision={6} />,
   ];
 };
 
@@ -50,16 +50,16 @@ const EarnCard = ({ token, muchoToken, poolInfo, vaultId, decimals, precision }:
           <NumberTooltip
             content={
               <>
-                Deposita {token}, que usaremos en combinación con los otros pools para comprar GLP, ganando y distribuyendo los
-                rewards del staking sin impermanent loss.{' '}
-                <a
+                Deposit {token}, that will be used in combination with the other pools to buy GLP, earning and distributing the
+                rewards with no impermanent loss.{' '}
+                {/*<a
                   href="https://buffer-finance.medium.com/all-you-need-to-know-about-usdc-vaults-liqudity-pool-and-the-blp-token-d743b258da1d"
                   target={'_blank'}
                   className="text-light-blue whitespace-nowrap hover:underline"
                 >
                   más detalles aquí
                   <FrontArrow className="tml w-fit inline" />
-                </a>
+                </a>*/}
               </>
             }
             className="!py-3"

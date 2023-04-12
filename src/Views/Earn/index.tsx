@@ -15,6 +15,7 @@ import { useActiveChain } from '@Hooks/useActiveChain';
 import {
   ArbitrumOnly,
 } from '@Views/Common/ChainNotSupported';
+import MuchoWhite from '@SVG/Elements/MuchoWhite';
 
 const EarnStyles = styled.div`
   width: min(1200px, 100%);
@@ -66,14 +67,14 @@ export const EarnPage = () => {
         Heading={
           <div className={topStyles}>
             <EarnIcon className="mr-3" />
-            (mucho) Vaults
+            <MuchoWhite width={120} /> &nbsp;Vaults
           </div>
         }
         Cards={getEarnCards(data)}
         subHeading={
           <div className={descStyles}>
-            Haz staking de USDC, WETH y WBTC para ganar el yield de GLP. Recibirás los tokens muchoUSDC, muchoETH y muchoBTC como "recibo" de tu depósito,
-            cuyo valor se irá incrementando gracias a los rewards.
+            Deposit USDC, WETH and WBTC to earn yield from GLP with no impermanent loss.
+            You will get in exchange muchoUSDC, muchoETH and muchoBTC as a "receipt", and those tokens will increase their value with the GLP yield and rewards.
           </div>
         }
       />

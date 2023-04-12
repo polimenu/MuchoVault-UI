@@ -33,6 +33,8 @@ export const AccountDropdown: React.FC<IProps> = ({ inDrawer }) => {
       }) => {
         // Note: If your app doesn't use authentication, you
         // can remove all 'authenticationStatus' checks
+        //console.log(openAccountModal);
+
         const ready = mounted && authenticationStatus !== 'loading';
         const connected =
           ready &&
@@ -118,9 +120,9 @@ export const AccountDropdown: React.FC<IProps> = ({ inDrawer }) => {
                     <span>
                       {account
                         ? `${account.address.slice(
-                            0,
-                            4
-                          )}...${account.address.slice(-4)}`
+                          0,
+                          4
+                        )}...${account.address.slice(-4)}`
                         : 'Connect'}
                     </span>
                     <ArrowDropDownRounded

@@ -216,9 +216,9 @@ export const useGetTokenomics = () => {
           vaultcap: fromWei(data[4].vaultcap),
           withdrawable: data[4].withdrawable,
           muchoTotalSupply: fromWei(data[5]),
-          userAvailableInWallet: fromWei(data[12], 10),//
+          userAvailableInWallet: fromWei(data[12], 8),//
           userMuchoInWallet: fromWei(data[13]),
-          userAllowed: fromWei(data[14], 10),
+          userAllowed: fromWei(data[14], 8),
         },
       }
     }

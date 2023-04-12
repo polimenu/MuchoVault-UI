@@ -18,6 +18,7 @@ export const useWalletConnect = () => {
   }, []);
 
   useEffect(() => {
+    console.log("WC useEffect");
     if (!activeChain?.id) return;
     if (!chain?.id) return;
     if (account && chain.id === activeChain.id) {
@@ -26,6 +27,7 @@ export const useWalletConnect = () => {
   }, [account, activeChain, chain]);
 
   const connectHandler = (connectorId: number): void => {
+    console.log("WC connectHandler");
     if (!activeChain?.id) return;
     const chainId = activeChain.id;
 
