@@ -130,6 +130,40 @@ export const useGetTokenomics = () => {
         abi: ERC20ExtAbi,
         functionName: 'totalSupply',
       },
+
+      USDCPoolDepositedUSD: {
+        address: contracts.MuchoVault,
+        abi: MuchoVaultAbi,
+        functionName: 'totalUSDvault',
+        args: [0],
+      },
+      WETHPoolDepositedUSD: {
+        address: contracts.MuchoVault,
+        abi: MuchoVaultAbi,
+        functionName: 'totalUSDvault',
+        args: [1],
+      },
+      WBTCPoolDepositedUSD: {
+        address: contracts.MuchoVault,
+        abi: MuchoVaultAbi,
+        functionName: 'totalUSDvault',
+        args: [2],
+      },
+      TVL: {
+        address: contracts.MuchoVault,
+        abi: MuchoVaultAbi,
+        functionName: 'totalUSDvaults'
+      },
+      GLPinVault: {
+        address: contracts.MuchoVault,
+        abi: MuchoVaultAbi,
+        functionName: 'GLPinVault'
+      },
+      GLPbackingNeeded: {
+        address: contracts.MuchoVault,
+        abi: MuchoVaultAbi,
+        functionName: 'GLPbackingNeeded'
+      }
     };
 
     return Object.keys(generic_call_data)
@@ -179,12 +213,14 @@ export const useGetTokenomics = () => {
           rewardStart: data[0].rewardStart,
           stakable: data[0].stakable,
           totalStaked: fromWei(data[0].totalStaked),
+          totalStakedUSD: fromWei(data[6]),
+          exchangeUSD: data[0].totalStaked > 0 ? data[6] / data[0].totalStaked : 0,
           vaultcap: fromWei(data[0].vaultcap),
           withdrawable: data[0].withdrawable,
           muchoTotalSupply: fromWei(data[1]),
-          userAvailableInWallet: fromWei(data[6], 6),//
-          userMuchoInWallet: fromWei(data[7]),
-          userAllowed: fromWei(data[8], 6),
+          userAvailableInWallet: fromWei(data[12], 6),//
+          userMuchoInWallet: fromWei(data[13]),
+          userAllowed: fromWei(data[14], 6),
         },
         WETHPoolInfo: {
           APR: data[2].APR / 100,
@@ -196,12 +232,14 @@ export const useGetTokenomics = () => {
           rewardStart: data[2].rewardStart,
           stakable: data[2].stakable,
           totalStaked: fromWei(data[2].totalStaked),
+          totalStakedUSD: fromWei(data[7]),
+          exchangeUSD: data[2].totalStaked > 0 ? data[7] / data[2].totalStaked : 0,
           vaultcap: fromWei(data[2].vaultcap),
           withdrawable: data[2].withdrawable,
           muchoTotalSupply: fromWei(data[3]),
-          userAvailableInWallet: fromWei(data[9], 18),//
-          userMuchoInWallet: fromWei(data[10]),
-          userAllowed: fromWei(data[11], 18),
+          userAvailableInWallet: fromWei(data[15], 18),//
+          userMuchoInWallet: fromWei(data[16]),
+          userAllowed: fromWei(data[17], 18),
         },
         WBTCPoolInfo: {
           APR: data[4].APR / 100,
@@ -213,13 +251,21 @@ export const useGetTokenomics = () => {
           rewardStart: data[4].rewardStart,
           stakable: data[4].stakable,
           totalStaked: fromWei(data[4].totalStaked),
+          totalStakedUSD: fromWei(data[8]),
+          exchangeUSD: data[4].totalStaked > 0 ? data[8] / data[4].totalStaked : 0,
           vaultcap: fromWei(data[4].vaultcap),
           withdrawable: data[4].withdrawable,
           muchoTotalSupply: fromWei(data[5]),
-          userAvailableInWallet: fromWei(data[12], 8),//
-          userMuchoInWallet: fromWei(data[13]),
-          userAllowed: fromWei(data[14], 8),
+          userAvailableInWallet: fromWei(data[18], 8),//
+          userMuchoInWallet: fromWei(data[19]),
+          userAllowed: fromWei(data[20], 8),
         },
+        ProtocolInfo: {
+          TVL: fromWei(data[9]),
+          GLP: fromWei(data[10]),
+          GLPNeeded: fromWei(data[11]),
+          GLPtoUSD: (data[11] > 0 ? (data[9] / data[11]) : 0),
+        }
       }
     }
 

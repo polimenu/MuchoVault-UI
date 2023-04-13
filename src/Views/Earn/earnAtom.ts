@@ -55,13 +55,23 @@ export interface IPoolInfo {
   userAvailableInWallet: string;
   userMuchoInWallet: string;
   userAllowed: string;
+  exchangeUSD: string;
+  totalStakedUSD: string;
 }
 
+export interface IProtocolInfo {
+  TVL: string;
+  GLP: string;
+  GLPNeeded: string;
+  GLPtoUSD: string;
+}
 
 export interface IEarn {
+  ProtocolInfo?: IProtocolInfo;
   earn?: {
     USDCPoolInfo: IPoolInfo;
     WETHPoolInfo: IPoolInfo;
     WBTCPoolInfo: IPoolInfo;
   };
 }
+

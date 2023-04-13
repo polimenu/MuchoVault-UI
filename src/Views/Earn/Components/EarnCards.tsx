@@ -4,7 +4,7 @@ import { BufferProgressBar } from '@Views/Common/BufferProgressBar.tsx';
 import NumberTooltip from '@Views/Common/Tooltips';
 import { Display } from '@Views/Common/Tooltips/Display';
 import { TableAligner } from '@Views/Common/TableAligner';
-import { IEarn, IPoolInfo } from '../earnAtom';
+import { IEarn, IPoolInfo, IProtocolInfo } from '../earnAtom';
 import { Card } from './Card';
 import { Divider } from './Divider';
 import { EarnButtons } from './EarnButtons';
@@ -32,10 +32,12 @@ export const getEarnCards = (data: IEarn) => {
     ));
   }
   //console.log("getEarnCards");
+  //console.log(data);
   return [
     <EarnCard token="USDC" muchoToken="muchoUSDC" poolInfo={data.earn.USDCPoolInfo} vaultId={0} decimals={6} precision={2} />,
     <EarnCard token="WETH" muchoToken="muchoETH" poolInfo={data.earn.WETHPoolInfo} vaultId={1} decimals={18} precision={5} />,
     <EarnCard token="WBTC" muchoToken="muchoBTC" poolInfo={data.earn.WBTCPoolInfo} vaultId={2} decimals={8} precision={6} />,
+    <ProtocolInfoCard protocolInfo={data.earn.ProtocolInfo} />
   ];
 };
 
@@ -47,26 +49,7 @@ const EarnCard = ({ token, muchoToken, poolInfo, vaultId, decimals, precision }:
     <Card
       top={
         <>
-          <NumberTooltip
-            content={
-              <>
-                Deposit {token}, that will be used in combination with the other pools to buy GLP, earning and distributing the
-                rewards with no impermanent loss.{' '}
-                {/*<a
-                  href="https://buffer-finance.medium.com/all-you-need-to-know-about-usdc-vaults-liqudity-pool-and-the-blp-token-d743b258da1d"
-                  target={'_blank'}
-                  className="text-light-blue whitespace-nowrap hover:underline"
-                >
-                  más detalles aquí
-                  <FrontArrow className="tml w-fit inline" />
-                </a>*/}
-              </>
-            }
-            className="!py-3"
-          >
-            <span className={underLineClass}>{token} Vault ({muchoToken} Token)</span>
-          </NumberTooltip>
-
+          <span className={underLineClass}>{token} Vault ({muchoToken} Token)</span>
           <div className="text-f12 text-3  mt-2">
             Max Capacity&nbsp;:&nbsp;
             <Display
@@ -76,6 +59,13 @@ const EarnCard = ({ token, muchoToken, poolInfo, vaultId, decimals, precision }:
               disable
               precision={precision}
             />
+            &nbsp;(<Display
+              data={Number(poolInfo.exchangeUSD * poolInfo.vaultcap)}
+              label={"$ "}
+              className="inline"
+              disable
+              precision={0}
+            />)
           </div>
           <div className="max-w-[300px]">
             <BufferProgressBar
@@ -117,7 +107,6 @@ const VaultInfo = ({ poolInfo, unit, primaryUnit, precision }: { poolInfo: IPool
               unit={primaryUnit}
               precision={4}
             />
-
           </div>,
           <div className={`${wrapperClasses}`}>
             <Display
@@ -126,6 +115,14 @@ const VaultInfo = ({ poolInfo, unit, primaryUnit, precision }: { poolInfo: IPool
               unit={primaryUnit}
               precision={precision}
             />
+
+            &nbsp;(<Display
+              data={Number(poolInfo.exchangeUSD * poolInfo.userAvailableInWallet)}
+              label={"$"}
+              className="inline"
+              disable
+              precision={2}
+            />)
           </div>,
           <div className={`${wrapperClasses}`}>
             <Display
@@ -134,6 +131,13 @@ const VaultInfo = ({ poolInfo, unit, primaryUnit, precision }: { poolInfo: IPool
               unit={primaryUnit}
               precision={precision}
             />
+            &nbsp;(<Display
+              data={Number(poolInfo.exchangeUSD * (Number(poolInfo.muchoTotalSupply) > 0 ? Number(poolInfo.userMuchoInWallet * poolInfo.totalStaked / poolInfo.muchoTotalSupply) : 0))}
+              label={"$"}
+              className="inline"
+              disable
+              precision={2}
+            />)
           </div>,
         ]}
         keyStyle={keyClasses}
@@ -170,6 +174,13 @@ const VaultInfo = ({ poolInfo, unit, primaryUnit, precision }: { poolInfo: IPool
               unit={primaryUnit}
               precision={precision}
             />
+            &nbsp;(<Display
+              data={Number(poolInfo.exchangeUSD * poolInfo.totalStaked)}
+              label={"$"}
+              className="inline"
+              disable
+              precision={2}
+            />)
           </div>,
           <div className={`${wrapperClasses}`}>
             <Display
@@ -178,7 +189,76 @@ const VaultInfo = ({ poolInfo, unit, primaryUnit, precision }: { poolInfo: IPool
               unit="%"
               precision={2}
             />
+
           </div>,
+        ]}
+        keyStyle={keyClasses}
+        valueStyle={valueClasses}
+      />
+    </>
+  );
+};
+
+
+
+const ProtocolInfoCard = ({ protocolInfo }: { protocolInfo: IProtocolInfo }) => {
+  //console.log("EarnCard");
+  return (
+    <Card
+      top={
+        <>
+          <span className={underLineClass}>MuchoVault Info</span>
+        </>
+      }
+      middle={<ProtocolInfo protocolInfo={protocolInfo} />}
+      bottom={
+        <div className="mt-5">
+        </div>
+      }
+    />
+  );
+}
+
+
+const ProtocolInfo = ({ protocolInfo }: { protocolInfo: IProtocolInfo }) => {
+
+  return (
+    <>
+      <TableAligner
+        keysName={['TVL', 'GPL Treasury', 'Backing Coverage']}
+        values={[
+          <div className={`${wrapperClasses}`}>
+            <Display
+              className="!justify-end"
+              data={Number(protocolInfo.TVL)}
+              label="$"
+              precision={0}
+            />
+          </div>,
+          <div className={`${wrapperClasses}`}>
+            <Display
+              className="!justify-end"
+              data={Number(protocolInfo.GLP)}
+              unit={"GLP"}
+              precision={2}
+            />
+            &nbsp;
+            (
+            <Display
+              className="!justify-end"
+              data={Number(protocolInfo.GLP * protocolInfo.GLPtoUSD)}
+              label="$"
+              precision={2}
+            />)
+          </div>,
+          <div className={`${wrapperClasses}`}>
+            <Display
+              className="!justify-end"
+              data={Number(100 * protocolInfo.GLP / protocolInfo.GLPNeeded)}
+              unit={"%"}
+              precision={2}
+            />
+          </div>
         ]}
         keyStyle={keyClasses}
         valueStyle={valueClasses}
