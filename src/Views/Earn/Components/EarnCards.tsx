@@ -3,7 +3,7 @@ import FrontArrow from 'src/SVG/frontArrow';
 import { BufferProgressBar } from '@Views/Common/BufferProgressBar.tsx';
 import NumberTooltip from '@Views/Common/Tooltips';
 import { Display } from '@Views/Common/Tooltips/Display';
-import { TableAligner } from '@Views/V2-Leaderboard/Components/TableAligner';
+import { TableAligner } from '@Views/Common/TableAligner';
 import { IEarn, IPoolInfo } from '../earnAtom';
 import { Card } from './Card';
 import { Divider } from './Divider';
