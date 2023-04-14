@@ -29,9 +29,9 @@ export interface IBufferInput extends IBufferInputBase {
   type?: boolean;
   addsValidations?: boolean;
   hideSearchBar?: boolean;
-  label?:ReactNode;
-  
-  id?:string;
+  label?: ReactNode;
+
+  id?: string;
   remark?: ReactNode;
   isDisabled?: boolean;
 }
@@ -45,7 +45,7 @@ const BufferInput: React.FC<IBufferInput> = ({
   onChange,
   className,
   inputType,
-  id,autoFocus,
+  id, autoFocus,
   onError,
   label,
   bgClass,
@@ -56,14 +56,14 @@ const BufferInput: React.FC<IBufferInput> = ({
   title,
   onClick,
 }) => {
-  console.log('id,autofocus',id,autoFocus)
+  /*console.log('id,autofocus',id,autoFocus)
   if(id == 'amount-inner')
-    console.log(`autoFocus: `,autoFocus);
+    console.log(`autoFocus: `,autoFocus);*/
   if (!numericValidations)
     return (
       <BufferTextInputRoot
         {
-          ...{
+        ...{
           placeholder,
           unit,
           header,
@@ -75,7 +75,7 @@ const BufferInput: React.FC<IBufferInput> = ({
           onError,
           className,
           numeric: false,
-          ipClass,autoFocus,
+          ipClass, autoFocus,
           validations: [],
           isGrey,
           type,
@@ -164,12 +164,13 @@ const BufferInput: React.FC<IBufferInput> = ({
         numeric: numericValidations ? true : false,
         ipClass,
         validations: [minValidation, maxValidation, decimalValidation],
-        isGrey,autoFocus,
+        isGrey, autoFocus,
         type,
         inputType,
         isDisabled,
         title,
-        onClick      }}
+        onClick
+      }}
     />
   );
 };

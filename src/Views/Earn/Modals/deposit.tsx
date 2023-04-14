@@ -3,7 +3,7 @@ import { useContext, useState } from 'react';
 import BufferInput from '@Views/Common/BufferInput';
 import { Display } from '@Views/Common/Tooltips/Display';
 import { BlueBtn } from '@Views/Common/V2-Button';
-import { earnAtom } from '../earnAtom';
+import { IPoolInfo, earnAtom, readEarnData } from '../earnAtom';
 import {
   useEarnWriteCalls,
   useGetApprovalAmount,
@@ -13,71 +13,46 @@ import { toFixed } from '@Utils/NumString';
 import { getPosInf, gt, gte } from '@Utils/NumString/stringArithmatics';
 import { useGlobal } from '@Contexts/Global';
 import { useToast } from '@Contexts/Toast';
-import { Skeleton } from '@mui/material';
 import { EarnContext } from '..';
+import { erc20ABI } from 'wagmi';
 import { IContract } from 'src/Interfaces/interfaces';
 
 export const DepositModal = ({
-  inWallet,
-  staked,
-  maxCap,
-  totalStaked,
-  head,
-  deposit,
-  tokenContract,
-  unit,
-  allowance,
-  vaultId,
-  decimals,
-  precision,
-  muchoConversion
+  head
 }: {
-  inWallet: string;
-  staked: string;
-  maxCap: string;
-  totalStaked: string;
   head: string;
-  deposit: boolean;
-  tokenContract?: IContract;
-  unit: string;
-  allowance?: string;
-  vaultId: number;
-  decimals: number;
-  precision: number;
-  muchoConversion: number;
 }) => {
-  //console.log("Allowance: " + allowance)
-  const { validations, depositCall, withdrawCall } = useEarnWriteCalls(vaultId, decimals);
 
-  /*if (!inWallet || !staked)
-    return (
-      <Skeleton
-        variant="rectangular"
-        className="w-[350px] sm:w-full !h-8 !transform-none"
-      />
-    );*/
-  //console.log("Staked: " + staked)
-  if (deposit) {
-    /*console.log("DEPOSIT!");
-    console.log(Number(inWallet));
-    console.log(Number(maxCap));
-    console.log(Number(staked));
-    console.log(Number(Math.min(Number(inWallet), Number(maxCap - totalStaked))));*/
-    const maxToDeposit = Number(Math.min(Number(inWallet), Number(maxCap - totalStaked)));
+  const [pageState] = useAtom(earnAtom);
+  const activeModal = pageState.activeModal;
+  const poolInfo = activeModal.poolInfo;
+  const { validations, depositCall, withdrawCall } = useEarnWriteCalls(activeModal.vaultId, activeModal.decimals);
+
+  if (activeModal.deposit) {
+
+    const maxToDeposit = Number(Math.min(Number(poolInfo.userAvailableInWallet), Number(poolInfo.vaultcap - poolInfo.totalStaked)));
+    const tokenContract: IContract = {
+      abi: erc20ABI,
+      contract: poolInfo.lpToken
+    };
     return (
       <Deposit
         head={head}
         max={maxToDeposit}
-        unit={unit}
+        unit={activeModal.primaryToken}
         tokenContract={tokenContract}
-        allowance={allowance}
         validations={validations}
         call={depositCall}
-        precision={precision}
+        precision={activeModal.precision}
       />
     );
   }
-  else return <Withdraw head={head} max={staked} unit={unit} validations={validations} call={withdrawCall} precision={precision} muchoConversion={muchoConversion} />;
+  else {
+    const muchoConversion = Number(poolInfo.totalStaked) > 0 ? Number(poolInfo.muchoTotalSupply / poolInfo.totalStaked) : 1
+    const staked = Number(poolInfo.muchoTotalSupply) > 0 ? Number(poolInfo.userMuchoInWallet * poolInfo.totalStaked / poolInfo.muchoTotalSupply) : 0;
+
+    return <Withdraw head={head} max={staked} unit={activeModal.primaryToken} validations={validations} call={withdrawCall} precision={activeModal.precision} muchoConversion={muchoConversion} />;
+  }
 };
 
 const Common = ({ val, setVal, head, max, unit, deposit, precision }) => {
@@ -128,7 +103,7 @@ const Common = ({ val, setVal, head, max, unit, deposit, precision }) => {
   );
 };
 
-const Deposit = ({ tokenContract, max, head, unit, allowance, validations, call, precision }) => {
+const Deposit = ({ tokenContract, max, head, unit, validations, call, precision }) => {
   //console.log("DEPOSIT CALL:"); console.log(call);
   const [val, setVal] = useState('');
   const { activeChain } = useContext(EarnContext);
@@ -137,11 +112,16 @@ const Deposit = ({ tokenContract, max, head, unit, allowance, validations, call,
     tokenContract?.contract,
     CONTRACTS[activeChain.id]?.MuchoVault
   );
-  const [pageState] = useAtom(earnAtom);
   const toastify = useToast();
   const [approveState, setApprovalState] = useState(false);
   const { state } = useGlobal();
-  const isApproved = gte(allowance, val || '1');
+
+  const [pageState] = useAtom(readEarnData);
+  const [poolInfo] = [pageState.earn?.USDCPoolInfo,
+  pageState.earn?.WETHPoolInfo,
+  pageState.earn?.WBTCPoolInfo].filter(pool => pool.lpToken == tokenContract.contract);
+
+  const isApproved = gte(Number(poolInfo?.userAllowed), val || '1');
 
   const clickHandler = () => {
     if (validations(val)) return;

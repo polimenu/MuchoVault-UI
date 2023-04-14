@@ -1,7 +1,5 @@
 import { Skeleton } from '@mui/material';
-import FrontArrow from 'src/SVG/frontArrow';
 import { BufferProgressBar } from '@Views/Common/BufferProgressBar.tsx';
-import NumberTooltip from '@Views/Common/Tooltips';
 import { Display } from '@Views/Common/Tooltips/Display';
 import { TableAligner } from '@Views/Common/TableAligner';
 import { IEarn, IPoolInfo, IProtocolInfo } from '../earnAtom';
@@ -37,7 +35,7 @@ export const getEarnCards = (data: IEarn) => {
     <EarnCard token="USDC" muchoToken="muchoUSDC" poolInfo={data.earn.USDCPoolInfo} vaultId={0} decimals={6} precision={2} />,
     <EarnCard token="WETH" muchoToken="muchoETH" poolInfo={data.earn.WETHPoolInfo} vaultId={1} decimals={18} precision={5} />,
     <EarnCard token="WBTC" muchoToken="muchoBTC" poolInfo={data.earn.WBTCPoolInfo} vaultId={2} decimals={8} precision={6} />,
-    <ProtocolInfoCard protocolInfo={data.earn.ProtocolInfo} />
+    data.earn.ProtocolInfo && <ProtocolInfoCard protocolInfo={data.earn.ProtocolInfo} />
   ];
 };
 
@@ -225,7 +223,7 @@ const ProtocolInfo = ({ protocolInfo }: { protocolInfo: IProtocolInfo }) => {
   return (
     <>
       <TableAligner
-        keysName={['TVL', 'GPL Treasury', 'Backing Coverage']}
+        keysName={['TVL', 'GLP Treasury', 'Backing Coverage']}
         values={[
           <div className={`${wrapperClasses}`}>
             <Display

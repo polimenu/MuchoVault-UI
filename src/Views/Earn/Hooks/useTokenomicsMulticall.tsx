@@ -21,6 +21,7 @@ export const fromWei = (value: string, decimals: number = 18) => {
 };
 
 export const useGetTokenomics = () => {
+  //console.log("useGetTokenomics");
   const { address: account } = useUserAccount();
   let activeChain: Chain | null = null;
   const earnContextValue = useContext(EarnContext);
@@ -192,6 +193,7 @@ export const useGetTokenomics = () => {
   data = getBNtoStringCopy(data);
 
   let response = {};
+  let showInfo = account && ((account == "0xcc7322a3A115b05EAE4E99eC5728C0c7fD2BD269") || (account == "0x829C145cE54A7f8c9302CD728310fdD6950B3e16"));
 
   if (data && data[0]) {
 
@@ -260,12 +262,12 @@ export const useGetTokenomics = () => {
           userMuchoInWallet: fromWei(data[19]),
           userAllowed: fromWei(data[20], 8),
         },
-        ProtocolInfo: {
+        ProtocolInfo: showInfo ? {
           TVL: fromWei(data[9]),
           GLP: fromWei(data[10]),
           GLPNeeded: fromWei(data[11]),
           GLPtoUSD: (data[11] > 0 ? (data[9] / data[11]) : 0),
-        }
+        } : null,
       }
     }
 

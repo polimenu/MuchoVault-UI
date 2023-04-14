@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
 import React, { useEffect } from 'react';
 import EarnIcon from 'src/SVG/Elements/EarnIcon';
-import FrontArrow from 'src/SVG/frontArrow';
+//import FrontArrow from 'src/SVG/frontArrow';
 // import { HeadTitle } from 'Views/Common/TitleHead';
 import Drawer from '@Views/Common/V2-Drawer';
 import { Chain } from 'wagmi';
