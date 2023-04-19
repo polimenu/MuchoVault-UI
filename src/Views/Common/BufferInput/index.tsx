@@ -131,7 +131,7 @@ const BufferInput: React.FC<IBufferInput> = ({
         /^\d*(\.)?(\d{0,6})?$/,
       ];
       val = valBN.toString();
-      console.log(`val: `, val);
+      //console.log(`val: `, val);
 
       if (!regexArr[decimals.val].test(val)) {
         toastify({

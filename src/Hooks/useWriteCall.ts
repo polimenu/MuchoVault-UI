@@ -134,22 +134,22 @@ export function useWriteCall(contractAddress: string, abi: any[]) {
           // dispatch({ type: "SET_TXN_LOADING", payload: 0 });
           throw new Error(
             `Not enough ${
-              // activeChain?.nativeCurrency?.symbol ||
+            // activeChain?.nativeCurrency?.symbol ||
 
-              activeChain.nativeCurrency.symbol
+            activeChain.nativeCurrency.symbol
             } for Gas Fee!`
           );
         }
       }
 
-      console.log(`[blockchain]defaultValues: `, defaultValues);
+      /*console.log(`[blockchain]defaultValues: `, defaultValues);
       console.log(`[blockchain]contract: `, contractAddress);
       console.log(`[blockchain]methodArgs: `, methodArgs);
-      console.log(`[blockchain]methodName: `, methodName);
+      console.log(`[blockchain]methodName: `, methodName);*/
       const call = await contract?.callStatic[methodName](...methodArgs, {
         ...defaultValues,
       });
-      console.log(`[blockchain]call: `, call);
+      //console.log(`[blockchain]call: `, call);
       const txn = await contract?.functions[methodName](...methodArgs, {
         ...defaultValues,
       });
@@ -182,12 +182,12 @@ export function useWriteCall(contractAddress: string, abi: any[]) {
         callBack({});
       }
     } catch (error) {
-      console.log(`[blockchain]error: `, error);
+      //console.log(`[blockchain]error: `, error);
       const errReason = error?.reason;
-      console.log(`[blockchain]parsedErr: `, error.reason);
+      //console.log(`[blockchain]parsedErr: `, error.reason);
       dispatch({ type: 'SET_TXN_LOADING', payload: 0 });
       let err = errReason || getError(error, contractArgs);
-      console.log('[blockchain]err : ', err);
+      //console.log('[blockchain]err : ', err);
       toastify({ id: contractAddress, msg: err, type: 'error' });
       callBack({});
     }
