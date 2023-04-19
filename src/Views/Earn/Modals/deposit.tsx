@@ -8,7 +8,7 @@ import {
   useEarnWriteCalls,
   useGetApprovalAmount,
 } from '../Hooks/useEarnWriteCalls';
-import { CONTRACTS } from '../Config/Address';
+import { EARN_CONFIG } from '../Config/Pools';
 import { toFixed } from '@Utils/NumString';
 import { getPosInf, gt, gte } from '@Utils/NumString/stringArithmatics';
 import { useGlobal } from '@Contexts/Global';
@@ -16,6 +16,7 @@ import { useToast } from '@Contexts/Toast';
 import { EarnContext } from '..';
 import { erc20ABI } from 'wagmi';
 import { IContract } from 'src/Interfaces/interfaces';
+import { useGetAllowance } from '../Hooks/useAllowanceCall';
 
 export const DepositModal = ({
   head
@@ -44,6 +45,7 @@ export const DepositModal = ({
         validations={validations}
         call={depositCall}
         precision={activeModal.precision}
+        decimals={activeModal.decimals}
       />
     );
   }
@@ -103,25 +105,24 @@ const Common = ({ val, setVal, head, max, unit, deposit, precision }) => {
   );
 };
 
-const Deposit = ({ tokenContract, max, head, unit, validations, call, precision }) => {
+const Deposit = ({ tokenContract, max, head, unit, validations, call, precision, decimals }) => {
   //console.log("DEPOSIT CALL:"); console.log(call);
   const [val, setVal] = useState('');
   const { activeChain } = useContext(EarnContext);
   const { approve } = useGetApprovalAmount(
     tokenContract?.abi,
     tokenContract?.contract,
-    CONTRACTS[activeChain.id]?.MuchoVault
+    EARN_CONFIG[activeChain.id]?.MuchoVault
   );
   const toastify = useToast();
   const [approveState, setApprovalState] = useState(false);
   const { state } = useGlobal();
 
-  const [pageState] = useAtom(readEarnData);
-  const [poolInfo] = [pageState.earn?.USDCPoolInfo,
-  pageState.earn?.WETHPoolInfo,
-  pageState.earn?.WBTCPoolInfo].filter(pool => pool.lpToken == tokenContract.contract);
+  //console.log("Decimals:"); console.log(decimals);
+  const allowance = useGetAllowance(tokenContract.contract, decimals);
+  //console.log("Allowance:"); console.log(allowance);
 
-  const isApproved = gte(Number(poolInfo?.userAllowed), val || '1');
+  const isApproved = gte(Number(allowance), val || '1');
 
   const clickHandler = () => {
     if (validations(val)) return;

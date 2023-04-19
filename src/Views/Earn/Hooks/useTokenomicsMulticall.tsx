@@ -1,6 +1,7 @@
 import ERC20ExtAbi from '../Config/Abis/ERC20Ext.json';
 import MuchoVaultAbi from '../Config/Abis/MuchoVault.json';
 import { CONTRACTS } from '../Config/Address';
+import { EARN_CONFIG } from '../Config/Pools';
 import { getBNtoStringCopy } from '@Utils/useReadCall';
 import {
   divide,
@@ -29,252 +30,173 @@ export const useGetTokenomics = () => {
     activeChain = earnContextValue.activeChain;
   }
   // const { state } = useGlobal();
-  const contracts: (typeof CONTRACTS)[42161] = CONTRACTS[activeChain?.id];
+  const pool_config: (typeof EARN_CONFIG)[42161] = EARN_CONFIG[activeChain.id];
 
   const getUserSpecificCalls = () => {
-    if (!activeChain || !contracts) return [];
-    const user_specific_data = {
-      userUSDCinWallet: {
-        address: contracts.USDC,
-        abi: ERC20ExtAbi,
-        functionName: 'balanceOf',
-        args: [account],
-      },
-      userMuchoUSDCinWallet: {
-        address: contracts.muchoUSDC,
-        abi: ERC20ExtAbi,
-        functionName: 'balanceOf',
-        args: [account],
-      },
-      userAllowedUSDC: {
-        address: contracts.USDC,
-        abi: ERC20ExtAbi,
-        functionName: 'allowance',
-        args: [account, contracts.MuchoVault],
-      },
-      userWETHinWallet: {
-        address: contracts.WETH,
-        abi: ERC20ExtAbi,
-        functionName: 'balanceOf',
-        args: [account],
-      },
-      userMuchoETHinWallet: {
-        address: contracts.muchoETH,
-        abi: ERC20ExtAbi,
-        functionName: 'balanceOf',
-        args: [account],
-      },
-      userAllowedWETH: {
-        address: contracts.WETH,
-        abi: ERC20ExtAbi,
-        functionName: 'allowance',
-        args: [account, contracts.MuchoVault],
-      },
-      userWBTCinWallet: {
-        address: contracts.WBTC,
-        abi: ERC20ExtAbi,
-        functionName: 'balanceOf',
-        args: [account],
-      },
-      userMuchoBTCinWallet: {
-        address: contracts.muchoBTC,
-        abi: ERC20ExtAbi,
-        functionName: 'balanceOf',
-        args: [account],
-      },
-      userAllowedWBTC: {
-        address: contracts.WBTC,
-        abi: ERC20ExtAbi,
-        functionName: 'allowance',
-        args: [account, contracts.MuchoVault],
-      }
-    };
-    return Object.keys(user_specific_data).map(function (key) {
-      return user_specific_data[key];
-    });
+    if (!activeChain || !pool_config) return [];
+    let user_specific_data = [];
+
+    for (var i = 0; i < pool_config.POOLS.length; i++) {
+
+      //console.log(`pool${i}`);
+      user_specific_data = user_specific_data.concat(
+        [
+          {
+            address: pool_config.POOLS[i].token.address,
+            abi: ERC20ExtAbi,
+            functionName: 'balanceOf',
+            args: [account],
+            return: `pool${i}/tokenBalance`,
+          },
+          {
+            address: pool_config.POOLS[i].mToken.address,
+            abi: ERC20ExtAbi,
+            functionName: 'balanceOf',
+            args: [account],
+            return: `pool${i}/mTokenBalance`,
+          }
+        ]
+      );
+
+    }
+
+    //console.log("USR");
+    //console.log(user_specific_data);
+
+    return user_specific_data;
   };
+
+  const getGenericCalls = () => {
+    if (!activeChain || !pool_config) return [];
+
+    let generic_call_data = [];
+
+    for (var i = 0; i < pool_config.POOLS.length; i++) {
+
+      generic_call_data = generic_call_data.concat(
+        [{
+          address: pool_config.MuchoVault,
+          abi: MuchoVaultAbi,
+          functionName: 'poolInfo',
+          args: [i],
+          return: `pool${i}/info`,
+        },
+        {
+          address: pool_config.POOLS[i].mToken.address,
+          abi: ERC20ExtAbi,
+          functionName: 'totalSupply',
+          return: `pool${i}/mTokenSupply`,
+        },
+        {
+          address: pool_config.MuchoVault,
+          abi: MuchoVaultAbi,
+          functionName: 'totalUSDvault',
+          args: [i],
+          return: `pool${i}/totalUSD`,
+        }
+        ]
+      );
+
+    }
+
+    generic_call_data = generic_call_data.concat([
+      {
+        address: pool_config.MuchoVault,
+        abi: MuchoVaultAbi,
+        functionName: 'totalUSDvaults',
+        return: `totalUSDvaults`,
+      },
+      {
+        address: pool_config.MuchoVault,
+        abi: MuchoVaultAbi,
+        functionName: 'GLPinVault',
+        return: `GLPinVault`,
+      },
+      {
+        address: pool_config.MuchoVault,
+        abi: MuchoVaultAbi,
+        functionName: 'GLPbackingNeeded',
+        return: `GLPbackingNeeded`,
+      }
+    ]);
+
+    return generic_call_data;
+  };
+
+
   const getcalls = () => {
     const userSpecificCalls = getUserSpecificCalls();
-    if (!activeChain || !contracts) return [];
 
-    const generic_call_data = {
-      USDCPoolInfo: {
-        address: contracts.MuchoVault,
-        abi: MuchoVaultAbi,
-        functionName: 'poolInfo',
-        args: [0],
-      },
-      muchoUSDCTotalSupply: {
-        address: contracts.muchoUSDC,
-        abi: ERC20ExtAbi,
-        functionName: 'totalSupply',
-      },
-      WETHPoolInfo: {
-        address: contracts.MuchoVault,
-        abi: MuchoVaultAbi,
-        functionName: 'poolInfo',
-        args: [1],
-      },
-      muchoETHTotalSupply: {
-        address: contracts.muchoETH,
-        abi: ERC20ExtAbi,
-        functionName: 'totalSupply',
-      },
-      WBTCPoolInfo: {
-        address: contracts.MuchoVault,
-        abi: MuchoVaultAbi,
-        functionName: 'poolInfo',
-        args: [2],
-      },
-      muchoBTCTotalSupply: {
-        address: contracts.muchoBTC,
-        abi: ERC20ExtAbi,
-        functionName: 'totalSupply',
-      },
+    if (!activeChain || !pool_config) return [];
 
-      USDCPoolDepositedUSD: {
-        address: contracts.MuchoVault,
-        abi: MuchoVaultAbi,
-        functionName: 'totalUSDvault',
-        args: [0],
-      },
-      WETHPoolDepositedUSD: {
-        address: contracts.MuchoVault,
-        abi: MuchoVaultAbi,
-        functionName: 'totalUSDvault',
-        args: [1],
-      },
-      WBTCPoolDepositedUSD: {
-        address: contracts.MuchoVault,
-        abi: MuchoVaultAbi,
-        functionName: 'totalUSDvault',
-        args: [2],
-      },
-      TVL: {
-        address: contracts.MuchoVault,
-        abi: MuchoVaultAbi,
-        functionName: 'totalUSDvaults'
-      },
-      GLPinVault: {
-        address: contracts.MuchoVault,
-        abi: MuchoVaultAbi,
-        functionName: 'GLPinVault'
-      },
-      GLPbackingNeeded: {
-        address: contracts.MuchoVault,
-        abi: MuchoVaultAbi,
-        functionName: 'GLPbackingNeeded'
-      }
-    };
+    const generic_call_data = getGenericCalls();
 
-    return Object.keys(generic_call_data)
-      .map(function (key) {
-        return generic_call_data[key];
-      })
-      .concat(account ? userSpecificCalls : []);
+    return generic_call_data.concat(account ? userSpecificCalls : []);
   };
 
   const calls = getcalls().map((call) => {
     return { ...call, chainId: activeChain.id };
   });
 
-  /*console.log("Calls");
-  console.log(calls);*/
-
-
   let { data } = useContractReads({
     contracts: calls,
     watch: true,
   });
-
-  /*console.log("Data read");
-  console.log(data);*/
-
   data = getBNtoStringCopy(data);
 
   let response = {};
-  let showInfo = account && ((account == "0xcc7322a3A115b05EAE4E99eC5728C0c7fD2BD269") || (account == "0x829C145cE54A7f8c9302CD728310fdD6950B3e16"));
 
   if (data && data[0]) {
 
+    const dataMapped = [];
+    calls.forEach((call, i) => {
+      dataMapped[call.return] = data[i];
+    })
+
+    let showInfo = account && ((account == "0xcc7322a3A115b05EAE4E99eC5728C0c7fD2BD269") || (account == "0x829C145cE54A7f8c9302CD728310fdD6950B3e16"));
     data = data.concat(new Array(getUserSpecificCalls().length).fill('0'));
 
-    //console.log("Formatting");
-    //console.log(data);
+    let earnObject = [];
+
+    for (var i = 0; i < pool_config.POOLS.length; i++) {
+
+      earnObject[`${pool_config.POOLS[i].token.symbol}PoolInfo`] = {
+        APR: dataMapped[`pool${i}/info`].APR / 100,
+        EarnRateSec: dataMapped[`pool${i}/info`].EarnRateSec,
+        GDlptoken: dataMapped[`pool${i}/info`].GDlptoken,
+        glpFees: dataMapped[`pool${i}/info`].glpFees / 1000,
+        lastUpdate: dataMapped[`pool${i}/info`].lastUpdate,
+        lpToken: dataMapped[`pool${i}/info`].lpToken,
+        rewardStart: dataMapped[`pool${i}/info`].rewardStart,
+        stakable: dataMapped[`pool${i}/info`].stakable,
+        totalStaked: fromWei(dataMapped[`pool${i}/info`].totalStaked),
+        totalStakedUSD: fromWei(dataMapped[`pool${i}/totalUSD`]),
+        exchangeUSD: dataMapped[`pool${i}/info`].totalStaked > 0 ? dataMapped[`pool${i}/totalUSD`] / dataMapped[`pool${i}/info`].totalStaked : 0,
+        vaultcap: fromWei(dataMapped[`pool${i}/info`].vaultcap),
+        withdrawable: dataMapped[`pool${i}/info`].withdrawable,
+        muchoTotalSupply: fromWei(dataMapped[`pool${i}/mTokenSupply`]),
+        userAvailableInWallet: fromWei(dataMapped[`pool${i}/tokenBalance`], pool_config.POOLS[i].decimals),//
+        userMuchoInWallet: fromWei(dataMapped[`pool${i}/mTokenBalance`]),
+      };
+
+    }
+
+    earnObject['ProtocolInfo'] = showInfo ? {
+      TVL: fromWei(dataMapped['totalUSDvaults']),
+      GLP: fromWei(dataMapped['GLPinVault']),
+      GLPNeeded: fromWei(dataMapped['GLPbackingNeeded']),
+      GLPtoUSD: (dataMapped['GLPbackingNeeded'] > 0 ? (dataMapped['totalUSDvaults'] / dataMapped['GLPbackingNeeded']) : 0),
+    } : null;
 
     // FORMATTING
     response = {
-      earn: {
-        USDCPoolInfo: {
-          APR: data[0].APR / 100,
-          EarnRateSec: data[0].EarnRateSec,
-          GDlptoken: data[0].GDlptoken,
-          glpFees: data[0].glpFees / 1000,
-          lastUpdate: data[0].lastUpdate,
-          lpToken: data[0].lpToken,
-          rewardStart: data[0].rewardStart,
-          stakable: data[0].stakable,
-          totalStaked: fromWei(data[0].totalStaked),
-          totalStakedUSD: fromWei(data[6]),
-          exchangeUSD: data[0].totalStaked > 0 ? data[6] / data[0].totalStaked : 0,
-          vaultcap: fromWei(data[0].vaultcap),
-          withdrawable: data[0].withdrawable,
-          muchoTotalSupply: fromWei(data[1]),
-          userAvailableInWallet: fromWei(data[12], 6),//
-          userMuchoInWallet: fromWei(data[13]),
-          userAllowed: fromWei(data[14], 6),
-        },
-        WETHPoolInfo: {
-          APR: data[2].APR / 100,
-          EarnRateSec: data[2].EarnRateSec,
-          GDlptoken: data[2].GDlptoken,
-          glpFees: data[2].glpFees / 1000,
-          lastUpdate: data[2].lastUpdate,
-          lpToken: data[2].lpToken,
-          rewardStart: data[2].rewardStart,
-          stakable: data[2].stakable,
-          totalStaked: fromWei(data[2].totalStaked),
-          totalStakedUSD: fromWei(data[7]),
-          exchangeUSD: data[2].totalStaked > 0 ? data[7] / data[2].totalStaked : 0,
-          vaultcap: fromWei(data[2].vaultcap),
-          withdrawable: data[2].withdrawable,
-          muchoTotalSupply: fromWei(data[3]),
-          userAvailableInWallet: fromWei(data[15], 18),//
-          userMuchoInWallet: fromWei(data[16]),
-          userAllowed: fromWei(data[17], 18),
-        },
-        WBTCPoolInfo: {
-          APR: data[4].APR / 100,
-          EarnRateSec: data[4].EarnRateSec,
-          GDlptoken: data[4].GDlptoken,
-          glpFees: data[4].glpFees / 1000,
-          lastUpdate: data[4].lastUpdate,
-          lpToken: data[4].lpToken,
-          rewardStart: data[4].rewardStart,
-          stakable: data[4].stakable,
-          totalStaked: fromWei(data[4].totalStaked),
-          totalStakedUSD: fromWei(data[8]),
-          exchangeUSD: data[4].totalStaked > 0 ? data[8] / data[4].totalStaked : 0,
-          vaultcap: fromWei(data[4].vaultcap),
-          withdrawable: data[4].withdrawable,
-          muchoTotalSupply: fromWei(data[5]),
-          userAvailableInWallet: fromWei(data[18], 8),//
-          userMuchoInWallet: fromWei(data[19]),
-          userAllowed: fromWei(data[20], 8),
-        },
-        ProtocolInfo: showInfo ? {
-          TVL: fromWei(data[9]),
-          GLP: fromWei(data[10]),
-          GLPNeeded: fromWei(data[11]),
-          GLPtoUSD: (data[11] > 0 ? (data[9] / data[11]) : 0),
-        } : null,
-      }
+      earn: earnObject
     }
 
   }
 
-  //console.log("Formatting done!");
-  //console.log(response);
+  /*console.log("Formatting done!");
+  console.log(response);*/
 
   return response ? response : { earn: null, vest: null };
 };

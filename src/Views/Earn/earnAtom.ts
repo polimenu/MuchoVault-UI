@@ -54,7 +54,6 @@ export interface IPoolInfo {
   muchoTotalSupply: string;
   userAvailableInWallet: string;
   userMuchoInWallet: string;
-  userAllowed: string;
   exchangeUSD: string;
   totalStakedUSD: string;
 }
@@ -68,10 +67,8 @@ export interface IProtocolInfo {
 
 export interface IEarn {
   ProtocolInfo?: IProtocolInfo;
-  earn?: {
-    USDCPoolInfo: IPoolInfo;
-    WETHPoolInfo: IPoolInfo;
-    WBTCPoolInfo: IPoolInfo;
-  };
+  earn?: [
+    poolinfo: IPoolInfo,
+  ];
 }
 

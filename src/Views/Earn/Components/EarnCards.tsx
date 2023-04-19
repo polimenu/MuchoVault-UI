@@ -6,6 +6,9 @@ import { IEarn, IPoolInfo, IProtocolInfo } from '../earnAtom';
 import { Card } from './Card';
 import { Divider } from './Divider';
 import { EarnButtons } from './EarnButtons';
+import { EARN_CONFIG } from '../Config/Pools';
+import { EarnContext } from '..';
+import { useContext } from 'react';
 export const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 export const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
 export const tooltipKeyClasses = '!text-f14 !text-2 !text-left !py-1 !pl-[0px]';
@@ -31,10 +34,18 @@ export const getEarnCards = (data: IEarn) => {
   }
   //console.log("getEarnCards");
   //console.log(data);
+  let activeChain: Chain | null = null;
+  const earnContextValue = useContext(EarnContext);
+  if (earnContextValue) {
+    activeChain = earnContextValue.activeChain;
+  }
+
+  const earnCards = EARN_CONFIG[activeChain.id].POOLS.map((p, i) => {
+    return <EarnCard token={p.token.symbol} muchoToken={p.token.muchoToken} poolInfo={data.earn[`${p.token.symbol}PoolInfo`]} vaultId={i} decimals={p.decimals} precision={p.precision} />
+  });
+
   return [
-    <EarnCard token="USDC" muchoToken="muchoUSDC" poolInfo={data.earn.USDCPoolInfo} vaultId={0} decimals={6} precision={2} />,
-    <EarnCard token="WETH" muchoToken="muchoETH" poolInfo={data.earn.WETHPoolInfo} vaultId={1} decimals={18} precision={5} />,
-    <EarnCard token="WBTC" muchoToken="muchoBTC" poolInfo={data.earn.WBTCPoolInfo} vaultId={2} decimals={8} precision={6} />,
+    ...earnCards,
     data.earn.ProtocolInfo && <ProtocolInfoCard protocolInfo={data.earn.ProtocolInfo} />
   ];
 };

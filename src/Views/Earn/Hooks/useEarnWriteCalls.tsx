@@ -4,7 +4,7 @@ import { multiply } from '@Utils/NumString/stringArithmatics';
 import EarnRouterABI from '../Config/Abis/RewardRouterV2.json';
 import VesterABI from '../Config/Abis/Vester.json';
 import MuchoVaultABI from '../Config/Abis/MuchoVault.json'
-import { CONTRACTS } from '../Config/Address';
+import { EARN_CONFIG } from '../Config/Pools';
 import { useAtom } from 'jotai';
 import { writeEarnAtom } from '../earnAtom';
 import { toFixed } from '@Utils/NumString';
@@ -15,7 +15,7 @@ import { EarnContext } from '..';
 
 export const useEarnWriteCalls = (vaultId: number, decimals: number) => {
   const { activeChain } = useContext(EarnContext);
-  const { writeCall } = useWriteCall(CONTRACTS[activeChain?.id].MuchoVault, MuchoVaultABI);
+  const { writeCall } = useWriteCall(EARN_CONFIG[activeChain?.id].MuchoVault, MuchoVaultABI);
   const toastify = useToast();
   const [, setPageState] = useAtom(writeEarnAtom);
 
