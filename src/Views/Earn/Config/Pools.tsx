@@ -18,7 +18,7 @@ export const EARN_CONFIG = {
         token: { symbol: "WBTC", address: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f" },
         mToken: { symbol: "muchoBTC", address: "0x7BFb65088BDdcDd75b5D88D4810bf342C48dbb7f" },
         precision: 6,
-        decimals: 10,
+        decimals: 8,
       },
       /*{
         token: { symbol: "USDT", address: "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9" },

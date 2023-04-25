@@ -16,7 +16,8 @@ export interface IBufferInputBase {
   title?: string;
   bgClass?: string;
   autoFocus?: boolean;
-  onClick?: (e: any) => void
+  onClick?: (e: any) => void;
+  defaultValue?: string;
 }
 
 interface IBufferTextInputRoot extends IBufferInputBase {
@@ -49,6 +50,7 @@ const BufferTextInputRoot: React.FC<IBufferTextInputRoot> = ({
   title,
   onClick,
   isDisabled = false,
+  defaultValue,
 }) => {
   const [errs, setErrs] = useState<ReactNode[]>([]);
   const validate = (value: string) => {
@@ -111,6 +113,7 @@ const BufferTextInputRoot: React.FC<IBufferTextInputRoot> = ({
             pattern="^\d*(\.\d{0,2})?$"
             disabled={isDisabled}
             title={title}
+            defaultValue={defaultValue}
           />
           {unit ? unit : null}
         </div>

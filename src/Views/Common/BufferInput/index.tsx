@@ -55,6 +55,7 @@ const BufferInput: React.FC<IBufferInput> = ({
   isDisabled,
   title,
   onClick,
+  defaultValue,
 }) => {
   /*console.log('id,autofocus',id,autoFocus)
   if(id == 'amount-inner')
@@ -82,7 +83,8 @@ const BufferInput: React.FC<IBufferInput> = ({
           id,
           isDisabled,
           title,
-          onClick
+          onClick,
+          defaultValue
         }}
       />
     );

@@ -6,6 +6,7 @@ import {
 import Background from './AppStyles';
 import { atom } from 'jotai';
 import { Earn } from '@Views/Earn';
+import { Badge } from '@Views/Badge';
 import ConnectionDrawer from '@Views/Common/V2-Drawer/connectionDrawer';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
@@ -39,6 +40,7 @@ const AppRoutes = () => {
     <div className="root w-[100vw]">
       <Routes>
         <Route path="/*" element={<Earn />} />
+        <Route path="/badge" element={<Badge />} />
       </Routes>
     </div>
   );

@@ -138,6 +138,11 @@ export const useGetTokenomics = () => {
     return { ...call, chainId: activeChain.id };
   });
 
+  console.log("CALL"); console.log({
+    contracts: calls,
+    watch: true,
+  });
+
   let { data } = useContractReads({
     contracts: calls,
     watch: true,

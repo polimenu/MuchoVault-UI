@@ -86,9 +86,8 @@ export const Display: React.FC<IDisplayProp> = ({
       tooltipContent = '';
     }
     const Unit = unit ? <>{' ' + unit}</> : '';
-    const generatedStyles = `flex mono content-center ${colored ? color : ''} ${
-      className || ''
-    }`;
+    const generatedStyles = `flex mono content-center ${colored ? color : ''} ${className || ''
+      }`;
     const DefaultExport = (
       <NumberTooltip content={tooltipContent} placement={placement}>
         <div className={generatedStyles}>
@@ -134,6 +133,6 @@ export const Display: React.FC<IDisplayProp> = ({
     // if (isDecimal) {
     return DefaultExport;
   } catch (e) {
-    return <div className="text-[blue]">{data}</div>;
+    return <div>{data}</div>;
   }
 };
