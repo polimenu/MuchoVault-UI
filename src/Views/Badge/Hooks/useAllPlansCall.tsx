@@ -1,12 +1,12 @@
 import MuchoBadgeManagerAbi from '../Config/Abis/MuchoBadgeManager.json';
 import ERC20ExtAbi from '../Config/Abis/ERC20Ext.json';
-import { BADGE_CONFIG } from '../Config/Plans';
+import { BADGE_CONFIG, VALID_TOKENS } from '../Config/BadgeConfig';
 import { getBNtoStringCopy } from '@Utils/useReadCall';
 import {
   divide,
 } from '@Utils/NumString/stringArithmatics';
 
-import { Chain, useContractRead, useContractReads } from 'wagmi';
+import { Chain, useContractReads } from 'wagmi';
 import { BadgeContext } from '..';
 import { useContext } from 'react';
 import { useUserAccount } from '@Hooks/useUserAccount';
@@ -37,10 +37,35 @@ export const useGetPlans = () => {
     abi: MuchoBadgeManagerAbi,
     functionName: 'allPlans',
     chainId: activeChain.id,
-    watch: true,
   }
 
-  let { data } = useContractRead(allPlansCall);
+  let calls = [allPlansCall];
+
+  if (account) {
+    calls = calls.concat([{
+      address: badge_config.MuchoBadgeManager,
+      abi: MuchoBadgeManagerAbi,
+      functionName: 'activePlansForUser',
+      chainId: activeChain.id,
+      args: [account],
+    }]);
+
+    calls = calls.concat([{
+      address: badge_config.MuchoBadgeManager,
+      abi: MuchoBadgeManagerAbi,
+      functionName: 'expiredPlansForUser',
+      chainId: activeChain.id,
+      args: [account],
+    }]);
+
+  }
+
+  //console.log("Calls"); console.log(calls);
+
+  let { data } = useContractReads({
+    contracts: calls,
+    watch: true,
+  });
   data = getBNtoStringCopy(data);
 
   //console.log("Result plans"); console.log(data);
@@ -49,91 +74,53 @@ export const useGetPlans = () => {
 
   if (data && data[0]) {
 
-    let tokens: string[] = [];
-    data.forEach((p) => {
-      if (tokens.indexOf(p.subscriptionPrice.token) < 0)
-        tokens.push(p.subscriptionPrice.token);
+    const tokenMap = VALID_TOKENS;
+    //console.log("test"); console.log(tokenMap(tokens[0]));
 
-      if (tokens.indexOf(p.renewalPrice.token) < 0)
-        tokens.push(p.renewalPrice.token);
-    });
+    let resObject: IBadge = {};
+    resObject.plans = [];
 
-    const tokenCalls = tokens.map(t => {
-      return {
-        address: t,
-        abi: ERC20ExtAbi,
-        functionName: 'decimals',
-        chainId: activeChain.id,
-      }
-    }).concat(
-      tokens.map(t => {
-        return {
-          address: t,
-          abi: ERC20ExtAbi,
-          functionName: 'symbol',
-          chainId: activeChain.id,
-        }
-      })
-    );
+    for (var i = 0; i < data[0].length; i++) {
+      const subTk = tokenMap[data[0][i].subscriptionPrice.token];
+      const renTk = tokenMap[data[0][i].renewalPrice.token];
 
-    let tokensData = useContractReads({
-      contracts: tokenCalls,
-      watch: false,
-    }).data;
+      //console.log("Checking plan " + data[0][i].id);
+      //console.log(data[1].filter(p => p.id == data[0][i].id));
+      //console.log(data[2].filter(p => p.id == data[0][i].id));
+      const activeSubscription = (data[1] && (data[1].filter(p => p.id == data[0][i].id).length > 0)) ? true : false;
+      const expiredSubscription = (data[2] && (data[2].filter(p => p.id == data[0][i].id).length > 0)) ? true : false;
 
-    //console.log("Tokens data");
-    //console.log(tokensData);
-
-    if (tokensData) {
-
-      const tokenMap = (tk: string) => {
-        const i = tokens.indexOf(tk);
-        return {
-          decimals: tokensData[i],
-          symbol: tokensData[tokens.length + i],
-        }
-      }
-
-      //console.log("test"); console.log(tokenMap(tokens[0]));
-
-      //let showInfo = account && ((account == "0xcc7322a3A115b05EAE4E99eC5728C0c7fD2BD269") || (account == "0x829C145cE54A7f8c9302CD728310fdD6950B3e16"));
-
-
-
-      let resObject: IBadge = {};
-      resObject.plans = [];
-
-      for (var i = 0; i < data.length; i++) {
-        const subTk = tokenMap(data[i].subscriptionPrice.token);
-        const renTk = tokenMap(data[i].renewalPrice.token);
-
-        resObject.plans.push({
-          id: data[i].id,
-          name: data[i].name,
-          uri: data[i].uri,
-          subscribers: data[i].subscribers,
-          subscriptionPrice: {
-            token: subTk.symbol,
-            amount: data[i].subscriptionPrice.amount / (10 ** subTk.decimals),
-            contract: data[i].subscriptionPrice.token,
-            decimals: subTk.decimals
-          },
-          renewalPrice: {
-            token: renTk.symbol,
-            amount: data[i].renewalPrice.amount / (10 ** renTk.decimals),
-            contract: data[i].renewalPrice.token,
-            decimals: renTk.decimals
-          },
-          time: data[i].time / (24 * 3600),
-          exists: data[i].exists,
-          enabled: data[i].enabled
-        });
-      }
-
-
-      // FORMATTING
-      response = resObject;
+      resObject.plans.push({
+        id: data[0][i].id,
+        name: data[0][i].name,
+        uri: data[0][i].uri,
+        subscribers: data[0][i].subscribers,
+        subscriptionPrice: {
+          token: subTk.symbol,
+          amount: data[0][i].subscriptionPrice.amount / (10 ** subTk.decimals),
+          contract: data[0][i].subscriptionPrice.token,
+          decimals: subTk.decimals
+        },
+        renewalPrice: {
+          token: renTk.symbol,
+          amount: data[0][i].renewalPrice.amount / (10 ** renTk.decimals),
+          contract: data[0][i].renewalPrice.token,
+          decimals: renTk.decimals
+        },
+        time: data[0][i].time / (24 * 3600),
+        exists: data[0][i].exists,
+        enabled: data[0][i].enabled,
+        status: data[0][i].enabled ? "Enabled" : "Disabled",
+        activeSubscribers: data[0][i].activeSubscribers,
+        isActiveForCurrentUser: activeSubscription,
+        isExpiredForCurrentUser: expiredSubscription,
+      });
     }
+
+
+    // FORMATTING
+    response = resObject;
+
 
   }
 

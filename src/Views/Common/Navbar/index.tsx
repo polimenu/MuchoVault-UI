@@ -1,5 +1,5 @@
-/*import { useMemo } from 'react';
-import { getTabs } from 'src/Config/getTabs';*/
+import { useMemo } from 'react';
+import { getTabs } from 'src/Config/getTabs';
 import { TabsDropdown } from './TabsDropDown';
 import { Tab } from './Tab';
 import { AccountDropdown } from './AccountDropdown';
@@ -10,12 +10,8 @@ import { MuchoFinanceLogoComponent } from './MuchoFinanceLogo'
 interface INavbar { }
 
 export const Navbar: React.FC<INavbar> = () => {
-  /*const activeMarketFromStorage = useAtomValue(activeMarketFromStorageAtom);*/
-  const tabs = [];/* = useMemo(
-    () => getTabs(activeMarketFromStorage),
-    [activeMarketFromStorage]
-  );*/
-  const VISIBLETABS = 1;
+  const tabs = getTabs();
+  const VISIBLETABS = 2;
   return (
     <header className="bg-primary flex justify-between w-full h-[45px] pr-[8px] header top-0 border-b-2 border-solid border-1 relative z-[102]">
       <div className=" flex items-center gap-[24px]">

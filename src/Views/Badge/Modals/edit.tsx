@@ -4,7 +4,7 @@ import BufferInput from '@Views/Common/BufferInput';
 import { Display } from '@Views/Common/Tooltips/Display';
 import { BlueBtn } from '@Views/Common/V2-Button';
 import { IPlan, badgeAtom } from '../badgeAtom';
-import { usePlanEditCalls } from '../Hooks/usePlanEditCalls';
+import { usePlanEditCalls } from '../Hooks/usePlanWriteCalls';
 //import { EARN_CONFIG } from '../Config/Pools';
 import { toFixed } from '@Utils/NumString';
 import { getPosInf, gt, gte } from '@Utils/NumString/stringArithmatics';
@@ -13,29 +13,21 @@ import { useToast } from '@Contexts/Toast';
 import { BadgeContext } from '..';
 import { IContract } from 'src/Interfaces/interfaces';
 import { TokenDropdown } from '@Views/Common/TokenDropdown';
+import { VALID_TOKENS } from '../Config/BadgeConfig';
 
 
 
-export const EditModal = ({ }: {}) => {
+export const EditModal = ({ create }: { create: boolean }) => {
 
   const [pageState] = useAtom(badgeAtom);
   const activeModal = pageState.activeModal;
   const plan = activeModal.plan;
-  const { updatePlanCall } = usePlanEditCalls(plan.id);
+  const { updatePlanCall, addPlanCall } = usePlanEditCalls(plan ? plan.id : 0);
 
-  if (activeModal.action == "edit") {
+  return (
+    <Edit plan={create ? null : plan} call={create ? addPlanCall : updatePlanCall} />
+  );
 
-    return (
-      <Edit plan={plan} call={updatePlanCall} />
-    );
-  }
-  else {
-    /*const muchoConversion = Number(plan.totalStaked) > 0 ? Number(plan.muchoTotalSupply / plan.totalStaked) : 1
-    const staked = Number(plan.muchoTotalSupply) > 0 ? Number(plan.userMuchoInWallet * plan.totalStaked / plan.muchoTotalSupply) : 0;
-
-    return <Withdraw head={head} max={staked} unit={activeModal.primaryToken} validations={validations} call={withdrawCall} precision={activeModal.precision} muchoConversion={muchoConversion} />;
-    */
-  }
 };
 
 const Common = ({ head, plan, name, setName,
@@ -49,6 +41,15 @@ const Common = ({ head, plan, name, setName,
   const setRenToken = (tk, ct, d) => {
     setRenPrice({ token: tk, amount: renPrice.amount, contract: ct, decimals: d });
   }
+  const dropdownTokenItems = Object.values(VALID_TOKENS).map((t) => {
+    return {
+      name: t.symbol,
+      displayName: t.symbol,
+      contract: t.contract,
+      decimals: t.decimals
+    };
+  });
+  //console.log(dropdownTokenItems);
 
   return (
     <div>
@@ -59,7 +60,7 @@ const Common = ({ head, plan, name, setName,
             <span>Name</span>
           </div>
         }
-        placeholder={plan.name}
+        placeholder={plan ? plan.name : "Name"}
         bgClass="!bg-1"
         ipClass="mt-1"
         value={name}
@@ -74,7 +75,7 @@ const Common = ({ head, plan, name, setName,
             <span>Duration (days)</span>
           </div>
         }
-        placeholder={plan.time}
+        placeholder={plan ? plan.time : "365"}
         bgClass="!bg-1"
         ipClass="mt-1"
         value={duration}
@@ -89,7 +90,7 @@ const Common = ({ head, plan, name, setName,
             <span>Subscription price</span>
             <br />
             <span className="flex flex-row items-center">
-              <TokenDropdown activeToken={subPrice.token} setVal={setSubToken} />
+              <TokenDropdown activeToken={subPrice.token} setVal={setSubToken} items={dropdownTokenItems} />
             </span>
           </div>
         }
@@ -97,7 +98,7 @@ const Common = ({ head, plan, name, setName,
           decimals: { val: 6 },
           min: { val: '0', error: 'Enter a poistive value' },
         }}
-        placeholder={plan.subscriptionPrice.amount}
+        placeholder={plan ? plan.subscriptionPrice.amount : 1000}
         bgClass="!bg-1"
         ipClass="mt-1"
         value={subPrice.amount}
@@ -111,7 +112,7 @@ const Common = ({ head, plan, name, setName,
           <div className="flex flex-row justify-between w-full text-3 text-f14 mt-2">
             <span>Renewal price</span>
             <span className="flex flex-row items-center">
-              <TokenDropdown activeToken={renPrice.token} setVal={setRenToken} />
+              <TokenDropdown activeToken={renPrice.token} setVal={setRenToken} items={dropdownTokenItems} />
             </span>
           </div>
         }
@@ -119,7 +120,7 @@ const Common = ({ head, plan, name, setName,
           decimals: { val: 6 },
           min: { val: '0', error: 'Enter a poistive value' },
         }}
-        placeholder={plan.renewalPrice.amount}
+        placeholder={plan ? plan.renewalPrice.amount : 1000}
         bgClass="!bg-1"
         ipClass="mt-1"
         value={renPrice.amount}
@@ -132,10 +133,20 @@ const Common = ({ head, plan, name, setName,
 };
 
 const Edit = ({ plan, call }: { plan: IPlan, call }) => {
-  const [name, setName] = useState(plan.name);
-  const [duration, setDuration] = useState(plan.time);
-  const [subPrice, setSubPrice] = useState(plan.subscriptionPrice);
-  const [renPrice, setRenPrice] = useState(plan.renewalPrice);
+
+  const defaultPrice = Object.values(VALID_TOKENS).map(t => {
+    return {
+      token: t.symbol,
+      contract: t.contract,
+      decimals: t.decimals,
+      amount: 1000, //Default value
+    }
+  })[0];
+
+  const [name, setName] = useState(plan ? plan.name : "");
+  const [duration, setDuration] = useState(plan ? plan.time : "");
+  const [subPrice, setSubPrice] = useState(plan ? plan.subscriptionPrice : defaultPrice);
+  const [renPrice, setRenPrice] = useState(plan ? plan.renewalPrice : defaultPrice);
 
   //const toastify = useToast();
   const { state } = useGlobal();
@@ -144,15 +155,17 @@ const Edit = ({ plan, call }: { plan: IPlan, call }) => {
 
   const clickHandler = () => {
     //if (validations(val)) return;
-
-    return call(plan.id, name, duration, subPrice, renPrice);
+    if (plan)
+      return call(plan.id, name, duration, subPrice, renPrice);
+    else
+      return call(name, duration, subPrice, renPrice);
   };
 
 
   return (
     <>
       <Common
-        head={"Editing plan [" + plan.id + "] - " + plan.name}
+        head={plan ? "Editing plan [" + plan.id + "] - " + plan.name : "Add new plan"}
         plan={plan}
         name={name}
         setName={setName}

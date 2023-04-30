@@ -49,6 +49,19 @@
         "anonymous": false,
         "inputs": [
             {
+                "indexed": false,
+                "internalType": "address",
+                "name": "_authorized",
+                "type": "address"
+            }
+        ],
+        "name": "Authorized",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
                 "indexed": true,
                 "internalType": "address",
                 "name": "previousOwner",
@@ -387,6 +400,19 @@
         "type": "event"
     },
     {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "_authorized",
+                "type": "address"
+            }
+        ],
+        "name": "UnAuthorized",
+        "type": "event"
+    },
+    {
         "inputs": [
             {
                 "internalType": "address",
@@ -466,6 +492,11 @@
                         "internalType": "bool",
                         "name": "enabled",
                         "type": "bool"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "activeSubscribers",
+                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct MuchoBadgeManager.Plan[]",
@@ -631,6 +662,11 @@
                         "internalType": "bool",
                         "name": "enabled",
                         "type": "bool"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "activeSubscribers",
+                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct MuchoBadgeManager.Plan[]",
@@ -820,6 +856,11 @@
                         "internalType": "bool",
                         "name": "enabled",
                         "type": "bool"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "activeSubscribers",
+                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct MuchoBadgeManager.Plan[]",
@@ -910,6 +951,11 @@
                         "internalType": "bool",
                         "name": "enabled",
                         "type": "bool"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "activeSubscribers",
+                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct MuchoBadgeManager.Plan[]",
@@ -952,6 +998,25 @@
             }
         ],
         "name": "isApprovedForAll",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_user",
+                "type": "address"
+            }
+        ],
+        "name": "isAuthorized",
         "outputs": [
             {
                 "internalType": "bool",
@@ -1103,6 +1168,11 @@
                         "internalType": "bool",
                         "name": "enabled",
                         "type": "bool"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "activeSubscribers",
+                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct MuchoBadgeManager.Plan",
@@ -1475,6 +1545,13 @@
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "updateAllActiveSubscribers",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "uint256",
@@ -1537,6 +1614,24 @@
             }
         ],
         "name": "updatePlan",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_planId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_time",
+                "type": "uint256"
+            }
+        ],
+        "name": "updatePlanDuration",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

@@ -42,23 +42,13 @@ interface ITokenDropdown {
 }
 
 
-export const TokenDropdown = ({ className, activeToken, setVal }) => {
+export const TokenDropdown = ({ className, activeToken, setVal, items }) => {
+  //console.log("TokenDropdown items");
+  //console.log(items);
   return (
     <TokenDropdownBackground>
       <BufferDropdown
-        items={[{
-          name: "USDC",
-          displayName: "USDC",
-          contract: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
-          decimals: 6,
-        },
-        {
-          name: "USDT",
-          displayName: "USDT",
-          contract: "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
-          decimals: 6,
-        },
-        ]}
+        items={items}
         chainDropDown={false}
         dropdownBox={(activeItem, isOpen, disabled) => {
           return (

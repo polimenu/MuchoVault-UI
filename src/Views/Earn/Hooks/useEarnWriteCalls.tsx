@@ -1,8 +1,6 @@
 import { useToast } from '@Contexts/Toast';
 import { useWriteCall } from '@Hooks/useWriteCall';
 import { multiply } from '@Utils/NumString/stringArithmatics';
-import EarnRouterABI from '../Config/Abis/RewardRouterV2.json';
-import VesterABI from '../Config/Abis/Vester.json';
 import MuchoVaultABI from '../Config/Abis/MuchoVault.json'
 import { EARN_CONFIG } from '../Config/Pools';
 import { useAtom } from 'jotai';
@@ -53,27 +51,4 @@ export const useEarnWriteCalls = (vaultId: number, decimals: number) => {
     depositCall,
     withdrawCall
   };
-};
-
-export const useGetApprovalAmount = (
-  abi: any[],
-  token_address: string,
-  spender_address: string
-  // user_amount?: string
-) => {
-  const { writeCall } = useWriteCall(token_address, abi);
-
-  async function approve(amount, cb: (newState) => void) {
-    cb(true);
-    writeCall(
-      (res) => {
-        cb(false);
-      },
-      'approve',
-      [spender_address, amount]
-    );
-  }
-
-
-  return { approve };
 };

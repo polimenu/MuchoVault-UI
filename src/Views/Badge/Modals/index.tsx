@@ -3,6 +3,8 @@ import { Dialog, IconButton } from '@mui/material';
 import { useAtom } from 'jotai';
 import { badgeAtom } from '../badgeAtom';
 import { EditModal } from './edit';
+import { SubModal } from './sub';
+import { SubscribeUserModal } from './subuser';
 
 export const PlanModals = () => {
   const [pageState, setPageState] = useAtom(badgeAtom);
@@ -39,6 +41,22 @@ function ModalChild() {
         <EditModal />
       );
 
+    }
+    else if (activeModal.action == "add") {
+      return (
+        <EditModal create={true} />
+      );
+    }
+    else if ((activeModal.action == "subscribe") || (activeModal.action == "unsubscribe") || (activeModal.action == "renew")) {
+      return (
+        <SubModal mode={activeModal.action} />
+      );
+    }
+
+    else if ((activeModal.action == "subscribeUser") || (activeModal.action == "renewUser")) {
+      return (
+        <SubscribeUserModal renew={activeModal.action == "renewUser"} />
+      );
     }
   }
 

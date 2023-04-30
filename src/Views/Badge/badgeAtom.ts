@@ -36,6 +36,10 @@ export interface IPlan {
   time: Date;
   exists: boolean;
   enabled: boolean;
+  status: string;
+  activeSubscribers: number;
+  isActiveForCurrentUser: boolean;
+  isExpiredForCurrentUser: boolean;
 }
 
 export interface IPrice {

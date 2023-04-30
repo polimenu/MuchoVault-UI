@@ -6,7 +6,6 @@ import { BlueBtn } from '@Views/Common/V2-Button';
 import { IPoolInfo, earnAtom, readEarnData } from '../earnAtom';
 import {
   useEarnWriteCalls,
-  useGetApprovalAmount,
 } from '../Hooks/useEarnWriteCalls';
 import { EARN_CONFIG } from '../Config/Pools';
 import { toFixed } from '@Utils/NumString';
@@ -16,7 +15,7 @@ import { useToast } from '@Contexts/Toast';
 import { EarnContext } from '..';
 import { erc20ABI } from 'wagmi';
 import { IContract } from 'src/Interfaces/interfaces';
-import { useGetAllowance } from '../Hooks/useAllowanceCall';
+import { useGetAllowance, useGetApprovalAmount } from '../../Common/Hooks/useAllowanceCall';
 
 export const DepositModal = ({
   head
@@ -119,7 +118,7 @@ const Deposit = ({ tokenContract, max, head, unit, validations, call, precision,
   const { state } = useGlobal();
 
   //console.log("Decimals:"); console.log(decimals);
-  const allowance = useGetAllowance(tokenContract.contract, decimals);
+  const allowance = useGetAllowance(tokenContract.contract, decimals, EARN_CONFIG[activeChain.id]?.MuchoVault, activeChain.id);
   //console.log("Allowance:"); console.log(allowance);
 
   const isApproved = gte(Number(allowance), val || '1');

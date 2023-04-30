@@ -13,6 +13,7 @@ import {
   ArbitrumOnly,
 } from '@Views/Common/ChainNotSupported';
 import MuchoWhite from '@SVG/Elements/MuchoWhite';
+import { AddPlanButton } from './Components/PlanButtons';
 
 const BadgeStyles = styled.div`
   width: min(1200px, 100%);
@@ -28,16 +29,16 @@ export const BadgeContext = React.createContext<{ activeChain: Chain } | null>(
   null
 );
 const BadgeContextProvider = BadgeContext.Provider;
-export const Badge = () => {
+export const Badge = (admin: boolean) => {
   const { activeChain } = useActiveChain();
   useEffect(() => {
-    document.title = 'Mucho.finance | Badge Admin';
+    document.title = `Mucho.finance | Badge ${admin ? "Admin" : ""}`;
   }, []);
   return (
     <ArbitrumOnly>
       <BadgeContextProvider value={{ activeChain }}>
         <main className="content-drawer">
-          <BadgePage />
+          <BadgePage admin={admin} />
         </main>
         <Drawer open={false}>
           <></>
@@ -47,10 +48,13 @@ export const Badge = () => {
   );
 };
 
-export const BadgePage = () => {
+export const BadgePage = (adminObj) => {
   const [, setBadgeData] = useAtom(writeBadgeData);
   const data: IBadge = useGetPlans();
+  const admin = adminObj.admin.adminObj;  //Algun día Satan nos encontrará
 
+  //console.log("Admin:");
+  //console.log();
   //console.log("got tokenomics");
   //console.log(data);
   //console.log("tokenomics end");
@@ -62,14 +66,22 @@ export const BadgePage = () => {
       <PlanModals />
       <Section
         Heading={
-          <div className={topStyles}>
-            <MuchoWhite width={120} /> &nbsp;Badge Admin
-          </div>
+          <>
+            <div className={topStyles}>
+              <MuchoWhite width={120} /> &nbsp;Badge {admin ? "Admin" : ""}
+            </div>
+          </>
         }
-        Cards={getPlanCards(data)}
+        Cards={getPlanCards(data, admin)}
         subHeading={
-          <div className={descStyles}>
-          </div>
+          <>
+            <div className={descStyles}>
+              Subscribe to your plan, and you will receive a NFT token that will identify you with benefits in our protocols!
+            </div>
+            {admin && <div className="mt-5">
+              <AddPlanButton />
+            </div>}
+          </>
         }
       />
     </BadgeStyles>

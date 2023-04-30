@@ -40,7 +40,8 @@ const AppRoutes = () => {
     <div className="root w-[100vw]">
       <Routes>
         <Route path="/*" element={<Earn />} />
-        <Route path="/badge" element={<Badge />} />
+        <Route path="/badgeadmin" element={<Badge adminObj={true} />} />
+        <Route path="/badge" element={<Badge adminObj={false} />} />
       </Routes>
     </div>
   );

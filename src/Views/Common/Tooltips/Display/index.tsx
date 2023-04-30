@@ -47,11 +47,6 @@ export const Display: React.FC<IDisplayProp> = ({
     const [color, setColor] = useState('green');
 
     useEffect(() => {
-      if (prev.current && data) {
-        if (lt(stringify(data), stringify(prev.current))) {
-          setColor('red');
-        } else setColor('green');
-      }
       return () => {
         prev.current = data;
       };
