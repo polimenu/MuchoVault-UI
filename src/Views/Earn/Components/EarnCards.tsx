@@ -41,7 +41,7 @@ export const getEarnCards = (data: IEarn) => {
   }
 
   const earnCards = EARN_CONFIG[activeChain.id].POOLS.map((p, i) => {
-    return <EarnCard token={p.token.symbol} muchoToken={p.token.muchoToken} poolInfo={data.earn[`${p.token.symbol}PoolInfo`]} vaultId={i} decimals={p.decimals} precision={p.precision} />
+    return <EarnCard token={p.token.symbol} muchoToken={p.mToken.symbol} poolInfo={data.earn[`${p.token.symbol}PoolInfo`]} vaultId={i} decimals={p.decimals} precision={p.precision} />
   });
 
   return [
