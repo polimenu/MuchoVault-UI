@@ -13,6 +13,8 @@ import {
   ledgerWallet,
   omniWallet,
 } from '@rainbow-me/rainbowkit/wallets';
+const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID;
+console.log(`projectId: `, projectId);
 import { connectorsForWallets } from '@rainbow-me/rainbowkit';
 
 
@@ -27,35 +29,33 @@ const getWallets = (chains: Chain[]) => {
     {
       groupName: 'Recommended',
       wallets: [
-        metaMaskWallet({ chains }),
-        coinbaseWallet({ chains, appName: 'Buffer Finance' }),
+        metaMaskWallet({ chains, projectId }),
+        coinbaseWallet({ chains, appName: 'MuchoFinance-UI' }),
       ],
     },
   ];
-  return import.meta.env.VITE_ENV.toLowerCase() == 'testnet'
-    ? [...bothSupported]
-    : [
-      {
-        groupName: bothSupported[0].groupName,
-        wallets: [
-          ...bothSupported[0].wallets,
-          trustWallet({ chains }),
-          injectedWallet({ chains }),
-          walletConnectWallet({ chains }),
-        ],
-      },
-      {
-        groupName: 'Others',
-        wallets: [
-          rainbowWallet({ chains }),
-          imTokenWallet({ chains }),
-          ledgerWallet({ chains }),
-          omniWallet({ chains }),
-          braveWallet({ chains }),
-          // argentWallet({ chains }),
-        ],
-      },
-    ];
+  return [
+    {
+      groupName: bothSupported[0].groupName,
+      wallets: [
+        ...bothSupported[0].wallets,
+        trustWallet({ chains, projectId }),
+        injectedWallet({ chains }),
+        walletConnectWallet({ chains, projectId }),
+      ],
+    },
+    {
+      groupName: 'Others',
+      wallets: [
+        rainbowWallet({ chains, projectId }),
+        imTokenWallet({ chains, projectId }),
+        ledgerWallet({ chains, projectId }),
+        omniWallet({ chains, projectId }),
+        braveWallet({ chains }),
+        // argentWallet({ chains }),
+      ],
+    },
+  ];
 };
 
 const { chains, provider } = configureChains(getChains(), [publicProvider()]);
