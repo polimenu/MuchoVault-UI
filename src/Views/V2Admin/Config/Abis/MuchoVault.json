@@ -487,12 +487,12 @@
     },
     {
         "inputs": [],
-        "name": "aprUpdatePeriod",
+        "name": "badgeManager",
         "outputs": [
             {
-                "internalType": "uint256",
+                "internalType": "contract IMuchoBadgeManager",
                 "name": "",
-                "type": "uint256"
+                "type": "address"
             }
         ],
         "stateMutability": "view",
@@ -910,6 +910,19 @@
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "muchoHub",
+        "outputs": [
+            {
+                "internalType": "contract IMuchoHub",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "uint8",
@@ -923,6 +936,19 @@
                 "internalType": "uint256",
                 "name": "",
                 "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "priceFeed",
+        "outputs": [
+            {
+                "internalType": "contract IPriceFeed",
+                "name": "",
+                "type": "address"
             }
         ],
         "stateMutability": "view",
@@ -980,19 +1006,6 @@
             }
         ],
         "name": "revokeRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_seconds",
-                "type": "uint256"
-            }
-        ],
-        "name": "setAprUpdatePeriod",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

@@ -10,6 +10,7 @@ import { Badge } from '@Views/Badge';
 import ConnectionDrawer from '@Views/Common/V2-Drawer/connectionDrawer';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
+import { V2Admin } from '@Views/V2Admin';
 
 if (import.meta.env.VITE_MODE === 'production') {
   // console.log(`import.meta.env.SENTRY_DSN: `, import.meta.env.VITE_SENTRY_DSN);
@@ -42,7 +43,7 @@ const AppRoutes = () => {
         <Route path="/*" element={<Earn />} />
         <Route path="/badgeadmin" element={<Badge adminObj={true} />} />
         <Route path="/badge" element={<Badge adminObj={false} />} />
-        <Route path="/v2/admin" element={<Badge adminObj={false} />} />
+        <Route path="/v2/admin" element={<V2Admin />} />
       </Routes>
     </div>
   );

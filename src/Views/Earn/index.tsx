@@ -7,7 +7,7 @@ import EarnIcon from 'src/SVG/Elements/EarnIcon';
 import Drawer from '@Views/Common/V2-Drawer';
 import { Chain } from 'wagmi';
 import { getEarnCards } from './Components/EarnCards';
-import { Section } from './Components/Section';
+import { Section } from '../Common/Card/Section';
 import { IEarn, writeEarnData } from './earnAtom';
 import { useGetTokenomics } from './Hooks/useTokenomicsMulticall';
 import { EarnModals } from './Modals';

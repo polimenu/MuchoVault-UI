@@ -2,12 +2,13 @@ import { Skeleton } from '@mui/material';
 import { Display } from '@Views/Common/Tooltips/Display';
 import { TableAligner } from '@Views/Common/TableAligner';
 import { IMuchoVaultData, IMuchoVaultParametersInfo, IV2ContractData, IVaultInfo } from '../v2AdminAtom';
-import { Card } from './Card';
-import { Divider } from './Divider';
-import { PlanAdminButtons, PlanButtons } from './PlanButtons';
+import { Card } from '../../Common/Card/Card';
+import { PlanAdminButtons, MuchoVaultAdminButtons } from './MuchoVaultAdminButtons';
 //import { BADGE_CONFIG } from '../Config/Plans';
 import { ViewContext } from '..';
 import { useContext } from 'react';
+import { MuchoVaultGeneralButtons, VaultButtons } from './V2AdminButtons';
+import { CheckBox } from '@mui/icons-material';
 export const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 export const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
 export const tooltipKeyClasses = '!text-f14 !text-2 !text-left !py-1 !pl-[0px]';
@@ -21,8 +22,9 @@ export const wrapperClasses = 'flex justify-end flex-wrap';
 
 
 
-export const getPlanCards = (data: IV2ContractData) => {
+export const getV2AdminCards = (data: IMuchoVaultData) => {
   //console.log("getBadgeCards 0");
+  //console.log("getV2AdminCards data", data);
   if (!data) {
     //console.log("getBadgeCards 1");
     return [0, 1, 2, 3].map((index) => (
@@ -33,40 +35,59 @@ export const getPlanCards = (data: IV2ContractData) => {
       />
     ));
   }
-  //console.log("getBadgeCards");
-  //console.log(data);
+
+  //console.log("Drawing cards with data", data);
+
   let activeChain: Chain | null = null;
   const viewContextValue = useContext(ViewContext);
   if (viewContextValue) {
     activeChain = viewContextValue.activeChain;
   }
 
-  const planCards = () => {
-    return <MuchoVaultCard muchoVaultData={data.muchoVault} />
-  };
+  const vaultsInfo = data.vaultsInfo.map((v, i) => <MuchoVaultInfoCard vaultId={i} vaultInfo={v} />);
+  const generalCard = <MuchoVaultGeneralCard muchoVaultData={data} />;
 
-  return planCards;
+  return [generalCard, ...vaultsInfo];
 };
 
 
-
-const MuchoVaultCard = ({ muchoVaultData }: { muchoVaultData: IMuchoVaultData }) => {
+const MuchoVaultGeneralCard = ({ muchoVaultData }: { muchoVaultData: IMuchoVaultData }) => {
   //console.log("PlanCard");
   return (
     <Card
       top={
         <>
-          <span className={underLineClass}>MuuchoVault Contract ({muchoVaultData.contract})</span>
+          <span className={underLineClass}>MuchoVault Contract General Params (<a href={`https://arbiscan.io/address/${muchoVaultData.contract}`} target="_blank">{muchoVaultData.contract.substring(0, 12) + "..."}</a>)</span>
         </>
       }
       middle={<>
-        {muchoVaultData.vaultsInfo.map((v) => <MuchoVaultInfo vaultInfo={v} />)}
         <MuchoVaultParametersInfo info={muchoVaultData.parametersInfo} />
       </>}
       bottom={
-        < div className="mt-5" >
-          Pending buttons
-        </div >
+        <div className="mt-5">
+          <MuchoVaultGeneralButtons data={muchoVaultData} />
+        </div>
+      }
+    />
+  );
+}
+
+const MuchoVaultInfoCard = ({ vaultId, vaultInfo }: { vaultId: number, vaultInfo: IVaultInfo }) => {
+  //console.log("PlanCard");
+  return (
+    <Card
+      top={
+        <>
+          <span className={underLineClass}>Vault #{vaultId}</span>
+        </>
+      }
+      middle={<>
+        <MuchoVaultInfo vaultInfo={vaultInfo} />
+      </>}
+      bottom={
+        <div className="mt-5">
+          <VaultButtons data={vaultInfo} />
+        </div>
       }
     />
   );
@@ -84,13 +105,13 @@ const MuchoVaultInfo = ({ vaultInfo }: { vaultInfo: IVaultInfo }) => {
 
             <Display
               className="!justify-end"
-              data={vaultInfo.depositToken.name + " (" + vaultInfo.depositToken.contract + ")"}
+              data={<a href={`https://arbiscan.io/address/${vaultInfo.depositToken.contract}`} target="_blank">{vaultInfo.depositToken.name}</a>}
             />
           </div>,
           <div className={`${wrapperClasses}`}>
             <Display
               className="!justify-end"
-              data={`<a href='https://arbiscan.io/address/{vaultInfo.muchoToken.contract}'>{vaultInfo.muchoToken.name}</a>`}
+              data={<a href={`https://arbiscan.io/address/${vaultInfo.muchoToken.contract}`} target="_blank">{vaultInfo.muchoToken.name}</a>}
             />
           </div>,
           <div className={`${wrapperClasses}`}>
@@ -111,7 +132,12 @@ const MuchoVaultInfo = ({ vaultInfo }: { vaultInfo: IVaultInfo }) => {
           <div className={`${wrapperClasses}`}>
             <Display
               className="!justify-end"
-              data={vaultInfo.stakable.toString()}
+              data={<input type="checkbox" readOnly checked={vaultInfo.stakable} />}
+            />
+            &nbsp;
+            <Display
+              className="!justify-end"
+              data={vaultInfo.stakable ? " Open" : " Closed"}
             />
           </div>
           ,
@@ -160,29 +186,27 @@ const MuchoVaultParametersInfo = ({ info }: { info: IMuchoVaultParametersInfo })
   //console.log("Plan:"); console.log(plan);
   //console.log("Enabled:"); console.log(enabledStr);
   return (
-    <>
-      <TableAligner
-        keysName={['Swap fee', 'Earnings Address'}
-        values={[
-          <div className={`${wrapperClasses}`}>
-            <Display
-              className="!justify-end"
-              data={info.swapFee}
-              unit={"%"}
-              precision={2}
-            />
-          </div>,
-          <div className={`${wrapperClasses}`}>
-            <Display
-              className="!justify-end"
-              data={<a href="https://arbiscan.io/address/{info.earningsAddress}">{info.earningsAddress}</a>}
-            />
-          </div>,
-        ]}
-        keyStyle={keyClasses}
-        valueStyle={valueClasses}
-      />
-    </>
+    <TableAligner
+      keysName={['Swap fee', 'Earnings Address']}
+      values={[
+        <div className={`${wrapperClasses}`}>
+          <Display
+            className="!justify-end"
+            data={info.swapFee}
+            unit={"%"}
+            precision={2}
+          />
+        </div>,
+        <div className={`${wrapperClasses}`}>
+          <Display
+            className="!justify-end"
+            data={<a href={`https://arbiscan.io/address/${info.earningsAddress}`} target='_blank'>{info.earningsAddress.substring(0, 18) + "..."}</a>}
+          />
+        </div>,
+      ]}
+      keyStyle={keyClasses}
+      valueStyle={valueClasses}
+    />
   );
 };
 

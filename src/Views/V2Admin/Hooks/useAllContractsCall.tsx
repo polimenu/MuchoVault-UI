@@ -5,11 +5,12 @@ import {
   divide,
 } from '@Utils/NumString/stringArithmatics';
 
-import { Chain, useContractReads } from 'wagmi';
+import { Chain, useContractRead, useContractReads } from 'wagmi';
 import { ViewContext } from '..';
 import { useContext } from 'react';
 import { useUserAccount } from '@Hooks/useUserAccount';
 import { IMuchoVaultData, IMuchoVaultParametersInfo, IV2ContractData, IVaultInfo } from '../v2AdminAtom';
+import { ethers } from 'ethers';
 
 export const BASIS_POINTS_DIVISOR = '10000';
 export const SECONDS_PER_YEAR = '31536000';
@@ -31,15 +32,15 @@ export const useGetV2Contracts = () => {
   // const { state } = useGlobal();
   const v2AdminConfig: (typeof V2ADMIN_CONFIG)[42161] = V2ADMIN_CONFIG[activeChain.id];
 
-  const vaultInfoCalls = v2AdminConfig.MuchoVault.vaults.map(vId => {
+  const vaultInfoCalls = v2AdminConfig.MuchoVault.vaults.map(v => {
     return {
       address: v2AdminConfig.MuchoVault.contract,
       abi: MuchoVaultAbi,
       functionName: 'getVaultInfo',
-      args: [vId],
+      args: [v.id],
       chainId: activeChain?.id,
     }
-  })
+  });
 
   const muchoVaultParameterCalls = [
     {
@@ -54,18 +55,29 @@ export const useGetV2Contracts = () => {
       functionName: 'earningsAddress',
       chainId: activeChain?.id,
     },
+    {
+      address: v2AdminConfig.MuchoVault.contract,
+      abi: MuchoVaultAbi,
+      functionName: 'muchoHub',
+      chainId: activeChain?.id,
+    },
+    {
+      address: v2AdminConfig.MuchoVault.contract,
+      abi: MuchoVaultAbi,
+      functionName: 'priceFeed',
+      chainId: activeChain?.id,
+    },
+    {
+      address: v2AdminConfig.MuchoVault.contract,
+      abi: MuchoVaultAbi,
+      functionName: 'badgeManager',
+      chainId: activeChain?.id,
+    },
   ]
 
-  const allPlansCall = {
-    address: v2AdminConfig.MuchoBadgeManager,
-    abi: MuchoVaultAbi,
-    functionName: 'allPlans',
-    chainId: activeChain.id,
-  }
+  let calls = [...vaultInfoCalls, ...muchoVaultParameterCalls];
 
-  let calls = [allPlansCall];
-
-  //console.log("Calls"); console.log(calls);
+  //console.log("Calls", calls);
 
   let { data } = useContractReads({
     contracts: calls,
@@ -73,64 +85,40 @@ export const useGetV2Contracts = () => {
   });
   data = getBNtoStringCopy(data);
 
-  //console.log("Result plans"); console.log(data);
+  //console.log("Result contracts", data);
 
-  let response = {};
+  let response: IMuchoVaultData;
+  //return response;
 
   if (data && data[0]) {
+    //console.log("DATA!!", data);
+    const initNoVaults = v2AdminConfig.MuchoVault.vaults.length;
 
-    const tokenMap = VALID_TOKENS;
-    //console.log("test"); console.log(tokenMap(tokens[0]));
-
-    let resObject: IBadge = {};
-    resObject.plans = [];
-
-    for (var i = 0; i < data[0].length; i++) {
-      const subTk = tokenMap[data[0][i].subscriptionPrice.token];
-      const renTk = tokenMap[data[0][i].renewalPrice.token];
-
-      //console.log("Checking plan " + data[0][i].id);
-      //console.log(data[1].filter(p => p.id == data[0][i].id));
-      //console.log(data[2].filter(p => p.id == data[0][i].id));
-      const activeSubscription = (data[1] && (data[1].filter(p => p.id == data[0][i].id).length > 0)) ? true : false;
-      const expiredSubscription = (data[2] && (data[2].filter(p => p.id == data[0][i].id).length > 0)) ? true : false;
-
-      resObject.plans.push({
-        id: data[0][i].id,
-        name: data[0][i].name,
-        uri: data[0][i].uri,
-        subscribers: data[0][i].subscribers,
-        subscriptionPrice: {
-          token: subTk.symbol,
-          amount: data[0][i].subscriptionPrice.amount / (10 ** subTk.decimals),
-          contract: data[0][i].subscriptionPrice.token,
-          decimals: subTk.decimals
-        },
-        renewalPrice: {
-          token: renTk.symbol,
-          amount: data[0][i].renewalPrice.amount / (10 ** renTk.decimals),
-          contract: data[0][i].renewalPrice.token,
-          decimals: renTk.decimals
-        },
-        time: data[0][i].time / (24 * 3600),
-        exists: data[0][i].exists,
-        enabled: data[0][i].enabled,
-        status: data[0][i].enabled ? "Enabled" : "Disabled",
-        activeSubscribers: data[0][i].activeSubscribers,
-        isActiveForCurrentUser: activeSubscription,
-        isExpiredForCurrentUser: expiredSubscription,
-      });
-    }
-
-
-    // FORMATTING
-    response = resObject;
-
+    response = {
+      contract: v2AdminConfig.MuchoVault.contract,
+      vaultsInfo: v2AdminConfig.MuchoVault.vaults.map((v, i) => {
+        const vId = i;
+        return {
+          id: v.id,
+          depositToken: { name: v.depositTokenName, contract: data[vId].depositToken },
+          muchoToken: { name: v.muchoTokenName, contract: data[vId].muchoToken },
+          decimals: v.decimals,
+          totalStaked: data[vId].totalStaked / (10 ** v.decimals),
+          lastUpdate: Date(data[vId].lastUpdate),
+          stakable: data[vId].stakable,
+          depositFee: data[vId].depositFee / 100,
+          withdrawFee: data[vId].withdrawFee / 100,
+          maxCap: data[vId].maxCap / (10 ** v.decimals),
+          maxDepositUser: data[vId].maxDepositUser / (10 ** v.decimals),
+        }
+      }),
+      parametersInfo: { swapFee: data[initNoVaults] / 100, earningsAddress: data[initNoVaults + 1] },
+      contractsInfo: { muchoHub: data[initNoVaults + 2], priceFeed: data[initNoVaults + 3], badgeManager: data[initNoVaults + 4] },
+    };
 
   }
 
-  //console.log("Formatting done!");
-  //console.log(response);
+  //console.log("Response RPC", response);
 
-  return response ? response : { plans: null };
+  return response ? response : null;
 };

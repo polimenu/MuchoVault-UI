@@ -3,17 +3,18 @@ import { useAtom } from 'jotai';
 import React, { useEffect } from 'react';
 import Drawer from '@Views/Common/V2-Drawer';
 import { Chain } from 'wagmi';
-import { getPlanCards } from './Components/V2ContractCards';
-import { Section } from './Components/Section';
-import { IAdminData, writeAdminData } from './v2AdminAtom';
+import { getV2AdminCards } from './Components/V2ContractCards';
+import { Section } from '../Common/Card/Section';
+import { IMuchoVaultData, writeV2AdminData } from './v2AdminAtom';
 import { useGetV2Contracts } from './Hooks/useAllContractsCall';
-import { PlanModals } from './Modals';
+//import { PlanModals } from './Modals';
 import { useActiveChain } from '@Hooks/useActiveChain';
 import {
   ArbitrumOnly,
 } from '@Views/Common/ChainNotSupported';
 import MuchoWhite from '@SVG/Elements/MuchoWhite';
-import { AddPlanButton } from './Components/PlanButtons';
+import { AddPlanButton } from './Components/MuchoVaultAdminButtons';
+import { V2AdminModals } from './Modals';
 
 const Styles = styled.div`
   width: min(1200px, 100%);
@@ -29,7 +30,7 @@ export const ViewContext = React.createContext<{ activeChain: Chain } | null>(
   null
 );
 const ViewContextProvider = ViewContext.Provider;
-export const Badge = (admin: boolean) => {
+export const V2Admin = () => {
   const { activeChain } = useActiveChain();
   useEffect(() => {
     document.title = "Mucho.finance | V2 Admin";
@@ -49,8 +50,8 @@ export const Badge = (admin: boolean) => {
 };
 
 export const V2AdminPage = () => {
-  const [, setV2AdminData] = useAtom(writeAdminData);
-  const data: IBadge = useGetV2Contracts();
+  const [, setV2AdminData] = useAtom(writeV2AdminData);
+  const data: IMuchoVaultData = useGetV2Contracts();
 
   //console.log("Admin:");
   //console.log();
@@ -62,7 +63,7 @@ export const V2AdminPage = () => {
 
   return (
     <Styles>
-      <PlanModals />
+      <V2AdminModals />
       <Section
         Heading={
           <>
@@ -71,7 +72,7 @@ export const V2AdminPage = () => {
             </div>
           </>
         }
-        Cards={getPlanCards(data)}
+        Cards={getV2AdminCards(data)}
         subHeading={
           <>
           </>

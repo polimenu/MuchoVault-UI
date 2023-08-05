@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import Drawer from '@Views/Common/V2-Drawer';
 import { Chain } from 'wagmi';
 import { getPlanCards } from './Components/PlanCards';
-import { Section } from './Components/Section';
+import { Section } from '../Common/Card/Section';
 import { IBadge, writeBadgeData } from './badgeAtom';
 import { useGetPlans } from './Hooks/useAllPlansCall';
 import { PlanModals } from './Modals';

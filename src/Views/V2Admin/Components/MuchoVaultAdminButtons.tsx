@@ -4,14 +4,14 @@ import { useContext } from 'react';
 import { BlueBtn } from '@Views/Common/V2-Button';
 import { useNetwork } from 'wagmi';
 import { ViewContext } from '..';
-import { IPlan, badgeAtom } from '../v2AdminAtom';
+import { IMuchoVaultData, IPlan, badgeAtom } from '../v2AdminAtom';
 import { ConnectionRequired } from '@Views/Common/Navbar/AccountDropdown';
 import { usePlanEnableDisableCalls } from '../Hooks/usePlanWriteCalls';
 
 export const btnClasses = '!w-fit px-4 rounded-sm !h-7';
 
 
-export function PlanButtons({ plan }: { plan: IPlan }) {
+export function MuchoVaultAdminButtons({ muchoVaultData }: { muchoVaultData: IMuchoVaultData }) {
   const { address: account } = useUserAccount();
   const [state, setPageState] = useAtom(badgeAtom);
   const { activeChain } = useContext(ViewContext);

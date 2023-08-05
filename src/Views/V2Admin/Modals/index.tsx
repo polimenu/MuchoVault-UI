@@ -1,13 +1,11 @@
 import { CloseOutlined } from '@mui/icons-material';
 import { Dialog, IconButton } from '@mui/material';
 import { useAtom } from 'jotai';
-import { badgeAtom } from '../v2AdminAtom';
-import { EditModal } from './edit';
-import { SubModal } from './sub';
-import { SubscribeUserModal } from './subuser';
+import { v2ContractDataAtom } from '../v2AdminAtom';
+import { V2AdminSetModal } from './adminModal';
 
-export const PlanModals = () => {
-  const [pageState, setPageState] = useAtom(badgeAtom);
+export const V2AdminModals = () => {
+  const [pageState, setPageState] = useAtom(v2ContractDataAtom);
 
   const closeModal = () =>
     setPageState({
@@ -31,34 +29,13 @@ export const PlanModals = () => {
 };
 
 function ModalChild() {
-  const [pageState] = useAtom(badgeAtom);
+  const [pageState] = useAtom(v2ContractDataAtom);
   const activeModal = pageState.activeModal;
 
-  if (activeModal) {
+  if (!activeModal)
+    return <div></div>;
 
-    if (activeModal.action == "edit") {
-      return (
-        <EditModal />
-      );
-
-    }
-    else if (activeModal.action == "add") {
-      return (
-        <EditModal create={true} />
-      );
-    }
-    else if ((activeModal.action == "subscribe") || (activeModal.action == "unsubscribe") || (activeModal.action == "renew")) {
-      return (
-        <SubModal mode={activeModal.action} />
-      );
-    }
-
-    else if ((activeModal.action == "subscribeUser") || (activeModal.action == "renewUser")) {
-      return (
-        <SubscribeUserModal renew={activeModal.action == "renewUser"} />
-      );
-    }
-  }
-
-  return <div></div>;
+  return (
+    <V2AdminSetModal head={activeModal.title} />
+  );
 }

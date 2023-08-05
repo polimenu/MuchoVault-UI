@@ -1,26 +1,37 @@
 import { atom } from 'jotai';
 
 export interface IActiveModal {
-  contract: string;
-  parameterName: string;
-  currentValue: string;
+  title: string;
+  functionName: string;
+  args: any[];
+  currentValue: any;
+  validations: Function;
+  unit: string;
 }
 
-export interface IV2ContractData {
+export interface IV2AdminAtom {
   isModalOpen: boolean;
   activeModal: IActiveModal;
-  muchoVault: IMuchoVaultData;
 }
 
 export interface IMuchoVaultData {
   contract: string;
   vaultsInfo: IVaultInfo[];
   parametersInfo: IMuchoVaultParametersInfo;
+  contractsInfo: IMuchoVaultContractsInfo;
+}
+
+export interface IMuchoVaultContractsInfo {
+  muchoHub: string;
+  priceFeed: string;
+  badgeManager: string;
 }
 
 export interface IVaultInfo {
+  id: number;
   depositToken: IToken;
   muchoToken: IToken;
+  decimals: number;
   totalStaked: number;
   lastUpdate: Date;
   stakable: boolean;
@@ -36,16 +47,27 @@ export interface IToken {
 }
 
 export interface IMuchoVaultParametersInfo {
-  ownerFee: number;
   swapFee: number;
   earningsAddress: string;
 }
 
-export const v2ContractDataAtom = atom<IV2ContractData>({
+export interface IMuchoVaultContracts {
+  muchoHub: string;
+  priceFeed: string;
+  badgeManager: string;
+}
+
+export const v2ContractDataAtom = atom<IV2AdminAtom>({
   isModalOpen: false,
   activeModal: null,
-  muchoVault: null,
 });
+
+const v2AdminData = atom<IMuchoVaultData>({ contract: "", vaultsInfo: [], parametersInfo: null, contractsInfo: null });
+export const readV2AdminData = atom((get) => get(v2AdminData));
+export const writeV2AdminData = atom(null, (get, set, update: IMuchoVaultData) => {
+  set(v2AdminData, update);
+});
+
 /*
 export const writeBadgeAtom = atom(null, (get, set, update: IBadgeAtom) =>
   set(badgeAtom, update)
