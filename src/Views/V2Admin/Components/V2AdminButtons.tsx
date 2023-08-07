@@ -37,7 +37,13 @@ export function MuchoVaultGeneralButtons({ data }: { data: IMuchoVaultData }) {
     <br></br>
     <div className="flex gap-2">
       {getDirectButton("setOpenAllVault", "Close All Vaults", [false])}
-      {getModalButton("setSwapMuchoTokensFee", "Change Swap Fee", [], data.parametersInfo.swapFee, numberValidation(0, 10, 2), "%")}
+      {getModalButton("setSwapMuchoTokensFee", "Swap Fee", [], data.parametersInfo.swapFee, numberValidation(0, 10, 2), "%")}
+    </div>
+    <br></br>
+    <div className="flex gap-5">
+      {data.parametersInfo.swapFeePlans.map(sfp => {
+        return getModalButton("setSwapMuchoTokensFeeForPlan", `Plan ${sfp.planId} - Swap Fee`, [sfp.planId], sfp.swapFee, numberValidation(0, 10, 2), "%")
+      })}
     </div>
   </>
   );
@@ -46,7 +52,9 @@ export function MuchoVaultGeneralButtons({ data }: { data: IMuchoVaultData }) {
 
 const getModalButton = (functionName: string, caption: string, args: any[], currentValue: any, validations: Function, unit: string) => {
   const [state, setPageState] = useAtom(v2ContractDataAtom);
+  const key: string = functionName + "_" + args.join("_");
   return <BlueBtn
+    key={key}
     onClick={() =>
       setPageState({ ...state, activeModal: { title: caption, functionName: functionName, args: args, currentValue: currentValue, validations: validations, unit: unit }, isModalOpen: true })
     }
@@ -99,6 +107,12 @@ export function VaultButtons({ data }: { data: IVaultInfo }) {
       {getModalButton("setMaxDepositUser", "Max Deposit per User", [id], data.maxDepositUser, numberValidation(0, 1E18, data.decimals), data.depositToken.name)}
       {getModalButton("setDepositFee", "Deposit Fee", [id], data.depositFee, numberValidation(0, 5, 2), "%")}
       {getModalButton("setWithdrawFee", "Withdraw Fee", [id], data.withdrawFee, numberValidation(0, 1, 2), "%")}
+    </div>
+    <br></br>
+    <div className="flex gap-5">
+      {data.maxDepositPlans.map(mdp => {
+        return getModalButton("setMaxDepositUserForPlan", `Plan ${mdp.planId} - Max Deposit per User`, [id, mdp.planId], mdp.maxDeposit, numberValidation(0, 1E18, data.decimals), data.depositToken.name)
+      })}
     </div>
   </>
   );

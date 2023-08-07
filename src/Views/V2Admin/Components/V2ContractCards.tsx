@@ -73,7 +73,13 @@ const MuchoVaultGeneralCard = ({ muchoVaultData }: { muchoVaultData: IMuchoVault
 }
 
 const MuchoVaultInfoCard = ({ vaultId, vaultInfo }: { vaultId: number, vaultInfo: IVaultInfo }) => {
-  //console.log("PlanCard");
+  if (!vaultInfo) {
+    return <Skeleton
+      key={vaultId}
+      variant="rectangular"
+      className="w-full !h-full min-h-[370px] !transform-none !bg-1"
+    />
+  }
   return (
     <Card
       top={
@@ -99,7 +105,12 @@ const MuchoVaultInfo = ({ vaultInfo }: { vaultInfo: IVaultInfo }) => {
   return (
     <>
       <TableAligner
-        keysName={['Deposit Token', 'Mucho Token', 'Total Staked', 'Last Update', 'Stakable', 'Deposit Fee', 'Withdraw Fee', 'Max Cap', 'Max Deposit per user']}
+        keysName={
+          ['Deposit Token', 'Mucho Token', 'Total Staked', 'Last Update', 'Stakable', 'Deposit Fee', 'Withdraw Fee', 'Max Cap', 'Max Deposit per user']
+            .concat(vaultInfo.maxDepositPlans.map(mdp => {
+              return `Plan ${mdp.planId} - Max deposit`
+            }))
+        }
         values={[
           <div className={`${wrapperClasses}`}>
 
@@ -173,7 +184,18 @@ const MuchoVaultInfo = ({ vaultInfo }: { vaultInfo: IVaultInfo }) => {
               precision={2}
             />
           </div>,
-        ]}
+        ]
+          .concat(vaultInfo.maxDepositPlans.map(mdp => {
+            return <div className={`${wrapperClasses}`}>
+              <Display
+                className="!justify-end"
+                data={mdp.maxDeposit}
+                unit={vaultInfo.depositToken.name}
+                precision={2}
+              />
+            </div>
+          }))
+        }
         keyStyle={keyClasses}
         valueStyle={valueClasses}
       />
@@ -187,8 +209,14 @@ const MuchoVaultParametersInfo = ({ info }: { info: IMuchoVaultParametersInfo })
   //console.log("Enabled:"); console.log(enabledStr);
   return (
     <TableAligner
-      keysName={['Swap fee', 'Earnings Address']}
+      keysName={['Earnings Address', 'Swap fee'].concat(info.swapFeePlans.map(sfp => { return `Plan ${sfp.planId} - Swap fee` }))}
       values={[
+        <div className={`${wrapperClasses}`}>
+          <Display
+            className="!justify-end"
+            data={<a href={`https://arbiscan.io/address/${info.earningsAddress}`} target='_blank'>{info.earningsAddress.substring(0, 18) + "..."}</a>}
+          />
+        </div>,
         <div className={`${wrapperClasses}`}>
           <Display
             className="!justify-end"
@@ -197,13 +225,16 @@ const MuchoVaultParametersInfo = ({ info }: { info: IMuchoVaultParametersInfo })
             precision={2}
           />
         </div>,
-        <div className={`${wrapperClasses}`}>
+      ].concat(info.swapFeePlans.map(sfp => {
+        return <div className={`${wrapperClasses}`}>
           <Display
             className="!justify-end"
-            data={<a href={`https://arbiscan.io/address/${info.earningsAddress}`} target='_blank'>{info.earningsAddress.substring(0, 18) + "..."}</a>}
+            data={sfp.swapFee}
+            unit={"%"}
+            precision={2}
           />
-        </div>,
-      ]}
+        </div>
+      }))}
       keyStyle={keyClasses}
       valueStyle={valueClasses}
     />

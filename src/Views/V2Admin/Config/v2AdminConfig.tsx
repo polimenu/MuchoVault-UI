@@ -1,7 +1,8 @@
 export const V2ADMIN_CONFIG = {
   42161: {
+    Plans: [1, 3],
     MuchoVault: {
-      contract: "0x5a60876DE5be83E1101BA73F713F8FA5F10ad7a4",
+      contract: "0xC598B8b0F6492068C9dE5f3737B922E0c7D5FF83",
       vaults: [{ id: 0, depositTokenName: "USDC", muchoTokenName: "mUSDC", decimals: 6, },
       { id: 1, depositTokenName: "WETH", muchoTokenName: "mWETH", decimals: 18, },
       { id: 2, depositTokenName: "WBTC", muchoTokenName: "mWBTC", decimals: 8, },

@@ -39,6 +39,7 @@ export interface IVaultInfo {
   withdrawFee: number;
   maxCap: number;
   maxDepositUser: number;
+  maxDepositPlans: [{ planId: number, maxDeposit: number }];
 }
 
 export interface IToken {
@@ -48,6 +49,7 @@ export interface IToken {
 
 export interface IMuchoVaultParametersInfo {
   swapFee: number;
+  swapFeePlans: [{ planId: number, swapFee: number }];
   earningsAddress: string;
 }
 

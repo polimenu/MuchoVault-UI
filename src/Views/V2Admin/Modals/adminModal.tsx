@@ -76,7 +76,7 @@ const SetValue = ({ head, params }: { head: string, params: IActiveModal }) => {
     }
     const args = [...params.args, valid.valueToSC];
     //console.log("Clickhandler fname", params.functionName);
-    console.log("Clickhandler args", args);
+    //console.log("Clickhandler args", args);
     return writeCall(callBack, params.functionName, args);
   };
 

@@ -617,6 +617,30 @@
     {
         "inputs": [
             {
+                "internalType": "uint256",
+                "name": "_vaultId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_planId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getMaxDepositUserForPlan",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "bytes32",
                 "name": "role",
                 "type": "bytes32"

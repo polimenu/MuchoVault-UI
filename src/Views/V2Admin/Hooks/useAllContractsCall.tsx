@@ -39,6 +39,7 @@ export const useGetV2Contracts = () => {
       functionName: 'getVaultInfo',
       args: [v.id],
       chainId: activeChain?.id,
+      map: `getVaultInfo_${v.id}`
     }
   });
 
@@ -48,36 +49,67 @@ export const useGetV2Contracts = () => {
       abi: MuchoVaultAbi,
       functionName: 'bpSwapMuchoTokensFee',
       chainId: activeChain?.id,
+      map: 'bpSwapMuchoTokensFee'
     },
     {
       address: v2AdminConfig.MuchoVault.contract,
       abi: MuchoVaultAbi,
       functionName: 'earningsAddress',
       chainId: activeChain?.id,
+      map: 'earningsAddress'
     },
     {
       address: v2AdminConfig.MuchoVault.contract,
       abi: MuchoVaultAbi,
       functionName: 'muchoHub',
       chainId: activeChain?.id,
+      map: 'muchoHub'
     },
     {
       address: v2AdminConfig.MuchoVault.contract,
       abi: MuchoVaultAbi,
       functionName: 'priceFeed',
       chainId: activeChain?.id,
+      map: 'priceFeed'
     },
     {
       address: v2AdminConfig.MuchoVault.contract,
       abi: MuchoVaultAbi,
       functionName: 'badgeManager',
       chainId: activeChain?.id,
+      map: 'badgeManager'
     },
   ]
 
-  let calls = [...vaultInfoCalls, ...muchoVaultParameterCalls];
+  let planCalls = [];
+  v2AdminConfig.Plans.forEach(p => {
+    planCalls.push({
+      address: v2AdminConfig.MuchoVault.contract,
+      abi: MuchoVaultAbi,
+      functionName: 'bpSwapMuchoTokensFeeForBadgeHolders',
+      chainId: activeChain?.id,
+      args: [p],
+      map: `bpSwapMuchoTokensFeeForBadgeHolder_${p}`,
+    });
+
+    v2AdminConfig.MuchoVault.vaults.forEach(v => {
+      planCalls.push({
+        address: v2AdminConfig.MuchoVault.contract,
+        abi: MuchoVaultAbi,
+        functionName: 'getMaxDepositUserForPlan',
+        chainId: activeChain?.id,
+        args: [v.id, p],
+        map: `getMaxDepositUserForPlan_${v.id}_${p}`,
+      });
+    })
+  })
+
+  const calls = [...vaultInfoCalls, ...muchoVaultParameterCalls, ...planCalls];
+  let indexes = {};
+  calls.forEach((c, i) => { indexes[c.map] = i; });
 
   //console.log("Calls", calls);
+  //console.log("indexes", indexes);
 
   let { data } = useContractReads({
     contracts: calls,
@@ -88,32 +120,41 @@ export const useGetV2Contracts = () => {
   //console.log("Result contracts", data);
 
   let response: IMuchoVaultData;
+  const getData = (call: string) => { return data[indexes[call]] ? data[indexes[call]] : ""; }
   //return response;
 
-  if (data && data[0]) {
+  if (data) {
     //console.log("DATA!!", data);
     const initNoVaults = v2AdminConfig.MuchoVault.vaults.length;
 
     response = {
       contract: v2AdminConfig.MuchoVault.contract,
       vaultsInfo: v2AdminConfig.MuchoVault.vaults.map((v, i) => {
-        const vId = i;
-        return {
-          id: v.id,
-          depositToken: { name: v.depositTokenName, contract: data[vId].depositToken },
-          muchoToken: { name: v.muchoTokenName, contract: data[vId].muchoToken },
-          decimals: v.decimals,
-          totalStaked: data[vId].totalStaked / (10 ** v.decimals),
-          lastUpdate: Date(data[vId].lastUpdate),
-          stakable: data[vId].stakable,
-          depositFee: data[vId].depositFee / 100,
-          withdrawFee: data[vId].withdrawFee / 100,
-          maxCap: data[vId].maxCap / (10 ** v.decimals),
-          maxDepositUser: data[vId].maxDepositUser / (10 ** v.decimals),
+        const vInfo = getData(`getVaultInfo_${v.id}`);
+        if (vInfo) {
+          return {
+            id: v.id,
+            depositToken: { name: v.depositTokenName, contract: vInfo.depositToken },
+            muchoToken: { name: v.muchoTokenName, contract: vInfo.muchoToken },
+            decimals: v.decimals,
+            totalStaked: vInfo.totalStaked / (10 ** v.decimals),
+            lastUpdate: Date(vInfo.lastUpdate),
+            stakable: vInfo.stakable,
+            depositFee: vInfo.depositFee / 100,
+            withdrawFee: vInfo.withdrawFee / 100,
+            maxCap: vInfo.maxCap / (10 ** v.decimals),
+            maxDepositUser: vInfo.maxDepositUser / (10 ** v.decimals),
+            maxDepositPlans: v2AdminConfig.Plans.map(p => { return { planId: p, maxDeposit: getData(`getMaxDepositUserForPlan_${v.id}_${p}`) / (10 ** v.decimals) } }),
+          }
         }
+        return null;
       }),
-      parametersInfo: { swapFee: data[initNoVaults] / 100, earningsAddress: data[initNoVaults + 1] },
-      contractsInfo: { muchoHub: data[initNoVaults + 2], priceFeed: data[initNoVaults + 3], badgeManager: data[initNoVaults + 4] },
+      parametersInfo: {
+        swapFee: getData('bpSwapMuchoTokensFee') / 100,
+        swapFeePlans: v2AdminConfig.Plans.map(p => { return { planId: p, swapFee: getData(`bpSwapMuchoTokensFeeForBadgeHolder_${p}`).fee / 100 } }),
+        earningsAddress: getData('earningsAddress')
+      },
+      contractsInfo: { muchoHub: getData('muchoHub'), priceFeed: getData('priceFeed'), badgeManager: getData('badgeManager') },
     };
 
   }
