@@ -3,10 +3,10 @@ import { useAtom } from 'jotai';
 import React, { useEffect } from 'react';
 import Drawer from '@Views/Common/V2-Drawer';
 import { Chain } from 'wagmi';
-import { getV2AdminCards } from './Components/V2ContractCards';
+import { getMuchoVaultV2AdminCards } from './Components/MuchoVaultV2ContractCards';
 import { Section } from '../Common/Card/Section';
-import { IMuchoVaultData, writeV2AdminData } from './v2AdminAtom';
-import { useGetV2Contracts } from './Hooks/useAllContractsCall';
+import { IAdminV2Data, IMuchoHubData, IMuchoVaultData, writeV2AdminData } from './v2AdminAtom';
+import { useGetMuchoHubV2Data, useGetMuchoVaultV2Data } from './Hooks/useAllContractsCall';
 //import { PlanModals } from './Modals';
 import { useActiveChain } from '@Hooks/useActiveChain';
 import {
@@ -15,6 +15,7 @@ import {
 import MuchoWhite from '@SVG/Elements/MuchoWhite';
 import { AddPlanButton } from './Components/MuchoVaultAdminButtons';
 import { V2AdminModals } from './Modals';
+import { getMuchoHubV2AdminCards } from './Components/MuchoHubV2ContractCards';
 
 const Styles = styled.div`
   width: min(1200px, 100%);
@@ -30,7 +31,13 @@ export const ViewContext = React.createContext<{ activeChain: Chain } | null>(
   null
 );
 const ViewContextProvider = ViewContext.Provider;
-export const V2Admin = () => {
+
+export enum V2AdminContract {
+  MuchoVault,
+  MuchoHub
+}
+
+export const V2AdminPage = ({ pageType }: { pageType: V2AdminContract }) => {
   const { activeChain } = useActiveChain();
   useEffect(() => {
     document.title = "Mucho.finance | V2 Admin";
@@ -39,7 +46,8 @@ export const V2Admin = () => {
     <ArbitrumOnly>
       <ViewContextProvider value={{ activeChain }}>
         <main className="content-drawer">
-          <V2AdminPage />
+          {pageType == V2AdminContract.MuchoVault && <MuchoVaultV2AdminPage />}
+          {pageType == V2AdminContract.MuchoHub && <MuchoHubV2AdminPage />}
         </main>
         <Drawer open={false}>
           <></>
@@ -49,34 +57,36 @@ export const V2Admin = () => {
   );
 };
 
-export const V2AdminPage = () => {
+export const MuchoVaultV2AdminPage = () => {
   const [, setV2AdminData] = useAtom(writeV2AdminData);
-  const data: IMuchoVaultData = useGetV2Contracts();
-
-  //console.log("Admin:");
-  //console.log();
-  //console.log("got tokenomics");
-  //console.log(data);
-  //console.log("tokenomics end");
-
+  const data: IMuchoVaultData = useGetMuchoVaultV2Data();
   setV2AdminData(data);
 
   return (
     <Styles>
       <V2AdminModals />
       <Section
-        Heading={
-          <>
-            <div className={topStyles}>
-              <MuchoWhite width={120} /> &nbsp;MuchoVaults V2 Admin
-            </div>
-          </>
-        }
-        Cards={getV2AdminCards(data)}
-        subHeading={
-          <>
-          </>
-        }
+        Heading={<div className={topStyles}><MuchoWhite width={120} /> &nbsp;MuchoVault V2 Admin</div>}
+        Cards={getMuchoVaultV2AdminCards(data ? data : null)}
+        subHeading={<div className={topStyles}>MuchoVault Contract</div>}
+      />
+    </Styles>
+  );
+};
+
+
+export const MuchoHubV2AdminPage = () => {
+  const [, setV2AdminData] = useAtom(writeV2AdminData);
+  const data: IMuchoHubData = useGetMuchoHubV2Data();
+  setV2AdminData(data);
+
+  return (
+    <Styles>
+      <V2AdminModals />
+      <Section
+        Heading={<div className={topStyles}><MuchoWhite width={120} /> &nbsp;MuchoVault V2 Admin</div>}
+        Cards={getMuchoHubV2AdminCards(data ? data : null)}
+        subHeading={<div className={topStyles}>MuchoHub Contract</div>}
       />
     </Styles>
   );

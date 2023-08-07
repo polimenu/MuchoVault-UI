@@ -7,7 +7,7 @@ import { PlanAdminButtons, MuchoVaultAdminButtons } from './MuchoVaultAdminButto
 //import { BADGE_CONFIG } from '../Config/Plans';
 import { ViewContext } from '..';
 import { useContext } from 'react';
-import { MuchoVaultGeneralButtons, VaultButtons } from './V2AdminButtons';
+import { MuchoVaultGeneralButtons, VaultButtons } from './MuchoVaultV2AdminButtons';
 import { CheckBox } from '@mui/icons-material';
 export const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 export const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
@@ -22,7 +22,7 @@ export const wrapperClasses = 'flex justify-end flex-wrap';
 
 
 
-export const getV2AdminCards = (data: IMuchoVaultData) => {
+export const getMuchoVaultV2AdminCards = (data: IMuchoVaultData) => {
   //console.log("getBadgeCards 0");
   //console.log("getV2AdminCards data", data);
   if (!data) {
@@ -240,55 +240,3 @@ const MuchoVaultParametersInfo = ({ info }: { info: IMuchoVaultParametersInfo })
     />
   );
 };
-
-
-
-/*const PlanInfoUser = ({ plan }: { plan: IPlan }) => {
-  //console.log("Plan:"); console.log(plan);
-  const enabledStr: string = plan.isActiveForCurrentUser ? "Subscribed" :
-    (plan.isExpiredForCurrentUser ? "Expired" : "Not subscribed");
-
-  //console.log("Enabled:"); console.log(enabledStr);
-  return (
-    <>
-      <TableAligner
-        keysName={['Duration', 'Subscription Price', 'Renewal Price', 'Status (time left)']}
-        values={[
-          <div className={`${wrapperClasses}`}>
-
-            <Display
-              className="!justify-end"
-              data={plan.time}
-              unit={"days"}
-              precision={0}
-            />
-          </div>,
-          <div className={`${wrapperClasses}`}>
-            <Display
-              className="!justify-end"
-              data={plan.subscriptionPrice.amount}
-              unit={plan.subscriptionPrice.token}
-              precision={2}
-            />
-          </div>,
-          <div className={`${wrapperClasses}`}>
-            <Display
-              className="!justify-end"
-              data={plan.renewalPrice.amount}
-              unit={plan.renewalPrice.token}
-              precision={2}
-            />
-          </div>,
-          <div className={`${wrapperClasses}`}>
-            {<Display
-              className="!justify-end"
-              data={enabledStr}
-            />}
-          </div>,
-        ]}
-        keyStyle={keyClasses}
-        valueStyle={valueClasses}
-      />
-    </>
-  );
-};*/

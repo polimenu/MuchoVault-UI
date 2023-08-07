@@ -1,16 +1,16 @@
 import MuchoVaultAbi from '../Config/Abis/MuchoVault.json';
+import MuchoHubAbi from '../Config/Abis/MuchoHub.json';
 import { V2ADMIN_CONFIG } from '../Config/v2AdminConfig';
 import { getBNtoStringCopy } from '@Utils/useReadCall';
 import {
   divide,
 } from '@Utils/NumString/stringArithmatics';
 
-import { Chain, useContractRead, useContractReads } from 'wagmi';
+import { Chain, useContractReads } from 'wagmi';
 import { ViewContext } from '..';
 import { useContext } from 'react';
 import { useUserAccount } from '@Hooks/useUserAccount';
-import { IMuchoVaultData, IMuchoVaultParametersInfo, IV2ContractData, IVaultInfo } from '../v2AdminAtom';
-import { ethers } from 'ethers';
+import { IMuchoHubData, IMuchoVaultData } from '../v2AdminAtom';
 
 export const BASIS_POINTS_DIVISOR = '10000';
 export const SECONDS_PER_YEAR = '31536000';
@@ -21,7 +21,7 @@ export const fromWei = (value: string, decimals: number = 18) => {
   // return Math.floor((value * 1e6) / 1e18) / 1e6;
 };
 
-export const useGetV2Contracts = () => {
+export const useGetMuchoVaultV2Data = () => {
   //console.log("useGetPlans");
   const { address: account } = useUserAccount();
   let activeChain: Chain | null = null;
@@ -119,7 +119,7 @@ export const useGetV2Contracts = () => {
 
   //console.log("Result contracts", data);
 
-  let response: IMuchoVaultData;
+  let responseMV: IMuchoVaultData;
   const getData = (call: string) => { return data[indexes[call]] ? data[indexes[call]] : ""; }
   //return response;
 
@@ -127,7 +127,7 @@ export const useGetV2Contracts = () => {
     //console.log("DATA!!", data);
     const initNoVaults = v2AdminConfig.MuchoVault.vaults.length;
 
-    response = {
+    responseMV = {
       contract: v2AdminConfig.MuchoVault.contract,
       vaultsInfo: v2AdminConfig.MuchoVault.vaults.map((v, i) => {
         const vInfo = getData(`getVaultInfo_${v.id}`);
@@ -161,5 +161,121 @@ export const useGetV2Contracts = () => {
 
   //console.log("Response RPC", response);
 
-  return response ? response : null;
+  return responseMV ? responseMV : null;
+};
+
+
+
+
+export const useGetMuchoHubV2Data = () => {
+  //console.log("useGetPlans");
+  const { address: account } = useUserAccount();
+  let activeChain: Chain | null = null;
+  const v2AdminContextValue = useContext(ViewContext);
+  if (v2AdminContextValue) {
+    activeChain = v2AdminContextValue.activeChain;
+  }
+  // const { state } = useGlobal();
+  const v2AdminConfig: (typeof V2ADMIN_CONFIG)[42161] = V2ADMIN_CONFIG[activeChain.id];
+
+  let calls = [
+    {
+      address: v2AdminConfig.MuchoHub.contract,
+      abi: MuchoHubAbi,
+      functionName: 'protocols',
+      chainId: activeChain?.id,
+      map: 'protocols',
+    },
+  ];
+
+  v2AdminConfig.MuchoHub.tokens.forEach(tk => {
+    const t = tk.contract;
+    calls.concat([
+      {
+        address: v2AdminConfig.MuchoHub.contract,
+        abi: MuchoHubAbi,
+        functionName: 'getTotalStaked',
+        chainId: activeChain?.id,
+        args: [t],
+        map: `getTotalStaked_${t}`,
+      },
+      {
+        address: v2AdminConfig.MuchoHub.contract,
+        abi: MuchoHubAbi,
+        functionName: 'getTotalNotInvested',
+        chainId: activeChain?.id,
+        args: [t],
+        map: `getTotalNotInvested_${t}`,
+      },
+      {
+        address: v2AdminConfig.MuchoHub.contract,
+        abi: MuchoHubAbi,
+        functionName: 'getTokenDefaults',
+        chainId: activeChain?.id,
+        args: [t],
+        map: `getTokenDefaults_${t}`,
+      },
+      {
+        address: v2AdminConfig.MuchoHub.contract,
+        abi: MuchoHubAbi,
+        functionName: 'getCurrentInvestment',
+        chainId: activeChain?.id,
+        args: [t],
+        map: `getCurrentInvestment_${t}`,
+      }
+    ]);
+  })
+
+  let indexes = {};
+  calls.forEach((c, i) => { indexes[c.map] = i; });
+
+  //console.log("Calls", calls);
+  //console.log("indexes", indexes);
+
+  let { data } = useContractReads({
+    contracts: calls,
+    watch: true,
+  });
+  data = getBNtoStringCopy(data);
+
+  //console.log("Result contracts", data);
+
+  let responseMH: IMuchoHubData;
+  const getData = (call: string) => { return data[indexes[call]] ? data[indexes[call]] : ""; }
+  //return response;
+
+  if (data) {
+    //console.log("DATA!!", data);
+    const initNoVaults = v2AdminConfig.MuchoVault.vaults.length;
+
+    responseMH = {
+      protocols: getData('protocols'),
+      contract: v2AdminConfig.MuchoHub.contract,
+      tokensInfo: v2AdminConfig.MuchoHub.tokens.map(tk => {
+        const t = tk.contract;
+        return {
+          token: { contract: t, name: tk.name },
+          totalStaked: getData(`getTotalStaked_${t}`) / (10 ** tk.decimals),
+          totalNotInvested: getData(`getTotalNotInvested_${t}`) / (10 ** tk.decimals),
+          defaultInvestment: getData(`getTokenDefaults_${t}`) ? getData(`getTokenDefaults_${t}`).map(d => {
+            return {
+              protocol: d.protocol,
+              percentage: d.percentage / 100
+            }
+          }) : null,
+          currentInvestment: getData(`getCurrentInvestment_${t}`) ? getData(`getCurrentInvestment_${t}`).map(d => {
+            return {
+              protocol: d.protocol,
+              amount: d.amount / (10 ** tk.decimals)
+            }
+          }) : null,
+        }
+      })
+    }
+
+  }
+
+  //console.log("Response RPC", response);
+
+  return responseMH ? responseMH : null;
 };

@@ -1,5 +1,25 @@
 import { atom } from 'jotai';
 
+export interface IMuchoHubData {
+  contract: string;
+  protocols: string[];
+  tokensInfo: IHubTokenInfo[];
+}
+
+export interface IHubTokenInfo {
+  token: IToken;
+  totalStaked: number;
+  totalNotInvested: number;
+  defaultInvestment: [{
+    protocol: string;
+    percentage: number;
+  }];
+  currentInvestment: [{
+    protocol: string;
+    amount: number;
+  }]
+}
+
 export interface IActiveModal {
   title: string;
   functionName: string;

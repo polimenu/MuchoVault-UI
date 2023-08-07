@@ -10,7 +10,8 @@ import { Badge } from '@Views/Badge';
 import ConnectionDrawer from '@Views/Common/V2-Drawer/connectionDrawer';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
-import { V2Admin } from '@Views/V2Admin';
+import { V2AdminPage } from '@Views/V2Admin';
+import { V2AdminContract } from '@Views/V2Admin';
 
 if (import.meta.env.VITE_MODE === 'production') {
   // console.log(`import.meta.env.SENTRY_DSN: `, import.meta.env.VITE_SENTRY_DSN);
@@ -23,27 +24,14 @@ if (import.meta.env.VITE_MODE === 'production') {
 
 
 const AppRoutes = () => {
-  /*const [searchParam] = useSearchParams();
-  const [ref, setRef] = useAtom(referralCodeAtom);
-  const toastify = useToast();*/
-  /*useEffect(() => {
-    const referralCode = searchParam.get('ref');
-    if (referralCode) {
-      if (ref !== referralCode) setRef(referralCode);
-      toastify({
-        type: 'success',
-        msg: 'Referral Link  "' + referralCode + '" is applied successfully!',
-        id: 23132,
-      });
-    }
-  }, [searchParam]);*/
   return (
     <div className="root w-[100vw]">
       <Routes>
         <Route path="/*" element={<Earn />} />
         <Route path="/badgeadmin" element={<Badge adminObj={true} />} />
         <Route path="/badge" element={<Badge adminObj={false} />} />
-        <Route path="/v2/admin" element={<V2Admin />} />
+        <Route path="/v2/admin/muchovault" element={<V2AdminPage pageType={V2AdminContract.MuchoVault} />} />
+        <Route path="/v2/admin/muchohub" element={<V2AdminPage pageType={V2AdminContract.MuchoHub} />} />
       </Routes>
     </div>
   );
