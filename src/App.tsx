@@ -12,6 +12,7 @@ import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
 import { V2AdminPage } from '@Views/V2Admin';
 import { V2AdminContract } from '@Views/V2Admin';
+import { V2UserPage } from '@Views/V2User';
 
 if (import.meta.env.VITE_MODE === 'production') {
   // console.log(`import.meta.env.SENTRY_DSN: `, import.meta.env.VITE_SENTRY_DSN);
@@ -30,6 +31,7 @@ const AppRoutes = () => {
         <Route path="/*" element={<Earn />} />
         <Route path="/badgeadmin" element={<Badge adminObj={true} />} />
         <Route path="/badge" element={<Badge adminObj={false} />} />
+        <Route path="/v2" element={<V2UserPage />} />
         <Route path="/v2/admin/muchovault" element={<V2AdminPage pageType={V2AdminContract.MuchoVault} />} />
         <Route path="/v2/admin/muchohub" element={<V2AdminPage pageType={V2AdminContract.MuchoHub} />} />
         <Route path="/v2/admin/muchoprotocolgmx" element={<V2AdminPage pageType={V2AdminContract.MuchoProtocolGmx} />} />

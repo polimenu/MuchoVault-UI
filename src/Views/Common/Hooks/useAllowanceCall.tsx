@@ -53,6 +53,7 @@ export const useGetApprovalAmount = (
   spender_address: string
 ) => {
   const { writeCall } = useWriteCall(token_address, abi);
+  //console.log("Approval token", token_address);
 
   async function approve(amount, cb: (newState) => void) {
     cb(true);
