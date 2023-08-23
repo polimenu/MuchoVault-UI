@@ -5,17 +5,19 @@ import Drawer from '@Views/Common/V2-Drawer';
 import { Chain } from 'wagmi';
 import { getMuchoVaultV2AdminCards } from './Components/MuchoVaultV2ContractCards';
 import { Section } from '../Common/Card/Section';
-import { IAdminV2Data, IMuchoHubData, IMuchoVaultData, writeV2AdminData } from './v2AdminAtom';
-import { useGetMuchoHubV2Data, useGetMuchoVaultV2Data } from './Hooks/useAllContractsCall';
+import { IMuchoHubData, IMuchoProtocolGmxData, IMuchoVaultData, writeV2AdminData } from './v2AdminAtom';
+import { useGetMuchoVaultV2Data } from './Hooks/useMuchoVaultDataCall';
 //import { PlanModals } from './Modals';
 import { useActiveChain } from '@Hooks/useActiveChain';
 import {
   ArbitrumOnly,
 } from '@Views/Common/ChainNotSupported';
 import MuchoWhite from '@SVG/Elements/MuchoWhite';
-import { AddPlanButton } from './Components/MuchoVaultAdminButtons';
 import { V2AdminModals } from './Modals';
 import { getMuchoHubV2AdminCards } from './Components/MuchoHubV2ContractCards';
+import { useGetMuchoHubV2Data } from './Hooks/useMuchoHubDataCall';
+import { useGetMuchoProtocolGmxData } from './Hooks/useMuchoProtocolGmxDataCall';
+import { getMuchoProtocolGmxAdminCards } from './Components/MuchoProtocolGmxContractCards';
 
 const Styles = styled.div`
   width: min(1200px, 100%);
@@ -34,7 +36,8 @@ const ViewContextProvider = ViewContext.Provider;
 
 export enum V2AdminContract {
   MuchoVault,
-  MuchoHub
+  MuchoHub,
+  MuchoProtocolGmx,
 }
 
 export const V2AdminPage = ({ pageType }: { pageType: V2AdminContract }) => {
@@ -48,6 +51,7 @@ export const V2AdminPage = ({ pageType }: { pageType: V2AdminContract }) => {
         <main className="content-drawer">
           {pageType == V2AdminContract.MuchoVault && <MuchoVaultV2AdminPage />}
           {pageType == V2AdminContract.MuchoHub && <MuchoHubV2AdminPage />}
+          {pageType == V2AdminContract.MuchoProtocolGmx && <MuchoProtocolGmxAdminPage />}
         </main>
         <Drawer open={false}>
           <></>
@@ -87,6 +91,26 @@ export const MuchoHubV2AdminPage = () => {
         Heading={<div className={topStyles}><MuchoWhite width={120} /> &nbsp;MuchoVault V2 Admin</div>}
         Cards={getMuchoHubV2AdminCards(data ? data : null)}
         subHeading={<div className={topStyles}>MuchoHub Contract</div>}
+      />
+    </Styles>
+  );
+};
+
+export const MuchoProtocolGmxAdminPage = () => {
+  const [, setV2AdminData] = useAtom(writeV2AdminData);
+  const data: IMuchoProtocolGmxData = useGetMuchoProtocolGmxData();
+  setV2AdminData(data);
+
+  return (
+    <Styles>
+      <V2AdminModals />
+      <Section
+        Heading={<div className={topStyles}><MuchoWhite width={120} /> &nbsp;MuchoVault V2 Admin</div>}
+        Cards={getMuchoProtocolGmxAdminCards(data ? data : null)}
+        subHeading={<><div className={topStyles}>MuchoProtocolGmx: {data ? data.protocolName : ""}</div>
+          <div className={descStyles}>{data ? data.protocolDescription : ""}</div>
+        </>}
+
       />
     </Styles>
   );

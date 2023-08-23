@@ -9,6 +9,7 @@ import { ViewContext } from '..';
 import { useContext } from 'react';
 import { MuchoVaultGeneralButtons, VaultButtons } from './MuchoVaultV2AdminButtons';
 import { CheckBox } from '@mui/icons-material';
+import { contractLink } from '@Views/Common/Utils';
 export const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 export const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
 export const tooltipKeyClasses = '!text-f14 !text-2 !text-left !py-1 !pl-[0px]';
@@ -57,7 +58,7 @@ const MuchoVaultGeneralCard = ({ muchoVaultData }: { muchoVaultData: IMuchoVault
     <Card
       top={
         <>
-          <span className={underLineClass}>MuchoVault Contract General Params (<a href={`https://arbiscan.io/address/${muchoVaultData.contract}`} target="_blank">{muchoVaultData.contract.substring(0, 12) + "..."}</a>)</span>
+          <span className={underLineClass}>{contractLink(muchoVaultData.contract, "MuchoVault Contract")} General Params</span>
         </>
       }
       middle={<>
@@ -116,13 +117,13 @@ const MuchoVaultInfo = ({ vaultInfo }: { vaultInfo: IVaultInfo }) => {
 
             <Display
               className="!justify-end"
-              data={<a href={`https://arbiscan.io/address/${vaultInfo.depositToken.contract}`} target="_blank">{vaultInfo.depositToken.name}</a>}
+              data={contractLink(vaultInfo.depositToken.contract, vaultInfo.depositToken.name)}
             />
           </div>,
           <div className={`${wrapperClasses}`}>
             <Display
               className="!justify-end"
-              data={<a href={`https://arbiscan.io/address/${vaultInfo.muchoToken.contract}`} target="_blank">{vaultInfo.muchoToken.name}</a>}
+              data={contractLink(vaultInfo.muchoToken.contract, vaultInfo.muchoToken.name)}
             />
           </div>,
           <div className={`${wrapperClasses}`}>
@@ -214,7 +215,7 @@ const MuchoVaultParametersInfo = ({ info }: { info: IMuchoVaultParametersInfo })
         <div className={`${wrapperClasses}`}>
           <Display
             className="!justify-end"
-            data={<a href={`https://arbiscan.io/address/${info.earningsAddress}`} target='_blank'>{info.earningsAddress.substring(0, 18) + "..."}</a>}
+            data={contractLink(info.earningsAddress)}
           />
         </div>,
         <div className={`${wrapperClasses}`}>

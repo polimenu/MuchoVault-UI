@@ -10,6 +10,7 @@ import { useContext } from 'react';
 import { MuchoVaultGeneralButtons, VaultButtons } from './MuchoVaultV2AdminButtons';
 import { CheckBox } from '@mui/icons-material';
 import { MuchoHubGeneralButtons, MuchoHubTokenButtons } from './MuchoHubV2AdminButtons';
+import { contractLink } from '@Views/Common/Utils';
 export const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 export const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
 export const tooltipKeyClasses = '!text-f14 !text-2 !text-left !py-1 !pl-[0px]';
@@ -58,7 +59,7 @@ const MuchoHubGeneralCard = ({ muchoHubData }: { muchoHubData: IMuchoHubData }) 
     <Card
       top={
         <>
-          <span className={underLineClass}>MuchoHub Contract General Params (<a href={`https://arbiscan.io/address/${muchoHubData.contract}`} target="_blank">{muchoHubData.contract.substring(0, 12) + "..."}</a>)</span>
+          <span className={underLineClass}>MuchoHub Contract General Params (${contractLink(muchoHubData.contract)})</span>
         </>
       }
       middle={<>
@@ -148,7 +149,10 @@ const MuchoHubParametersInfo = ({ info }: { info: IMuchoHubData }) => {
       values={[
         <div className={`${wrapperClasses}`}>
           <ul>
-            {info.protocols && info.protocols.map(p => <li><a target="_blank" href={`https://arbiscan.io/address/${p}`}>{p}</a></li>)}
+            {info.protocols && info.protocols.map(p => <li key={p.address}>
+              {contractLink(p.address, p.name)}
+              &nbsp;
+            </li>)}
           </ul>
         </div>,]
       }

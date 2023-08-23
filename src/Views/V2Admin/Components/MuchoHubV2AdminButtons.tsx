@@ -5,7 +5,7 @@ import { BlueBtn } from '@Views/Common/V2-Button';
 import { useNetwork } from 'wagmi';
 import { ConnectionRequired } from '@Views/Common/Navbar/AccountDropdown';
 import { IHubTokenInfo, IMuchoHubData, IMuchoVaultData, IVaultInfo, v2ContractDataAtom, writeV2AdminData } from '../v2AdminAtom';
-import { ViewContext } from '..';
+import { V2AdminContract, ViewContext } from '..';
 import { useWriteCall } from '@Hooks/useWriteCall';
 import { V2ADMIN_CONFIG } from '../Config/v2AdminConfig';
 import MuchoHubAbi from '../Config/Abis/MuchoHub.json';
@@ -30,21 +30,31 @@ export function MuchoHubGeneralButtons({ data }: { data: IMuchoHubData }) {
   return (<>
     <div className="flex gap-5">
       {getDirectButton("refreshAllInvestments", "Refresh All Investments", [])}
-      {getModalButton("moveInvestment", "Move Investment", [], null, () => { }, "")}
-      {getModalButton("refreshInvestment", "Refresh Protocol", [], null, () => { }, "")}
+      {getModalButton("moveInvestment", "Move Investment", [], null, moveInvestmentValidation, "", true)}
+      {getModalButton("refreshInvestment", "Refresh Protocol", [], null, () => { }, "", true)}
     </div>
   </>
   );
 
 }
 
-const getModalButton = (functionName: string, caption: string, args: any[], currentValue: any, validations: Function, unit: string) => {
+const moveInvestmentValidation = ([token, amount, source, destination, decimals]: [string, number, string, string, number]) => {
+  const bnVal = ethers.BigNumber.from(10).pow(decimals).mul(Math.round(amount * 100)).div(100);
+  return {
+    error: false,
+    toastifyMessage: null,
+    valueToSC: [token, bnVal, source, destination, decimals],
+  };
+}
+
+const getModalButton = (functionName: string, caption: string, args: any[], currentValue: any, validations: Function, unit: string, disabled: bool) => {
   const [state, setPageState] = useAtom(v2ContractDataAtom);
   const key: string = functionName + "_" + args.join("_");
   return <BlueBtn
     key={key}
+    isDisabled={disabled}
     onClick={() =>
-      setPageState({ ...state, activeModal: { title: caption, functionName: functionName, args: args, currentValue: currentValue, validations: validations, unit: unit }, isModalOpen: true })
+      setPageState({ ...state, activeModal: { title: caption, functionName: functionName, args: args, currentValue: currentValue, validations: validations, unit: unit, contract: V2AdminContract.MuchoHub }, isModalOpen: true })
     }
     className={btnClasses}
   >
@@ -86,29 +96,11 @@ export function MuchoHubTokenButtons({ data }: { data: IHubTokenInfo }) {
 
   return (<>
     <div className="flex gap-5">
-      {getModalButton("setDefaultInvestment", "Set Default Investment", [], null, () => { }, "")}
+      {getModalButton("setDefaultInvestment", "Set Default Investment", [], null, () => { }, "", true)}
     </div>
   </>
   );
 
-}
-
-const numberValidation = (min: number, max: number, decimals: number) => {
-  return (val: number) => {
-    if (val < min || val > max) {
-      return {
-        error: true,
-        toastifyMessage: {
-          type: 'error',
-          msg: `Value must be between ${min} and ${max}`,
-          id: 'invalidNumber',
-        },
-        valueToSC: null,
-      };
-    }
-    const bnVal = ethers.BigNumber.from(10).pow(decimals).mul(Math.round(val * 100)).div(100);
-    return { error: false, toastifyMessage: null, valueToSC: bnVal };
-  }
 }
 
 

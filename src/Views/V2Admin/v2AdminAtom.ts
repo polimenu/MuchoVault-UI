@@ -1,8 +1,54 @@
 import { atom } from 'jotai';
+import { V2AdminContract } from '.';
+
+export interface IMuchoProtocolGmxData {
+  contract: string;
+  protocolName: string;
+  protocolDescription: string;
+  glpApr: number;
+  glpWethMintFee: number;
+  slippage: number;
+  earningsAddress: string;
+  claimEsGmx: boolean;
+
+  minNotInvestedPercentage: number;
+  desiredNotInvestedPercentage: number;
+  minBasisPointsMove: number;
+  maxRefreshWeightLapse: number;
+  manualModeWeights: boolean;
+  rewardSplit: {
+    ownerPercentage: number;
+    NftPercentage: number;
+  };
+  compoundProtocol: string;
+
+  contracts: {
+    EsGMX: string;
+    fsGLP: string;
+    WETH: string;
+    glpRouter: string;
+    glpRewardRouter: string;
+    poolGLP: string;
+    glpVault: string;
+    muchoRewardRouter: string;
+    priceFeed: string;
+  }
+
+  tokenInfo: IGmxTokenInfo[]
+}
+
+export interface IGmxTokenInfo {
+  token: IToken;
+  secondaryTokens: IToken[];
+  staked: number;
+  invested: number;
+  notInvested: number;
+  desiredWeight: number;
+}
 
 export interface IMuchoHubData {
   contract: string;
-  protocols: string[];
+  protocols: { name: string, address: string }[];
   tokensInfo: IHubTokenInfo[];
 }
 
@@ -27,6 +73,7 @@ export interface IActiveModal {
   currentValue: any;
   validations: Function;
   unit: string;
+  contract: V2AdminContract;
 }
 
 export interface IV2AdminAtom {
@@ -65,6 +112,7 @@ export interface IVaultInfo {
 export interface IToken {
   name: string;
   contract: string;
+  decimals: number;
 }
 
 export interface IMuchoVaultParametersInfo {

@@ -1,5 +1,4 @@
 import MuchoVaultAbi from '../Config/Abis/MuchoVault.json';
-import MuchoHubAbi from '../Config/Abis/MuchoHub.json';
 import { V2ADMIN_CONFIG } from '../Config/v2AdminConfig';
 import { getBNtoStringCopy } from '@Utils/useReadCall';
 import {
@@ -10,7 +9,8 @@ import { Chain, useContractReads } from 'wagmi';
 import { ViewContext } from '..';
 import { useContext } from 'react';
 import { useUserAccount } from '@Hooks/useUserAccount';
-import { IMuchoHubData, IMuchoVaultData } from '../v2AdminAtom';
+import { IMuchoVaultData, IToken } from '../v2AdminAtom';
+import { getERC20Token } from './useCommonUtils';
 
 export const BASIS_POINTS_DIVISOR = '10000';
 export const SECONDS_PER_YEAR = '31536000';
@@ -37,9 +37,9 @@ export const useGetMuchoVaultV2Data = () => {
       address: v2AdminConfig.MuchoVault.contract,
       abi: MuchoVaultAbi,
       functionName: 'getVaultInfo',
-      args: [v.id],
+      args: [v],
       chainId: activeChain?.id,
-      map: `getVaultInfo_${v.id}`
+      map: `getVaultInfo_${v}`
     }
   });
 
@@ -98,8 +98,8 @@ export const useGetMuchoVaultV2Data = () => {
         abi: MuchoVaultAbi,
         functionName: 'getMaxDepositUserForPlan',
         chainId: activeChain?.id,
-        args: [v.id, p],
-        map: `getMaxDepositUserForPlan_${v.id}_${p}`,
+        args: [v, p],
+        map: `getMaxDepositUserForPlan_${v}_${p}`,
       });
     })
   })
@@ -130,21 +130,23 @@ export const useGetMuchoVaultV2Data = () => {
     responseMV = {
       contract: v2AdminConfig.MuchoVault.contract,
       vaultsInfo: v2AdminConfig.MuchoVault.vaults.map((v, i) => {
-        const vInfo = getData(`getVaultInfo_${v.id}`);
+        const vInfo = getData(`getVaultInfo_${v}`);
+        const dToken: IToken = getERC20Token(vInfo.depositToken);
+        const mToken: IToken = getERC20Token(vInfo.muchoToken);
         if (vInfo) {
           return {
-            id: v.id,
-            depositToken: { name: v.depositTokenName, contract: vInfo.depositToken },
-            muchoToken: { name: v.muchoTokenName, contract: vInfo.muchoToken },
-            decimals: v.decimals,
-            totalStaked: vInfo.totalStaked / (10 ** v.decimals),
+            id: v,
+            depositToken: dToken,
+            muchoToken: mToken,
+            decimals: dToken.decimals,
+            totalStaked: vInfo.totalStaked / (10 ** dToken.decimals),
             lastUpdate: Date(vInfo.lastUpdate),
             stakable: vInfo.stakable,
             depositFee: vInfo.depositFee / 100,
             withdrawFee: vInfo.withdrawFee / 100,
-            maxCap: vInfo.maxCap / (10 ** v.decimals),
-            maxDepositUser: vInfo.maxDepositUser / (10 ** v.decimals),
-            maxDepositPlans: v2AdminConfig.Plans.map(p => { return { planId: p, maxDeposit: getData(`getMaxDepositUserForPlan_${v.id}_${p}`) / (10 ** v.decimals) } }),
+            maxCap: vInfo.maxCap / (10 ** dToken.decimals),
+            maxDepositUser: vInfo.maxDepositUser / (10 ** dToken.decimals),
+            maxDepositPlans: v2AdminConfig.Plans.map(p => { return { planId: p, maxDeposit: getData(`getMaxDepositUserForPlan_${v}_${p}`) / (10 ** dToken.decimals) } }),
           }
         }
         return null;
@@ -162,120 +164,4 @@ export const useGetMuchoVaultV2Data = () => {
   //console.log("Response RPC", response);
 
   return responseMV ? responseMV : null;
-};
-
-
-
-
-export const useGetMuchoHubV2Data = () => {
-  //console.log("useGetPlans");
-  const { address: account } = useUserAccount();
-  let activeChain: Chain | null = null;
-  const v2AdminContextValue = useContext(ViewContext);
-  if (v2AdminContextValue) {
-    activeChain = v2AdminContextValue.activeChain;
-  }
-  // const { state } = useGlobal();
-  const v2AdminConfig: (typeof V2ADMIN_CONFIG)[42161] = V2ADMIN_CONFIG[activeChain.id];
-
-  let calls = [
-    {
-      address: v2AdminConfig.MuchoHub.contract,
-      abi: MuchoHubAbi,
-      functionName: 'protocols',
-      chainId: activeChain?.id,
-      map: 'protocols',
-    },
-  ];
-
-  v2AdminConfig.MuchoHub.tokens.forEach(tk => {
-    const t = tk.contract;
-    calls.concat([
-      {
-        address: v2AdminConfig.MuchoHub.contract,
-        abi: MuchoHubAbi,
-        functionName: 'getTotalStaked',
-        chainId: activeChain?.id,
-        args: [t],
-        map: `getTotalStaked_${t}`,
-      },
-      {
-        address: v2AdminConfig.MuchoHub.contract,
-        abi: MuchoHubAbi,
-        functionName: 'getTotalNotInvested',
-        chainId: activeChain?.id,
-        args: [t],
-        map: `getTotalNotInvested_${t}`,
-      },
-      {
-        address: v2AdminConfig.MuchoHub.contract,
-        abi: MuchoHubAbi,
-        functionName: 'getTokenDefaults',
-        chainId: activeChain?.id,
-        args: [t],
-        map: `getTokenDefaults_${t}`,
-      },
-      {
-        address: v2AdminConfig.MuchoHub.contract,
-        abi: MuchoHubAbi,
-        functionName: 'getCurrentInvestment',
-        chainId: activeChain?.id,
-        args: [t],
-        map: `getCurrentInvestment_${t}`,
-      }
-    ]);
-  })
-
-  let indexes = {};
-  calls.forEach((c, i) => { indexes[c.map] = i; });
-
-  //console.log("Calls", calls);
-  //console.log("indexes", indexes);
-
-  let { data } = useContractReads({
-    contracts: calls,
-    watch: true,
-  });
-  data = getBNtoStringCopy(data);
-
-  //console.log("Result contracts", data);
-
-  let responseMH: IMuchoHubData;
-  const getData = (call: string) => { return data[indexes[call]] ? data[indexes[call]] : ""; }
-  //return response;
-
-  if (data) {
-    //console.log("DATA!!", data);
-    const initNoVaults = v2AdminConfig.MuchoVault.vaults.length;
-
-    responseMH = {
-      protocols: getData('protocols'),
-      contract: v2AdminConfig.MuchoHub.contract,
-      tokensInfo: v2AdminConfig.MuchoHub.tokens.map(tk => {
-        const t = tk.contract;
-        return {
-          token: { contract: t, name: tk.name },
-          totalStaked: getData(`getTotalStaked_${t}`) / (10 ** tk.decimals),
-          totalNotInvested: getData(`getTotalNotInvested_${t}`) / (10 ** tk.decimals),
-          defaultInvestment: getData(`getTokenDefaults_${t}`) ? getData(`getTokenDefaults_${t}`).map(d => {
-            return {
-              protocol: d.protocol,
-              percentage: d.percentage / 100
-            }
-          }) : null,
-          currentInvestment: getData(`getCurrentInvestment_${t}`) ? getData(`getCurrentInvestment_${t}`).map(d => {
-            return {
-              protocol: d.protocol,
-              amount: d.amount / (10 ** tk.decimals)
-            }
-          }) : null,
-        }
-      })
-    }
-
-  }
-
-  //console.log("Response RPC", response);
-
-  return responseMH ? responseMH : null;
 };

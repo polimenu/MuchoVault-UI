@@ -32,6 +32,7 @@ const AppRoutes = () => {
         <Route path="/badge" element={<Badge adminObj={false} />} />
         <Route path="/v2/admin/muchovault" element={<V2AdminPage pageType={V2AdminContract.MuchoVault} />} />
         <Route path="/v2/admin/muchohub" element={<V2AdminPage pageType={V2AdminContract.MuchoHub} />} />
+        <Route path="/v2/admin/muchoprotocolgmx" element={<V2AdminPage pageType={V2AdminContract.MuchoProtocolGmx} />} />
       </Routes>
     </div>
   );
