@@ -1,7 +1,7 @@
 import { Skeleton } from '@mui/material';
 import { Display } from '@Views/Common/Tooltips/Display';
 import { TableAligner } from '@Views/Common/TableAligner';
-import { IMuchoVaultData, IMuchoVaultParametersInfo, IV2ContractData, IVaultInfo } from '../v2AdminAtom';
+import { IMuchoVaultContractsInfo, IMuchoVaultData, IMuchoVaultParametersInfo, IV2ContractData, IVaultInfo } from '../v2AdminAtom';
 import { Card } from '../../Common/Card/Card';
 import { PlanAdminButtons, MuchoVaultAdminButtons } from './MuchoVaultAdminButtons';
 //import { BADGE_CONFIG } from '../Config/Plans';
@@ -10,6 +10,8 @@ import { useContext } from 'react';
 import { MuchoVaultGeneralButtons, VaultButtons } from './MuchoVaultV2AdminButtons';
 import { CheckBox } from '@mui/icons-material';
 import { contractLink } from '@Views/Common/Utils';
+import { V2ADMIN_CONFIG } from '../Config/v2AdminConfig';
+import { Chain } from 'wagmi';
 export const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 export const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
 export const tooltipKeyClasses = '!text-f14 !text-2 !text-left !py-1 !pl-[0px]';
@@ -45,7 +47,7 @@ export const getMuchoVaultV2AdminCards = (data: IMuchoVaultData) => {
     activeChain = viewContextValue.activeChain;
   }
 
-  const vaultsInfo = data.vaultsInfo.map((v, i) => <MuchoVaultInfoCard vaultId={i} vaultInfo={v} />);
+  const vaultsInfo = data.vaultsInfo.map((v, i) => <MuchoVaultInfoCard vaultId={i} vaultInfo={v} precision={V2ADMIN_CONFIG[activeChain.id].MuchoVault.precision[i]} />);
   const generalCard = <MuchoVaultGeneralCard muchoVaultData={data} />;
 
   return [generalCard, ...vaultsInfo];
@@ -62,7 +64,7 @@ const MuchoVaultGeneralCard = ({ muchoVaultData }: { muchoVaultData: IMuchoVault
         </>
       }
       middle={<>
-        <MuchoVaultParametersInfo info={muchoVaultData.parametersInfo} />
+        <MuchoVaultParametersInfo info={muchoVaultData.parametersInfo} contracts={muchoVaultData.contractsInfo} />
       </>}
       bottom={
         <div className="mt-5">
@@ -73,7 +75,7 @@ const MuchoVaultGeneralCard = ({ muchoVaultData }: { muchoVaultData: IMuchoVault
   );
 }
 
-const MuchoVaultInfoCard = ({ vaultId, vaultInfo }: { vaultId: number, vaultInfo: IVaultInfo }) => {
+const MuchoVaultInfoCard = ({ vaultId, vaultInfo, precision }: { vaultId: number, vaultInfo: IVaultInfo, precision: number }) => {
   if (!vaultInfo) {
     return <Skeleton
       key={vaultId}
@@ -89,7 +91,7 @@ const MuchoVaultInfoCard = ({ vaultId, vaultInfo }: { vaultId: number, vaultInfo
         </>
       }
       middle={<>
-        <MuchoVaultInfo vaultInfo={vaultInfo} />
+        <MuchoVaultInfo vaultInfo={vaultInfo} precision={precision} />
       </>}
       bottom={
         <div className="mt-5">
@@ -100,7 +102,7 @@ const MuchoVaultInfoCard = ({ vaultId, vaultInfo }: { vaultId: number, vaultInfo
   );
 }
 
-const MuchoVaultInfo = ({ vaultInfo }: { vaultInfo: IVaultInfo }) => {
+const MuchoVaultInfo = ({ vaultInfo, precision }: { vaultInfo: IVaultInfo, precision: number }) => {
   //console.log("Plan:"); console.log(plan);
   //console.log("Enabled:"); console.log(enabledStr);
   return (
@@ -131,7 +133,7 @@ const MuchoVaultInfo = ({ vaultInfo }: { vaultInfo: IVaultInfo }) => {
               className="!justify-end"
               data={vaultInfo.totalStaked}
               unit={vaultInfo.depositToken.name}
-              precision={2}
+              precision={precision}
             />
           </div>,
           <div className={`${wrapperClasses}`}>
@@ -174,7 +176,7 @@ const MuchoVaultInfo = ({ vaultInfo }: { vaultInfo: IVaultInfo }) => {
               className="!justify-end"
               data={vaultInfo.maxCap}
               unit={vaultInfo.depositToken.name}
-              precision={2}
+              precision={precision}
             />
           </div>,
           <div className={`${wrapperClasses}`}>
@@ -182,7 +184,7 @@ const MuchoVaultInfo = ({ vaultInfo }: { vaultInfo: IVaultInfo }) => {
               className="!justify-end"
               data={vaultInfo.maxDepositUser}
               unit={vaultInfo.depositToken.name}
-              precision={2}
+              precision={precision}
             />
           </div>,
         ]
@@ -192,7 +194,7 @@ const MuchoVaultInfo = ({ vaultInfo }: { vaultInfo: IVaultInfo }) => {
                 className="!justify-end"
                 data={mdp.maxDeposit}
                 unit={vaultInfo.depositToken.name}
-                precision={2}
+                precision={precision}
               />
             </div>
           }))
@@ -205,12 +207,12 @@ const MuchoVaultInfo = ({ vaultInfo }: { vaultInfo: IVaultInfo }) => {
 };
 
 
-const MuchoVaultParametersInfo = ({ info }: { info: IMuchoVaultParametersInfo }) => {
+const MuchoVaultParametersInfo = ({ info, contracts }: { info: IMuchoVaultParametersInfo, contracts: IMuchoVaultContractsInfo }) => {
   //console.log("Plan:"); console.log(plan);
   //console.log("Enabled:"); console.log(enabledStr);
   return (
     <TableAligner
-      keysName={['Earnings Address', 'Swap fee'].concat(info.swapFeePlans.map(sfp => { return `Plan ${sfp.planId} - Swap fee` }))}
+      keysName={['Earnings Address', 'Mucho Hub', 'Price Feed', 'Badge Manager', 'Swap fee'].concat(info.swapFeePlans.map(sfp => { return `Plan ${sfp.planId} - Swap fee` }))}
       values={[
         <div className={`${wrapperClasses}`}>
           <Display
@@ -218,6 +220,27 @@ const MuchoVaultParametersInfo = ({ info }: { info: IMuchoVaultParametersInfo })
             data={contractLink(info.earningsAddress)}
           />
         </div>,
+
+
+        <div className={`${wrapperClasses}`}>
+          <Display
+            className="!justify-end"
+            data={contractLink(contracts.muchoHub)}
+          />
+        </div>,
+        <div className={`${wrapperClasses}`}>
+          <Display
+            className="!justify-end"
+            data={contractLink(contracts.priceFeed)}
+          />
+        </div>,
+        <div className={`${wrapperClasses}`}>
+          <Display
+            className="!justify-end"
+            data={contractLink(contracts.badgeManager)}
+          />
+        </div>,
+
         <div className={`${wrapperClasses}`}>
           <Display
             className="!justify-end"

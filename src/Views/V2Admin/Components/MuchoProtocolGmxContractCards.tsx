@@ -10,6 +10,7 @@ import { CheckBox } from '@mui/icons-material';
 import { MuchoHubTokenButtons } from './MuchoHubV2AdminButtons';
 import { contractLink } from '@Views/Common/Utils';
 import { MuchoGmxGeneralButtons, MuchoGmxTokenButtons } from './MuchoProtocolGmxAdminButtons';
+import { V2ADMIN_CONFIG } from '../Config/v2AdminConfig';
 export const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 export const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
 export const tooltipKeyClasses = '!text-f14 !text-2 !text-left !py-1 !pl-[0px]';
@@ -45,7 +46,7 @@ export const getMuchoProtocolGmxAdminCards = (data: IMuchoProtocolGmxData) => {
     activeChain = viewContextValue.activeChain;
   }
 
-  const tokensInfo = data.tokenInfo ? data.tokenInfo.map((v, i) => <MuchoGmxTokenInfoCard tokenInfo={v} manualWeights={data.manualModeWeights} />) : [];
+  const tokensInfo = data.tokenInfo ? data.tokenInfo.map((v, i) => <MuchoGmxTokenInfoCard tokenInfo={v} manualWeights={data.manualModeWeights} precision={7} />) : [];
   const generalCard = <MuchoGmxGeneralCard muchoGmxData={data} />;
   const contractsCard = <MuchoGmxContractsCard muchoGmxData={data} />;
 
@@ -95,7 +96,7 @@ const MuchoGmxGeneralCard = ({ muchoGmxData }: { muchoGmxData: IMuchoProtocolGmx
   );
 }
 
-const MuchoGmxTokenInfoCard = ({ tokenInfo, manualWeights }: { tokenInfo: IGmxTokenInfo, manualWeights: boolean }) => {
+const MuchoGmxTokenInfoCard = ({ tokenInfo, manualWeights, precision }: { tokenInfo: IGmxTokenInfo, manualWeights: boolean, precision: number }) => {
   if (!tokenInfo) {
     return <Skeleton
       key=""
@@ -111,18 +112,18 @@ const MuchoGmxTokenInfoCard = ({ tokenInfo, manualWeights }: { tokenInfo: IGmxTo
         </>
       }
       middle={<>
-        <MuchoGmxTokenInfo tokenInfo={tokenInfo} />
+        <MuchoGmxTokenInfo tokenInfo={tokenInfo} precision={precision} />
       </>}
       bottom={
         <div className="mt-5">
-          {<MuchoGmxTokenButtons data={tokenInfo} manualWeights={manualWeights} />}
+          {<MuchoGmxTokenButtons data={tokenInfo} manualWeights={manualWeights} precision={precision} />}
         </div>
       }
     />
   );
 }
 
-const MuchoGmxTokenInfo = ({ tokenInfo }: { tokenInfo: IGmxTokenInfo }) => {
+const MuchoGmxTokenInfo = ({ tokenInfo, precision }: { tokenInfo: IGmxTokenInfo, precision: number }) => {
   //console.log("Sec tokens", tokenInfo.secondaryTokens);
 
   return (
@@ -145,7 +146,7 @@ const MuchoGmxTokenInfo = ({ tokenInfo }: { tokenInfo: IGmxTokenInfo }) => {
               className="!justify-end"
               data={tokenInfo.staked}
               unit={tokenInfo.token.name}
-              precision={2}
+              precision={precision}
             />
           </div>,
           <div className={`${wrapperClasses}`}>
@@ -153,7 +154,7 @@ const MuchoGmxTokenInfo = ({ tokenInfo }: { tokenInfo: IGmxTokenInfo }) => {
               className="!justify-end"
               data={tokenInfo.invested}
               unit={tokenInfo.token.name}
-              precision={2}
+              precision={precision}
             />
           </div>,
           <div className={`${wrapperClasses}`}>
@@ -161,7 +162,7 @@ const MuchoGmxTokenInfo = ({ tokenInfo }: { tokenInfo: IGmxTokenInfo }) => {
               className="!justify-end"
               data={tokenInfo.notInvested}
               unit={tokenInfo.token.name}
-              precision={2}
+              precision={precision}
             />
           </div>,
           <div className={`${wrapperClasses}`}>

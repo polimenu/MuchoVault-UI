@@ -11,7 +11,7 @@ import { ViewContext } from '..';
 import { useContext } from 'react';
 import { useUserAccount } from '@Hooks/useUserAccount';
 import { IMuchoVaultData, IToken } from '../v2AdminAtom';
-import { getERC20Token } from './useCommonUtils';
+import { getDataNumber, getDataString, getERC20Token, getERC20TokenCalls } from './useCommonUtils';
 import { IVaultInfo } from '@Views/V2Admin/v2AdminAtom';
 
 export const BASIS_POINTS_DIVISOR = '10000';
@@ -25,18 +25,21 @@ export const fromWei = (value: string, decimals: number = 18) => {
 
 export const useGetMuchoVaultV2Data = () => {
   //console.log("useGetPlans");
-  const { address: account } = useUserAccount();
   let activeChain: Chain | null = null;
   const v2AdminContextValue = useContext(ViewContext);
   if (v2AdminContextValue) {
     activeChain = v2AdminContextValue.activeChain;
   }
   // const { state } = useGlobal();
-  const v2AdminConfig: (typeof V2USER_CONFIG)[42161] = V2USER_CONFIG[activeChain.id];
+  const v2UserConfig: (typeof V2USER_CONFIG)[42161] = V2USER_CONFIG[activeChain.id];
 
-  const vaultInfoCalls = v2AdminConfig.MuchoVault.vaults.map(v => {
+  let tokenCalls = [];
+  v2UserConfig.TokenDictionary.forEach(t => { tokenCalls = tokenCalls.concat(getERC20TokenCalls(t)); });
+  //console.log("tokenCalls", tokenCalls);
+
+  const vaultInfoCalls = v2UserConfig.MuchoVault.vaults.map(v => {
     return {
-      address: v2AdminConfig.MuchoVault.contract,
+      address: v2UserConfig.MuchoVault.contract,
       abi: MuchoVaultAbi,
       functionName: 'getVaultInfo',
       args: [v],
@@ -45,9 +48,9 @@ export const useGetMuchoVaultV2Data = () => {
     }
   });
 
-  const vaultUSDCalls = v2AdminConfig.MuchoVault.vaults.map(v => {
+  const vaultUSDCalls = v2UserConfig.MuchoVault.vaults.map(v => {
     return {
-      address: v2AdminConfig.MuchoVault.contract,
+      address: v2UserConfig.MuchoVault.contract,
       abi: MuchoVaultAbi,
       functionName: 'vaultTotalUSD',
       args: [v],
@@ -56,12 +59,13 @@ export const useGetMuchoVaultV2Data = () => {
     }
   });
 
-  const vaultAPRCalls = v2AdminConfig.MuchoVault.vaults.map((v, i) => {
+  const vaultAPRCalls = v2UserConfig.MuchoVault.vaults.map((v, i) => {
+    const amount = v2UserConfig.MuchoVault.amountsForAprSimulation[i].amount * 10 ** v2UserConfig.MuchoVault.amountsForAprSimulation[i].decimals;
     return {
-      address: v2AdminConfig.MuchoVault.contract,
+      address: v2UserConfig.MuchoVault.contract,
       abi: MuchoVaultAbi,
       functionName: 'getExpectedAPR',
-      args: [v, v2AdminConfig.MuchoVault.amountsForAprSimulation[i]],
+      args: [v, amount.toString()],
       chainId: activeChain?.id,
       map: `getExpectedAPR_${v}`
     }
@@ -69,28 +73,28 @@ export const useGetMuchoVaultV2Data = () => {
 
   const muchoVaultParameterCalls = [
     {
-      address: v2AdminConfig.MuchoVault.contract,
+      address: v2UserConfig.MuchoVault.contract,
       abi: MuchoVaultAbi,
       functionName: 'bpSwapMuchoTokensFee',
       chainId: activeChain?.id,
       map: 'bpSwapMuchoTokensFee'
     },
     {
-      address: v2AdminConfig.MuchoVault.contract,
+      address: v2UserConfig.MuchoVault.contract,
       abi: MuchoVaultAbi,
       functionName: 'muchoHub',
       chainId: activeChain?.id,
       map: 'muchoHub'
     },
     {
-      address: v2AdminConfig.MuchoVault.contract,
+      address: v2UserConfig.MuchoVault.contract,
       abi: MuchoVaultAbi,
       functionName: 'priceFeed',
       chainId: activeChain?.id,
       map: 'priceFeed'
     },
     {
-      address: v2AdminConfig.MuchoVault.contract,
+      address: v2UserConfig.MuchoVault.contract,
       abi: MuchoVaultAbi,
       functionName: 'badgeManager',
       chainId: activeChain?.id,
@@ -99,9 +103,9 @@ export const useGetMuchoVaultV2Data = () => {
   ]
 
   let planCalls = [];
-  v2AdminConfig.Plans.forEach(p => {
+  v2UserConfig.Plans.forEach(p => {
     planCalls.push({
-      address: v2AdminConfig.MuchoVault.contract,
+      address: v2UserConfig.MuchoVault.contract,
       abi: MuchoVaultAbi,
       functionName: 'bpSwapMuchoTokensFeeForBadgeHolders',
       chainId: activeChain?.id,
@@ -109,9 +113,9 @@ export const useGetMuchoVaultV2Data = () => {
       map: `bpSwapMuchoTokensFeeForBadgeHolder_${p}`,
     });
 
-    v2AdminConfig.MuchoVault.vaults.forEach(v => {
+    v2UserConfig.MuchoVault.vaults.forEach(v => {
       planCalls.push({
-        address: v2AdminConfig.MuchoVault.contract,
+        address: v2UserConfig.MuchoVault.contract,
         abi: MuchoVaultAbi,
         functionName: 'getMaxDepositUserForPlan',
         chainId: activeChain?.id,
@@ -122,8 +126,8 @@ export const useGetMuchoVaultV2Data = () => {
   })
 
 
-  const calls = [...vaultInfoCalls, ...vaultUSDCalls, ...vaultAPRCalls, ...muchoVaultParameterCalls, ...planCalls];
-  let indexes = {};
+  const calls = [...tokenCalls, ...vaultInfoCalls, ...vaultUSDCalls, ...vaultAPRCalls, ...muchoVaultParameterCalls, ...planCalls];
+  let indexes: any = {};
   calls.forEach((c, i) => { indexes[c.map] = i; });
 
   //console.log("Calls", calls);
@@ -138,105 +142,57 @@ export const useGetMuchoVaultV2Data = () => {
   //console.log("Result contracts", data);
 
   let responseMV: IMuchoVaultData;
-  const getData = (call: string) => { return data[indexes[call]] ? data[indexes[call]] : ""; }
   //return response;
 
-  if (data) {
+  if (data && data[0]) {
     //console.log("DATA!!", data);
-    const initNoVaults = v2AdminConfig.MuchoVault.vaults.length;
+    data.indexes = indexes;
 
     responseMV = {
-      contract: v2AdminConfig.MuchoVault.contract,
-      vaultsInfo: v2AdminConfig.MuchoVault.vaults.map((v, i) => {
-        const vInfo = getData(`getVaultInfo_${v}`);
-        const dToken: IToken = getERC20Token(vInfo.depositToken);
-        const mToken: IToken = getERC20Token(vInfo.muchoToken);
-        const userVaultData = getUserVaultData(dToken.contract, mToken.contract);
+      contract: v2UserConfig.MuchoVault.contract,
+      vaultsInfo: v2UserConfig.MuchoVault.vaults.map((v, i) => {
+        const vInfo = getDataString(data, `getVaultInfo_${v}`);
+        const dToken: IToken = getERC20Token(data, vInfo.depositToken);
+        const mToken: IToken = getERC20Token(data, vInfo.muchoToken);
+        const userVaultData = getUserVaultData(data, dToken.contract, mToken.contract);
         if (vInfo) {
           return {
             id: v,
             depositToken: dToken,
             muchoToken: mToken,
             decimals: dToken.decimals,
-            expectedAPR: getData(`getExpectedAPR_${v}`) / 100,
+            expectedAPR: getDataNumber(data, `getExpectedAPR_${v}`) / 100,
             totalStaked: vInfo.totalStaked / (10 ** dToken.decimals),
-            totalUSDStaked: getData(`vaultTotalUSD_${v}`),
+            totalUSDStaked: getDataNumber(data, `vaultTotalUSD_${v}`) / 10 ** 18,
             lastUpdate: new Date(vInfo.lastUpdate),
             stakable: vInfo.stakable,
             depositFee: vInfo.depositFee / 100,
             withdrawFee: vInfo.withdrawFee / 100,
             maxCap: vInfo.maxCap / (10 ** dToken.decimals),
             maxDepositUser: vInfo.maxDepositUser / (10 ** dToken.decimals),
-            maxDepositPlans: v2AdminConfig.Plans.map(p => { return { planId: p, maxDeposit: getData(`getMaxDepositUserForPlan_${v}_${p}`) / (10 ** dToken.decimals) } }),
+            maxDepositPlans: v2UserConfig.Plans.map(p => { return { planId: p, maxDeposit: getDataNumber(data, `getMaxDepositUserForPlan_${v}_${p}`) / (10 ** dToken.decimals) } }),
             userData: userVaultData,
           }
         }
         return null;
       }),
       parametersInfo: {
-        swapFee: getData('bpSwapMuchoTokensFee') / 100,
-        swapFeePlans: v2AdminConfig.Plans.map(p => { return { planId: p, swapFee: getData(`bpSwapMuchoTokensFeeForBadgeHolder_${p}`).fee / 100 } }),
+        swapFee: getDataNumber(data, 'bpSwapMuchoTokensFee') / 100,
+        swapFeePlans: v2UserConfig.Plans.map(p => { return { planId: p, swapFee: getDataNumber(data, `bpSwapMuchoTokensFeeForBadgeHolder_${p}`).fee / 100 } }),
       },
-      contractsInfo: { muchoHub: getData('muchoHub'), priceFeed: getData('priceFeed'), badgeManager: getData('badgeManager') },
+      contractsInfo: { muchoHub: getDataString(data, 'muchoHub'), priceFeed: getDataString(data, 'priceFeed'), badgeManager: getDataString(data, 'badgeManager') },
     };
 
   }
 
-  //console.log("Response RPC", response);
+  //console.log("Response RPC", responseMV);
 
   return responseMV ? responseMV : null;
 };
 
-const getUserVaultData = (depositTokenContract: string, muchoTokenContract: string) => {
-  const { address: account } = useUserAccount();
-  let activeChain: Chain | null = null;
-  const v2AdminContextValue = useContext(ViewContext);
-  if (v2AdminContextValue) {
-    activeChain = v2AdminContextValue.activeChain;
-  }
-
-  const calls = [
-    {
-      address: depositTokenContract,
-      abi: ERC20Abi,
-      functionName: 'balanceOf',
-      chainId: activeChain?.id,
-      args: [account],
-    },
-    {
-      address: depositTokenContract,
-      abi: ERC20Abi,
-      functionName: 'decimals',
-      chainId: activeChain?.id,
-    },
-    {
-      address: muchoTokenContract,
-      abi: ERC20Abi,
-      functionName: 'balanceOf',
-      chainId: activeChain?.id,
-      args: [account],
-    },
-    {
-      address: muchoTokenContract,
-      abi: ERC20Abi,
-      functionName: 'decimals',
-      chainId: activeChain?.id,
-    },
-  ]
-
-
-  let { data } = useContractReads({
-    contracts: calls,
-    watch: true,
-  });
-  data = getBNtoStringCopy(data);
-
-  //console.log("User calls", calls);
-  //console.log("User data", data);
-
-  if (data && data[0]) {
-    return { depositTokens: data[0] / 10 ** data[1], muchoTokens: data[2] / 10 ** data[3] };
-  }
-
-  return { depositTokens: 0, muchoTokens: 0 };
+const getUserVaultData = (data: any, depositTokenContract: string, muchoTokenContract: string) => {
+  return {
+    depositTokens: getDataNumber(data, `balanceOf_${depositTokenContract}`),
+    muchoTokens: getDataNumber(data, `balanceOf_${muchoTokenContract}`)
+  };
 }

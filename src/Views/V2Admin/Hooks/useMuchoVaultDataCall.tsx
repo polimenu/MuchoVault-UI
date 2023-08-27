@@ -10,7 +10,7 @@ import { ViewContext } from '..';
 import { useContext } from 'react';
 import { useUserAccount } from '@Hooks/useUserAccount';
 import { IMuchoVaultData, IToken } from '../v2AdminAtom';
-import { getERC20Token } from './useCommonUtils';
+import { getDataNumber, getDataString, getERC20Token, getERC20TokenCalls } from './useCommonUtils';
 
 export const BASIS_POINTS_DIVISOR = '10000';
 export const SECONDS_PER_YEAR = '31536000';
@@ -31,6 +31,9 @@ export const useGetMuchoVaultV2Data = () => {
   }
   // const { state } = useGlobal();
   const v2AdminConfig: (typeof V2ADMIN_CONFIG)[42161] = V2ADMIN_CONFIG[activeChain.id];
+
+  let tokenCalls = [];
+  v2AdminConfig.TokenDictionary.forEach(t => tokenCalls = tokenCalls.concat(getERC20TokenCalls(t)));
 
   const vaultInfoCalls = v2AdminConfig.MuchoVault.vaults.map(v => {
     return {
@@ -104,7 +107,7 @@ export const useGetMuchoVaultV2Data = () => {
     })
   })
 
-  const calls = [...vaultInfoCalls, ...muchoVaultParameterCalls, ...planCalls];
+  const calls = [...tokenCalls, ...vaultInfoCalls, ...muchoVaultParameterCalls, ...planCalls];
   let indexes = {};
   calls.forEach((c, i) => { indexes[c.map] = i; });
 
@@ -120,19 +123,18 @@ export const useGetMuchoVaultV2Data = () => {
   //console.log("Result contracts", data);
 
   let responseMV: IMuchoVaultData;
-  const getData = (call: string) => { return data[indexes[call]] ? data[indexes[call]] : ""; }
   //return response;
 
-  if (data) {
+  if (data && data[0]) {
+    data.indexes = indexes;
     //console.log("DATA!!", data);
-    const initNoVaults = v2AdminConfig.MuchoVault.vaults.length;
 
     responseMV = {
       contract: v2AdminConfig.MuchoVault.contract,
       vaultsInfo: v2AdminConfig.MuchoVault.vaults.map((v, i) => {
-        const vInfo = getData(`getVaultInfo_${v}`);
-        const dToken: IToken = getERC20Token(vInfo.depositToken);
-        const mToken: IToken = getERC20Token(vInfo.muchoToken);
+        const vInfo = getDataString(data, `getVaultInfo_${v}`);
+        const dToken: IToken = getERC20Token(data, vInfo.depositToken);
+        const mToken: IToken = getERC20Token(data, vInfo.muchoToken);
         if (vInfo) {
           return {
             id: v,
@@ -146,17 +148,17 @@ export const useGetMuchoVaultV2Data = () => {
             withdrawFee: vInfo.withdrawFee / 100,
             maxCap: vInfo.maxCap / (10 ** dToken.decimals),
             maxDepositUser: vInfo.maxDepositUser / (10 ** dToken.decimals),
-            maxDepositPlans: v2AdminConfig.Plans.map(p => { return { planId: p, maxDeposit: getData(`getMaxDepositUserForPlan_${v}_${p}`) / (10 ** dToken.decimals) } }),
+            maxDepositPlans: v2AdminConfig.Plans.map(p => { return { planId: p, maxDeposit: getDataNumber(data, `getMaxDepositUserForPlan_${v}_${p}`) / (10 ** dToken.decimals) } }),
           }
         }
         return null;
       }),
       parametersInfo: {
-        swapFee: getData('bpSwapMuchoTokensFee') / 100,
-        swapFeePlans: v2AdminConfig.Plans.map(p => { return { planId: p, swapFee: getData(`bpSwapMuchoTokensFeeForBadgeHolder_${p}`).fee / 100 } }),
-        earningsAddress: getData('earningsAddress')
+        swapFee: getDataNumber(data, 'bpSwapMuchoTokensFee') / 100,
+        swapFeePlans: v2AdminConfig.Plans.map(p => { return { planId: p, swapFee: getDataNumber(data, `bpSwapMuchoTokensFeeForBadgeHolder_${p}`).fee / 100 } }),
+        earningsAddress: getDataNumber(data, 'earningsAddress')
       },
-      contractsInfo: { muchoHub: getData('muchoHub'), priceFeed: getData('priceFeed'), badgeManager: getData('badgeManager') },
+      contractsInfo: { muchoHub: getDataString(data, 'muchoHub'), priceFeed: getDataString(data, 'priceFeed'), badgeManager: getDataString(data, 'badgeManager') },
     };
 
   }

@@ -47,6 +47,7 @@ export interface IToken {
   contract: string;
   decimals: number;
   supply: number;
+  userBalance: number;
 }
 
 export interface IMuchoVaultParametersInfo {

@@ -1,17 +1,17 @@
 import { Skeleton } from '@mui/material';
 import { Display } from '@Views/Common/Tooltips/Display';
 import { TableAligner } from '@Views/Common/TableAligner';
-import { IMuchoVaultData, IMuchoVaultParametersInfo, IV2ContractData, IVaultInfo } from '../v2AdminAtom';
+import { IMuchoVaultData, IMuchoVaultParametersInfo, IVaultInfo } from '../v2AdminAtom';
 import { Card } from '../../Common/Card/Card';
-import { PlanAdminButtons, MuchoVaultAdminButtons } from './MuchoVaultAdminButtons';
 //import { BADGE_CONFIG } from '../Config/Plans';
 import { ViewContext } from '..';
 import { useContext } from 'react';
-import { MuchoVaultGeneralButtons, VaultButtons } from './MuchoVaultV2UserButtons';
-import { CheckBox } from '@mui/icons-material';
+import { VaultButtons } from './MuchoVaultV2UserButtons';
 import { contractLink } from '@Views/Common/Utils';
 import { BufferProgressBar } from '@Views/Common/BufferProgressBar.tsx';
 import { Divider } from '@Views/Common/Card/Divider';
+import { V2USER_CONFIG } from '../Config/v2UserConfig';
+import { Chain } from 'wagmi';
 export const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 export const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
 export const tooltipKeyClasses = '!text-f14 !text-2 !text-left !py-1 !pl-[0px]';
@@ -47,13 +47,14 @@ export const getMuchoVaultV2UserCards = (data: IMuchoVaultData) => {
     activeChain = viewContextValue.activeChain;
   }
 
-  const vaultsInfo = data.vaultsInfo.map((v, i) => <MuchoVaultInfoCard vaultId={i} vaultInfo={v} />);
+
+  const vaultsInfo = data.vaultsInfo.map((v, i) => <MuchoVaultInfoCard vaultId={i} vaultInfo={v} precision={V2USER_CONFIG[activeChain.id].MuchoVault.precision[i]} />);
 
   return vaultsInfo;
 };
 
 
-const MuchoVaultInfoCard = ({ vaultId, vaultInfo }: { vaultId: number, vaultInfo: IVaultInfo }) => {
+const MuchoVaultInfoCard = ({ vaultId, vaultInfo, precision }: { vaultId: number, vaultInfo: IVaultInfo, precision: number }) => {
   if (!vaultInfo) {
     return <Skeleton
       key={vaultId}
@@ -92,7 +93,7 @@ const MuchoVaultInfoCard = ({ vaultId, vaultInfo }: { vaultId: number, vaultInfo
         </>
       }
       middle={<>
-        <MuchoVaultInfo vaultInfo={vaultInfo} />
+        <MuchoVaultInfo vaultInfo={vaultInfo} precision={precision} />
       </>}
       bottom={
         <div className="mt-5">
@@ -103,7 +104,7 @@ const MuchoVaultInfoCard = ({ vaultId, vaultInfo }: { vaultId: number, vaultInfo
   );
 }
 
-const MuchoVaultInfo = ({ vaultInfo }: { vaultInfo: IVaultInfo }) => {
+const MuchoVaultInfo = ({ vaultInfo, precision }: { vaultInfo: IVaultInfo, precision: number }) => {
   //console.log("Plan:"); console.log(plan);
   //console.log("Enabled:"); console.log(enabledStr);
   const muchoToDepositExchange = Number(vaultInfo.muchoToken.supply) > 0 ? Number(vaultInfo.totalStaked / vaultInfo.muchoToken.supply) : 1;
@@ -112,7 +113,7 @@ const MuchoVaultInfo = ({ vaultInfo }: { vaultInfo: IVaultInfo }) => {
     <>
       <TableAligner
         keysName={
-          ['Recepit current price', 'Total Invested in Vault']
+          ['Receipt current price', 'Total Invested in Vault']
         }
         values={[
           <div className={`${wrapperClasses}`}>
@@ -136,7 +137,7 @@ const MuchoVaultInfo = ({ vaultInfo }: { vaultInfo: IVaultInfo }) => {
               className="!justify-end"
               data={vaultInfo.totalStaked}
               unit={vaultInfo.depositToken.name}
-              precision={2}
+              precision={precision}
             />
           </div>
           ,
@@ -165,7 +166,7 @@ const MuchoVaultInfo = ({ vaultInfo }: { vaultInfo: IVaultInfo }) => {
               className="!justify-end"
               data={vaultInfo.userData.muchoTokens * muchoToDepositExchange}
               unit={vaultInfo.depositToken.name}
-              precision={2}
+              precision={precision}
             />
           </div>,
           <div className={`${wrapperClasses}`}>
@@ -173,7 +174,7 @@ const MuchoVaultInfo = ({ vaultInfo }: { vaultInfo: IVaultInfo }) => {
               className="!justify-end"
               data={vaultInfo.userData.depositTokens}
               unit={vaultInfo.depositToken.name}
-              precision={2}
+              precision={precision}
             />
           </div>
           ,

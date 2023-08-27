@@ -11,7 +11,7 @@ import { ViewContext } from '..';
 import { useContext } from 'react';
 import { useUserAccount } from '@Hooks/useUserAccount';
 import { IMuchoHubData, IMuchoVaultData, IToken } from '../v2AdminAtom';
-import { getERC20Token } from './useCommonUtils';
+import { getDataNumber, getDataString, getERC20Token, getERC20TokenCalls } from './useCommonUtils';
 
 export const BASIS_POINTS_DIVISOR = '10000';
 export const SECONDS_PER_YEAR = '31536000';
@@ -34,6 +34,9 @@ export const useGetMuchoHubV2Data = () => {
   // const { state } = useGlobal();
   const v2AdminConfig: (typeof V2ADMIN_CONFIG)[42161] = V2ADMIN_CONFIG[activeChain.id];
 
+  let tokenCalls = [];
+  v2AdminConfig.TokenDictionary.forEach(t => tokenCalls = tokenCalls.concat(getERC20TokenCalls(t)));
+
   let calls = [
     {
       address: v2AdminConfig.MuchoHub.contract,
@@ -43,6 +46,18 @@ export const useGetMuchoHubV2Data = () => {
       map: 'protocols',
     },
   ];
+
+  calls = calls.concat(tokenCalls);
+
+  v2AdminConfig.ProtocolDictionary.forEach(p => calls.push(
+    {
+      address: p,
+      abi: MuchoProtocolGmxAbi,
+      functionName: 'protocolName',
+      chainId: activeChain?.id,
+      map: `protocolName_${p}`
+    }
+  ));
 
   v2AdminConfig.MuchoHub.tokens.forEach(t => {
     calls.concat([
@@ -96,31 +111,30 @@ export const useGetMuchoHubV2Data = () => {
   //console.log("Result contracts", data);
 
   let responseMH: IMuchoHubData;
-  const getData = (call: string) => { return data[indexes[call]] ? data[indexes[call]] : ""; }
   //return response;
 
   if (data && data[0]) {
     //console.log("DATA!!", data);
-    const protocolNames: IDic = getProtocolNameState(getData('protocols'));
+    data.indexes = indexes;
 
     responseMH = {
-      protocols: getData('protocols').map(p => {
-        return { name: protocolNames[p], address: p }
+      protocols: getDataString(data, 'protocols').map(p => {
+        return { name: getDataString(data, `protocolName_${p}`), address: p }
       }),
       contract: v2AdminConfig.MuchoHub.contract,
       tokensInfo: v2AdminConfig.MuchoHub.tokens.map(t => {
-        const tk: IToken = getERC20Token(t);
+        const tk: IToken = getERC20Token(data, t);
         return {
           token: tk,
-          totalStaked: getData(`getTotalStaked_${t}`) / (10 ** tk.decimals),
-          totalNotInvested: getData(`getTotalNotInvested_${t}`) / (10 ** tk.decimals),
-          defaultInvestment: getData(`getTokenDefaults_${t}`) ? getData(`getTokenDefaults_${t}`).map(d => {
+          totalStaked: getDataNumber(data, `getTotalStaked_${t}`) / (10 ** tk.decimals),
+          totalNotInvested: getDataNumber(data, `getTotalNotInvested_${t}`) / (10 ** tk.decimals),
+          defaultInvestment: getDataString(data, `getTokenDefaults_${t}`) ? getDataString(data, `getTokenDefaults_${t}`).map(d => {
             return {
               protocol: d.protocol,
               percentage: d.percentage / 100
             }
           }) : null,
-          currentInvestment: getData(`getCurrentInvestment_${t}`) ? getData(`getCurrentInvestment_${t}`).map(d => {
+          currentInvestment: getDataNumber(data, `getCurrentInvestment_${t}`) ? getDataNumber(data, `getCurrentInvestment_${t}`).map(d => {
             return {
               protocol: d.protocol,
               amount: d.amount / (10 ** tk.decimals)
@@ -136,55 +150,3 @@ export const useGetMuchoHubV2Data = () => {
 
   return responseMH ? responseMH : null;
 };
-
-const getProtocolNameState = (protocolAddress: string[]) => {
-  //console.log("getProtocolNameState", protocolAddress);
-  let activeChain: Chain | null = null;
-  const v2AdminContextValue = useContext(ViewContext);
-  if (v2AdminContextValue) {
-    activeChain = v2AdminContextValue.activeChain;
-  }
-  // const { state } = useGlobal();
-
-  const protocolInfoCalls = protocolAddress.map(p => {
-    return {
-      address: p,
-      abi: MuchoProtocolGmxAbi,
-      functionName: 'protocolName',
-      chainId: activeChain?.id,
-      map: `protocolName_${p}`
-    }
-  });
-
-  let indexes = {};
-  protocolInfoCalls.forEach((c, i) => { indexes[c.map] = i; });
-
-  //console.log("Calls", calls);
-  //console.log("indexes", indexes);
-
-  let ret: IDic[] = [];
-
-  let { data } = useContractReads({
-    contracts: protocolInfoCalls,
-    watch: false,
-  });
-  data = getBNtoStringCopy(data);
-  if (data) {
-    const getData = (call: string) => { return data[indexes[call]] ? data[indexes[call]] : ""; }
-    protocolAddress.forEach(p => {
-      ret[p] = getData(`protocolName_${p}`);
-    })
-  }
-  else {
-    const abc = "ABCDEFGHIJKLMNOPQRSTUV";
-    let i = 0;
-    protocolAddress.forEach(p => {
-      ret[p] = abc.substring(i, i + 1);
-      i++;
-    })
-  }
-
-  return ret;
-}
-
-interface IDic { [key: string]: string };

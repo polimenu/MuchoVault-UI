@@ -11,6 +11,8 @@ import { MuchoVaultGeneralButtons, VaultButtons } from './MuchoVaultV2AdminButto
 import { CheckBox } from '@mui/icons-material';
 import { MuchoHubGeneralButtons, MuchoHubTokenButtons } from './MuchoHubV2AdminButtons';
 import { contractLink } from '@Views/Common/Utils';
+import { Chain } from 'wagmi';
+import { V2ADMIN_CONFIG } from '../Config/v2AdminConfig';
 export const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 export const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
 export const tooltipKeyClasses = '!text-f14 !text-2 !text-left !py-1 !pl-[0px]';
@@ -46,7 +48,7 @@ export const getMuchoHubV2AdminCards = (data: IMuchoHubData) => {
     activeChain = viewContextValue.activeChain;
   }
 
-  const tokensInfo = data.tokensInfo.map((v, i) => <MuchoHubTokenInfoCard tokenInfo={v} />);
+  const tokensInfo = data.tokensInfo.map((v, i) => <MuchoHubTokenInfoCard tokenInfo={v} precision={V2ADMIN_CONFIG[activeChain.id].MuchoHub.precision[i]} />);
   const generalCard = <MuchoHubGeneralCard muchoHubData={data} />;
 
   return [generalCard, ...tokensInfo];
@@ -74,7 +76,7 @@ const MuchoHubGeneralCard = ({ muchoHubData }: { muchoHubData: IMuchoHubData }) 
   );
 }
 
-const MuchoHubTokenInfoCard = ({ tokenInfo }: { tokenInfo: IHubTokenInfo }) => {
+const MuchoHubTokenInfoCard = ({ tokenInfo, precision }: { tokenInfo: IHubTokenInfo, precision: number }) => {
   if (!tokenInfo) {
     return <Skeleton
       key=""
@@ -90,7 +92,7 @@ const MuchoHubTokenInfoCard = ({ tokenInfo }: { tokenInfo: IHubTokenInfo }) => {
         </>
       }
       middle={<>
-        <MuchoHubTokenInfo tokenInfo={tokenInfo} />
+        <MuchoHubTokenInfo tokenInfo={tokenInfo} precision={precision} />
       </>}
       bottom={
         <div className="mt-5">
@@ -101,7 +103,7 @@ const MuchoHubTokenInfoCard = ({ tokenInfo }: { tokenInfo: IHubTokenInfo }) => {
   );
 }
 
-const MuchoHubTokenInfo = ({ tokenInfo }: { tokenInfo: IHubTokenInfo }) => {
+const MuchoHubTokenInfo = ({ tokenInfo, precision }: { tokenInfo: IHubTokenInfo, precision: number }) => {
   //console.log("Plan:"); console.log(plan);
   //console.log("Enabled:"); console.log(enabledStr);
   return (
@@ -116,7 +118,7 @@ const MuchoHubTokenInfo = ({ tokenInfo }: { tokenInfo: IHubTokenInfo }) => {
               className="!justify-end"
               data={tokenInfo.totalStaked}
               unit={tokenInfo.token.name}
-              precision={2}
+              precision={precision}
             />
           </div>,
           <div className={`${wrapperClasses}`}>
@@ -124,7 +126,7 @@ const MuchoHubTokenInfo = ({ tokenInfo }: { tokenInfo: IHubTokenInfo }) => {
               className="!justify-end"
               data={tokenInfo.totalNotInvested}
               unit={tokenInfo.token.name}
-              precision={2}
+              precision={precision}
             />
           </div>,
           <div className={`${wrapperClasses}`}>

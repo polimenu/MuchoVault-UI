@@ -119,7 +119,7 @@ const Deposit = ({ tokenContract, max, head, unit, validations, call, precision,
 
   //console.log("Decimals:"); console.log(decimals);
   const allowance = useGetAllowance(tokenContract.contract, decimals, V2USER_CONFIG[activeChain.id]?.MuchoHub.contract, activeChain.id);
-  //console.log("Allowance:"); console.log(allowance);
+  //console.log("Allowance", allowance, V2USER_CONFIG[activeChain.id]?.MuchoHub.contract);
 
   const isApproved = gte(Number(allowance), val || '1');
 
