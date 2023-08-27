@@ -130,8 +130,12 @@ const MuchoHubTokenInfo = ({ tokenInfo, precision }: { tokenInfo: IHubTokenInfo,
             />
           </div>,
           <div className={`${wrapperClasses}`}>
+            {tokenInfo.currentInvestment && tokenInfo.currentInvestment.map(d => <li key={"cur_" + d.protocol.address}>{contractLink(d.protocol.address, d.protocol.name)}: {d.amount} {tokenInfo.token.name}</li>)}
           </div>,
           <div className={`${wrapperClasses}`}>
+            <ul>
+              {tokenInfo.defaultInvestment && tokenInfo.defaultInvestment.map(d => <li key={"def_" + d.protocol.address}>{contractLink(d.protocol.address, d.protocol.name)}: {d.percentage}%</li>)}
+            </ul>
           </div>,
         ]}
         keyStyle={keyClasses}

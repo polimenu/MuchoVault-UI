@@ -5,7 +5,7 @@ export const V2USER_CONFIG = {
       contract: "0xC598B8b0F6492068C9dE5f3737B922E0c7D5FF83",
       vaults: [0, 1, 2],
       precision: [2, 5, 6],
-      amountsForAprSimulation: [{ amount: 100, decimals: 6 }, { amount: 0.1, decimals: 18 }, { amount: 0.01, decimals: 12 }],
+      amountsForAprSimulation: [{ amount: 1, decimals: 6 }, { amount: 0.001, decimals: 18 }, { amount: 0.0001, decimals: 8 }],
     },
     MuchoHub: {
       contract: "0x7832fAb4F1d23754F89F30e5319146D16789c088",

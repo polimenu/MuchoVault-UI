@@ -57,11 +57,11 @@ export interface IHubTokenInfo {
   totalStaked: number;
   totalNotInvested: number;
   defaultInvestment: [{
-    protocol: string;
+    protocol: { name: string; address: string; };
     percentage: number;
   }];
   currentInvestment: [{
-    protocol: string;
+    protocol: { name: string; address: string; };
     amount: number;
   }]
 }

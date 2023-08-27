@@ -60,7 +60,7 @@ export const useGetMuchoHubV2Data = () => {
   ));
 
   v2AdminConfig.MuchoHub.tokens.forEach(t => {
-    calls.concat([
+    calls = calls.concat([
       {
         address: v2AdminConfig.MuchoHub.contract,
         abi: MuchoHubAbi,
@@ -128,15 +128,15 @@ export const useGetMuchoHubV2Data = () => {
           token: tk,
           totalStaked: getDataNumber(data, `getTotalStaked_${t}`) / (10 ** tk.decimals),
           totalNotInvested: getDataNumber(data, `getTotalNotInvested_${t}`) / (10 ** tk.decimals),
-          defaultInvestment: getDataString(data, `getTokenDefaults_${t}`) ? getDataString(data, `getTokenDefaults_${t}`).map(d => {
+          defaultInvestment: getDataNumber(data, `getTokenDefaults_${t}`) ? getDataNumber(data, `getTokenDefaults_${t}`).map(d => {
             return {
-              protocol: d.protocol,
+              protocol: { name: getDataString(data, `protocolName_${d.protocol}`), address: d.protocol },
               percentage: d.percentage / 100
             }
           }) : null,
-          currentInvestment: getDataNumber(data, `getCurrentInvestment_${t}`) ? getDataNumber(data, `getCurrentInvestment_${t}`).map(d => {
+          currentInvestment: getDataNumber(data, `getCurrentInvestment_${t}`) ? getDataNumber(data, `getCurrentInvestment_${t}`).parts.map(d => {
             return {
-              protocol: d.protocol,
+              protocol: { name: getDataString(data, `protocolName_${d.protocol}`), address: d.protocol },
               amount: d.amount / (10 ** tk.decimals)
             }
           }) : null,
@@ -146,7 +146,7 @@ export const useGetMuchoHubV2Data = () => {
 
   }
 
-  //console.log("Response RPC", response);
+  //console.log("Response RPC", responseMH);
 
   return responseMH ? responseMH : null;
 };

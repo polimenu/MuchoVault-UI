@@ -18,7 +18,7 @@ export const V2ADMIN_CONFIG = {
       contract: "0x570C2857CC624077070F7Bb1F10929aad658dA37",
     },
     MuchoProtocolGmx: {
-      contract: "0xeAd03ede0C8573840272D55daBB0E275499D0F3b",
+      contract: "0x4FC6610d53De49898905b180dF680c6373D60025",
       precision: [2, 5, 6],
       tokens: [
         "0xaf88d065e77c8cC2239327C5EDb3A432268e5831", //USDC
@@ -41,7 +41,7 @@ export const V2ADMIN_CONFIG = {
       "0x02e7CC683e2531741f15CC7D49C454201bF3db57", //mWBTC
     ],
     ProtocolDictionary: [
-      "0xeAd03ede0C8573840272D55daBB0E275499D0F3b"
+      "0x4FC6610d53De49898905b180dF680c6373D60025"
     ]
   },
 };

@@ -108,6 +108,9 @@ const MuchoVaultInfo = ({ vaultInfo, precision }: { vaultInfo: IVaultInfo, preci
   //console.log("Plan:"); console.log(plan);
   //console.log("Enabled:"); console.log(enabledStr);
   const muchoToDepositExchange = Number(vaultInfo.muchoToken.supply) > 0 ? Number(vaultInfo.totalStaked / vaultInfo.muchoToken.supply) : 1;
+  //console.log("muchoToDepositExchange", muchoToDepositExchange);
+  //console.log("vaultInfo.muchoToken.supply", vaultInfo.muchoToken.supply);
+  //console.log("vaultInfo.totalStaked", vaultInfo.totalStaked);
 
   return (
     <>

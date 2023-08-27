@@ -73,7 +73,7 @@ export const getERC20Token = (data: any, address: string) => {
         name: getDataString(data, `symbol_${address}`),
         contract: address,
         decimals: getDataNumber(data, `decimals_${address}`),
-        supply: getDataNumber(data, `totalSupply_${address}`),
+        supply: getDataNumber(data, `totalSupply_${address}`) / 10 ** getDataNumber(data, `decimals_${address}`),
         userBalance: getDataNumber(data, `balanceOf_${address}`),
     } as IToken
 }

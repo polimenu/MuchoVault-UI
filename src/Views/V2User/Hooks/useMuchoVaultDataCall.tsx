@@ -192,7 +192,7 @@ export const useGetMuchoVaultV2Data = () => {
 
 const getUserVaultData = (data: any, depositTokenContract: string, muchoTokenContract: string) => {
   return {
-    depositTokens: getDataNumber(data, `balanceOf_${depositTokenContract}`),
-    muchoTokens: getDataNumber(data, `balanceOf_${muchoTokenContract}`)
+    depositTokens: getDataNumber(data, `balanceOf_${depositTokenContract}`) / 10 ** getDataNumber(data, `decimals_${depositTokenContract}`),
+    muchoTokens: getDataNumber(data, `balanceOf_${muchoTokenContract}`) / 10 ** getDataNumber(data, `decimals_${muchoTokenContract}`),
   };
 }
