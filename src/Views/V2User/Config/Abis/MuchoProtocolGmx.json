@@ -1,5 +1,10 @@
 [
     {
+        "inputs": [],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
         "anonymous": false,
         "inputs": [
             {
@@ -837,6 +842,31 @@
     },
     {
         "inputs": [],
+        "name": "glpWeights",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "token",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "weight",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct MuchoProtocolGMX.TokenWeight[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
         "name": "glpWethMintFee",
         "outputs": [
             {
@@ -1399,13 +1429,6 @@
             }
         ],
         "name": "updateGlpApr",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "updateGlpWeights",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

@@ -149,7 +149,7 @@ const Deposit = ({ tokenContract, max, head, unit, validations, call, precision,
       />
       <div className="flex whitespace-nowrap mt-5">
         <BlueBtn
-          onClick={() => approve(toFixed(getPosInf(), 0), setApprovalState)}
+          onClick={() => approve(toFixed(val * (10 ** decimals), 0), setApprovalState)}
           className="mr-4 rounded"
           isDisabled={isApproved || state.txnLoading > 1}
           isLoading={state.txnLoading === 1 && approveState}

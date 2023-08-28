@@ -215,7 +215,7 @@ const MuchoVaultInfo = ({ vaultInfo, precision }: { vaultInfo: IVaultInfo, preci
               className="!justify-end"
               data={vaultInfo.maxDepositUser}
               unit={vaultInfo.depositToken.name}
-              precision={0}
+              precision={precision}
             />
           </div>,
         ]

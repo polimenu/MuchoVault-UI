@@ -37,7 +37,7 @@ export const useGetMuchoVaultV2Data = () => {
   v2UserConfig.TokenDictionary.forEach(t => { tokenCalls = tokenCalls.concat(getERC20TokenCalls(t)); });
   //console.log("tokenCalls", tokenCalls);
 
-  const vaultInfoCalls = v2UserConfig.MuchoVault.vaults.map(v => {
+  let vaultInfoCalls = v2UserConfig.MuchoVault.vaults.map(v => {
     return {
       address: v2UserConfig.MuchoVault.contract,
       abi: MuchoVaultAbi,
@@ -47,6 +47,17 @@ export const useGetMuchoVaultV2Data = () => {
       map: `getVaultInfo_${v}`
     }
   });
+
+  vaultInfoCalls = vaultInfoCalls.concat(v2UserConfig.MuchoVault.vaults.map(v => {
+    return {
+      address: v2UserConfig.MuchoVault.contract,
+      abi: MuchoVaultAbi,
+      functionName: 'vaultTotalStaked',
+      args: [v],
+      chainId: activeChain?.id,
+      map: `vaultTotalStaked_${v}`
+    }
+  }));
 
   const vaultUSDCalls = v2UserConfig.MuchoVault.vaults.map(v => {
     return {
@@ -162,7 +173,7 @@ export const useGetMuchoVaultV2Data = () => {
             muchoToken: mToken,
             decimals: dToken.decimals,
             expectedAPR: getDataNumber(data, `getExpectedAPR_${v}`) / 100,
-            totalStaked: vInfo.totalStaked / (10 ** dToken.decimals),
+            totalStaked: getDataNumber(data, `vaultTotalStaked_${v}`) / (10 ** dToken.decimals),
             totalUSDStaked: getDataNumber(data, `vaultTotalUSD_${v}`) / 10 ** 18,
             lastUpdate: new Date(vInfo.lastUpdate),
             stakable: vInfo.stakable,

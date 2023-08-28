@@ -35,7 +35,7 @@ export const useGetMuchoVaultV2Data = () => {
   let tokenCalls = [];
   v2AdminConfig.TokenDictionary.forEach(t => tokenCalls = tokenCalls.concat(getERC20TokenCalls(t)));
 
-  const vaultInfoCalls = v2AdminConfig.MuchoVault.vaults.map(v => {
+  let vaultInfoCalls = v2AdminConfig.MuchoVault.vaults.map(v => {
     return {
       address: v2AdminConfig.MuchoVault.contract,
       abi: MuchoVaultAbi,
@@ -45,6 +45,17 @@ export const useGetMuchoVaultV2Data = () => {
       map: `getVaultInfo_${v}`
     }
   });
+
+  vaultInfoCalls = vaultInfoCalls.concat(v2AdminConfig.MuchoVault.vaults.map(v => {
+    return {
+      address: v2AdminConfig.MuchoVault.contract,
+      abi: MuchoVaultAbi,
+      functionName: 'vaultTotalStaked',
+      args: [v],
+      chainId: activeChain?.id,
+      map: `vaultTotalStaked_${v}`
+    }
+  }));
 
   const muchoVaultParameterCalls = [
     {
@@ -141,7 +152,7 @@ export const useGetMuchoVaultV2Data = () => {
             depositToken: dToken,
             muchoToken: mToken,
             decimals: dToken.decimals,
-            totalStaked: vInfo.totalStaked / (10 ** dToken.decimals),
+            totalStaked: getDataNumber(data, `vaultTotalStaked_${v}`) / (10 ** dToken.decimals),
             lastUpdate: Date(vInfo.lastUpdate),
             stakable: vInfo.stakable,
             depositFee: vInfo.depositFee / 100,
@@ -163,7 +174,7 @@ export const useGetMuchoVaultV2Data = () => {
 
   }
 
-  //console.log("Response RPC", response);
+  //console.log("Response RPC", responseMV);
 
   return responseMV ? responseMV : null;
 };

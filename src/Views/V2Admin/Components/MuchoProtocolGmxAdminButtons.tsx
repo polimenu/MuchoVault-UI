@@ -56,7 +56,6 @@ export function MuchoGmxGeneralButtons({ data }: { data: IMuchoProtocolGmxData }
     <br></br>
     <br></br>
     <div className="flex gap-5">
-      {!data.manualModeWeights && getDirectButton("updateGlpWeights", "Update GLP Weights", [])}
       {getDirectButton("refreshInvestment", "Refresh Investment", [])}
       {getDirectButton("cycleRewards", "Cycle Rewards", [])}
     </div>

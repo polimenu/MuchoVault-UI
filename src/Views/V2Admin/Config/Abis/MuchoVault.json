@@ -729,16 +729,6 @@
                     },
                     {
                         "internalType": "uint256",
-                        "name": "totalStaked",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "stakedFromDeposits",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
                         "name": "lastUpdate",
                         "type": "uint256"
                     },
@@ -1293,45 +1283,6 @@
         "name": "swap",
         "outputs": [],
         "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "updateAllVaults",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint8",
-                "name": "_vaultId",
-                "type": "uint8"
-            }
-        ],
-        "name": "updateVault",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint8",
-                "name": "_vaultId",
-                "type": "uint8"
-            }
-        ],
-        "name": "vaultStakedFromDeposits",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
         "type": "function"
     },
     {
