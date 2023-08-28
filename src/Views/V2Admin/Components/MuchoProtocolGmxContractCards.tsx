@@ -193,7 +193,7 @@ const MuchoGmxParametersInfo = ({ info }: { info: IMuchoProtocolGmxData }) => {
 
         <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.glpApr} unit="%" precision={2} /></div>,
         <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.glpWethMintFee} unit="%" precision={2} /></div>,
-        <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.slippage} unit="%" precision={2} /></div>,
+        <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.slippage} unit="%" precision={3} /></div>,
 
         <div className={`${wrapperClasses}`}><Display className="!justify-end" data={contractLink(info.earningsAddress)} /></div>,
         <div className={`${wrapperClasses}`}><Display className="!justify-end" data={<input type="checkbox" readOnly checked={info.claimEsGmx} />} /></div>,

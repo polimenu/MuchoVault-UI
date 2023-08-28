@@ -115,7 +115,7 @@ export const useGetMuchoProtocolGmxData = () => {
 
       glpApr: getDataNumber(data, 'glpApr') / 100,
       glpWethMintFee: getDataNumber(data, 'glpWethMintFee') / 100,
-      slippage: getDataNumber(data, 'slippage') / 100,
+      slippage: getDataNumber(data, 'slippage') / 1000,
       earningsAddress: getDataString(data, 'earningsAddress'),
       claimEsGmx: Boolean(getDataString(data, 'claimEsGmx')),
 
