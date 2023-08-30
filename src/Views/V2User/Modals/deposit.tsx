@@ -9,11 +9,14 @@ import { getPosInf, gt, gte } from '@Utils/NumString/stringArithmatics';
 import { useGlobal } from '@Contexts/Global';
 import { useToast } from '@Contexts/Toast';
 import { ViewContext } from '..';
-import { erc20ABI } from 'wagmi';
+import { erc20ABI, useContractRead } from 'wagmi';
 import { IContract } from 'src/Interfaces/interfaces';
 import { useGetAllowance, useGetApprovalAmount } from '../../Common/Hooks/useAllowanceCall';
 import { IVaultInfo, v2ContractDataAtom } from '../v2AdminAtom';
 import { V2USER_CONFIG } from '../Config/v2UserConfig';
+import MuchoVaultAbi from '../Config/Abis/MuchoVault.json';
+import { getBNtoStringCopy } from '@Utils/useReadCall';
+import { BigNumber } from 'ethers';
 
 export const V2DepositModal = ({
   head
@@ -37,6 +40,7 @@ export const V2DepositModal = ({
     };
     return (
       <Deposit
+        vaultId={vaultInfo.id}
         head={head}
         max={maxToDeposit}
         unit={vaultInfo.depositToken.name}
@@ -56,14 +60,14 @@ export const V2DepositModal = ({
   }
 };
 
-const Common = ({ val, setVal, head, max, unit, deposit, precision }) => {
+const Common = ({ val, setVal, head, max, unit, deposit, precision, aprVal }) => {
   return (
     <div>
       <div className="text-f15 mb-5">{head}</div>
       <BufferInput
         header={
           <div className="flex flex-row justify-between w-full text-3 text-f14 mt-2">
-            <span>{deposit ? 'Deposit' : 'Withdraw'}</span>
+            <span>{deposit ? `Expected APR: ${aprVal}%` : 'Withdraw'}</span>
             <span className="flex flex-row items-center">
               Max:
               <Display data={max} unit={unit} precision={precision} />
@@ -104,9 +108,45 @@ const Common = ({ val, setVal, head, max, unit, deposit, precision }) => {
   );
 };
 
-const Deposit = ({ tokenContract, max, head, unit, validations, call, precision, decimals }) => {
+
+const useGetApr = (
+  vaultId: number,
+  additionalAmount: number,
+  decimals: number,
+) => {
+  const { activeChain } = useContext(ViewContext);
+  //console.log("apr decimals", decimals);
+  let bnVal: BigNumber;
+  try {
+    bnVal = additionalAmount > 0 ? BigNumber.from(10).pow(decimals).mul(Math.round(additionalAmount * 10 ** 6)).div(10 ** 6) : BigNumber.from(1);
+  } catch (e) {
+    bnVal = BigNumber.from("1000000000000000000000000000");
+  }
+  //console.log("apr bnVal", bnVal);
+  const call = {
+    address: V2USER_CONFIG[activeChain.id].MuchoVault.contract,
+    abi: MuchoVaultAbi,
+    functionName: 'getExpectedAPR',
+    args: [vaultId, bnVal],
+    chainId: activeChain.Id,
+    watch: true,
+  };
+
+  let { data } = useContractRead(call);
+
+  if (!data)
+    return "loading...";
+
+  [data] = getBNtoStringCopy([data]);
+
+  //console.log("useGetApr Data", data);
+
+  return data / 100;
+};
+
+const Deposit = ({ vaultId, tokenContract, max, head, unit, validations, call, precision, decimals }) => {
   //console.log("DEPOSIT CALL:"); console.log(call);
-  const [val, setVal] = useState('');
+  const [val, setVal] = useState(0);
   const { activeChain } = useContext(ViewContext);
   const { approve } = useGetApprovalAmount(
     tokenContract?.abi,
@@ -116,6 +156,7 @@ const Deposit = ({ tokenContract, max, head, unit, validations, call, precision,
   const toastify = useToast();
   const [approveState, setApprovalState] = useState(false);
   const { state } = useGlobal();
+  const apr = useGetApr(vaultId, val, decimals);
 
   //console.log("Decimals:"); console.log(decimals);
   const allowance = useGetAllowance(tokenContract.contract, decimals, V2USER_CONFIG[activeChain.id]?.MuchoHub.contract, activeChain.id);
@@ -146,6 +187,7 @@ const Deposit = ({ tokenContract, max, head, unit, validations, call, precision,
         val={val}
         setVal={setVal}
         precision={precision}
+        aprVal={apr}
       />
       <div className="flex whitespace-nowrap mt-5">
         <BlueBtn
