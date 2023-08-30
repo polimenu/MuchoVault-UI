@@ -146,7 +146,7 @@ const useGetApr = (
 
 const Deposit = ({ vaultId, tokenContract, max, head, unit, validations, call, precision, decimals }) => {
   //console.log("DEPOSIT CALL:"); console.log(call);
-  const [val, setVal] = useState(0);
+  const [val, setVal] = useState('');
   const { activeChain } = useContext(ViewContext);
   const { approve } = useGetApprovalAmount(
     tokenContract?.abi,
