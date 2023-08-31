@@ -62,7 +62,7 @@ export const MuchoVaultV2UserPage = () => {
 
   return (
     <Styles>
-      <V2AdminModals />
+      <V2AdminModals data={data} />
       <Section
         Heading={<div className={topStyles}><MuchoWhite width={120} /> &nbsp;MuchoVault V2</div>}
         Cards={getMuchoVaultV2UserCards(data ? data : null)}

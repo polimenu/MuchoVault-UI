@@ -35,6 +35,7 @@ export const useGetMuchoVaultV2Data = () => {
 
   let tokenCalls = [];
   v2UserConfig.TokenDictionary.forEach(t => { tokenCalls = tokenCalls.concat(getERC20TokenCalls(t)); });
+  const { address: account } = useUserAccount();
   //console.log("tokenCalls", tokenCalls);
 
   let vaultInfoCalls = v2UserConfig.MuchoVault.vaults.map(v => {
@@ -110,6 +111,14 @@ export const useGetMuchoVaultV2Data = () => {
       functionName: 'badgeManager',
       chainId: activeChain?.id,
       map: 'badgeManager'
+    },
+    {
+      address: v2UserConfig.MuchoVault.contract,
+      abi: MuchoVaultAbi,
+      functionName: 'getSwapFee',
+      args: [account],
+      chainId: activeChain?.id,
+      map: `getSwapFee_${account}`
     },
   ]
 
@@ -190,6 +199,7 @@ export const useGetMuchoVaultV2Data = () => {
       parametersInfo: {
         swapFee: getDataNumber(data, 'bpSwapMuchoTokensFee') / 100,
         swapFeePlans: v2UserConfig.Plans.map(p => { return { planId: p, swapFee: getDataNumber(data, `bpSwapMuchoTokensFeeForBadgeHolder_${p}`).fee / 100 } }),
+        userSwapFee: getDataNumber(data, `getSwapFee_${account}`) / 100,
       },
       contractsInfo: { muchoHub: getDataString(data, 'muchoHub'), priceFeed: getDataString(data, 'priceFeed'), badgeManager: getDataString(data, 'badgeManager') },
     };

@@ -48,13 +48,13 @@ export const getMuchoVaultV2UserCards = (data: IMuchoVaultData) => {
   }
 
 
-  const vaultsInfo = data.vaultsInfo.map((v, i) => <MuchoVaultInfoCard vaultId={i} vaultInfo={v} precision={V2USER_CONFIG[activeChain.id].MuchoVault.precision[i]} />);
+  const vaultsInfo = data.vaultsInfo.map((v, i) => <MuchoVaultInfoCard vaultId={i} vaultInfo={v} precision={V2USER_CONFIG[activeChain.id].MuchoVault.precision[i]} data={data} />);
 
   return vaultsInfo;
 };
 
 
-const MuchoVaultInfoCard = ({ vaultId, vaultInfo, precision }: { vaultId: number, vaultInfo: IVaultInfo, precision: number }) => {
+const MuchoVaultInfoCard = ({ vaultId, vaultInfo, precision, data }: { vaultId: number, vaultInfo: IVaultInfo, precision: number, data: IMuchoVaultData }) => {
   if (!vaultInfo) {
     return <Skeleton
       key={vaultId}
@@ -97,7 +97,7 @@ const MuchoVaultInfoCard = ({ vaultId, vaultInfo, precision }: { vaultId: number
       </>}
       bottom={
         <div className="mt-5">
-          <VaultButtons data={vaultInfo} />
+          <VaultButtons data={vaultInfo} muchoVaultData={data} />
         </div>
       }
     />
@@ -224,43 +224,5 @@ const MuchoVaultInfo = ({ vaultInfo, precision }: { vaultInfo: IVaultInfo, preci
         valueStyle={valueClasses}
       />
     </>
-  );
-};
-
-
-const MuchoVaultParametersInfo = ({ info }: { info: IMuchoVaultParametersInfo }) => {
-  //console.log("Plan:"); console.log(plan);
-  //console.log("Enabled:"); console.log(enabledStr);
-  return (
-    <TableAligner
-      keysName={['Earnings Address', 'Swap fee'].concat(info.swapFeePlans.map(sfp => { return `Plan ${sfp.planId} - Swap fee` }))}
-      values={[
-        <div className={`${wrapperClasses}`}>
-          <Display
-            className="!justify-end"
-            data={contractLink(info.earningsAddress)}
-          />
-        </div>,
-        <div className={`${wrapperClasses}`}>
-          <Display
-            className="!justify-end"
-            data={info.swapFee}
-            unit={"%"}
-            precision={2}
-          />
-        </div>,
-      ].concat(info.swapFeePlans.map(sfp => {
-        return <div className={`${wrapperClasses}`}>
-          <Display
-            className="!justify-end"
-            data={sfp.swapFee}
-            unit={"%"}
-            precision={2}
-          />
-        </div>
-      }))}
-      keyStyle={keyClasses}
-      valueStyle={valueClasses}
-    />
   );
 };

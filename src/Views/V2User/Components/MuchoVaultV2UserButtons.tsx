@@ -15,13 +15,13 @@ import { ethers } from 'ethers';
 export const btnClasses = '!w-fit px-4 rounded-sm !h-7';
 
 
-const getModalButton = (caption: string, vaultInfo: IVaultInfo, deposit: boolean) => {
+const getModalButton = (caption: string, vaultInfo: IVaultInfo, deposit: boolean, swap: boolean, destVaultId: number) => {
   const [state, setPageState] = useAtom(v2ContractDataAtom);
   const key: string = caption + "_" + vaultInfo.id;
   return <BlueBtn
     key={key}
     onClick={() =>
-      setPageState({ ...state, activeModal: { title: caption, vaultInfo: vaultInfo, deposit: deposit }, isModalOpen: true })
+      setPageState({ ...state, activeModal: { title: caption, vaultInfo: vaultInfo, deposit: deposit, swap: swap, destVaultId: destVaultId }, isModalOpen: true })
     }
     className={btnClasses}
   >
@@ -30,7 +30,7 @@ const getModalButton = (caption: string, vaultInfo: IVaultInfo, deposit: boolean
 }
 
 
-export function VaultButtons({ data }: { data: IVaultInfo }) {
+export function VaultButtons({ data, muchoVaultData }: { data: IVaultInfo, muchoVaultData: IMuchoVaultData }) {
   const { address: account } = useUserAccount();
   const [state, setPageState] = useAtom(v2ContractDataAtom);
   const { activeChain } = useContext(ViewContext);
@@ -51,8 +51,11 @@ export function VaultButtons({ data }: { data: IVaultInfo }) {
 
   return (<>
     <div className="flex gap-5">
-      {data.userData.depositTokens > 0 && getModalButton("Deposit", data, true)}
-      {data.userData.muchoTokens > 0 && getModalButton("Withdraw", data, false)}
+      {data.userData.depositTokens > 0 && getModalButton("Deposit", data, true, false, 0)}
+      {data.userData.muchoTokens > 0 && getModalButton("Withdraw", data, false, false, 0)}
+      {data.userData.muchoTokens > 0 &&
+        muchoVaultData.vaultsInfo.filter(v => v.id != data.id).map(v => getModalButton(`Swap to ${v.depositToken.name}`, data, false, true, v.id))
+      }
     </div>
   </>
   );

@@ -8,6 +8,7 @@ import { useContext } from 'react';
 import { ViewContext } from '..';
 import { V2USER_CONFIG } from '../Config/v2UserConfig';
 import { v2ContractDataAtom } from '../v2AdminAtom';
+import { IVaultInfo } from '../v2AdminAtom';
 
 
 
@@ -48,9 +49,17 @@ export const useVaultInteractionCalls = (vaultId: number, decimals: number) => {
     writeCall(callBack, "withdraw", [vaultId, toFixed(multiply(amount, decimals), 0)]);
   }
 
+  function swapCall(amount: string, destVaultInfo: IVaultInfo, amountDestExpected: string, slippage: number) {
+    if (validations(amount)) return;
+    const args = [vaultId, toFixed(multiply(amount, decimals), 0), destVaultInfo.id, toFixed(multiply(amountDestExpected, destVaultInfo.muchoToken.decimals), 0), slippage * 10000];
+    console.log("swap args", args);
+    writeCall(callBack, "swap", args);
+  }
+
   return {
     validations,
     depositCall,
-    withdrawCall
+    withdrawCall,
+    swapCall
   };
 };

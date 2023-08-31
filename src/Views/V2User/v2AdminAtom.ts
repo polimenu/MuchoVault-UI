@@ -4,6 +4,8 @@ export interface IActiveModal {
   title: string;
   vaultInfo: IVaultInfo;
   deposit: boolean;
+  swap: boolean;
+  destVaultId: number;
 }
 
 export interface IV2UserAtom {
@@ -53,6 +55,7 @@ export interface IToken {
 export interface IMuchoVaultParametersInfo {
   swapFee: number;
   swapFeePlans: [{ planId: number, swapFee: number }];
+  userSwapFee: number;
 }
 
 export interface IMuchoVaultContracts {
