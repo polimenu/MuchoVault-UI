@@ -198,8 +198,8 @@ const useGetDestinationExpectedAmount = (vaultInfo: IVaultInfo, mTokenSourceAmou
   if (!data)
     return "Loading...";
 
-  console.log("useGetDestinationExpectedAmount call", call);
-  console.log("useGetDestinationExpectedAmount data", data);
+  //console.log("useGetDestinationExpectedAmount call", call);
+  //console.log("useGetDestinationExpectedAmount data", data);
 
   if (mTokenSourceAmount == 0)
     return "0";
