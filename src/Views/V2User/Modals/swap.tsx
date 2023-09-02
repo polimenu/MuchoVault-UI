@@ -54,7 +54,7 @@ export const V2SwapModal = ({
 
   const clickHandler = () => {
     if (destVaultInfo)
-      return swapCall(val / sourceMTokenExchange, destVaultInfo, destExpectedAmount * destMTokenExchange, slippage);
+      return swapCall(Number(val) / sourceMTokenExchange, destVaultInfo, Number(destExpectedAmount) / destMTokenExchange, slippage);
 
     return false;
   };
@@ -198,7 +198,8 @@ const useGetDestinationExpectedAmount = (vaultInfo: IVaultInfo, mTokenSourceAmou
   if (!data)
     return "Loading...";
 
-  //console.log("useGetDestinationExpectedAmount data", data);
+  console.log("useGetDestinationExpectedAmount call", call);
+  console.log("useGetDestinationExpectedAmount data", data);
 
   if (mTokenSourceAmount == 0)
     return "0";
@@ -207,5 +208,5 @@ const useGetDestinationExpectedAmount = (vaultInfo: IVaultInfo, mTokenSourceAmou
 
   const destMTokenExchange = destVaultInfo.totalStaked / destVaultInfo.muchoToken.supply
 
-  return toFixed((data / 10 ** destVaultInfo.muchoToken.decimals) / destMTokenExchange, 6);
+  return toFixed((data / 10 ** destVaultInfo.muchoToken.decimals) * destMTokenExchange, 6);
 }
