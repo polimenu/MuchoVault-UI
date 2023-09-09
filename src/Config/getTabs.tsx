@@ -118,10 +118,16 @@ export const TabIcon = {
 export const getTabs = () => {
   let tabs = [
     {
-      to: `/earn`,
+      to: `/`,
       name: 'Vaults',
       subTabs: [],
       isExternalLink: false,
+    },
+    {
+      to: 'https://docs.mucho.finance/',
+      name: 'Docs',
+      subTabs: [],
+      isExternalLink: true,
     }/*,
     {
       to: `/badge`,

@@ -39,7 +39,7 @@ export enum V2AdminContract {
 export const V2UserPage = ({ pageType }: { pageType: V2AdminContract }) => {
   const { activeChain } = useActiveChain();
   useEffect(() => {
-    document.title = "Mucho.finance | V2 Vaults";
+    document.title = "(mucho) finance | V2 Vaults";
   }, []);
   return (
     <ArbitrumOnly>

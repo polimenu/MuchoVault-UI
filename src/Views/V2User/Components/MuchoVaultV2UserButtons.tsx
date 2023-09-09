@@ -53,9 +53,9 @@ export function VaultButtons({ data, muchoVaultData }: { data: IVaultInfo, mucho
     <div className="flex gap-5">
       {data.userData.depositTokens > 0 && getModalButton("Deposit", data, true, false, 0)}
       {data.userData.muchoTokens > 0 && getModalButton("Withdraw", data, false, false, 0)}
-      {data.userData.muchoTokens > 0 &&
+      {/*data.userData.muchoTokens > 0 &&
         muchoVaultData.vaultsInfo.filter(v => v.id != data.id).map(v => getModalButton(`Swap to ${v.depositToken.name}`, data, false, true, v.id))
-      }
+      */}
     </div>
   </>
   );

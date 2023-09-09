@@ -34,7 +34,7 @@ const EarnContextProvider = EarnContext.Provider;
 export const Earn = () => {
   const { activeChain } = useActiveChain();
   useEffect(() => {
-    document.title = 'Mucho.finance | (mucho) Vaults';
+    document.title = '(mucho) finance | (mucho) Vaults';
   }, []);
   return (
     <ArbitrumOnly>
