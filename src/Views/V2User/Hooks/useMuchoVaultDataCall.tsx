@@ -1,5 +1,7 @@
 import MuchoVaultAbi from '../Config/Abis/MuchoVault.json';
-import ERC20Abi from '../Config/Abis/ERC20Ext.json';
+import MuchoBadgeManagerAbi from '../Config/Abis/MuchoBadgeManager.json';
+import MuchoRewardRouterAbi from '../Config/Abis/MuchoRewardRouter.json';
+import MuchoHubAbi from '../Config/Abis/MuchoHub.json';
 import { V2USER_CONFIG } from '../Config/v2UserConfig';
 import { getBNtoStringCopy } from '@Utils/useReadCall';
 import {
@@ -12,7 +14,6 @@ import { useContext } from 'react';
 import { useUserAccount } from '@Hooks/useUserAccount';
 import { IMuchoVaultData, IToken } from '../v2AdminAtom';
 import { getDataNumber, getDataString, getERC20Token, getERC20TokenCalls } from './useCommonUtils';
-import { IVaultInfo } from '@Views/V2Admin/v2AdminAtom';
 
 export const BASIS_POINTS_DIVISOR = '10000';
 export const SECONDS_PER_YEAR = '31536000';
@@ -143,10 +144,51 @@ export const useGetMuchoVaultV2Data = () => {
         map: `getMaxDepositUserForPlan_${v}_${p}`,
       });
     })
-  })
+  });
+
+  const badgeDataCalls = [
+    {
+      address: v2UserConfig.MuchoBadgeManager.contract,
+      abi: MuchoBadgeManagerAbi,
+      functionName: 'allPlans',
+      chainId: activeChain?.id,
+      map: 'allPlans'
+    },
+    {
+      address: v2UserConfig.MuchoHub.contract,
+      abi: MuchoHubAbi,
+      functionName: 'getExpectedNFTAnnualYield',
+      chainId: activeChain?.id,
+      map: 'getExpectedNFTAnnualYield'
+    },
+    {
+      address: v2UserConfig.MuchoRewardRouter.contract,
+      abi: MuchoRewardRouterAbi,
+      functionName: 'getUserMultiplierAndPlan',
+      args: [account],
+      chainId: activeChain?.id,
+      map: `getUserMultiplierAndPlan_${account}`
+    },
+    {
+      address: v2UserConfig.MuchoRewardRouter.contract,
+      abi: MuchoRewardRouterAbi,
+      functionName: 'rewards',
+      args: [account, v2UserConfig.MuchoRewardRouter.rewardsToken],
+      chainId: activeChain?.id,
+      map: `rewards_${account}_${v2UserConfig.MuchoRewardRouter.rewardsToken}`
+    },
+    {
+      address: v2UserConfig.MuchoRewardRouter.contract,
+      abi: MuchoRewardRouterAbi,
+      functionName: 'getTotalPonderatedInvestment',
+      chainId: activeChain?.id,
+      map: 'getTotalPonderatedInvestment'
+    },
+
+  ]
 
 
-  const calls = [...tokenCalls, ...vaultInfoCalls, ...vaultUSDCalls, ...vaultAPRCalls, ...muchoVaultParameterCalls, ...planCalls];
+  const calls = [...tokenCalls, ...vaultInfoCalls, ...vaultUSDCalls, ...vaultAPRCalls, ...muchoVaultParameterCalls, ...planCalls, ...badgeDataCalls];
   let indexes: any = {};
   calls.forEach((c, i) => { indexes[c.map] = i; });
 
@@ -167,6 +209,8 @@ export const useGetMuchoVaultV2Data = () => {
   if (data && data[0]) {
     //console.log("DATA!!", data);
     data.indexes = indexes;
+
+
 
     responseMV = {
       contract: v2UserConfig.MuchoVault.contract,
@@ -202,6 +246,11 @@ export const useGetMuchoVaultV2Data = () => {
         userSwapFee: getDataNumber(data, `getSwapFee_${account}`) / 100,
       },
       contractsInfo: { muchoHub: getDataString(data, 'muchoHub'), priceFeed: getDataString(data, 'priceFeed'), badgeManager: getDataString(data, 'badgeManager') },
+      badgeInfo: {
+        annualEarningExpected: getDataNumber(data, 'getExpectedNFTAnnualYield'),
+        totalPonderatedInvestment: getDataNumber(data, 'getTotalPonderatedInvestment'),
+        userBadgeData: getUserBadgeData(data, account),
+      }
     };
 
   }
@@ -210,6 +259,37 @@ export const useGetMuchoVaultV2Data = () => {
 
   return responseMV ? responseMV : null;
 };
+
+const getUserBadgeData = (data: any, account: string) => {
+  let activeChain: Chain | null = null;
+  const v2AdminContextValue = useContext(ViewContext);
+  if (v2AdminContextValue) {
+    activeChain = v2AdminContextValue.activeChain;
+  }
+  const usrMulPlan = getDataNumber(data, `getUserMultiplierAndPlan_${account}`);
+  const v2UserConfig: (typeof V2USER_CONFIG)[42161] = V2USER_CONFIG[activeChain.id];
+  if (!usrMulPlan) {
+    return {
+      planId: 0, planName: "No active subscription", planMultiplier: 0,
+      currentRewards: {
+        amount: 0,
+        token: "",
+      }
+    };
+  }
+
+  const [multiplier, planId] = usrMulPlan;
+
+  return {
+    planId: planId,
+    planName: getDataString(data, 'allPlans').find(p => p.planId = planId).name,
+    planMultiplier: multiplier,
+    currentRewards: {
+      amount: getDataNumber(data, `rewards_${account}_${v2UserConfig.MuchoRewardRouter.rewardsToken}`),
+      token: getERC20Token(data, v2UserConfig.MuchoRewardRouter.rewardsToken),
+    }
+  }
+}
 
 const getUserVaultData = (data: any, depositTokenContract: string, muchoTokenContract: string) => {
   return {

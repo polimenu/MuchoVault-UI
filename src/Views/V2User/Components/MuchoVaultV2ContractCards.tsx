@@ -12,6 +12,7 @@ import { BufferProgressBar } from '@Views/Common/BufferProgressBar.tsx';
 import { Divider } from '@Views/Common/Card/Divider';
 import { V2USER_CONFIG } from '../Config/v2UserConfig';
 import { Chain } from 'wagmi';
+import { NFTButtons } from './NFTButtons';
 export const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 export const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
 export const tooltipKeyClasses = '!text-f14 !text-2 !text-left !py-1 !pl-[0px]';
@@ -49,8 +50,9 @@ export const getMuchoVaultV2UserCards = (data: IMuchoVaultData) => {
 
 
   const vaultsInfo = data.vaultsInfo.map((v, i) => <MuchoVaultInfoCard vaultId={i} vaultInfo={v} precision={V2USER_CONFIG[activeChain.id].MuchoVault.precision[i]} data={data} />);
+  const nftInfo = <NFTInfoCard data={data} />;
 
-  return vaultsInfo;
+  return [...vaultsInfo, nftInfo];
 };
 
 
@@ -223,6 +225,136 @@ const MuchoVaultInfo = ({ vaultInfo, precision }: { vaultInfo: IVaultInfo, preci
         keyStyle={keyClasses}
         valueStyle={valueClasses}
       />
+    </>
+  );
+};
+
+
+
+
+const NFTInfoCard = ({ data }: { data: IMuchoVaultData }) => {
+  if (!data) {
+    return <Skeleton
+      key="NFTData"
+      variant="rectangular"
+      className="w-full !h-full min-h-[370px] !transform-none !bg-1"
+    />
+  }
+  return (
+    <Card
+      top={
+        <>
+          <span className={underLineClass}>(mucho) NFT Bonus</span>
+          <div className="text-f12 text-3  mt-2">
+            Become a protocol "partner" and earn profit from total TVL by owning one of our NFT's
+          </div>
+        </>
+      }
+      middle={<>
+        <NFTInfo data={data} />
+      </>}
+      bottom={
+        <div className="mt-5">
+          <NFTButtons data={data} />
+        </div>
+      }
+    />
+  );
+}
+
+const NFTInfo = ({ data }: { data: IMuchoVaultData }) => {
+  //console.log("Plan:"); console.log(plan);
+  //console.log("Enabled:"); console.log(enabledStr);
+  //console.log("muchoToDepositExchange", muchoToDepositExchange);
+  //console.log("vaultInfo.muchoToken.supply", vaultInfo.muchoToken.supply);
+  //console.log("vaultInfo.totalStaked", vaultInfo.totalStaked);
+  let totalUserInvested = 0;
+  data.vaultsInfo.forEach(v => totalUserInvested += v.userData.muchoTokens * v.totalUSDStaked / v.muchoToken.supply);
+
+  const nftApr = data.badgeInfo.totalPonderatedInvestment > 0 ? data.badgeInfo.annualEarningExpected * data.badgeInfo.userBadgeData.planMultiplier / data.badgeInfo.totalPonderatedInvestment : 0;
+  //console.log("Data badge", data);
+
+  return (
+    <>
+      <TableAligner
+        keysName={
+          ['Annual Expected Yield for NFT Holders']
+        }
+        values={[
+          <div className={`${wrapperClasses}`}>
+            <Display
+              className="!justify-end"
+              data={data.badgeInfo.annualEarningExpected}
+              unit="$"
+              precision={2}
+            />
+          </div>,
+        ]
+        }
+        keyStyle={keyClasses}
+        valueStyle={valueClasses}
+      />
+      <Divider />
+
+      <TableAligner
+        keysName={
+          ['Subscription plan', 'Plan Multiplier', 'Your Total Investment']
+        }
+        values={[
+          <div className={`${wrapperClasses}`}>
+            <Display
+              className="!justify-end"
+              data={data.badgeInfo.userBadgeData.planName}
+            />
+          </div>,
+          <div className={`${wrapperClasses}`}>
+            <Display
+              className="!justify-end"
+              data={data.badgeInfo.userBadgeData.planMultiplier}
+              unit="x"
+            />
+          </div>,
+          <div className={`${wrapperClasses}`}>
+            <Display
+              className="!justify-end"
+              data={totalUserInvested}
+              unit="$"
+            />
+          </div>,
+
+        ]
+        }
+        keyStyle={keyClasses}
+        valueStyle={valueClasses}
+      />
+      <Divider />
+
+      <TableAligner
+        keysName={
+          ['Your NFT APR', 'Accumulated Rewards']
+        }
+        values={[
+          <div className={`${wrapperClasses}`}>
+            <Display
+              className="!justify-end"
+              data={nftApr}
+              unit="%"
+            />
+          </div>,
+          <div className={`${wrapperClasses}`}>
+            <Display
+              className="!justify-end"
+              data={data.badgeInfo.userBadgeData.currentRewards.amount}
+              unit={data.badgeInfo.userBadgeData.currentRewards.token.name}
+            />
+          </div>,
+
+        ]
+        }
+        keyStyle={keyClasses}
+        valueStyle={valueClasses}
+      />
+
     </>
   );
 };

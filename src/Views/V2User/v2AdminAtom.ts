@@ -18,6 +18,21 @@ export interface IMuchoVaultData {
   vaultsInfo: IVaultInfo[];
   parametersInfo: IMuchoVaultParametersInfo;
   contractsInfo: IMuchoVaultContractsInfo;
+  badgeInfo: IBadgeInfo;
+}
+
+export interface IBadgeInfo {
+  annualEarningExpected: number;
+  totalPonderatedInvestment: number;
+  userBadgeData: {
+    planId: number;
+    planName: string;
+    planMultiplier: number;
+    currentRewards: {
+      amount: number,
+      token: IToken,
+    }
+  }
 }
 
 export interface IMuchoVaultContractsInfo {
