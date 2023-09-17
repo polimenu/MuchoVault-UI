@@ -37,13 +37,13 @@ export function MuchoVaultGeneralButtons({ data }: { data: IMuchoVaultData }) {
     <br></br>
     <div className="flex gap-2">
       {getDirectButton("setOpenAllVault", "Close All Vaults", [false])}
-      {getModalButton("setSwapMuchoTokensFee", "Swap Fee", [], data.parametersInfo.swapFee, numberValidation(0, 10, 2), "%")}
+      {/*getModalButton("setSwapMuchoTokensFee", "Swap Fee", [], data.parametersInfo.swapFee, numberValidation(0, 10, 2), "%")*/}
     </div>
     <br></br>
     <div className="flex gap-5">
-      {data.parametersInfo.swapFeePlans.map(sfp => {
+      {/*data.parametersInfo.swapFeePlans.map(sfp => {
         return getModalButton("setSwapMuchoTokensFeeForPlan", `Plan ${sfp.planId} - Swap Fee`, [sfp.planId], sfp.swapFee, numberValidation(0, 10, 2), "%")
-      })}
+      })*/}
     </div>
   </>
   );

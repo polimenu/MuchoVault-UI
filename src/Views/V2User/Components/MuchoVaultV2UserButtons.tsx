@@ -6,17 +6,11 @@ import { useNetwork } from 'wagmi';
 import { ConnectionRequired } from '@Views/Common/Navbar/AccountDropdown';
 import { IMuchoVaultData, IVaultInfo, v2ContractDataAtom, writeV2AdminData } from '../v2AdminAtom';
 import { ViewContext } from '..';
-import { useWriteCall } from '@Hooks/useWriteCall';
-import { V2USER_CONFIG } from '../Config/v2UserConfig';
-import MuchoVaultABI from '../Config/Abis/MuchoVault.json';
-import { useToast } from '@Contexts/Toast';
-import { ethers } from 'ethers';
 
 export const btnClasses = '!w-fit px-4 rounded-sm !h-7';
 
 
-const getModalButton = (caption: string, vaultInfo: IVaultInfo, deposit: boolean, swap: boolean, destVaultId: number) => {
-  const [state, setPageState] = useAtom(v2ContractDataAtom);
+const getModalButton = (caption: string, vaultInfo: IVaultInfo, deposit: boolean, swap: boolean, destVaultId: number, state, setPageState) => {
   const key: string = caption + "_" + vaultInfo.id;
   return <BlueBtn
     key={key}
@@ -47,15 +41,10 @@ export function VaultButtons({ data, muchoVaultData }: { data: IVaultInfo, mucho
 
   //console.log("Max Cap", id, data.maxCap);
 
-  const id = data.id;
-
   return (<>
     <div className="flex gap-5">
-      {data.userData.depositTokens > 0 && getModalButton("Deposit", data, true, false, 0)}
-      {data.userData.muchoTokens > 0 && getModalButton("Withdraw", data, false, false, 0)}
-      {/*data.userData.muchoTokens > 0 &&
-        muchoVaultData.vaultsInfo.filter(v => v.id != data.id).map(v => getModalButton(`Swap to ${v.depositToken.name}`, data, false, true, v.id))
-      */}
+      {data.userData.depositTokens > 0 && getModalButton("Deposit", data, true, false, 0, state, setPageState)}
+      {data.userData.muchoTokens > 0 && getModalButton("Withdraw", data, false, false, 0, state, setPageState)}
     </div>
   </>
   );

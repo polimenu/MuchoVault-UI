@@ -58,13 +58,13 @@ export const useGetMuchoVaultV2Data = () => {
   }));
 
   const muchoVaultParameterCalls = [
-    {
+    /*{
       address: v2AdminConfig.MuchoVault.contract,
       abi: MuchoVaultAbi,
       functionName: 'bpSwapMuchoTokensFee',
       chainId: activeChain?.id,
       map: 'bpSwapMuchoTokensFee'
-    },
+    },*/
     {
       address: v2AdminConfig.MuchoVault.contract,
       abi: MuchoVaultAbi,
@@ -97,14 +97,14 @@ export const useGetMuchoVaultV2Data = () => {
 
   let planCalls = [];
   v2AdminConfig.Plans.forEach(p => {
-    planCalls.push({
+    /*planCalls.push({
       address: v2AdminConfig.MuchoVault.contract,
       abi: MuchoVaultAbi,
       functionName: 'bpSwapMuchoTokensFeeForBadgeHolders',
       chainId: activeChain?.id,
       args: [p],
       map: `bpSwapMuchoTokensFeeForBadgeHolder_${p}`,
-    });
+    });*/
 
     v2AdminConfig.MuchoVault.vaults.forEach(v => {
       planCalls.push({
@@ -165,8 +165,8 @@ export const useGetMuchoVaultV2Data = () => {
         return null;
       }),
       parametersInfo: {
-        swapFee: getDataNumber(data, 'bpSwapMuchoTokensFee') / 100,
-        swapFeePlans: v2AdminConfig.Plans.map(p => { return { planId: p, swapFee: getDataNumber(data, `bpSwapMuchoTokensFeeForBadgeHolder_${p}`).fee / 100 } }),
+        //swapFee: getDataNumber(data, 'bpSwapMuchoTokensFee') / 100,
+        //swapFeePlans: v2AdminConfig.Plans.map(p => { return { planId: p, swapFee: getDataNumber(data, `bpSwapMuchoTokensFeeForBadgeHolder_${p}`).fee / 100 } }),
         earningsAddress: getDataNumber(data, 'earningsAddress')
       },
       contractsInfo: { muchoHub: getDataString(data, 'muchoHub'), priceFeed: getDataString(data, 'priceFeed'), badgeManager: getDataString(data, 'badgeManager') },

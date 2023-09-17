@@ -212,7 +212,7 @@ const MuchoVaultParametersInfo = ({ info, contracts }: { info: IMuchoVaultParame
   //console.log("Enabled:"); console.log(enabledStr);
   return (
     <TableAligner
-      keysName={['Earnings Address', 'Mucho Hub', 'Price Feed', 'Badge Manager', 'Swap fee'].concat(info.swapFeePlans.map(sfp => { return `Plan ${sfp.planId} - Swap fee` }))}
+      keysName={['Earnings Address', 'Mucho Hub', 'Price Feed', 'Badge Manager'/*, 'Swap fee'*/]/*.concat(info.swapFeePlans.map(sfp => { return `Plan ${sfp.planId} - Swap fee` }))*/}
       values={[
         <div className={`${wrapperClasses}`}>
           <Display
@@ -240,16 +240,16 @@ const MuchoVaultParametersInfo = ({ info, contracts }: { info: IMuchoVaultParame
             data={contractLink(contracts.badgeManager)}
           />
         </div>,
-
-        <div className={`${wrapperClasses}`}>
-          <Display
-            className="!justify-end"
-            data={info.swapFee}
-            unit={"%"}
-            precision={2}
-          />
-        </div>,
-      ].concat(info.swapFeePlans.map(sfp => {
+        /*
+                <div className={`${wrapperClasses}`}>
+                  <Display
+                    className="!justify-end"
+                    data={info.swapFee}
+                    unit={"%"}
+                    precision={2}
+                  />
+                </div>,*/
+      ]/*.concat(info.swapFeePlans.map(sfp => {
         return <div className={`${wrapperClasses}`}>
           <Display
             className="!justify-end"
@@ -258,7 +258,7 @@ const MuchoVaultParametersInfo = ({ info, contracts }: { info: IMuchoVaultParame
             precision={2}
           />
         </div>
-      }))}
+      }))*/}
       keyStyle={keyClasses}
       valueStyle={valueClasses}
     />

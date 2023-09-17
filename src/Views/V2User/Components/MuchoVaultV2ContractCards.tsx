@@ -244,9 +244,10 @@ const NFTInfoCard = ({ data }: { data: IMuchoVaultData }) => {
     <Card
       top={
         <>
-          <span className={underLineClass}>(mucho) NFT Bonus</span>
+          <span className={underLineClass}>(mucho) Subscription Plan Bonus</span>
           <div className="text-f12 text-3  mt-2">
-            Become a protocol "partner" and earn profit from total TVL by owning one of our NFT's
+            Become a protocol "partner" and earn profit from total TVL by owning one of our <a target="_blank" href='https://mucho.finance/#/badge'>NFT Susbcription Plans</a>.
+            Profits are rewarded on weekly basis.
           </div>
         </>
       }
@@ -269,36 +270,21 @@ const NFTInfo = ({ data }: { data: IMuchoVaultData }) => {
   //console.log("vaultInfo.muchoToken.supply", vaultInfo.muchoToken.supply);
   //console.log("vaultInfo.totalStaked", vaultInfo.totalStaked);
   let totalUserInvested = 0;
-  data.vaultsInfo.forEach(v => totalUserInvested += v.userData.muchoTokens * v.totalUSDStaked / v.muchoToken.supply);
+  data.vaultsInfo.forEach(v => totalUserInvested += v.muchoToken.supply == 0 ? 0 : v.userData.muchoTokens * v.totalUSDStaked / v.muchoToken.supply);
 
-  const nftApr = data.badgeInfo.totalPonderatedInvestment > 0 ? data.badgeInfo.annualEarningExpected * data.badgeInfo.userBadgeData.planMultiplier / data.badgeInfo.totalPonderatedInvestment : 0;
-  //console.log("Data badge", data);
+  const userPortion = data.badgeInfo.totalPonderatedInvestment > 0 ? 100 * totalUserInvested * data.badgeInfo.userBadgeData.planMultiplier / data.badgeInfo.totalPonderatedInvestment : 0;
+  const userExpectedEarnings = userPortion * data.badgeInfo.annualEarningExpected / 100;
+
+
+  const nftApr = totalUserInvested > 0 ? 100 * userExpectedEarnings / totalUserInvested : 0;
+  console.log("Data badge", data.badgeInfo);
 
   return (
     <>
-      <TableAligner
-        keysName={
-          ['Annual Expected Yield for NFT Holders']
-        }
-        values={[
-          <div className={`${wrapperClasses}`}>
-            <Display
-              className="!justify-end"
-              data={data.badgeInfo.annualEarningExpected}
-              unit="$"
-              precision={2}
-            />
-          </div>,
-        ]
-        }
-        keyStyle={keyClasses}
-        valueStyle={valueClasses}
-      />
-      <Divider />
 
       <TableAligner
         keysName={
-          ['Subscription plan', 'Plan Multiplier', 'Your Total Investment']
+          ['Your Subscription plan', 'Your Plan Multiplier', 'Your Total Investment']
         }
         values={[
           <div className={`${wrapperClasses}`}>
@@ -331,7 +317,43 @@ const NFTInfo = ({ data }: { data: IMuchoVaultData }) => {
 
       <TableAligner
         keysName={
-          ['Your NFT APR', 'Accumulated Rewards']
+          ['Annual Expected Yield for NFT Holders', 'Your currrent share', 'Your current annual expected Yield']
+        }
+        values={[
+          <div className={`${wrapperClasses}`}>
+            <Display
+              className="!justify-end"
+              data={data.badgeInfo.annualEarningExpected}
+              unit="$"
+              precision={2}
+            />
+          </div>,
+          <div className={`${wrapperClasses}`}>
+            <Display
+              className="!justify-end"
+              data={userPortion}
+              unit="%"
+              precision={0}
+            />
+          </div>,
+          <div className={`${wrapperClasses}`}>
+            <Display
+              className="!justify-end"
+              data={userExpectedEarnings}
+              unit="$"
+              precision={2}
+            />
+          </div>,
+        ]
+        }
+        keyStyle={keyClasses}
+        valueStyle={valueClasses}
+      />
+      <Divider />
+
+      <TableAligner
+        keysName={
+          ['Your NFT Expected APR ', 'Your Accumulated Rewards']
         }
         values={[
           <div className={`${wrapperClasses}`}>

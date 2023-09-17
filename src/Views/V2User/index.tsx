@@ -64,7 +64,7 @@ export const MuchoVaultV2UserPage = () => {
     <Styles>
       <V2AdminModals data={data} />
       <Section
-        Heading={<div className={topStyles}><MuchoWhite width={120} /> &nbsp;MuchoVault V2</div>}
+        Heading={<div className={topStyles}><MuchoWhite width={120} /> &nbsp;MuchoVault V2 (BETA)</div>}
         Cards={getMuchoVaultV2UserCards(data ? data : null)}
         subHeading={<div className={topStyles}>MuchoVault V2 vaults will automatically invest your deposits in different protocols, allowing you to earn interests. Integration with
           other protocols is programmatic and decentralized, so nobody will own your tokens but you.</div>}

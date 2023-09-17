@@ -2,12 +2,12 @@ export const V2ADMIN_CONFIG = {
   42161: {
     Plans: [1, 3],
     MuchoVault: {
-      contract: "0x2421C9FA887891f166cA959DB1CAFd4428cb026d",
+      contract: "0x4D46CAe2fff3d06E992e49fc7cB61CD24E77Ef43",
       vaults: [0, 1, 2],
       precision: [2, 5, 6],
     },
     MuchoHub: {
-      contract: "0x7832fAb4F1d23754F89F30e5319146D16789c088",
+      contract: "0xfeADb28e91337f848ADf3AFC7E0f431c4eebede2",
       tokens: ["0xaf88d065e77c8cC2239327C5EDb3A432268e5831", //USDC
         "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1", //WETH
         "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f", //WBTC
@@ -15,10 +15,10 @@ export const V2ADMIN_CONFIG = {
       precision: [2, 5, 6],
     },
     MuchoRewardRouter: {
-      contract: "0x570C2857CC624077070F7Bb1F10929aad658dA37",
+      contract: "0x9bA27D11C9C808193aE1E29C90C7be1F36236056",
     },
     MuchoProtocolGmx: {
-      contract: "0x971947D5aEfdCA2BBB917a17F8b90C152cfDe1E8",
+      contract: "0x9fcB762ddDd71954FBcf67659d68C04Bf42a2c4e",
       precision: [2, 5, 6],
       tokens: [
         "0xaf88d065e77c8cC2239327C5EDb3A432268e5831", //USDC
@@ -36,13 +36,12 @@ export const V2ADMIN_CONFIG = {
       "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4", //LINK
       "0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0", //UNI
       "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f", //wBTC
-      "0x8AAAF1907E28719E22396a5cf738FC3B5C10a5b9", //mUSDC
-      "0x29B8a90823F39c6DcbFBf5AE10B8B1821883aF5a", //mWETH
-      "0xe6D0a4C4EC52e87FfF879E65e616B9e9175c9232", //mWBTC
+      "0x2eE1Fc67bEC816F3DAe2d2c9409483BEf49F181B", //mUSDC
+      "0x01FC279A6339487c4688dF87714609b2138A4d71", //mWETH
+      "0xBD5EB7fD3783f504c08Be0a44177BddeE82F991D", //mWBTC
     ],
     ProtocolDictionary: [
-      "0x4FC6610d53De49898905b180dF680c6373D60025",
-      "0x971947D5aEfdCA2BBB917a17F8b90C152cfDe1E8"
+      "0x9fcB762ddDd71954FBcf67659d68C04Bf42a2c4e"
     ]
   },
 };

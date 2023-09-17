@@ -85,13 +85,13 @@ export const useGetMuchoVaultV2Data = () => {
   });
 
   const muchoVaultParameterCalls = [
-    {
+    /*{
       address: v2UserConfig.MuchoVault.contract,
       abi: MuchoVaultAbi,
       functionName: 'bpSwapMuchoTokensFee',
       chainId: activeChain?.id,
       map: 'bpSwapMuchoTokensFee'
-    },
+    },*/
     {
       address: v2UserConfig.MuchoVault.contract,
       abi: MuchoVaultAbi,
@@ -113,26 +113,26 @@ export const useGetMuchoVaultV2Data = () => {
       chainId: activeChain?.id,
       map: 'badgeManager'
     },
-    {
+    /*{
       address: v2UserConfig.MuchoVault.contract,
       abi: MuchoVaultAbi,
       functionName: 'getSwapFee',
       args: [account],
       chainId: activeChain?.id,
       map: `getSwapFee_${account}`
-    },
+    },*/
   ]
 
   let planCalls = [];
   v2UserConfig.Plans.forEach(p => {
-    planCalls.push({
+    /*planCalls.push({
       address: v2UserConfig.MuchoVault.contract,
       abi: MuchoVaultAbi,
       functionName: 'bpSwapMuchoTokensFeeForBadgeHolders',
       chainId: activeChain?.id,
       args: [p],
       map: `bpSwapMuchoTokensFeeForBadgeHolder_${p}`,
-    });
+    });*/
 
     v2UserConfig.MuchoVault.vaults.forEach(v => {
       planCalls.push({
@@ -241,14 +241,14 @@ export const useGetMuchoVaultV2Data = () => {
         return null;
       }),
       parametersInfo: {
-        swapFee: getDataNumber(data, 'bpSwapMuchoTokensFee') / 100,
-        swapFeePlans: v2UserConfig.Plans.map(p => { return { planId: p, swapFee: getDataNumber(data, `bpSwapMuchoTokensFeeForBadgeHolder_${p}`).fee / 100 } }),
-        userSwapFee: getDataNumber(data, `getSwapFee_${account}`) / 100,
+        //swapFee: getDataNumber(data, 'bpSwapMuchoTokensFee') / 100,
+        //swapFeePlans: v2UserConfig.Plans.map(p => { return { planId: p, swapFee: getDataNumber(data, `bpSwapMuchoTokensFeeForBadgeHolder_${p}`).fee / 100 } }),
+        //userSwapFee: getDataNumber(data, `getSwapFee_${account}`) / 100,
       },
       contractsInfo: { muchoHub: getDataString(data, 'muchoHub'), priceFeed: getDataString(data, 'priceFeed'), badgeManager: getDataString(data, 'badgeManager') },
       badgeInfo: {
-        annualEarningExpected: getDataNumber(data, 'getExpectedNFTAnnualYield'),
-        totalPonderatedInvestment: getDataNumber(data, 'getTotalPonderatedInvestment'),
+        annualEarningExpected: getDataNumber(data, 'getExpectedNFTAnnualYield') / 10 ** 18,
+        totalPonderatedInvestment: getDataNumber(data, 'getTotalPonderatedInvestment') / 10 ** 18,
         userBadgeData: getUserBadgeData(data, account),
       }
     };
@@ -285,7 +285,7 @@ const getUserBadgeData = (data: any, account: string) => {
     planName: getDataString(data, 'allPlans').find(p => p.planId = planId).name,
     planMultiplier: multiplier,
     currentRewards: {
-      amount: getDataNumber(data, `rewards_${account}_${v2UserConfig.MuchoRewardRouter.rewardsToken}`),
+      amount: getDataNumber(data, `rewards_${account}_${v2UserConfig.MuchoRewardRouter.rewardsToken}`) / 10 ** 18,
       token: getERC20Token(data, v2UserConfig.MuchoRewardRouter.rewardsToken),
     }
   }

@@ -194,100 +194,6 @@
         "inputs": [
             {
                 "indexed": false,
-                "internalType": "uint256",
-                "name": "percent",
-                "type": "uint256"
-            }
-        ],
-        "name": "SwapMuchoTokensFeeChanged",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "planId",
-                "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "percent",
-                "type": "uint256"
-            }
-        ],
-        "name": "SwapMuchoTokensFeeForPlanChanged",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "planId",
-                "type": "uint256"
-            }
-        ],
-        "name": "SwapMuchoTokensFeeForPlanRemoved",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
-                "internalType": "address",
-                "name": "user",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint8",
-                "name": "sourceVaultId",
-                "type": "uint8"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amountSourceMToken",
-                "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint8",
-                "name": "destVaultId",
-                "type": "uint8"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amountOutExpected",
-                "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amountOutActual",
-                "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amountMTokenOwner",
-                "type": "uint256"
-            }
-        ],
-        "name": "Swapped",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
                 "internalType": "contract IERC20Metadata",
                 "name": "depositToken",
                 "type": "address"
@@ -351,6 +257,32 @@
             }
         ],
         "name": "VaultUpdated",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint8",
+                "name": "vaultId",
+                "type": "uint8"
+            }
+        ],
+        "name": "VaultWithdrawClose",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint8",
+                "name": "vaultId",
+                "type": "uint8"
+            }
+        ],
+        "name": "VaultWithdrawOpen",
         "type": "event"
     },
     {
@@ -499,43 +431,6 @@
         "type": "function"
     },
     {
-        "inputs": [],
-        "name": "bpSwapMuchoTokensFee",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "name": "bpSwapMuchoTokensFeeForBadgeHolders",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "fee",
-                "type": "uint256"
-            },
-            {
-                "internalType": "bool",
-                "name": "exists",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
         "inputs": [
             {
                 "internalType": "uint8",
@@ -661,54 +556,6 @@
         "inputs": [
             {
                 "internalType": "uint8",
-                "name": "_sourceVaultId",
-                "type": "uint8"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_amountSourceMToken",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint8",
-                "name": "_destVaultId",
-                "type": "uint8"
-            }
-        ],
-        "name": "getSwap",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_user",
-                "type": "address"
-            }
-        ],
-        "name": "getSwapFee",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint8",
                 "name": "_vaultId",
                 "type": "uint8"
             }
@@ -735,6 +582,11 @@
                     {
                         "internalType": "bool",
                         "name": "stakable",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "withdrawable",
                         "type": "bool"
                     },
                     {
@@ -978,19 +830,6 @@
     {
         "inputs": [
             {
-                "internalType": "uint256",
-                "name": "_planId",
-                "type": "uint256"
-            }
-        ],
-        "name": "removeSwapMuchoTokensFeeForPlan",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
                 "internalType": "bytes32",
                 "name": "role",
                 "type": "bytes32"
@@ -1187,12 +1026,17 @@
     {
         "inputs": [
             {
-                "internalType": "uint256",
-                "name": "_percent",
-                "type": "uint256"
+                "internalType": "uint8",
+                "name": "_vaultId",
+                "type": "uint8"
+            },
+            {
+                "internalType": "uint16",
+                "name": "_fee",
+                "type": "uint16"
             }
         ],
-        "name": "setSwapMuchoTokensFee",
+        "name": "setWithdrawFee",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -1200,17 +1044,12 @@
     {
         "inputs": [
             {
-                "internalType": "uint256",
-                "name": "_planId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_percent",
-                "type": "uint256"
+                "internalType": "bool",
+                "name": "open",
+                "type": "bool"
             }
         ],
-        "name": "setSwapMuchoTokensFeeForPlan",
+        "name": "setWithdrawableAllVault",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -1223,12 +1062,12 @@
                 "type": "uint8"
             },
             {
-                "internalType": "uint16",
-                "name": "_fee",
-                "type": "uint16"
+                "internalType": "bool",
+                "name": "open",
+                "type": "bool"
             }
         ],
-        "name": "setWithdrawFee",
+        "name": "setWithdrawableVault",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -1250,39 +1089,6 @@
             }
         ],
         "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint8",
-                "name": "_sourceVaultId",
-                "type": "uint8"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_amountSourceMToken",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint8",
-                "name": "_destVaultId",
-                "type": "uint8"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_amountOutExpected",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint16",
-                "name": "_maxSlippage",
-                "type": "uint16"
-            }
-        ],
-        "name": "swap",
-        "outputs": [],
-        "stateMutability": "nonpayable",
         "type": "function"
     },
     {

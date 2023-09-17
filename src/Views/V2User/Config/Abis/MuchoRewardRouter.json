@@ -73,6 +73,50 @@
         "anonymous": false,
         "inputs": [
             {
+                "indexed": false,
+                "internalType": "address",
+                "name": "token",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "RewardsNotDeposited",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "token",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "RewardsUserEarned",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
                 "indexed": true,
                 "internalType": "bytes32",
                 "name": "role",
@@ -291,6 +335,19 @@
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "earningsAddress",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "uint256",
@@ -329,20 +386,33 @@
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "getTotalPonderatedInvestment",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "address",
                 "name": "_user",
                 "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_amountUSD",
-                "type": "uint256"
             }
         ],
-        "name": "getUserAmountPonderation",
+        "name": "getUserMultiplierAndPlan",
         "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            },
             {
                 "internalType": "uint256",
                 "name": "",
@@ -521,6 +591,19 @@
             }
         ],
         "name": "setBadgeManager",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_ea",
+                "type": "address"
+            }
+        ],
+        "name": "setEarningsAddress",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
