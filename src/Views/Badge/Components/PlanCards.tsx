@@ -53,7 +53,7 @@ const PlanCard = ({ plan, admin }: { plan: IPlan, admin: boolean }) => {
     <Card
       top={
         <>
-          <span className={underLineClass}>[{plan.id}] {plan.name}</span>
+          <span className={underLineClass}>{admin && "[" + plan.id + "] "}{plan.name}</span>
         </>
       }
       middle={

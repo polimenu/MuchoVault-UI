@@ -21,7 +21,7 @@ export const fromWei = (value: string, decimals: number = 18) => {
   // return Math.floor((value * 1e6) / 1e18) / 1e6;
 };
 
-export const useGetPlans = () => {
+export const useGetPlans = (admin: boolean) => {
   //console.log("useGetPlans");
   const { address: account } = useUserAccount();
   let activeChain: Chain | null = null;
@@ -76,6 +76,7 @@ export const useGetPlans = () => {
 
     const tokenMap = VALID_TOKENS;
     //console.log("test"); console.log(tokenMap(tokens[0]));
+    //console.log("DATA!", data);
 
     let resObject: IBadge = {};
     resObject.plans = [];
@@ -84,37 +85,40 @@ export const useGetPlans = () => {
       const subTk = tokenMap[data[0][i].subscriptionPrice.token];
       const renTk = tokenMap[data[0][i].renewalPrice.token];
 
-      //console.log("Checking plan " + data[0][i].id);
+      //console.log("Checking plan " + data[0]);
       //console.log(data[1].filter(p => p.id == data[0][i].id));
       //console.log(data[2].filter(p => p.id == data[0][i].id));
       const activeSubscription = (data[1] && (data[1].filter(p => p.id == data[0][i].id).length > 0)) ? true : false;
       const expiredSubscription = (data[2] && (data[2].filter(p => p.id == data[0][i].id).length > 0)) ? true : false;
+      const enabledSubscription = data[0][i].enabled;
 
-      resObject.plans.push({
-        id: data[0][i].id,
-        name: data[0][i].name,
-        uri: data[0][i].uri,
-        subscribers: data[0][i].subscribers,
-        subscriptionPrice: {
-          token: subTk.symbol,
-          amount: data[0][i].subscriptionPrice.amount / (10 ** subTk.decimals),
-          contract: data[0][i].subscriptionPrice.token,
-          decimals: subTk.decimals
-        },
-        renewalPrice: {
-          token: renTk.symbol,
-          amount: data[0][i].renewalPrice.amount / (10 ** renTk.decimals),
-          contract: data[0][i].renewalPrice.token,
-          decimals: renTk.decimals
-        },
-        time: data[0][i].time / (24 * 3600),
-        exists: data[0][i].exists,
-        enabled: data[0][i].enabled,
-        status: data[0][i].enabled ? "Enabled" : "Disabled",
-        activeSubscribers: data[0][i].activeSubscribers,
-        isActiveForCurrentUser: activeSubscription,
-        isExpiredForCurrentUser: expiredSubscription,
-      });
+      if (admin || enabledSubscription) {
+        resObject.plans.push({
+          id: data[0][i].id,
+          name: data[0][i].name,
+          uri: data[0][i].uri,
+          subscribers: data[0][i].subscribers,
+          subscriptionPrice: {
+            token: subTk.symbol,
+            amount: data[0][i].subscriptionPrice.amount / (10 ** subTk.decimals),
+            contract: data[0][i].subscriptionPrice.token,
+            decimals: subTk.decimals
+          },
+          renewalPrice: {
+            token: renTk.symbol,
+            amount: data[0][i].renewalPrice.amount / (10 ** renTk.decimals),
+            contract: data[0][i].renewalPrice.token,
+            decimals: renTk.decimals
+          },
+          time: data[0][i].time / (24 * 3600),
+          exists: data[0][i].exists,
+          enabled: data[0][i].enabled,
+          status: data[0][i].enabled ? "Enabled" : "Disabled",
+          activeSubscribers: data[0][i].activeSubscribers,
+          isActiveForCurrentUser: activeSubscription,
+          isExpiredForCurrentUser: expiredSubscription,
+        });
+      }
     }
 
 

@@ -50,8 +50,8 @@ export const Badge = (admin: boolean) => {
 
 export const BadgePage = (adminObj) => {
   const [, setBadgeData] = useAtom(writeBadgeData);
-  const data: IBadge = useGetPlans();
   const admin = adminObj.admin.adminObj;  //Algun día Satan nos encontrará
+  const data: IBadge = useGetPlans(admin);
 
   //console.log("Admin:");
   //console.log();
