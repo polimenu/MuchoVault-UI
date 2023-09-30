@@ -277,7 +277,7 @@ const NFTInfo = ({ data }: { data: IMuchoVaultData }) => {
 
 
   const nftApr = totalUserInvested > 0 ? 100 * userExpectedEarnings / totalUserInvested : 0;
-  console.log("Data badge", data.badgeInfo);
+  //console.log("Data badge", data.badgeInfo);
 
   return (
     <>
@@ -368,6 +368,7 @@ const NFTInfo = ({ data }: { data: IMuchoVaultData }) => {
               className="!justify-end"
               data={data.badgeInfo.userBadgeData.currentRewards.amount}
               unit={data.badgeInfo.userBadgeData.currentRewards.token.name}
+              precision={7}
             />
           </div>,
 

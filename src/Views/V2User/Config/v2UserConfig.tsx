@@ -8,7 +8,7 @@ export const V2USER_CONFIG = {
       amountsForAprSimulation: [{ amount: 1e-6, decimals: 6 }, { amount: 1e-18, decimals: 18 }, { amount: 1e-8, decimals: 8 }],
     },
     MuchoRewardRouter: {
-      contract: "0x9bA27D11C9C808193aE1E29C90C7be1F36236056",
+      contract: "0x96D395d088C8e053f759F97695Efac4D4b45407A",
       rewardsToken: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
     },
     MuchoBadgeManager: {
