@@ -16,8 +16,8 @@ export const btnClasses = '!w-fit px-4 rounded-sm !h-7';
 
 
 
-const getDirectButton = (functionName: string, caption: string, args: any[]) => {
-  const call = getContractCall(functionName, args);
+const getDirectButton = (call: any, caption: string) => {
+
   return <BlueBtn
     onClick={() =>
       call()
@@ -57,6 +57,7 @@ export function NFTButtons({ data }: { data: IMuchoVaultData }) {
   const [state, setPageState] = useAtom(v2ContractDataAtom);
   const { activeChain } = useContext(ViewContext);
   const { chain } = useNetwork();
+  const withdrawCall = getContractCall("withdraw", []);
 
   if (!account || activeChain.id !== chain?.id)
     return (
@@ -72,7 +73,7 @@ export function NFTButtons({ data }: { data: IMuchoVaultData }) {
   return (<>
     <div className="flex gap-5">
       {data.badgeInfo.userBadgeData.planId == 0 && <BlueBtn key={"subscribe"} onClick={() => window.open("https://mucho.finance/#/badge")} className={btnClasses}>Subscribe and earn rewards</BlueBtn>}
-      {data.badgeInfo.userBadgeData.currentRewards.amount > 0 && getDirectButton("withdraw", "Withdraw", [])}
+      {data.badgeInfo.userBadgeData.currentRewards.amount > 0 && getDirectButton(withdrawCall, "Withdraw")}
       {/*data.userData.muchoTokens > 0 &&
         muchoVaultData.vaultsInfo.filter(v => v.id != data.id).map(v => getModalButton(`Swap to ${v.depositToken.name}`, data, false, true, v.id))
       */}
