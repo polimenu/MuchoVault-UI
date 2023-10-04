@@ -11,7 +11,7 @@ interface INavbar { }
 
 export const Navbar: React.FC<INavbar> = () => {
   const tabs = getTabs();
-  const VISIBLETABS = 2;
+  const VISIBLETABS = 4;
   return (
     <header className="bg-primary flex justify-between w-full h-[45px] pr-[8px] header top-0 border-b-2 border-solid border-1 relative z-[102]">
       <div className=" flex items-center gap-[24px]">
