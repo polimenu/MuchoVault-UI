@@ -14,6 +14,7 @@ import {
 } from '@Views/Common/ChainNotSupported';
 import MuchoWhite from '@SVG/Elements/MuchoWhite';
 import { V2AdminModals } from './Modals';
+import EarnIcon from '@SVG/Elements/EarnIcon';
 
 const Styles = styled.div`
   width: min(1200px, 100%);
@@ -64,9 +65,10 @@ export const MuchoVaultV2UserPage = () => {
     <Styles>
       <V2AdminModals data={data} />
       <Section
-        Heading={<div className={topStyles}><MuchoWhite width={120} /> &nbsp;MuchoVault V2 (BETA)</div>}
+        Heading={<div className={topStyles}><EarnIcon className="mr-3" /><MuchoWhite width={120} />
+          &nbsp;Vaults V2</div>}
         Cards={getMuchoVaultV2UserCards(data ? data : null)}
-        subHeading={<div className={topStyles}>MuchoVault V2 vaults will automatically invest your deposits in different protocols, allowing you to earn interests. Integration with
+        subHeading={<div className={descStyles}>(mucho) Vaults V2 will automatically invest your deposits in different protocols, allowing you to earn interests. Integration with
           other protocols is programmatic and decentralized, so nobody will own your tokens but you.</div>}
       />
     </Styles>
