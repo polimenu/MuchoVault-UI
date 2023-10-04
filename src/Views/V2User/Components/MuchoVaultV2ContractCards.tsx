@@ -193,7 +193,7 @@ const MuchoVaultInfo = ({ vaultInfo, precision }: { vaultInfo: IVaultInfo, preci
 
       <TableAligner
         keysName={
-          ['Deposit Fee', 'Withdraw Fee', 'Max Deposit per user']
+          ['Deposit Fee'/*, 'Withdraw Fee', 'Max Deposit per user'*/]
         }
         values={[
           <div className={`${wrapperClasses}`}>
@@ -203,7 +203,7 @@ const MuchoVaultInfo = ({ vaultInfo, precision }: { vaultInfo: IVaultInfo, preci
               unit={"%"}
               precision={2}
             />
-          </div>,
+          </div>/*,
           <div className={`${wrapperClasses}`}>
             <Display
               className="!justify-end"
@@ -219,7 +219,7 @@ const MuchoVaultInfo = ({ vaultInfo, precision }: { vaultInfo: IVaultInfo, preci
               unit={vaultInfo.depositToken.name}
               precision={precision}
             />
-          </div>,
+          </div>,*/
         ]
         }
         keyStyle={keyClasses}
