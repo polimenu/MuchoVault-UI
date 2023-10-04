@@ -3,7 +3,7 @@ export const EARN_CONFIG = {
     MuchoVault: '0x95a020C76bDbE38d64F78C330F6364BD0429829E',
     POOLS: [
       {
-        token: { symbol: "USDC", address: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8" },
+        token: { symbol: "USDC.e", address: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8" },
         mToken: { symbol: "muchoUSDC", address: "0xDBc123bE93C27c90005c87d6DFC5562d42684f13" },
         precision: 2,
         decimals: 6,
