@@ -118,8 +118,14 @@ export const TabIcon = {
 export const getTabs = () => {
   let tabs = [
     {
-      to: `/`,
-      name: 'Vaults',
+      to: `/v1`,
+      name: 'Vaults V1',
+      subTabs: [],
+      isExternalLink: false,
+    },
+    {
+      to: `/v2`,
+      name: 'Vaults V2',
       subTabs: [],
       isExternalLink: false,
     },
