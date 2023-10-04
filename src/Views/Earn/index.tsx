@@ -16,6 +16,8 @@ import {
   ArbitrumOnly,
 } from '@Views/Common/ChainNotSupported';
 import MuchoWhite from '@SVG/Elements/MuchoWhite';
+import ErrorIcon from '@SVG/Elements/ErrorIcon';
+import { AlignHorizontalCenter } from '@mui/icons-material';
 
 const EarnStyles = styled.div`
   width: min(1200px, 100%);
@@ -24,8 +26,12 @@ const EarnStyles = styled.div`
   /* white-space: nowrap; */
 `;
 
+const LinkStyle = styled.a`
+color:#3898FF;
+text-decoration:underline`;
+
 const topStyles = 'flex flex-row items-center justify-center mb-2 text-f22';
-const descStyles = 'w-[46rem] text-center m-auto tab:w-full';
+const descStyles = 'w-[46rem] text-center m-auto tab:w-full mb-5';
 
 export const EarnContext = React.createContext<{ activeChain: Chain } | null>(
   null
@@ -67,15 +73,20 @@ export const EarnPage = () => {
         Heading={
           <div className={topStyles}>
             <EarnIcon className="mr-3" />
-            <MuchoWhite width={120} /> &nbsp;Vaults
+            <MuchoWhite width={120} /> &nbsp;Vaults V1 (obsolete)
           </div>
         }
         Cards={getEarnCards(data)}
-        subHeading={
+        subHeading={<>
           <div className={descStyles}>
-            Deposit USDC, WETH and WBTC to earn yield from GLP with no impermanent loss.
-            You will get in exchange muchoUSDC, muchoETH and muchoBTC as a "receipt", and those tokens will increase their value with the GLP yield and rewards.
+            <ErrorIcon className="mt-5 m-auto" width="40" />
+            <strong className='mb-5'>
+              IMPORTANT NOTICE: V1 is obsolete, <LinkStyle href="/#/v2">use V2 instead</LinkStyle>.
+              No more deposits will be allowed on V1, which will stop rewarding on 1st November 2023
+              (withdrawals will remain available).
+            </strong>
           </div>
+        </>
         }
       />
     </EarnStyles>
