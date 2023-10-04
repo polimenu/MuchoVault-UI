@@ -3,6 +3,7 @@ import { Dialog, IconButton } from '@mui/material';
 import { useAtom } from 'jotai';
 import { earnAtom } from '../earnAtom';
 import { DepositModal } from './deposit';
+import { MigrateModal } from './migrate';
 
 export const EarnModals = () => {
   const [pageState, setPageState] = useAtom(earnAtom);
@@ -34,6 +35,11 @@ function ModalChild() {
 
   if (!activeModal)
     return <div></div>;
+
+  if (activeModal.migrate)
+    return (
+      <MigrateModal head={'Migrate ' + activeModal.primaryToken + ' to V2'} />
+    );
 
   return (
     <DepositModal
