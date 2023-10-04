@@ -31,7 +31,7 @@ export function MuchoGmxGeneralButtons({ data }: { data: IMuchoProtocolGmxData }
     <div className="flex gap-5">
       {getModalButton("updateGlpApr", "GLP APR", [], data.glpApr, numberValidation(0, 100, 2), "%", false)}
       {getModalButton("updateGlpWethMintFee", "WETH Mint Fee", [], data.glpWethMintFee, numberValidation(0, 100, 2), "%", false)}
-      {getModalButton("setSlippage", "Slippage", [], data.slippage, numberValidation(0, 100, 2), "%", false)}
+      {getModalButton("setSlippage", "Slippage", [], data.slippage, numberValidation(0, 100, 3), "%", false)}
       {!data.claimEsGmx && getDirectButton("updateClaimEsGMX", "Claim EsGmx", [true])}
       {data.claimEsGmx && getDirectButton("updateClaimEsGMX", "Stop Claim EsGmx", [false])}
     </div>
