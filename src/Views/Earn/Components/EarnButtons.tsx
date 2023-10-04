@@ -26,15 +26,15 @@ export function EarnButtons({ poolInfo, primaryToken, vaultId, decimals, precisi
 
   return (
     <div className="flex gap-5">
-      <BlueBtn
+      <BlueBtn isDisabled={true}
         onClick={() =>
           setPageState({ ...state, activeModal: { poolInfo, primaryToken, vaultId, decimals, deposit: true, precision }, isModalOpen: true })
         }
         className={btnClasses}
       >
-        Deposit
+        Deposits Disabled
       </BlueBtn>
-      <BlueBtn
+      {poolInfo.userMuchoInWallet > 0 && <><BlueBtn
         onClick={() =>
           setPageState({ ...state, activeModal: { poolInfo, primaryToken, vaultId, decimals, deposit: false, precision }, isModalOpen: true })
         }
@@ -42,6 +42,14 @@ export function EarnButtons({ poolInfo, primaryToken, vaultId, decimals, precisi
       >
         Withdraw
       </BlueBtn>
+        <BlueBtn
+          onClick={() =>
+            setPageState({ ...state, activeModal: { poolInfo, primaryToken, vaultId, decimals, migrate: true, precision }, isModalOpen: true })
+          }
+          className={btnClasses}
+        >
+          Migrate to V2
+        </BlueBtn></>}
     </div>
   );
 
