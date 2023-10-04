@@ -84,6 +84,18 @@ export const useGetMuchoVaultV2Data = () => {
     }
   });
 
+  const vaultDepfee = v2UserConfig.MuchoVault.vaults.map((v, i) => {
+    const amount = 10 ** v2UserConfig.MuchoVault.amountsForAprSimulation[i].decimals;
+    return {
+      address: v2UserConfig.MuchoVault.contract,
+      abi: MuchoVaultAbi,
+      functionName: 'getDepositFee',
+      args: [v, amount.toString()],
+      chainId: activeChain?.id,
+      map: `getDepositFee_${v}`
+    }
+  });
+
   const muchoVaultParameterCalls = [
     /*{
       address: v2UserConfig.MuchoVault.contract,
@@ -188,7 +200,7 @@ export const useGetMuchoVaultV2Data = () => {
   ]
 
 
-  const calls = [...tokenCalls, ...vaultInfoCalls, ...vaultUSDCalls, ...vaultAPRCalls, ...muchoVaultParameterCalls, ...planCalls, ...badgeDataCalls];
+  const calls = [...tokenCalls, ...vaultInfoCalls, ...vaultUSDCalls, ...vaultAPRCalls, ...muchoVaultParameterCalls, ...planCalls, ...badgeDataCalls, ...vaultDepfee];
   let indexes: any = {};
   calls.forEach((c, i) => { indexes[c.map] = i; });
 
@@ -216,6 +228,9 @@ export const useGetMuchoVaultV2Data = () => {
       contract: v2UserConfig.MuchoVault.contract,
       vaultsInfo: v2UserConfig.MuchoVault.vaults.map((v, i) => {
         const vInfo = getDataString(data, `getVaultInfo_${v}`);
+        //console.log("vault info", vInfo);
+        const depFee = getDataNumber(data, `getDepositFee_${v}`) / (10 ** v2UserConfig.MuchoVault.amountsForAprSimulation[i].decimals);
+        //console.log("Dep fee", depFee);
         const dToken: IToken = getERC20Token(data, vInfo.depositToken);
         const mToken: IToken = getERC20Token(data, vInfo.muchoToken);
         const userVaultData = getUserVaultData(data, dToken.contract, mToken.contract);
@@ -230,7 +245,7 @@ export const useGetMuchoVaultV2Data = () => {
             totalUSDStaked: getDataNumber(data, `vaultTotalUSD_${v}`) / 10 ** 18,
             lastUpdate: new Date(vInfo.lastUpdate),
             stakable: vInfo.stakable,
-            depositFee: vInfo.depositFee / 100,
+            depositFee: depFee * 100,
             withdrawFee: vInfo.withdrawFee / 100,
             maxCap: vInfo.maxCap / (10 ** dToken.decimals),
             maxDepositUser: vInfo.maxDepositUser / (10 ** dToken.decimals),
