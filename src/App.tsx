@@ -13,6 +13,7 @@ import { Integrations } from '@sentry/tracing';
 import { V2AdminPage } from '@Views/V2Admin';
 import { V2AdminContract } from '@Views/V2Admin';
 import { V2UserPage } from '@Views/V2User';
+import { FrontPage } from '@Views/FrontPage';
 
 if (import.meta.env.VITE_MODE === 'production') {
   // console.log(`import.meta.env.SENTRY_DSN: `, import.meta.env.VITE_SENTRY_DSN);
@@ -28,7 +29,8 @@ const AppRoutes = () => {
   return (
     <div className="root w-[100vw]">
       <Routes>
-        <Route path="/*" element={<Earn />} />
+        <Route path="/*" element={<FrontPage />} />
+        <Route path="/v1" element={<Earn />} />
         <Route path="/badgeadmin" element={<Badge adminObj={true} />} />
         <Route path="/badge" element={<Badge adminObj={false} />} />
         <Route path="/v2" element={<V2UserPage />} />

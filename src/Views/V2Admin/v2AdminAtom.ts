@@ -5,6 +5,8 @@ export interface IMuchoProtocolGmxData {
   contract: string;
   protocolName: string;
   protocolDescription: string;
+  totalUSDStaked: number;
+  totalUSDBacked: number;
   glpApr: number;
   glpWethMintFee: number;
   slippage: number;
@@ -119,6 +121,7 @@ export interface IMuchoVaultParametersInfo {
   swapFee: number;
   swapFeePlans: [{ planId: number, swapFee: number }];
   earningsAddress: string;
+  totalUSDStaked: number;
 }
 
 export interface IMuchoVaultContracts {
