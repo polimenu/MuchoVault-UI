@@ -76,7 +76,7 @@ const MuchoVaultInfoCard = ({ vaultId, vaultInfo, precision, data }: { vaultId: 
               unit={vaultInfo.depositToken.name}
               className="inline"
               disable
-              precision={0}
+              precision={2}
             />
             &nbsp;(<Display
               data={Number(vaultInfo.totalStaked > 0 ? vaultInfo.totalUSDStaked * vaultInfo.maxCap / vaultInfo.totalStaked : 0)}
