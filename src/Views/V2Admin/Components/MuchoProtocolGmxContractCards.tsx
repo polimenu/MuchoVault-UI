@@ -11,6 +11,7 @@ import { MuchoHubTokenButtons } from './MuchoHubV2AdminButtons';
 import { contractLink } from '@Views/Common/Utils';
 import { MuchoGmxGeneralButtons, MuchoGmxTokenButtons } from './MuchoProtocolGmxAdminButtons';
 import { V2ADMIN_CONFIG } from '../Config/v2AdminConfig';
+import { Divider } from '@Views/Common/Card/Divider';
 export const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 export const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
 export const tooltipKeyClasses = '!text-f14 !text-2 !text-left !py-1 !pl-[0px]';
@@ -186,33 +187,45 @@ const MuchoGmxParametersInfo = ({ info }: { info: IMuchoProtocolGmxData }) => {
   //console.log("Plan:"); console.log(plan);
   //console.log("Enabled:"); console.log(enabledStr);
   return (
-    <TableAligner
-      keysName={['GLP APR', 'GLP WETH Mint fee', 'Slippage', 'Owner Earnings Address', 'Claim Es Gmx',
-        'Min Not Invested Percentage', 'Desired Not Invested Percentage', 'Min % Move', 'Max Lapse Without Weight Refresh', 'Manual Weights', 'Owner Rewards Percentage', 'NFT Rewards Percentage', 'Compound Protocol']}
-      values={[
+    <>
+      <TableAligner
+        keysName={['Total USD Staked', 'Total USD Backed', '% Backing']}
+        values={[
+          <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.totalUSDStaked} unit="$" precision={2} /></div>,
+          <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.totalUSDBacked} unit="$" precision={2} /></div>,
+          <div className={`${wrapperClasses}`}><Display className="!justify-end" data={100 * info.totalUSDBacked / info.totalUSDStaked} unit="%" precision={2} /></div>,
+        ]}
+        keyStyle={keyClasses}
+        valueStyle={valueClasses}
+      />
+      <Divider></Divider>
+      <TableAligner
+        keysName={['GLP APR', 'GLP WETH Mint fee', 'Slippage', 'Owner Earnings Address', 'Claim Es Gmx',
+          'Min Not Invested Percentage', 'Desired Not Invested Percentage', 'Min % Move', 'Max Lapse Without Weight Refresh', 'Manual Weights', 'Owner Rewards Percentage', 'NFT Rewards Percentage', 'Compound Protocol']}
+        values={[
+          <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.glpApr} unit="%" precision={2} /></div>,
+          <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.glpWethMintFee} unit="%" precision={2} /></div>,
+          <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.slippage} unit="%" precision={3} /></div>,
 
-        <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.glpApr} unit="%" precision={2} /></div>,
-        <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.glpWethMintFee} unit="%" precision={2} /></div>,
-        <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.slippage} unit="%" precision={3} /></div>,
+          <div className={`${wrapperClasses}`}><Display className="!justify-end" data={contractLink(info.earningsAddress)} /></div>,
+          <div className={`${wrapperClasses}`}><Display className="!justify-end" data={<input type="checkbox" readOnly checked={info.claimEsGmx} />} /></div>,
 
-        <div className={`${wrapperClasses}`}><Display className="!justify-end" data={contractLink(info.earningsAddress)} /></div>,
-        <div className={`${wrapperClasses}`}><Display className="!justify-end" data={<input type="checkbox" readOnly checked={info.claimEsGmx} />} /></div>,
+          <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.minNotInvestedPercentage} unit="%" precision={2} /></div>,
+          <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.desiredNotInvestedPercentage} unit="%" precision={2} /></div>,
+          <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.minBasisPointsMove} unit="%" precision={2} /></div>,
+          <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.maxRefreshWeightLapse} unit="H" precision={1} /></div>,
 
-        <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.minNotInvestedPercentage} unit="%" precision={2} /></div>,
-        <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.desiredNotInvestedPercentage} unit="%" precision={2} /></div>,
-        <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.minBasisPointsMove} unit="%" precision={2} /></div>,
-        <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.maxRefreshWeightLapse} unit="H" precision={1} /></div>,
+          <div className={`${wrapperClasses}`}><Display className="!justify-end" data={<input type="checkbox" readOnly checked={info.manualModeWeights} />} /></div>,
 
-        <div className={`${wrapperClasses}`}><Display className="!justify-end" data={<input type="checkbox" readOnly checked={info.manualModeWeights} />} /></div>,
+          <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.rewardSplit.ownerPercentage} unit="%" precision={2} /></div>,
+          <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.rewardSplit.NftPercentage} unit="%" precision={2} /></div>,
 
-        <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.rewardSplit.ownerPercentage} unit="%" precision={2} /></div>,
-        <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.rewardSplit.NftPercentage} unit="%" precision={2} /></div>,
-
-        <div className={`${wrapperClasses}`}><Display className="!justify-end" data={contractLink(info.compoundProtocol)} /></div>,
-      ]}
-      keyStyle={keyClasses}
-      valueStyle={valueClasses}
-    />
+          <div className={`${wrapperClasses}`}><Display className="!justify-end" data={contractLink(info.compoundProtocol)} /></div>,
+        ]}
+        keyStyle={keyClasses}
+        valueStyle={valueClasses}
+      />
+    </>
   );
 };
 
