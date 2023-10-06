@@ -147,7 +147,7 @@ color: var(--text-1);`;
 const topStyles = 'flex flex-row items-center justify-center mb-2 text-f22';
 const descStyles = 'w-[46rem] text-center m-auto tab:w-full mb-5';
 
-const btnHeroClasses = 'w-140 px-4 rounded-sm mt-5 mb-5';
+const btnHeroClasses = 'w-60 px-4 rounded-sm mt-5 mb-5';
 
 
 export const FrontPage = () => {
@@ -172,7 +172,7 @@ export const FrontPage = () => {
                     <div className="text-f20 text-1 font-bold">Earn USDC, WETH or WBTC with no Impermanent Loss</div>
                   </div>
                 </div>
-                <div className="flex gap-3 flex-wrap justify-center items-stretch whitespace-nowrap">
+                <div className="flex gap-3 flex-wrap justify-center items-stretch whitespace-nowrap" style={{ paddingLeft: "25%", paddingRight: "25%" }}>
                   <BlueBtn onClick={() => window.location.href = "/#/v2"} className={btnHeroClasses + " w-[365px]"}>Start Earning Yield (Vaults V2)</BlueBtn>
                 </div>
                 <div className="flex gap-3 flex-wrap justify-center items-stretch whitespace-nowrap">
