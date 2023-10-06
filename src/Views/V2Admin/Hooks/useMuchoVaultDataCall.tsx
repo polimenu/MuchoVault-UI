@@ -93,6 +93,13 @@ export const useGetMuchoVaultV2Data = () => {
       chainId: activeChain?.id,
       map: 'badgeManager'
     },
+    {
+      address: v2AdminConfig.MuchoVault.contract,
+      abi: MuchoVaultAbi,
+      functionName: 'allVaultsTotalUSD',
+      chainId: activeChain?.id,
+      map: 'allVaultsTotalUSD'
+    },
   ]
 
   let planCalls = [];
@@ -167,6 +174,8 @@ export const useGetMuchoVaultV2Data = () => {
       parametersInfo: {
         //swapFee: getDataNumber(data, 'bpSwapMuchoTokensFee') / 100,
         //swapFeePlans: v2AdminConfig.Plans.map(p => { return { planId: p, swapFee: getDataNumber(data, `bpSwapMuchoTokensFeeForBadgeHolder_${p}`).fee / 100 } }),
+
+        totalUSDStaked: getDataNumber(data, 'allVaultsTotalUSD') / 10 ** 18,
         earningsAddress: getDataNumber(data, 'earningsAddress')
       },
       contractsInfo: { muchoHub: getDataString(data, 'muchoHub'), priceFeed: getDataString(data, 'priceFeed'), badgeManager: getDataString(data, 'badgeManager') },

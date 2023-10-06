@@ -66,7 +66,7 @@ export const useGetMuchoProtocolGmxData = () => {
   );
 
   const muchoGmxContractCalls = ['EsGMX', 'fsGLP', 'WETH', 'glpRouter', 'glpRewardRouter',
-    'poolGLP', 'glpVault', 'muchoRewardRouter', 'priceFeed'].map(f => {
+    'poolGLP', 'glpVault', 'muchoRewardRouter', 'priceFeed', 'getTotalUSD', 'getTotalUSDBacked'].map(f => {
       return {
         address: v2AdminConfig.MuchoProtocolGmx.contract,
         abi: MuchoProtocolGmxAbi,
@@ -112,6 +112,9 @@ export const useGetMuchoProtocolGmxData = () => {
       contract: v2AdminConfig.MuchoProtocolGmx.contract,
       protocolName: getDataString(data, 'protocolName'),
       protocolDescription: getDataString(data, 'protocolDescription'),
+
+      totalUSDStaked: getDataNumber(data, 'getTotalUSD') / 10 ** 18,
+      totalUSDBacked: getDataNumber(data, 'getTotalUSDBacked') / 10 ** 18,
 
       glpApr: getDataNumber(data, 'glpApr') / 100,
       glpWethMintFee: getDataNumber(data, 'glpWethMintFee') / 100,

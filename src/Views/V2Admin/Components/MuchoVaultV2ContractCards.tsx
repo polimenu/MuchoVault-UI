@@ -212,8 +212,14 @@ const MuchoVaultParametersInfo = ({ info, contracts }: { info: IMuchoVaultParame
   //console.log("Enabled:"); console.log(enabledStr);
   return (
     <TableAligner
-      keysName={['Earnings Address', 'Mucho Hub', 'Price Feed', 'Badge Manager'/*, 'Swap fee'*/]/*.concat(info.swapFeePlans.map(sfp => { return `Plan ${sfp.planId} - Swap fee` }))*/}
+      keysName={['Total USD Staked', 'Earnings Address', 'Mucho Hub', 'Price Feed', 'Badge Manager'/*, 'Swap fee'*/]/*.concat(info.swapFeePlans.map(sfp => { return `Plan ${sfp.planId} - Swap fee` }))*/}
       values={[
+        <div className={`${wrapperClasses}`}>
+          <Display
+            className="!justify-end"
+            data={Math.round(info.totalUSDStaked)}
+          />
+        </div>,
         <div className={`${wrapperClasses}`}>
           <Display
             className="!justify-end"
