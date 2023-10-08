@@ -138,10 +138,10 @@ border: 0 solid;
 box-sizing: border-box;
 font-feature-settings: "zero" 1!important;
 font-family: Relative Mono,Relative Pro!important;
-padding-top: 8px;
-font-size: 64px;
+padding-top: 0;
+font-size: 4.5vw;
 font-weight: 500;
-margin: 80px 0 0 0;
+margin: 6vw 0 0 0;
 color: var(--text-1);`;
 
 const topStyles = 'flex flex-row items-center justify-center mb-2 text-f22';
@@ -164,12 +164,12 @@ export const FrontPage = () => {
           <div className="sc-dkPtRN edJbPX">
             <div className="full-width content-sbw main-wrapper persp">
               <div className="hero-wrapper m-auto max-w-screen-sm text-center">
-                <HeaderStyled>Your Gateway to Earning (mucho) Profits</HeaderStyled>
+                <HeaderStyled>Your Gateway to Earning <span style={{ color: "#3B82F6" }} >(mucho)</span> Profits</HeaderStyled>
                 <div className="subtxt text-f18 text-2 mt-5 sm:text-f16">Our mission is to empower you to grow your wealth through secure and profitable investments. With Mucho Vault, you can deposit your tokens, and we'll take care of the rest, maximizing your earnings.
                 </div>
                 <div className="h-7 overflow-hidden my-5">
                   <div className="animate-[roll-over_25s_ease-in-out_infinite]">
-                    <div className="text-f20 text-1 font-bold">Earn USDC, WETH or WBTC with no Impermanent Loss</div>
+                    <div className="text-f18 text-1 font-bold">Earn USDC, WETH or WBTC with no Impermanent Loss</div>
                   </div>
                 </div>
                 <div className="flex gap-3 flex-wrap justify-center items-stretch whitespace-nowrap" style={{ paddingLeft: "25%", paddingRight: "25%" }}>
