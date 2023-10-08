@@ -118,7 +118,7 @@ const MuchoVaultInfo = ({ vaultInfo, precision }: { vaultInfo: IVaultInfo, preci
     <>
       <TableAligner
         keysName={
-          ['Receipt current price', 'Total Invested in Vault']
+          ['Receipt current price', 'Total Staked in Vault', 'Expected APR']
         }
         values={[
           <div className={`${wrapperClasses}`}>
@@ -144,8 +144,24 @@ const MuchoVaultInfo = ({ vaultInfo, precision }: { vaultInfo: IVaultInfo, preci
               unit={vaultInfo.depositToken.name}
               precision={precision}
             />
+            &nbsp;(
+            <Display
+              className="!justify-end"
+              data={vaultInfo.totalUSDStaked}
+              unit={"$"}
+              precision={2}
+            />
+            )
           </div>
           ,
+          <div className={`${wrapperClasses}`}>
+            <Display
+              className="!justify-end"
+              data={vaultInfo.expectedAPR}
+              unit={"%"}
+              precision={2}
+            />
+          </div>,
         ]
         }
         keyStyle={keyClasses}
@@ -155,17 +171,10 @@ const MuchoVaultInfo = ({ vaultInfo, precision }: { vaultInfo: IVaultInfo, preci
 
       <TableAligner
         keysName={
-          ['Expected APR', 'Your investment', 'Your (not invested) tokens in wallet']
+          ['User staked', 'User (not staked) tokens in wallet']
         }
         values={[
-          <div className={`${wrapperClasses}`}>
-            <Display
-              className="!justify-end"
-              data={vaultInfo.expectedAPR}
-              unit={"%"}
-              precision={2}
-            />
-          </div>,
+
           <div className={`${wrapperClasses}`}>
             <Display
               className="!justify-end"
@@ -173,6 +182,14 @@ const MuchoVaultInfo = ({ vaultInfo, precision }: { vaultInfo: IVaultInfo, preci
               unit={vaultInfo.depositToken.name}
               precision={precision}
             />
+            &nbsp;(
+            <Display
+              className="!justify-end"
+              data={vaultInfo.userData.muchoTokens * muchoToDepositExchange * vaultInfo.totalUSDStaked / vaultInfo.totalStaked}
+              unit={"$"}
+              precision={2}
+            />
+            )
           </div>,
           <div className={`${wrapperClasses}`}>
             <Display
@@ -181,6 +198,14 @@ const MuchoVaultInfo = ({ vaultInfo, precision }: { vaultInfo: IVaultInfo, preci
               unit={vaultInfo.depositToken.name}
               precision={precision}
             />
+            &nbsp;(
+            <Display
+              className="!justify-end"
+              data={vaultInfo.userData.depositTokens * vaultInfo.totalUSDStaked / vaultInfo.totalStaked}
+              unit={"$"}
+              precision={2}
+            />
+            )
           </div>
           ,
         ]
