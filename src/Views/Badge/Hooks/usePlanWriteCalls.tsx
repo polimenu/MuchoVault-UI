@@ -2,7 +2,7 @@ import { useToast } from '@Contexts/Toast';
 import { useWriteCall } from '@Hooks/useWriteCall';
 import { multiply } from '@Utils/NumString/stringArithmatics';
 import MuchoBadgeManagerABI from '../Config/Abis/MuchoBadgeManager.json'
-import MultiCallABI from '../Config/Abis/MultiCall.json'
+import MuchoRewardRouterABI from '../Config/Abis/MuchoRewardRouter.json'
 import { useAtom } from 'jotai';
 import { BADGE_CONFIG } from '../Config/BadgeConfig';
 import { writeBadgeAtom } from '../badgeAtom';
@@ -11,6 +11,7 @@ import { useContext } from 'react';
 import { BadgeContext } from '..';
 import { IPrice } from '../badgeAtom';
 import { ethers } from 'ethers';
+import { useUserAccount } from '@Hooks/useUserAccount';
 
 
 
@@ -54,7 +55,9 @@ export const usePlanEditCalls = () => {
 
 export const usePlanUserCalls = () => {
   const { activeChain } = useContext(BadgeContext);
+  const { address: account } = useUserAccount();
   const { writeCall } = useWriteCall(BADGE_CONFIG[activeChain?.id].MuchoBadgeManager, MuchoBadgeManagerABI);
+  const writeCallRR = useWriteCall(BADGE_CONFIG[activeChain?.id].MuchoRewardRouter, MuchoRewardRouterABI).writeCall;
   const toastify = useToast();
   const [, setPageState] = useAtom(writeBadgeAtom);
 
@@ -68,8 +71,12 @@ export const usePlanUserCalls = () => {
       });
   }
 
+  function addUser() {
+    writeCallRR(callBack, "addUserIfNotExists", [account]);
+  }
+
   function subscribeUserCall(id: number) {
-    writeCall(callBack, "subscribe(uint256)", [id]);
+    writeCall(addUser, "subscribe(uint256)", [id]);
   }
 
   function renewUserCall(id: number) {
@@ -120,7 +127,7 @@ export const usePlanSubUnsubCalls = () => {
 
   const { activeChain } = useContext(BadgeContext);
   const { writeCall } = useWriteCall(BADGE_CONFIG[activeChain?.id].MuchoBadgeManager, MuchoBadgeManagerABI);
-  //const writeCallMulti = useWriteCall(multiCallContract, MultiCallABI).writeCall;
+  const writeCallRR = useWriteCall(BADGE_CONFIG[activeChain?.id].MuchoRewardRouter, MuchoRewardRouterABI).writeCall;
   const toastify = useToast();
   const [, setPageState] = useAtom(writeBadgeAtom);
 
@@ -139,9 +146,14 @@ export const usePlanSubUnsubCalls = () => {
     writeCall(callBack, "cancelSubscription", [id, sub]);
   }
 
-  function subCall(id: number, sub: string) {
+  function addUser(account: string, cBack: any) {
+    writeCallRR(cBack, "addUserIfNotExists", [account]);
+  }
+
+  function subCall(id: number, sub: string, cBack: any) {
     //console.log("Sending call");
-    writeCall(callBack, "subscribe(uint256,address)", [id, sub]);
+    const cb = (cBack ? cBack : callBack);
+    writeCall((() => { addUser(sub, cb); }), "subscribe(uint256,address)", [id, sub]);
   }
 
   function renewCall(id: number, sub: string) {
@@ -155,7 +167,7 @@ export const usePlanSubUnsubCalls = () => {
     const calls = subs.map((s, i) => {
       return () => {
         const cBack = (i == 0) ? callBack : () => { calls[i - 1](); };
-        writeCall(cBack, "subscribe(uint256,address)", [id, s]);
+        subCall(id, subs[i], cBack);
       }
     });
 

@@ -1,6 +1,7 @@
 export const BADGE_CONFIG = {
   42161: {
     MuchoBadgeManager: '0xC439d29ee3C7fa237da928AD3A3D6aEcA9aA0717',
+    MuchoRewardRouter: '0x96D395d088C8e053f759F97695Efac4D4b45407A',
   },
 };
 
