@@ -64,6 +64,7 @@ const MuchoVaultInfoCard = ({ vaultId, vaultInfo, precision, data }: { vaultId: 
       className="w-full !h-full min-h-[370px] !transform-none !bg-1"
     />
   }
+  const nftData = getNftData(data);
   return (
     <Card
       top={
@@ -95,7 +96,7 @@ const MuchoVaultInfoCard = ({ vaultId, vaultInfo, precision, data }: { vaultId: 
         </>
       }
       middle={<>
-        <MuchoVaultInfo vaultInfo={vaultInfo} precision={precision} />
+        <MuchoVaultInfo vaultInfo={vaultInfo} precision={precision} userNftAnnualEarnings={nftData.userExpectedEarnings} totalUserInvested={nftData.totalUserInvested} />
       </>}
       bottom={
         <div className="mt-5">
@@ -106,19 +107,28 @@ const MuchoVaultInfoCard = ({ vaultId, vaultInfo, precision, data }: { vaultId: 
   );
 }
 
-const MuchoVaultInfo = ({ vaultInfo, precision }: { vaultInfo: IVaultInfo, precision: number }) => {
+const MuchoVaultInfo = ({ vaultInfo, precision, userNftAnnualEarnings, totalUserInvested }: { vaultInfo: IVaultInfo, precision: number, userNftAnnualEarnings: number, totalUserInvested: number }) => {
   //console.log("Plan:"); console.log(plan);
   //console.log("Enabled:"); console.log(enabledStr);
   const muchoToDepositExchange = Number(vaultInfo.muchoToken.supply) > 0 ? Number(vaultInfo.totalStaked / vaultInfo.muchoToken.supply) : 1;
   //console.log("muchoToDepositExchange", muchoToDepositExchange);
   //console.log("vaultInfo.muchoToken.supply", vaultInfo.muchoToken.supply);
   //console.log("vaultInfo.totalStaked", vaultInfo.totalStaked);
+  const userUsdDeposited = vaultInfo.userData.muchoTokens * muchoToDepositExchange * vaultInfo.totalUSDStaked / vaultInfo.totalStaked;
+  const annualEarningsNftVault = userNftAnnualEarnings * userUsdDeposited / totalUserInvested;
+  const nftApr = annualEarningsNftVault ? 100 * annualEarningsNftVault / userUsdDeposited : 0;
+  const totalApr = nftApr + vaultInfo.expectedAPR;
+
+  //console.log("userNftAnnualEarnings", userNftAnnualEarnings);
+  //console.log("annualEarningsNftVault", annualEarningsNftVault);
+  //console.log("totalUserInvested", totalUserInvested);
+  //console.log("userUsdDeposited", userUsdDeposited);
 
   return (
     <>
       <TableAligner
         keysName={
-          ['Receipt current price', 'Total Staked in Vault', 'Expected APR']
+          ['Receipt current price', 'Total Staked in Vault', 'APR']
         }
         values={[
           <div className={`${wrapperClasses}`}>
@@ -157,11 +167,41 @@ const MuchoVaultInfo = ({ vaultInfo, precision }: { vaultInfo: IVaultInfo, preci
           <div className={`${wrapperClasses}`}>
             <Display
               className="!justify-end"
-              data={vaultInfo.expectedAPR}
+              data={totalApr}
               unit={"%"}
               precision={2}
+              content={
+                <span>
+                  <TableAligner
+                    keysName={['Vault APR', 'NFT Bonus APR']}
+                    keyStyle={tooltipKeyClasses}
+                    valueStyle={tooltipValueClasses}
+                    values={[<div className={`${wrapperClasses}`}>
+                      <Display
+                        className="!justify-end"
+                        data={vaultInfo.expectedAPR}
+                        unit={"%"}
+                        precision={2}
+                      />
+                    </div>,
+                    <div className={`${wrapperClasses}`}>
+                      <Display
+                        className="!justify-end"
+                        data={nftApr}
+                        unit={"%"}
+                        precision={2}
+                      />
+                    </div>,]}
+                  ></TableAligner>
+                  <div className="text-left mt-3 text-f14">
+                    {nftApr > 0 && "The total APR displayed is the sum of the vault APR itself + Bonus APR from your subscription plan."}
+                    {nftApr == 0 && "You do not have a subscription plan! Get one and boost your APR up to +10%."}
+                  </div>
+                </span>
+              }
             />
           </div>,
+
         ]
         }
         keyStyle={keyClasses}
@@ -185,7 +225,7 @@ const MuchoVaultInfo = ({ vaultInfo, precision }: { vaultInfo: IVaultInfo, preci
             &nbsp;(
             <Display
               className="!justify-end"
-              data={vaultInfo.userData.muchoTokens * muchoToDepositExchange * vaultInfo.totalUSDStaked / vaultInfo.totalStaked}
+              data={userUsdDeposited}
               unit={"$"}
               precision={2}
             />
@@ -288,21 +328,19 @@ const NFTInfoCard = ({ data }: { data: IMuchoVaultData }) => {
   );
 }
 
-const NFTInfo = ({ data }: { data: IMuchoVaultData }) => {
-  //console.log("Plan:"); console.log(plan);
-  //console.log("Enabled:"); console.log(enabledStr);
-  //console.log("muchoToDepositExchange", muchoToDepositExchange);
-  //console.log("vaultInfo.muchoToken.supply", vaultInfo.muchoToken.supply);
-  //console.log("vaultInfo.totalStaked", vaultInfo.totalStaked);
+const getNftData = (data: IMuchoVaultData) => {
   let totalUserInvested = 0;
   data.vaultsInfo.forEach(v => totalUserInvested += v.muchoToken.supply == 0 ? 0 : v.userData.muchoTokens * v.totalUSDStaked / v.muchoToken.supply);
-
   const userPortion = data.badgeInfo.totalPonderatedInvestment > 0 ? 100 * totalUserInvested * data.badgeInfo.userBadgeData.planMultiplier / data.badgeInfo.totalPonderatedInvestment : 0;
   const userExpectedEarnings = userPortion * data.badgeInfo.annualEarningExpected / 100;
-
-
   const nftApr = totalUserInvested > 0 ? 100 * userExpectedEarnings / totalUserInvested : 0;
-  //console.log("Data badge", data.badgeInfo);
+
+  return { totalUserInvested, userPortion, userExpectedEarnings, nftApr };
+}
+
+const NFTInfo = ({ data }: { data: IMuchoVaultData }) => {
+
+  const { totalUserInvested, userPortion, userExpectedEarnings, nftApr } = getNftData(data);
 
   return (
     <>
@@ -342,7 +380,7 @@ const NFTInfo = ({ data }: { data: IMuchoVaultData }) => {
 
       <TableAligner
         keysName={
-          ['Annual Expected Yield for NFT Holders', 'Your currrent share', 'Your current annual expected Yield']
+          ['Annual Expected Yield for NFT Holders', 'Your current share', 'Your current annual NFT Bonus Yield']
         }
         values={[
           <div className={`${wrapperClasses}`}>
@@ -358,7 +396,7 @@ const NFTInfo = ({ data }: { data: IMuchoVaultData }) => {
               className="!justify-end"
               data={userPortion}
               unit="%"
-              precision={0}
+              precision={2}
             />
           </div>,
           <div className={`${wrapperClasses}`}>
@@ -378,7 +416,7 @@ const NFTInfo = ({ data }: { data: IMuchoVaultData }) => {
 
       <TableAligner
         keysName={
-          ['Your NFT Expected APR ', 'Your Accumulated Rewards']
+          ['Your NFT Bonus APR ', 'Your Accumulated Rewards']
         }
         values={[
           <div className={`${wrapperClasses}`}>

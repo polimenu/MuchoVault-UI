@@ -262,7 +262,7 @@ export const useGetMuchoVaultV2Data = () => {
       },
       contractsInfo: { muchoHub: getDataString(data, 'muchoHub'), priceFeed: getDataString(data, 'priceFeed'), badgeManager: getDataString(data, 'badgeManager') },
       badgeInfo: {
-        annualEarningExpected: getDataNumber(data, 'getExpectedNFTAnnualYield') / 10 ** 18,
+        annualEarningExpected: getDataNumber(data, 'getExpectedNFTAnnualYield') / 10 ** 18 + V2USER_CONFIG[activeChain.id].NFTWeeklyBonus * 52,
         totalPonderatedInvestment: getDataNumber(data, 'getTotalPonderatedInvestment') / 10 ** 18,
         userBadgeData: getUserBadgeData(data, account),
       }
