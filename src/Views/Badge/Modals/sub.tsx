@@ -14,61 +14,74 @@ export const SubModal = ({ mode }: { mode: string }) => {
 
   const [pageState] = useAtom(badgeAtom);
   const planId = pageState.activeModal.plan.id;
-  const { subCall, unsubCall, renewCall } = usePlanSubUnsubCalls();
+  const { subCall, unsubCall, renewCall, subBulkCall } = usePlanSubUnsubCalls();
 
   const modalConfig = {
     "subscribe": {
       call: subCall,
-      title: "Subscribe"
+      title: "Subscribe",
+      isBulk: false
+    },
+    "bulkSubscribe": {
+      call: subBulkCall,
+      title: "Bulk Subscribe",
+      isBulk: true
     },
     "unsubscribe": {
       call: unsubCall,
-      title: "Unsubscribe"
+      title: "Unsubscribe",
+      isBulk: false
     },
     "renew": {
       call: renewCall,
-      title: "Renew"
+      title: "Renew",
+      isBulk: false
     }
   }
 
   return (
-    <SubSub planId={planId} call={modalConfig[mode].call} buttonTitle={modalConfig[mode].title} />
+    <SubSub planId={planId} call={modalConfig[mode].call} buttonTitle={modalConfig[mode].title} isBulk={modalConfig[mode].isBulk} />
   );
 
 };
 
-const SubSub = ({ planId, call, buttonTitle }: { planId: number, call, buttonTitle: string }) => {
+const SubSub = ({ planId, call, buttonTitle, isBulk }: { planId: number, call, buttonTitle: string, isBulk: boolean }) => {
 
   const [subscriber, setSubscriber] = useState("");
   const { state } = useGlobal();
   const toastify = useToast();
   const clickHandler = () => {
-    if (!Web3.utils.isAddress(subscriber)) {
-      toastify({
-        type: 'error',
-        msg: 'Please enter a valid address',
-        id: 'invalidAddress',
-      });
-      return false;
+    const addrs = isBulk ? subscriber.split("\n") : [subscriber];
+    //console.log("addr", addrs);
+    for (var i in addrs) {
+      if (!Web3.utils.isAddress(addrs[i])) {
+        toastify({
+          type: 'error',
+          msg: `Please enter a valid address (${addrs[i]})`,
+          id: 'invalidAddress',
+        });
+        return false;
+      }
     }
-    console.log("Calling"); console.log(planId); console.log(subscriber); console.log(call);
-    call(planId, subscriber);
+    //console.log("Calling"); console.log(planId); console.log(subscriber); console.log(call);
+    call(planId, isBulk ? addrs : subscriber);
   }
 
 
   return (
     <>
-      <div>
+      <div className={isBulk ? "w-[40vw]" : ""}>
         <div className="text-f15 mb-5">{buttonTitle}</div>
         <BufferInput
           header={
             <div className="flex flex-row justify-between w-full text-3 text-f14 mt-2">
-              <span>Address</span>
+              <span>Address{isBulk && "es (one per line)"}</span>
             </div>
           }
           placeholder="0x..."
-          bgClass="!bg-1"
-          ipClass="mt-1"
+          bgClass={isBulk ? "!bg-1 h-[20vw]" : "!bg-1"}
+          ipClass={isBulk ? "!text-f12 mt-1 h-full" : "mt-1"}
+          inputType={isBulk ? "textarea" : null}
           value={subscriber}
           onChange={(val) => {
             setSubscriber(val);

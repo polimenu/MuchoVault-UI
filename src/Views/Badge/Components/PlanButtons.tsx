@@ -67,7 +67,7 @@ export function PlanAdminButtons({ plan }: { plan: IPlan }) {
       </div>
     );
 
-  return (
+  return (<>
     <div className="flex gap-5">
       <BlueBtn
         onClick={() =>
@@ -86,7 +86,8 @@ export function PlanAdminButtons({ plan }: { plan: IPlan }) {
       >
         {plan.enabled ? "Disable" : "Enable"}
       </BlueBtn>
-
+    </div>
+    <div className="flex gap-5 mt-5">
       <BlueBtn
         onClick={() =>
           setPageState({ ...state, activeModal: { plan: plan, action: "subscribe" }, isModalOpen: true })
@@ -94,6 +95,15 @@ export function PlanAdminButtons({ plan }: { plan: IPlan }) {
         className={btnClasses}
       >
         Sub to
+      </BlueBtn>
+
+      <BlueBtn
+        onClick={() =>
+          setPageState({ ...state, activeModal: { plan: plan, action: "bulkSubscribe" }, isModalOpen: true })
+        }
+        className={btnClasses}
+      >
+        Bulk sub to
       </BlueBtn>
 
       <BlueBtn
@@ -113,7 +123,7 @@ export function PlanAdminButtons({ plan }: { plan: IPlan }) {
       >
         Renew to
       </BlueBtn>
-    </div >
+    </div ></>
   );
 
 }

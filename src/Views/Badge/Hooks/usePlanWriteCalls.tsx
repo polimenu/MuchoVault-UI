@@ -2,6 +2,7 @@ import { useToast } from '@Contexts/Toast';
 import { useWriteCall } from '@Hooks/useWriteCall';
 import { multiply } from '@Utils/NumString/stringArithmatics';
 import MuchoBadgeManagerABI from '../Config/Abis/MuchoBadgeManager.json'
+import MultiCallABI from '../Config/Abis/MultiCall.json'
 import { useAtom } from 'jotai';
 import { BADGE_CONFIG } from '../Config/BadgeConfig';
 import { writeBadgeAtom } from '../badgeAtom';
@@ -9,6 +10,7 @@ import { toFixed } from '@Utils/NumString';
 import { useContext } from 'react';
 import { BadgeContext } from '..';
 import { IPrice } from '../badgeAtom';
+import { ethers } from 'ethers';
 
 
 
@@ -113,8 +115,12 @@ export const usePlanEnableDisableCalls = () => {
 
 
 export const usePlanSubUnsubCalls = () => {
+  const multiCallContract = "0x842eC2c7D803033Edf55E478F461FC547Bc54EB2";
+
+
   const { activeChain } = useContext(BadgeContext);
   const { writeCall } = useWriteCall(BADGE_CONFIG[activeChain?.id].MuchoBadgeManager, MuchoBadgeManagerABI);
+  //const writeCallMulti = useWriteCall(multiCallContract, MultiCallABI).writeCall;
   const toastify = useToast();
   const [, setPageState] = useAtom(writeBadgeAtom);
 
@@ -143,9 +149,27 @@ export const usePlanSubUnsubCalls = () => {
     writeCall(callBack, "renew(uint256,address)", [id, sub]);
   }
 
+  function subBulkCall(id: number, subs: string[]) {
+
+    //const iface = new ethers.utils.Interface(MuchoBadgeManagerABI);
+    const calls = subs.map((s, i) => {
+      return () => {
+        const cBack = (i == 0) ? callBack : () => { calls[i - 1](); };
+        writeCall(cBack, "subscribe(uint256,address)", [id, s]);
+      }
+    });
+
+    console.log("calls", calls);
+
+    calls[calls.length - 1]();
+
+    //writeCallMulti(callBack, 'aggregate', [calls]);
+  }
+
   return {
     unsubCall,
     subCall,
-    renewCall
+    renewCall,
+    subBulkCall
   };
 };

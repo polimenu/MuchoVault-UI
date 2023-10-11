@@ -98,7 +98,24 @@ const BufferTextInputRoot: React.FC<IBufferTextInputRoot> = ({
         <div className="upper-part ">{header}</div>
         <div className="lower-part h-full">
           {label ? label : null}
-          <input
+          {inputType === "textarea" &&
+            <textarea
+              className={`${ipClass} inputStyle font3 weight-400`}
+              placeholder={placeholder}
+              type={
+                inputType || numeric ? "number" : type ? "datetime-local" : "text"
+              }
+              autoFocus={id == 'amount-inner' ? true : false}
+              onChange={textChangeHandler}
+              value={value}
+              step="1"
+              id={id}
+              pattern="^\d*(\.\d{0,2})?$"
+              disabled={isDisabled}
+              title={title}
+              defaultValue={defaultValue}>
+            </textarea>}
+          {inputType !== "textarea" && <input
 
             className={`${ipClass} inputStyle font3 weight-400`}
             placeholder={placeholder}
@@ -114,7 +131,7 @@ const BufferTextInputRoot: React.FC<IBufferTextInputRoot> = ({
             disabled={isDisabled}
             title={title}
             defaultValue={defaultValue}
-          />
+          />}
           {unit ? unit : null}
         </div>
       </div>

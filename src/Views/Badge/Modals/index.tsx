@@ -47,7 +47,7 @@ function ModalChild() {
         <EditModal create={true} />
       );
     }
-    else if ((activeModal.action == "subscribe") || (activeModal.action == "unsubscribe") || (activeModal.action == "renew")) {
+    else if ((activeModal.action == "subscribe") || (activeModal.action == "unsubscribe") || (activeModal.action == "renew") || (activeModal.action == "bulkSubscribe")) {
       return (
         <SubModal mode={activeModal.action} />
       );
