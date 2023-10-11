@@ -96,7 +96,7 @@ const MuchoVaultInfoCard = ({ vaultId, vaultInfo, precision, data }: { vaultId: 
         </>
       }
       middle={<>
-        <MuchoVaultInfo vaultInfo={vaultInfo} precision={precision} userNftAnnualEarnings={nftData.userExpectedEarnings} totalUserInvested={nftData.totalUserInvested} />
+        <MuchoVaultInfo vaultInfo={vaultInfo} precision={precision} nftApr={nftData.nftApr} />
       </>}
       bottom={
         <div className="mt-5">
@@ -107,7 +107,7 @@ const MuchoVaultInfoCard = ({ vaultId, vaultInfo, precision, data }: { vaultId: 
   );
 }
 
-const MuchoVaultInfo = ({ vaultInfo, precision, userNftAnnualEarnings, totalUserInvested }: { vaultInfo: IVaultInfo, precision: number, userNftAnnualEarnings: number, totalUserInvested: number }) => {
+const MuchoVaultInfo = ({ vaultInfo, precision, nftApr }: { vaultInfo: IVaultInfo, precision: number, nftApr: number }) => {
   //console.log("Plan:"); console.log(plan);
   //console.log("Enabled:"); console.log(enabledStr);
   const muchoToDepositExchange = Number(vaultInfo.muchoToken.supply) > 0 ? Number(vaultInfo.totalStaked / vaultInfo.muchoToken.supply) : 1;
@@ -115,8 +115,6 @@ const MuchoVaultInfo = ({ vaultInfo, precision, userNftAnnualEarnings, totalUser
   //console.log("vaultInfo.muchoToken.supply", vaultInfo.muchoToken.supply);
   //console.log("vaultInfo.totalStaked", vaultInfo.totalStaked);
   const userUsdDeposited = vaultInfo.userData.muchoTokens * muchoToDepositExchange * vaultInfo.totalUSDStaked / vaultInfo.totalStaked;
-  const annualEarningsNftVault = userNftAnnualEarnings * userUsdDeposited / totalUserInvested;
-  const nftApr = annualEarningsNftVault ? 100 * annualEarningsNftVault / userUsdDeposited : 0;
   const totalApr = nftApr + vaultInfo.expectedAPR;
 
   //console.log("userNftAnnualEarnings", userNftAnnualEarnings);
@@ -337,6 +335,7 @@ const getNftData = (data: IMuchoVaultData) => {
 
   return { totalUserInvested, userPortion, userExpectedEarnings, nftApr };
 }
+
 
 const NFTInfo = ({ data }: { data: IMuchoVaultData }) => {
 
