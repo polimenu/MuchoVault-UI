@@ -173,7 +173,7 @@ export const FrontPage = () => {
                   </div>
                 </div>
                 <div className="flex gap-3 flex-wrap justify-center items-stretch whitespace-nowrap" style={{ paddingLeft: "25%", paddingRight: "25%" }}>
-                  <BlueBtn onClick={() => window.location.href = "/#/v2"} className={btnHeroClasses + " w-[365px]"}>Start Earning Yield (Vaults V2)</BlueBtn>
+                  <BlueBtn onClick={() => window.location.href = "/#/v2"} className={btnHeroClasses + " w-[365px]"}>Start Earning Yield (V2)</BlueBtn>
                 </div>
                 <div className="flex gap-3 flex-wrap justify-center items-stretch whitespace-nowrap">
                   <a className='text-f14 underline mt-5' href='/#/v1'>Go to vaults v1</a>
