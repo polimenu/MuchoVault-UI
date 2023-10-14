@@ -93,7 +93,7 @@ export function NFTButtons({ data }: { data: IMuchoVaultData }) {
     );
 
   //console.log("Max Cap", id, data.maxCap);
-  const harvestActive = data.badgeInfo.userBadgeData.currentRewards.amount;
+  const harvestActive = data.badgeInfo.userBadgeData.currentRewards.amount > 0;
 
   return (<>
     <div className="flex gap-5">
