@@ -16,7 +16,7 @@ import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
 
 const options = {
   fetcher: (url: string) =>
-    axios.get('https://api-v2.buffer.finance/' + url).then((res) => res.data),
+    axios.get('https://mucho.finance/' + url).then((res) => res.data),
   refreshInterval: 1000,
 };
 import { inject } from '@vercel/analytics';
