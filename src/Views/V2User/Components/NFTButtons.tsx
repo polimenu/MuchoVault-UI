@@ -74,7 +74,9 @@ export function NFTButtons({ data }: { data: IMuchoVaultData }) {
   const { chain } = useNetwork();
   const rewardsToken = V2USER_CONFIG[activeChain.id].MuchoRewardRouter.rewardsToken;
   const compoundVault = data.vaultsInfo.find(v => v.depositToken.contract == rewardsToken).id;
-  const compoundAmount = data.badgeInfo.userBadgeData.currentRewards.amount * (10 ** data.vaultsInfo[compoundVault].depositToken.decimals);
+  const amount = data.badgeInfo.userBadgeData.currentRewards.amount;
+  const compoundAmount = ethers.BigNumber.from((amount * (10 ** data.vaultsInfo[compoundVault].depositToken.decimals)).toString());
+  //console.log("compoundAmount", compoundAmount);
   const compoundCall = getMuchoVaultCall("deposit", [compoundVault, compoundAmount], null);
   const approveAndCompoundCall = getContractCall(rewardsToken, ERC20Abi, "approve", [V2USER_CONFIG[activeChain?.id].MuchoHub.contract, compoundAmount], compoundCall)
   const withdrawAndCompoundCall = getMuchoRewardCall("withdrawToken", [rewardsToken], approveAndCompoundCall); //ToDo approve first
@@ -91,17 +93,18 @@ export function NFTButtons({ data }: { data: IMuchoVaultData }) {
     );
 
   //console.log("Max Cap", id, data.maxCap);
+  const harvestActive = data.badgeInfo.userBadgeData.currentRewards.amount;
 
   return (<>
     <div className="flex gap-5">
       {data.badgeInfo.userBadgeData.planId == 0 && <BlueBtn key={"subscribe"} onClick={() => window.open("https://mucho.finance/#/badge")} className={btnClasses}>Subscribe and earn rewards</BlueBtn>}
-      {data.badgeInfo.userBadgeData.currentRewards.amount > 0 && getDirectButton(withdrawCall, "Harvest")}
-      {data.badgeInfo.userBadgeData.currentRewards.amount > 0 && getDirectButton(withdrawAndCompoundCall, "Compound*")}
+      {harvestActive && getDirectButton(withdrawCall, "Harvest")}
+      {harvestActive && getDirectButton(approveAndCompoundCall, "Compound*")}
       {/*data.userData.muchoTokens > 0 &&
         muchoVaultData.vaultsInfo.filter(v => v.id != data.id).map(v => getModalButton(`Swap to ${v.depositToken.name}`, data, false, true, v.id))
       */}
     </div>
-    {data.badgeInfo.userBadgeData.currentRewards.amount > 0 && <div className='flex gap-5 mt-5 text-f12'>
+    {harvestActive && <div className='flex gap-5 mt-5 text-f12'>
       *You will be asked to sign 3 transactions, to harvest your rewards and deposit them on WETH vault
     </div>}
   </>

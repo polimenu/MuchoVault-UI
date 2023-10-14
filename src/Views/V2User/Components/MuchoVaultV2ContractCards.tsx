@@ -340,6 +340,10 @@ const getNftData = (data: IMuchoVaultData) => {
 const NFTInfo = ({ data }: { data: IMuchoVaultData }) => {
 
   const { totalUserInvested, userPortion, userExpectedEarnings, nftApr } = getNftData(data);
+  const currentRewardsAmount = data.badgeInfo.userBadgeData.currentRewards.amount;
+  const rewardsVault = data.vaultsInfo.find(v => v.depositToken.contract == data.badgeInfo.userBadgeData.currentRewards.token.contract)?.id;
+  const rewardsExchange = data.vaultsInfo[rewardsVault].totalUSDStaked / data.vaultsInfo[rewardsVault].totalStaked;
+  const currentRewardsUSD = currentRewardsAmount * rewardsExchange;
 
   return (
     <>
@@ -431,7 +435,12 @@ const NFTInfo = ({ data }: { data: IMuchoVaultData }) => {
               data={data.badgeInfo.userBadgeData.currentRewards.amount}
               unit={data.badgeInfo.userBadgeData.currentRewards.token.name}
               precision={7}
-            />
+            />&nbsp;(<Display
+              className="!justify-end"
+              data={currentRewardsUSD}
+              unit={"$"}
+              precision={4}
+            />)
           </div>,
 
         ]
