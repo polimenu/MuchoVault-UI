@@ -379,7 +379,7 @@ const NFTInfo = ({ data }: { data: IMuchoVaultData }) => {
 
       <TableAligner
         keysName={
-          ['Annual Expected Yield for NFT Holders', 'Your current share', 'Your current annual NFT Bonus Yield']
+          ['Annual Expected Yield for NFT Holders', 'Your current share', 'Your expected annual NFT Bonus Yield']
         }
         values={[
           <div className={`${wrapperClasses}`}>
