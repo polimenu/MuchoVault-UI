@@ -99,7 +99,7 @@ export function NFTButtons({ data }: { data: IMuchoVaultData }) {
     <div className="flex gap-5">
       {data.badgeInfo.userBadgeData.planId == 0 && <BlueBtn key={"subscribe"} onClick={() => window.open("https://mucho.finance/#/badge")} className={btnClasses}>Subscribe and earn rewards</BlueBtn>}
       {harvestActive && getDirectButton(withdrawCall, "Harvest")}
-      {harvestActive && getDirectButton(approveAndCompoundCall, "Compound*")}
+      {harvestActive && getDirectButton(withdrawAndCompoundCall, "Compound*")}
       {/*data.userData.muchoTokens > 0 &&
         muchoVaultData.vaultsInfo.filter(v => v.id != data.id).map(v => getModalButton(`Swap to ${v.depositToken.name}`, data, false, true, v.id))
       */}
