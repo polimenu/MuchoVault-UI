@@ -130,6 +130,12 @@ export const getTabs = () => {
       isExternalLink: false,
     },
     {
+      to: `/badge`,
+      name: 'Badges',
+      subTabs: [],
+      isExternalLink: false,
+    },
+    {
       to: 'https://docs.mucho.finance/',
       name: 'Docs',
       subTabs: [],
