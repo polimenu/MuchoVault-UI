@@ -14,6 +14,7 @@ import { useContext } from 'react';
 import { useUserAccount } from '@Hooks/useUserAccount';
 import { IMuchoVaultData, IToken } from '../v2AdminAtom';
 import { getDataNumber, getDataString, getERC20Token, getERC20TokenCalls } from './useCommonUtils';
+import { InvertColorsOff } from '@mui/icons-material';
 
 export const BASIS_POINTS_DIVISOR = '10000';
 export const SECONDS_PER_YEAR = '31536000';
@@ -158,7 +159,7 @@ export const useGetMuchoVaultV2Data = () => {
     })
   });
 
-  const badgeDataCalls = [
+  let badgeDataCalls = [
     {
       address: v2UserConfig.MuchoBadgeManager.contract,
       abi: MuchoBadgeManagerAbi,
@@ -176,28 +177,32 @@ export const useGetMuchoVaultV2Data = () => {
     {
       address: v2UserConfig.MuchoRewardRouter.contract,
       abi: MuchoRewardRouterAbi,
-      functionName: 'getUserMultiplierAndPlan',
-      args: [account],
-      chainId: activeChain?.id,
-      map: `getUserMultiplierAndPlan_${account}`
-    },
-    {
-      address: v2UserConfig.MuchoRewardRouter.contract,
-      abi: MuchoRewardRouterAbi,
-      functionName: 'rewards',
-      args: [account, v2UserConfig.MuchoRewardRouter.rewardsToken],
-      chainId: activeChain?.id,
-      map: `rewards_${account}_${v2UserConfig.MuchoRewardRouter.rewardsToken}`
-    },
-    {
-      address: v2UserConfig.MuchoRewardRouter.contract,
-      abi: MuchoRewardRouterAbi,
       functionName: 'getTotalPonderatedInvestment',
       chainId: activeChain?.id,
       map: 'getTotalPonderatedInvestment'
     },
 
   ]
+
+  if (account) {
+    badgeDataCalls = badgeDataCalls.concat([
+      {
+        address: v2UserConfig.MuchoRewardRouter.contract,
+        abi: MuchoRewardRouterAbi,
+        functionName: 'getUserMultiplierAndPlan',
+        args: [account],
+        chainId: activeChain?.id,
+        map: `getUserMultiplierAndPlan_${account}`
+      },
+      {
+        address: v2UserConfig.MuchoRewardRouter.contract,
+        abi: MuchoRewardRouterAbi,
+        functionName: 'rewards',
+        args: [account, v2UserConfig.MuchoRewardRouter.rewardsToken],
+        chainId: activeChain?.id,
+        map: `rewards_${account}_${v2UserConfig.MuchoRewardRouter.rewardsToken}`
+      },])
+  }
 
 
   const calls = [...tokenCalls, ...vaultInfoCalls, ...vaultUSDCalls, ...vaultAPRCalls, ...muchoVaultParameterCalls, ...planCalls, ...badgeDataCalls, ...vaultDepfee];
