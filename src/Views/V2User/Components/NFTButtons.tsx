@@ -75,7 +75,7 @@ export function NFTButtons({ data }: { data: IMuchoVaultData }) {
   const rewardsToken = V2USER_CONFIG[activeChain.id].MuchoRewardRouter.rewardsToken;
   const compoundVault = data.vaultsInfo.find(v => v.depositToken.contract == rewardsToken).id;
   const amount = data.badgeInfo.userBadgeData.currentRewards.amount;
-  const compoundAmount = ethers.BigNumber.from((amount * (10 ** data.vaultsInfo[compoundVault].depositToken.decimals)).toString());
+  const compoundAmount = ethers.BigNumber.from(Math.round(amount * (10 ** data.vaultsInfo[compoundVault].depositToken.decimals)).toString());
   //console.log("compoundAmount", compoundAmount);
   const compoundCall = getMuchoVaultCall("deposit", [compoundVault, compoundAmount], null);
   const approveAndCompoundCall = getContractCall(rewardsToken, ERC20Abi, "approve", [V2USER_CONFIG[activeChain?.id].MuchoHub.contract, compoundAmount], compoundCall)
