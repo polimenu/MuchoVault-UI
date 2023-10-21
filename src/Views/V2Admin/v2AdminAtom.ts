@@ -46,6 +46,7 @@ export interface IGmxTokenInfo {
   invested: number;
   notInvested: number;
   desiredWeight: number;
+  investedWeight: number;
 }
 
 export interface IMuchoHubData {

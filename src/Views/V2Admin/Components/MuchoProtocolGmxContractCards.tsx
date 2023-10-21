@@ -131,7 +131,7 @@ const MuchoGmxTokenInfo = ({ tokenInfo, precision }: { tokenInfo: IGmxTokenInfo,
     <>
       <TableAligner
         keysName={
-          ['Secondary Tokens', 'Total Staked', 'Total Invested', 'Total Not Invested', 'Desired Weight']
+          ['Secondary Tokens', 'Total Staked', 'Total Invested', 'Total Not Invested', 'Actual vs GLP Weight']
         }
         values={[
           <div className={`${wrapperClasses}`}>
@@ -167,6 +167,12 @@ const MuchoGmxTokenInfo = ({ tokenInfo, precision }: { tokenInfo: IGmxTokenInfo,
             />
           </div>,
           <div className={`${wrapperClasses}`}>
+            <Display
+              className="!justify-end"
+              data={tokenInfo.investedWeight}
+              unit="%"
+              precision={2}
+            /> &nbsp; / &nbsp;
             <Display
               className="!justify-end"
               data={tokenInfo.desiredWeight}

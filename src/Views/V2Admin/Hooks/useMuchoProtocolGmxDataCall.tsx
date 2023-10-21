@@ -52,7 +52,7 @@ export const useGetMuchoProtocolGmxData = () => {
 
   let mainTokenCalls = []
   v2AdminConfig.MuchoProtocolGmx.tokens.forEach(t => {
-    mainTokenCalls = mainTokenCalls.concat(['getSecondaryTokens', 'getTokenStaked', 'getTokenInvested', 'getTokenNotInvested', 'getTokenWeight'].map(f => {
+    mainTokenCalls = mainTokenCalls.concat(['getSecondaryTokens', 'getTokenStaked', 'getTokenInvested', 'getTokenNotInvested', 'getTokenWeight', 'glpWeight'].map(f => {
       return {
         address: v2AdminConfig.MuchoProtocolGmx.contract,
         abi: MuchoProtocolGmxAbi,
@@ -167,7 +167,8 @@ const getTokensInfo = (data: any, tokens: string[]) => {
       staked: getDataNumber(data, `getTokenStaked_${t}`) / 10 ** getDataNumber(data, `decimals_${t}`),
       invested: getDataNumber(data, `getTokenInvested_${t}`) / 10 ** getDataNumber(data, `decimals_${t}`),
       notInvested: getDataNumber(data, `getTokenNotInvested_${t}`) / 10 ** getDataNumber(data, `decimals_${t}`),
-      desiredWeight: getDataNumber(data, `getTokenWeight_${t}`) / 100,
+      investedWeight: getDataNumber(data, `getTokenWeight_${t}`) / 100,
+      desiredWeight: getDataNumber(data, `glpWeight_${t}`) / 100,
     }
   });
 
