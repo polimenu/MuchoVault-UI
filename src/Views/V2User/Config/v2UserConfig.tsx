@@ -31,7 +31,8 @@ export const V2USER_CONFIG = {
       "0x01FC279A6339487c4688dF87714609b2138A4d71", //mWETH
       "0xBD5EB7fD3783f504c08Be0a44177BddeE82F991D", //mWBTC
     ],
-    NFTWeeklyBonus: 150 //in USD
+    RealVsParameterGLPAPR: 25 / 18.75,
+    NFTWeeklyBonus: 0 //in USD
   },
 };
 
