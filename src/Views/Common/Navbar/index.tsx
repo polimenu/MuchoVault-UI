@@ -9,7 +9,7 @@ import { MuchoFinanceLogoComponent } from './MuchoFinanceLogo'
 
 interface INavbar { }
 
-export const Navbar: React.FC<INavbar> = () => {
+export const Navbar: React.FC<INavbar> = ({ hideAccount }: { hideAccount: boolean }) => {
   const tabs = getTabs();
   const VISIBLETABS = 4;
   return (
@@ -52,13 +52,13 @@ export const Navbar: React.FC<INavbar> = () => {
         </div>
       </div>
 
-      <div className="flex items-center gap-[7px] whitespace-nowrap">
+      {!hideAccount && <div className="flex items-center gap-[7px] whitespace-nowrap">
 
         <div id="dropdown-box" className="flex gap-4 items-center text-1">
           {/* <ChainDropdown /> */}
           <AccountDropdown />
         </div>
-      </div>
+      </div>}
     </header>
   );
 };

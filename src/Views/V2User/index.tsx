@@ -15,6 +15,8 @@ import {
 import MuchoWhite from '@SVG/Elements/MuchoWhite';
 import { V2AdminModals } from './Modals';
 import EarnIcon from '@SVG/Elements/EarnIcon';
+import Background from 'src/AppStyles';
+import { Navbar } from '@Views/Common/Navbar';
 
 const Styles = styled.div`
   width: min(1200px, 100%);
@@ -37,22 +39,29 @@ export enum V2AdminContract {
   MuchoProtocolGmx,
 }
 
-export const V2UserPage = ({ pageType }: { pageType: V2AdminContract }) => {
+export const V2UserPage = () => {
   const { activeChain } = useActiveChain();
   useEffect(() => {
     document.title = "(mucho) finance | V2 Vaults";
   }, []);
   return (
-    <ArbitrumOnly>
-      <ViewContextProvider value={{ activeChain }}>
-        <main className="content-drawer">
-          <MuchoVaultV2UserPage />
-        </main>
-        <Drawer open={false}>
-          <></>
-        </Drawer>
-      </ViewContextProvider>
-    </ArbitrumOnly>
+    <Background>
+      <Navbar />
+
+      <div className="root w-[100vw]">
+        <ArbitrumOnly>
+          <ViewContextProvider value={{ activeChain }}>
+            <main className="content-drawer">
+              <MuchoVaultV2UserPage />
+            </main>
+            <Drawer open={false}>
+              <></>
+            </Drawer>
+          </ViewContextProvider>
+        </ArbitrumOnly>
+      </div>
+
+    </Background>
   );
 };
 

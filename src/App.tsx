@@ -1,19 +1,18 @@
-import { Navbar } from './Views/Common/Navbar';
 import {
   Routes,
   Route,
 } from 'react-router-dom';
-import Background from './AppStyles';
 import { atom } from 'jotai';
 import { Earn } from '@Views/Earn';
 import { Badge } from '@Views/Badge';
-import ConnectionDrawer from '@Views/Common/V2-Drawer/connectionDrawer';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
 import { V2AdminPage } from '@Views/V2Admin';
 import { V2AdminContract } from '@Views/V2Admin';
 import { V2UserPage } from '@Views/V2User';
 import { FrontPage } from '@Views/FrontPage';
+import { SwapPage } from '@Views/Swap';
+import { RampPage } from '@Views/Ramp';
 
 if (import.meta.env.VITE_MODE === 'production') {
   // console.log(`import.meta.env.SENTRY_DSN: `, import.meta.env.VITE_SENTRY_DSN);
@@ -25,22 +24,6 @@ if (import.meta.env.VITE_MODE === 'production') {
 }
 
 
-const AppRoutes = () => {
-  return (
-    <div className="root w-[100vw]">
-      <Routes>
-        <Route path="/*" element={<FrontPage />} />
-        <Route path="/v1" element={<Earn />} />
-        <Route path="/badgeadmin" element={<Badge adminObj={true} />} />
-        <Route path="/badge" element={<Badge adminObj={false} />} />
-        <Route path="/v2" element={<V2UserPage />} />
-        <Route path="/v2/admin/muchovault" element={<V2AdminPage pageType={V2AdminContract.MuchoVault} />} />
-        <Route path="/v2/admin/muchohub" element={<V2AdminPage pageType={V2AdminContract.MuchoHub} />} />
-        <Route path="/v2/admin/muchoprotocolgmx" element={<V2AdminPage pageType={V2AdminContract.MuchoProtocolGmx} />} />
-      </Routes>
-    </div>
-  );
-};
 
 export const snackAtom = atom<{
   message: null | React.ReactNode;
@@ -51,13 +34,19 @@ export const snackAtom = atom<{
 
 function App() {
   return (
-    <>
-      <Background>
-        <Navbar />
-        <AppRoutes />
-        <ConnectionDrawer className="open" />
-      </Background>
-    </>
+    <Routes>
+      <Route path="/*" element={<FrontPage />} />
+      <Route path="/v1" element={<Earn />} />
+      <Route path="/badgeAdmin" element={<Badge admin={true} />} />
+      <Route path="/badge" element={<Badge admin={false} />} />
+      <Route path="/v2" element={<V2UserPage />} />
+      <Route path="/v2/admin/muchovault" element={<V2AdminPage pageType={V2AdminContract.MuchoVault} />} />
+      <Route path="/v2/admin/muchohub" element={<V2AdminPage pageType={V2AdminContract.MuchoHub} />} />
+      <Route path="/v2/admin/muchoprotocolgmx" element={<V2AdminPage pageType={V2AdminContract.MuchoProtocolGmx} />} />
+      <Route path="/swap" element={<SwapPage />} />
+
+
+    </Routes>
   );
 }
 

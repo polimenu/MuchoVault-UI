@@ -14,6 +14,8 @@ import {
 } from '@Views/Common/ChainNotSupported';
 import MuchoWhite from '@SVG/Elements/MuchoWhite';
 import { AddPlanButton } from './Components/PlanButtons';
+import Background from 'src/AppStyles';
+import { Navbar } from '@Views/Common/Navbar';
 
 const BadgeStyles = styled.div`
   width: min(1200px, 100%);
@@ -29,28 +31,36 @@ export const BadgeContext = React.createContext<{ activeChain: Chain } | null>(
   null
 );
 const BadgeContextProvider = BadgeContext.Provider;
-export const Badge = (admin: boolean) => {
+export const Badge = ({ admin }: { admin: boolean }) => {
   const { activeChain } = useActiveChain();
+  //console.log("admin", admin);
   useEffect(() => {
     document.title = `Mucho.finance | Badge ${admin ? "Admin" : ""}`;
   }, []);
   return (
-    <ArbitrumOnly>
-      <BadgeContextProvider value={{ activeChain }}>
-        <main className="content-drawer">
-          <BadgePage admin={admin} />
-        </main>
-        <Drawer open={false}>
-          <></>
-        </Drawer>
-      </BadgeContextProvider>
-    </ArbitrumOnly>
+    <Background>
+      <Navbar />
+
+      <div className="root w-[100vw]">
+        <ArbitrumOnly>
+          <BadgeContextProvider value={{ activeChain }}>
+            <main className="content-drawer">
+              <BadgePage admin={admin} />
+            </main>
+            <Drawer open={false}>
+              <></>
+            </Drawer>
+          </BadgeContextProvider>
+        </ArbitrumOnly>
+      </div>
+
+    </Background>
+
   );
 };
 
-export const BadgePage = (adminObj) => {
+export const BadgePage = ({ admin }: { admin: boolean }) => {
   const [, setBadgeData] = useAtom(writeBadgeData);
-  const admin = adminObj.admin.adminObj;  //Algun día Satan nos encontrará
   const data: IBadge = useGetPlans(admin);
 
   //console.log("Admin:");

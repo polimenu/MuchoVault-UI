@@ -18,6 +18,9 @@ import {
 import MuchoWhite from '@SVG/Elements/MuchoWhite';
 import ErrorIcon from '@SVG/Elements/ErrorIcon';
 import { AlignHorizontalCenter } from '@mui/icons-material';
+import Background from 'src/AppStyles';
+import { Navbar } from '@Views/Common/Navbar';
+import ConnectionDrawer from '@Views/Common/V2-Drawer/connectionDrawer';
 
 const EarnStyles = styled.div`
   width: min(1200px, 100%);
@@ -67,28 +70,36 @@ export const EarnPage = () => {
   setEarnData(data);
 
   return (
-    <EarnStyles>
-      <EarnModals />
-      <Section
-        Heading={
-          <div className={topStyles}>
-            <EarnIcon className="mr-3" />
-            <MuchoWhite width={120} /> &nbsp;Vaults V1 (obsolete)
-          </div>
-        }
-        Cards={getEarnCards(data)}
-        subHeading={<>
-          <div className={descStyles}>
-            <ErrorIcon className="mt-5 m-auto" width="40" />
-            <strong className='mb-5'>
-              IMPORTANT NOTICE: V1 is obsolete, <LinkStyle href="/#/v2">use V2 instead</LinkStyle>.
-              No more deposits will be allowed on V1, which will stop rewarding on 1st November 2023
-              (withdrawals will remain available).
-            </strong>
-          </div>
-        </>
-        }
-      />
-    </EarnStyles>
+    <Background>
+      <Navbar />
+
+      <div className="root w-[100vw]">
+        <EarnStyles>
+          <EarnModals />
+          <Section
+            Heading={
+              <div className={topStyles}>
+                <EarnIcon className="mr-3" />
+                <MuchoWhite width={120} /> &nbsp;Vaults V1 (obsolete)
+              </div>
+            }
+            Cards={getEarnCards(data)}
+            subHeading={<>
+              <div className={descStyles}>
+                <ErrorIcon className="mt-5 m-auto" width="40" />
+                <strong className='mb-5'>
+                  IMPORTANT NOTICE: V1 is obsolete, <LinkStyle href="/#/v2">use V2 instead</LinkStyle>.
+                  No more deposits will be allowed on V1, which will stop rewarding on 1st November 2023
+                  (withdrawals will remain available).
+                </strong>
+              </div>
+            </>
+            }
+          />
+        </EarnStyles>
+      </div>
+
+      <ConnectionDrawer className="open" />
+    </Background>
   );
 };

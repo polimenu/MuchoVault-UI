@@ -20,6 +20,7 @@ import ErrorIcon from '@SVG/Elements/ErrorIcon';
 import { AlignHorizontalCenter } from '@mui/icons-material';
 import { BlueBtn } from '@Views/Common/V2-Button';
 import { btnClasses } from '@Views/Earn/Components/EarnButtons';
+import Background from 'src/AppStyles';
 
 const EarnStyles = styled.div`
   width: min(1200px, 100%);
@@ -157,35 +158,40 @@ export const FrontPage = () => {
   }
 
   return (
-    <EarnStyles>
-      <div className="body-bg">
-        <div className="sc-jRQBWg MAibN">
-          <div className="w-full pl-3 pr-5"></div>
-          <div className="sc-dkPtRN edJbPX">
-            <div className="full-width content-sbw main-wrapper persp">
-              <div className="hero-wrapper m-auto max-w-screen-sm text-center">
-                <HeaderStyled>Your Gateway to Earning <span style={{ color: "#3B82F6" }} >(mucho)</span> Profits</HeaderStyled>
-                <div className="subtxt text-f18 text-2 mt-5 sm:text-f16">Our mission is to empower you to grow your wealth through secure and profitable investments. With Mucho Vault, you can deposit your tokens, and we'll take care of the rest, maximizing your earnings.
-                </div>
-                <div className="h-7 overflow-hidden my-5">
-                  <div className="animate-[roll-over_25s_ease-in-out_infinite]">
-                    <div className="text-f18 text-1 font-bold">Earn USDC, WETH or WBTC with no Impermanent Loss</div>
+    <Background>
+
+      <div className="root w-[100vw]">
+        <EarnStyles>
+          <div className="body-bg">
+            <div className="sc-jRQBWg MAibN">
+              <div className="w-full pl-3 pr-5"></div>
+              <div className="sc-dkPtRN edJbPX">
+                <div className="full-width content-sbw main-wrapper persp">
+                  <div className="hero-wrapper m-auto max-w-screen-sm text-center">
+                    <HeaderStyled>Your Gateway to Earning <span style={{ color: "#3B82F6" }} >(mucho)</span> Profits</HeaderStyled>
+                    <div className="subtxt text-f18 text-2 mt-5 sm:text-f16">Our mission is to empower you to grow your wealth through secure and profitable investments. With Mucho Vault, you can deposit your tokens, and we'll take care of the rest, maximizing your earnings.
+                    </div>
+                    <div className="h-7 overflow-hidden my-5">
+                      <div className="animate-[roll-over_25s_ease-in-out_infinite]">
+                        <div className="text-f18 text-1 font-bold">Earn USDC, WETH or WBTC with no Impermanent Loss</div>
+                      </div>
+                    </div>
+                    <div className="flex gap-3 flex-wrap justify-center items-stretch whitespace-nowrap" style={{ paddingLeft: "25%", paddingRight: "25%" }}>
+                      <BlueBtn onClick={() => window.location.href = "/#/v2"} className={btnHeroClasses + " w-[365px]"}>Start Earning Yield (V2)</BlueBtn>
+                    </div>
+                    <div className="flex gap-3 flex-wrap justify-center items-stretch whitespace-nowrap">
+                      <a className='text-f14 underline mt-5' href='/#/v1'>Go to vaults v1</a>
+                    </div>
+                  </div>
+                  <div className="pp relative !mt-8 traa" id="hero-image" style={styleRotate}>
+                    <img src="/muchoVaultHero.png" alt="hero image" />
                   </div>
                 </div>
-                <div className="flex gap-3 flex-wrap justify-center items-stretch whitespace-nowrap" style={{ paddingLeft: "25%", paddingRight: "25%" }}>
-                  <BlueBtn onClick={() => window.location.href = "/#/v2"} className={btnHeroClasses + " w-[365px]"}>Start Earning Yield (V2)</BlueBtn>
-                </div>
-                <div className="flex gap-3 flex-wrap justify-center items-stretch whitespace-nowrap">
-                  <a className='text-f14 underline mt-5' href='/#/v1'>Go to vaults v1</a>
-                </div>
-              </div>
-              <div className="pp relative !mt-8 traa" id="hero-image" style={styleRotate}>
-                <img src="/muchoVaultHero.png" alt="hero image" />
               </div>
             </div>
           </div>
-        </div>
+        </EarnStyles >
       </div>
-    </EarnStyles >
+    </Background>
   );
 };
