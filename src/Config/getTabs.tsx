@@ -136,6 +136,12 @@ export const getTabs = () => {
       isExternalLink: false,
     },
     {
+      to: `/swap`,
+      name: 'Swap',
+      subTabs: [],
+      isExternalLink: false,
+    },
+    {
       to: 'https://docs.mucho.finance/',
       name: 'Docs',
       subTabs: [],
