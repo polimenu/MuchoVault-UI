@@ -21,6 +21,7 @@ import { AlignHorizontalCenter } from '@mui/icons-material';
 import { BlueBtn } from '@Views/Common/V2-Button';
 import { btnClasses } from '@Views/Earn/Components/EarnButtons';
 import Background from 'src/AppStyles';
+import { Navbar } from '@Views/Common/Navbar';
 
 const EarnStyles = styled.div`
   width: min(1200px, 100%);
@@ -159,6 +160,7 @@ export const FrontPage = () => {
 
   return (
     <Background>
+      <Navbar hideAccount={true} />
 
       <div className="root w-[100vw]">
         <EarnStyles>
