@@ -161,7 +161,7 @@ const VaultInfo = ({ poolInfo, unit, primaryUnit, precision }: { poolInfo: IPool
           <div className={`${wrapperClasses}`}>
             <Display
               className="!justify-end"
-              data={poolInfo.APR}
+              data={0}
               placement="bottom"
               unit="%"
             />{' '}

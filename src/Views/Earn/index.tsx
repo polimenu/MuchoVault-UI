@@ -89,8 +89,8 @@ export const EarnPage = () => {
                 <ErrorIcon className="mt-5 m-auto" width="40" />
                 <strong className='mb-5'>
                   IMPORTANT NOTICE: V1 is obsolete, <LinkStyle href="/#/v2">use V2 instead</LinkStyle>.
-                  No more deposits will be allowed on V1, which will stop rewarding on 1st November 2023
-                  (withdrawals will remain available).
+                  No more deposits will be allowed on V1, which stopped rewarding since 1st November 2023
+                  (withdrawals are still available).
                 </strong>
               </div>
             </>
