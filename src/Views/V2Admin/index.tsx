@@ -18,6 +18,8 @@ import { getMuchoHubV2AdminCards } from './Components/MuchoHubV2ContractCards';
 import { useGetMuchoHubV2Data } from './Hooks/useMuchoHubDataCall';
 import { useGetMuchoProtocolGmxData } from './Hooks/useMuchoProtocolGmxDataCall';
 import { getMuchoProtocolGmxAdminCards } from './Components/MuchoProtocolGmxContractCards';
+import Background from 'src/AppStyles';
+import { Navbar } from '@Views/Common/Navbar';
 
 const Styles = styled.div`
   width: min(1200px, 100%);
@@ -46,18 +48,24 @@ export const V2AdminPage = ({ pageType }: { pageType: V2AdminContract }) => {
     document.title = "(mucho) finance | V2 Admin";
   }, []);
   return (
-    <ArbitrumOnly>
-      <ViewContextProvider value={{ activeChain }}>
-        <main className="content-drawer">
-          {pageType == V2AdminContract.MuchoVault && <MuchoVaultV2AdminPage />}
-          {pageType == V2AdminContract.MuchoHub && <MuchoHubV2AdminPage />}
-          {pageType == V2AdminContract.MuchoProtocolGmx && <MuchoProtocolGmxAdminPage />}
-        </main>
-        <Drawer open={false}>
-          <></>
-        </Drawer>
-      </ViewContextProvider>
-    </ArbitrumOnly>
+    <Background>
+      <Navbar />
+
+      <div className="root w-[100vw]">
+        <ArbitrumOnly>
+          <ViewContextProvider value={{ activeChain }}>
+            <main className="content-drawer">
+              {pageType == V2AdminContract.MuchoVault && <MuchoVaultV2AdminPage />}
+              {pageType == V2AdminContract.MuchoHub && <MuchoHubV2AdminPage />}
+              {pageType == V2AdminContract.MuchoProtocolGmx && <MuchoProtocolGmxAdminPage />}
+            </main>
+            <Drawer open={false}>
+              <></>
+            </Drawer>
+          </ViewContextProvider>
+        </ArbitrumOnly>
+      </div>
+    </Background>
   );
 };
 
