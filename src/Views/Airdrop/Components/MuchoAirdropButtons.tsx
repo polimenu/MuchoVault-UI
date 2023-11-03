@@ -6,6 +6,7 @@ import { useNetwork } from 'wagmi';
 import { ConnectionRequired } from '@Views/Common/Navbar/AccountDropdown';
 import { IMuchoAirdropManagerData, v2ContractDataAtom } from '../AirdropAtom';
 import { ViewContext } from '..';
+import { MAIDROP_CONFIG } from '../Config/mAirdropConfig';
 
 export const btnClasses = '!w-fit px-4 rounded-sm !h-7 ml-auto';
 
@@ -43,7 +44,8 @@ export function AirdropButtons({ data }: { data: IMuchoAirdropManagerData }) {
 
   return (<>
     <div className="flex gap-5">
-      {data.active && data.dateIni < Date.now() && data.dateEnd >= Date.now() && data.mAirdropCurrentSupply < data.mAirdropMaxSupply > 0 && getModalButton("Buy mAirdrop now", data, state, setPageState)}
+      {data.active && data.dateIni < Date.now() && data.dateEnd >= Date.now() && data.mAirdropCurrentSupply < data.mAirdropMaxSupply > 0 && data.priceTokenInWallet > 0 && getModalButton("Buy mAirdrop now", data, state, setPageState)}
+      {data.priceTokenInWallet == 0 && <BlueBtn key={"nocoins"} className={btnClasses} isDisabled={true}>No {MAIDROP_CONFIG[activeChain.id].TokenPaymentSymbol} in wallet</BlueBtn>}
     </div>
   </>
   );

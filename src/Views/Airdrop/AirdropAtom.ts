@@ -24,6 +24,7 @@ export interface IMuchoAirdropManagerData {
   priceTokenAddress: string;
   priceTokenSymbol: string;
   priceTokenDecimals: number;
+  priceTokenInWallet: number;
 }
 
 export interface IPrice {

@@ -46,7 +46,7 @@ const Common = ({ val, setVal, head, max, unit, precision }) => {
         header={
           <div className="flex flex-row justify-between w-full text-3 text-f14 mt-2">
             <span className="flex flex-row items-center">
-              Max:
+              Max:&nbsp;
               <Display data={max} unit={unit} precision={precision} />
             </span>
           </div>
@@ -114,12 +114,19 @@ const Buy = ({ data, call }: { data: IMuchoAirdropManagerData, call: any }) => {
     return call(val);
   };
 
+  const maxAirdrop = Math.min((data.mAirdropMaxSupply - data.mAirdropCurrentSupply), data.priceTokenInWallet);
+  console.log("maxAirdrop", maxAirdrop);
+  console.log("1", data.mAirdropMaxSupply - data.mAirdropCurrentSupply);
+  console.log("2", data.priceTokenInWallet);
+  const maxPriceTk = maxAirdrop * data.price;
+  console.log("data.price", data.price);
+  console.log("maxPriceTk", maxPriceTk);
 
   return (
     <>
       <Common
         head={"Buy mAirdrop"}
-        max={(data.mAirdropMaxSupply - data.mAirdropCurrentSupply) * data.price}
+        max={maxPriceTk}
         unit={MAIDROP_CONFIG[activeChain.id].TokenPaymentSymbol}
         val={val}
         setVal={setVal}

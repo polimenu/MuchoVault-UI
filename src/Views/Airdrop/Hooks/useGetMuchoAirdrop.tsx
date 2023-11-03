@@ -107,25 +107,40 @@ export const useGetMuchoAirdrop = () => {
         args: [account],
         chainId: activeChain?.id,
       },
+
+      {
+        address: config.TokenPayment,
+        abi: TokenAbi,
+        functionName: 'balanceOf',
+        args: [account],
+        chainId: activeChain?.id,
+        map: 'mAirdropTokenPriceUser'
+      },
+
+
     ])
   }
 
+  //console.log("Calls before index", calls);
+
   //add map attribute
   calls = calls.map(c => {
-    c.map = c.functionName;
-    for (var i in c.args) {
-      c.map += "_" + c.args[i].toString();
+    if (!c.map) {
+      c.map = c.functionName;
+      for (var i in c.args) {
+        c.map += "_" + c.args[i].toString();
+      }
     }
     return c;
   })
 
-
+  //console.log("Calls after index", calls);
 
   let indexes: any = {};
-  calls.forEach((c, i) => { indexes[c.functionName] = i; });
+  calls.forEach((c, i) => { indexes[c.map] = i; });
 
-  console.log("Calls", calls);
-  console.log("indexes", indexes);
+  //console.log("Calls", calls);
+  //console.log("indexes", indexes);
 
   let { data } = useContractReads({
     contracts: calls,
@@ -139,7 +154,7 @@ export const useGetMuchoAirdrop = () => {
   //return response;
 
   if (data && data[0]) {
-    console.log("DATA!!", data);
+    //console.log("DATA!!", data);
     data.indexes = indexes;
 
     let endDate = new Date(0);
@@ -161,15 +176,16 @@ export const useGetMuchoAirdrop = () => {
       dateEnd: endDate,
       active: getDataNumber(data, 'active'),
 
-      price: getDataNumber(data, `mAirdropTokenPrice`) / (10 ** config.TokenPaymentDecimals),
+      price: getDataNumber(data, `mAirdropTokenPrice_${config.TokenPayment}`) / (10 ** config.TokenPaymentDecimals),
       priceTokenAddress: config.TokenPayment,
       priceTokenSymbol: config.TokenPaymentSymbol,
       priceTokenDecimals: config.TokenPaymentDecimals,
+      priceTokenInWallet: getDataNumber(data, `mAirdropTokenPriceUser`) / (10 ** config.TokenPaymentDecimals),
     };
 
   }
 
-  //console.log("Response RPC", responseMV);
+  //console.log("Response RPC", res);
 
   return res ? res : null;
 };
