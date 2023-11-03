@@ -13,6 +13,7 @@ import { V2UserPage } from '@Views/V2User';
 import { FrontPage } from '@Views/FrontPage';
 import { SwapPage } from '@Views/Swap';
 import { RampPage } from '@Views/Ramp';
+import { AirdropPage } from '@Views/Airdrop';
 
 if (import.meta.env.VITE_MODE === 'production') {
   // console.log(`import.meta.env.SENTRY_DSN: `, import.meta.env.VITE_SENTRY_DSN);
@@ -44,6 +45,7 @@ function App() {
       <Route path="/v2/admin/muchohub" element={<V2AdminPage pageType={V2AdminContract.MuchoHub} />} />
       <Route path="/v2/admin/muchoprotocolgmx" element={<V2AdminPage pageType={V2AdminContract.MuchoProtocolGmx} />} />
       <Route path="/swap" element={<SwapPage />} />
+      <Route path="/airdrop" element={<AirdropPage />} />
 
 
     </Routes>
