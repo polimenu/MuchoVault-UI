@@ -111,9 +111,18 @@ const MuchoAirdropInfo = ({ data }: { data: IMuchoAirdropManagerData }) => {
     <>
       <TableAligner
         keysName={
-          ['Price', 'Final date to buy', 'Time left to buy']
+          ['Your mAirdrop in wallet', 'Price', 'Final date to buy', 'Time left to buy']
         }
         values={[
+          <div className={`${wrapperClasses}`}>
+
+            <Display
+              className="!justify-end"
+              data={data.mAirdropInWallet}
+              unit={"mAirdrop"}
+              precision={2}
+            />
+          </div>,
           <div className={`${wrapperClasses}`}>
 
             <Display

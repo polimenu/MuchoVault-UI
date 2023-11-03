@@ -16,6 +16,7 @@ export interface IMuchoAirdropManagerData {
   mAirdropMaxSupply: number;
   mAirdropCurrentSupply: number;
   mAirdropDecimals: number;
+  mAirdropInWallet: number;
   userBalance: number;
   dateIni: Date;
   dateEnd: Date;
