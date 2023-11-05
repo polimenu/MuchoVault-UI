@@ -88,7 +88,7 @@ const Common = ({ val, setVal, head, max, unit, precision }) => {
 
 
 const Buy = ({ data, call }: { data: IMuchoAirdropManagerData, call: any }) => {
-  //console.log("DEPOSIT CALL:"); console.log(call);
+  //console.log("DEPOSIT CALL:, call);
   const [val, setVal] = useState('');
   const { activeChain } = useContext(ViewContext);
   const tokenContract: IContract = {
@@ -104,7 +104,7 @@ const Buy = ({ data, call }: { data: IMuchoAirdropManagerData, call: any }) => {
   const [approveState, setApprovalState] = useState(false);
   const { state } = useGlobal();
 
-  //console.log("Decimals:"); console.log(decimals);
+  //console.log("Decimals:", decimals);
   const allowance = useGetAllowance(MAIDROP_CONFIG[activeChain.id].TokenPayment, MAIDROP_CONFIG[activeChain.id].TokenPaymentDecimals, MAIDROP_CONFIG[activeChain.id]?.ManagerContract, activeChain.id);
   //console.log("Allowance", allowance, V2USER_CONFIG[activeChain.id]?.MuchoHub.contract);
 
@@ -113,14 +113,14 @@ const Buy = ({ data, call }: { data: IMuchoAirdropManagerData, call: any }) => {
   const clickHandler = () => {
     return call(val);
   };
-  console.log("datarl", data);
+  //console.log("datarl", data);
   const maxAirdrop = Math.min((data.mAirdropMaxSupply - data.mAirdropCurrentSupply), data.priceTokenInWallet);
-  console.log("maxAirdrop", maxAirdrop);
-  console.log("1", data.mAirdropMaxSupply - data.mAirdropCurrentSupply);
-  console.log("2", data.priceTokenInWallet);
+  //console.log("maxAirdrop", maxAirdrop);
+  //console.log("1", data.mAirdropMaxSupply - data.mAirdropCurrentSupply);
+  //console.log("2", data.priceTokenInWallet);
   const maxPriceTk = maxAirdrop * data.price;
-  console.log("data.price", data.price);
-  console.log("maxPriceTk", maxPriceTk);
+  //console.log("data.price", data.price);
+  //console.log("maxPriceTk", maxPriceTk);
 
   return (
     <>

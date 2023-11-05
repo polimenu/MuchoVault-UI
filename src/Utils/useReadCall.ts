@@ -27,10 +27,10 @@ export const useReadCall = ({
   if (signer && !isWrongChain && address) {
     signerOrProvider = signer;
   }
-  console.log(signerOrProvider?._network?.chainId, activeChain, 'provider');
+  //console.log(signerOrProvider?._network?.chainId, activeChain, 'provider');
   const key = swrKey + activeChain.id + account + chainInURL;
 
-  // console.log(`signerOrProvider: `, signerOrProvider);
+  //console.log(`signerOrProvider: `, signerOrProvider);
   return useSWR(calls && calls.length ? key : null, {
     fetcher: async () => {
       if (!calls) return null;
@@ -45,7 +45,7 @@ export const useReadCall = ({
         convertBNtoString(copy);
         return copy;
       }
-      // console.log(returnData, swrKey, cache.get(key), 'returnData');
+      //console.log(returnData, swrKey, cache.get(key), 'returnData');
       return cache.get(key);
     },
     // refreshInterval: 500,
@@ -84,17 +84,17 @@ export function getBNtoStringCopy(data) {
 
 export const contractRead = async (contract, method, args, debug = false) => {
   if (debug) {
-    console.log(`${method}-contract: `, contract);
-    console.log(`${method}-fn: `, contract[method]);
-    console.log(`method: `, method);
-    console.log(`args: `, args);
+    //console.log(`${method}-contract: `, contract);
+    //console.log(`${method}-fn: `, contract[method]);
+    //console.log(`method: `, method);
+    //console.log(`args: `, args);
   }
   const res = await contract[method](...args);
   let copy = getDeepCopy(res);
   convertBNtoString(copy);
   if (debug) {
-    console.log(`${method}-res: `, copy);
-    console.log(`${method}-arg: `, args);
+    //console.log(`${method}-res: `, copy);
+    //console.log(`${method}-arg: `, args);
   }
   return copy;
 };

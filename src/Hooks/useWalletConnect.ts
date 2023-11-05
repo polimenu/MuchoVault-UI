@@ -18,7 +18,7 @@ export const useWalletConnect = () => {
   }, []);
 
   useEffect(() => {
-    console.log("WC useEffect");
+    //console.log("WC useEffect");
     if (!activeChain?.id) return;
     if (!chain?.id) return;
     if (account && chain.id === activeChain.id) {
@@ -27,14 +27,14 @@ export const useWalletConnect = () => {
   }, [account, activeChain, chain]);
 
   const connectHandler = (connectorId: number): void => {
-    console.log("WC connectHandler");
+    //console.log("WC connectHandler");
     if (!activeChain?.id) return;
     const chainId = activeChain.id;
 
     if (switchNetwork) {
       switchNetwork(chainId);
       if (switchError) {
-        console.log(`[bug:wallet]switchError: `, switchError);
+        //console.log(`[bug:wallet]switchError: `, switchError);
         // toastify({
         //   type: "error",
         //   msg: "Switching networks is not supported on your wallet. Please try with another wallet.",
@@ -47,7 +47,7 @@ export const useWalletConnect = () => {
         chainId,
       });
       if (connectError) {
-        console.log(`[bug:wallet]connectError: `, connectError);
+        //console.log(`[bug:wallet]connectError: `, connectError);
         // toastify({
         //   type: "error",
         //   msg: "Please try with another wallet.",

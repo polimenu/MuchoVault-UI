@@ -37,7 +37,7 @@ export const multicallv2 = async (
     });
     return res;
   } catch (err) {
-    console.log(err, calls, swrKey, 'multicall err');
+    //console.log(err, calls, swrKey, 'multicall err');
     return null;
   }
 };

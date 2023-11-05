@@ -73,9 +73,9 @@ const PlanCard = ({ plan, admin }: { plan: IPlan, admin: boolean }) => {
 }
 
 const PlanInfoAdmin = ({ plan }: { plan: IPlan }) => {
-  //console.log("Plan:"); console.log(plan);
+  //console.log("Plan:", plan);
   const enabledStr = plan.enabled ? "Enabled" : "Disabled";
-  //console.log("Enabled:"); console.log(enabledStr);
+  //console.log("Enabled:", enabledStr);
   return (
     <>
       <TableAligner
