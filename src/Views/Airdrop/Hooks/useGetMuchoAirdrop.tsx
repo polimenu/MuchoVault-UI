@@ -167,10 +167,10 @@ export const useGetMuchoAirdrop = () => {
     data.indexes = indexes;
 
     let endDate = new Date(0);
-    endDate.setUTCMilliseconds(getDataNumber(data, 'dateEnd'));
+    endDate.setUTCSeconds(getDataNumber(data, 'dateEnd'));
 
     let iniDate = new Date(0);
-    iniDate.setUTCMilliseconds(getDataNumber(data, 'dateIni'));
+    iniDate.setUTCSeconds(getDataNumber(data, 'dateIni'));
 
     res = {
       contract: config.ManagerContract,

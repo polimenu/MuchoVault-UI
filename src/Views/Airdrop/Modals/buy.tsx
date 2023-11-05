@@ -113,7 +113,7 @@ const Buy = ({ data, call }: { data: IMuchoAirdropManagerData, call: any }) => {
   const clickHandler = () => {
     return call(val);
   };
-
+  console.log("datarl", data);
   const maxAirdrop = Math.min((data.mAirdropMaxSupply - data.mAirdropCurrentSupply), data.priceTokenInWallet);
   console.log("maxAirdrop", maxAirdrop);
   console.log("1", data.mAirdropMaxSupply - data.mAirdropCurrentSupply);
