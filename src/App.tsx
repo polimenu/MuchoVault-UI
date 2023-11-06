@@ -14,6 +14,7 @@ import { FrontPage } from '@Views/FrontPage';
 import { SwapPage } from '@Views/Swap';
 import { RampPage } from '@Views/Ramp';
 import { AirdropPage } from '@Views/Airdrop';
+import { LanguageModal } from '@Views/Common/ModalLanguage';
 
 if (import.meta.env.VITE_MODE === 'production') {
   //console.log(`import.meta.env.SENTRY_DSN: `, import.meta.env.VITE_SENTRY_DSN);
@@ -35,20 +36,23 @@ export const snackAtom = atom<{
 
 function App() {
   return (
-    <Routes>
-      <Route path="/*" element={<FrontPage />} />
-      <Route path="/v1" element={<Earn />} />
-      <Route path="/badgeAdmin" element={<Badge admin={true} />} />
-      <Route path="/badge" element={<Badge admin={false} />} />
-      <Route path="/v2" element={<V2UserPage />} />
-      <Route path="/v2/admin/muchovault" element={<V2AdminPage pageType={V2AdminContract.MuchoVault} />} />
-      <Route path="/v2/admin/muchohub" element={<V2AdminPage pageType={V2AdminContract.MuchoHub} />} />
-      <Route path="/v2/admin/muchoprotocolgmx" element={<V2AdminPage pageType={V2AdminContract.MuchoProtocolGmx} />} />
-      <Route path="/swap" element={<SwapPage />} />
-      <Route path="/airdrop" element={<AirdropPage />} />
+    <>
+      <LanguageModal />
+      <Routes>
+        <Route path="/*" element={<FrontPage />} />
+        <Route path="/v1" element={<Earn />} />
+        <Route path="/badgeAdmin" element={<Badge admin={true} />} />
+        <Route path="/badge" element={<Badge admin={false} />} />
+        <Route path="/v2" element={<V2UserPage />} />
+        <Route path="/v2/admin/muchovault" element={<V2AdminPage pageType={V2AdminContract.MuchoVault} />} />
+        <Route path="/v2/admin/muchohub" element={<V2AdminPage pageType={V2AdminContract.MuchoHub} />} />
+        <Route path="/v2/admin/muchoprotocolgmx" element={<V2AdminPage pageType={V2AdminContract.MuchoProtocolGmx} />} />
+        <Route path="/swap" element={<SwapPage />} />
+        <Route path="/airdrop" element={<AirdropPage />} />
 
 
-    </Routes>
+      </Routes>
+    </>
   );
 }
 
