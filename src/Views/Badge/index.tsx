@@ -36,7 +36,7 @@ export const Badge = ({ admin }: { admin: boolean }) => {
   const { activeChain } = useActiveChain();
   //console.log("admin", admin);
   useEffect(() => {
-    document.title = `(mucho) finance | NFT Plan ${admin ? "Admin" : ""}`;
+    document.title = `(mucho) finance | NFT Plans ${admin ? "Admin" : ""}`;
   }, []);
   return (
     <Background>
