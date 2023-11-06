@@ -6,6 +6,7 @@ import { useNetwork } from 'wagmi';
 import { ConnectionRequired } from '@Views/Common/Navbar/AccountDropdown';
 import { IMuchoVaultData, IVaultInfo, v2ContractDataAtom, writeV2AdminData } from '../v2AdminAtom';
 import { ViewContext } from '..';
+import { useTranslation } from 'react-i18next';
 
 export const btnClasses = '!w-fit px-4 rounded-sm !h-7 ml-auto';
 
@@ -29,6 +30,7 @@ export function VaultButtons({ data, muchoVaultData }: { data: IVaultInfo, mucho
   const [state, setPageState] = useAtom(v2ContractDataAtom);
   const { activeChain } = useContext(ViewContext);
   const { chain } = useNetwork();
+  const { t } = useTranslation();
 
   if (!account || activeChain.id !== chain?.id)
     return (
@@ -43,8 +45,8 @@ export function VaultButtons({ data, muchoVaultData }: { data: IVaultInfo, mucho
 
   return (<>
     <div className={`${btnClasses} flex gap-5`}>
-      {data.userData.depositTokens > 0 && getModalButton("Deposit", data, true, false, 0, state, setPageState)}
-      {data.userData.muchoTokens > 0 && getModalButton("Withdraw", data, false, false, 0, state, setPageState)}
+      {data.userData.depositTokens > 0 && getModalButton(t("v2.Deposit"), data, true, false, 0, state, setPageState)}
+      {data.userData.muchoTokens > 0 && getModalButton(t("v2.Withdraw"), data, false, false, 0, state, setPageState)}
     </div>
   </>
   );

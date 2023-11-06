@@ -35,6 +35,14 @@
 		,"Harvest": "Reclamar"
 		,"Compound*": "Interés compuesto*"
 		,"CompoundNote": "*Se te pedirá firmar 3 transacciones, para reclamar tus recompensas y depositarlas en la bóveda WETH"
+		,"Deposit": "Depositar"
+		,"Withdraw": "Retirar"
+		,"Expected APR": "APR Estimado"
+		,"Not enough funds": "No hay fondos suficientes"
+		,"Not enough deposited": "No hay suficiente depositado"
+		,"Enter a poistive value": "Inserta un valor positivo"
+		,"Approve": "Aprobar"
+		,"Amount exceeds max withdrawable value.": "La cantidad es superior al máximo retirable."
 		
     },
     "badge": {

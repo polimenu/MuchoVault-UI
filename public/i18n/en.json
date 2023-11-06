@@ -35,6 +35,14 @@
 		,"Harvest": "Harvest"
 		,"Compound*": "Compound*"
 		,"CompoundNote": "*You will be asked to sign 3 transactions, to harvest your rewards and deposit them on WETH vault"
+		,"Deposit": "Deposit"
+		,"Withdraw": "Withdraw"
+		,"Expected APR": "Expected APR"
+		,"Not enough funds": "Not enough funds"
+		,"Not enough deposited": "Not enough deposited"
+		,"Enter a poistive value": "Enter a poistive value"
+		,"Approve": "Approve"
+		,"Amount exceeds max withdrawable value.": "Amount exceeds max withdrawable value."
     },
     "badge": {
         "HeroText": "Subscribe to your plan, and you will receive a NFT token that will identify you with benefits in our protocols!"
