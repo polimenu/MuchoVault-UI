@@ -7,7 +7,7 @@ import { ConnectionRequired } from '@Views/Common/Navbar/AccountDropdown';
 import { IMuchoVaultData, IVaultInfo, v2ContractDataAtom, writeV2AdminData } from '../v2AdminAtom';
 import { ViewContext } from '..';
 
-export const btnClasses = '!w-fit px-4 rounded-sm !h-7';
+export const btnClasses = '!w-fit px-4 rounded-sm !h-7 ml-auto';
 
 
 const getModalButton = (caption: string, vaultInfo: IVaultInfo, deposit: boolean, swap: boolean, destVaultId: number, state, setPageState) => {
@@ -42,7 +42,7 @@ export function VaultButtons({ data, muchoVaultData }: { data: IVaultInfo, mucho
   //console.log("Max Cap", id, data.maxCap);
 
   return (<>
-    <div className="flex gap-5">
+    <div className={`${btnClasses} flex gap-5`}>
       {data.userData.depositTokens > 0 && getModalButton("Deposit", data, true, false, 0, state, setPageState)}
       {data.userData.muchoTokens > 0 && getModalButton("Withdraw", data, false, false, 0, state, setPageState)}
     </div>

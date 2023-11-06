@@ -4,6 +4,7 @@ import { ArrowDropDownRounded } from '@mui/icons-material';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import * as chain from '@wagmi/core/chains';
 import { BlueBtn } from '../V2-Button';
+import { useTranslation } from 'react-i18next';
 
 interface IProps {
   inDrawer?: boolean;
@@ -20,6 +21,7 @@ const chainImageMappipng = {
 };
 
 export const AccountDropdown: React.FC<IProps> = ({ inDrawer }) => {
+  const { t } = useTranslation();
   return (
     <ConnectButton.Custom>
       {({
@@ -63,7 +65,7 @@ export const AccountDropdown: React.FC<IProps> = ({ inDrawer }) => {
                   >
                     <Wallet className="mr-[6px] ml-1" />
 
-                    <span>{'Connect Wallet'}</span>
+                    <span>{t('Connect Wallet')}</span>
                     <ArrowDropDownRounded
                       className={`dropdown-arrow transition-all duration-300 w-6 h-6 ease-out `}
                     />
@@ -80,7 +82,7 @@ export const AccountDropdown: React.FC<IProps> = ({ inDrawer }) => {
                   >
                     <Wallet className="mr-[6px] ml-1" />
 
-                    <span>{'Switch Network'}</span>
+                    <span>{t('Switch Network')}</span>
                     <ArrowDropDownRounded
                       className={`dropdown-arrow transition-all duration-300 w-6 h-6 ease-out `}
                     />
@@ -140,6 +142,7 @@ export const AccountDropdown: React.FC<IProps> = ({ inDrawer }) => {
 };
 
 export const ConnectionRequired = ({ children }: { children: ReactNode }) => {
+  const { t } = useTranslation();
   return (
     <ConnectButton.Custom>
       {({
@@ -178,7 +181,7 @@ export const ConnectionRequired = ({ children }: { children: ReactNode }) => {
                     onClick={openConnectModal}
                     className="px-5 py-[5px] !h-fit"
                   >
-                    Connect Wallet
+                    {t("Connect Wallet")}
                   </BlueBtn>
                 );
               }
@@ -190,7 +193,7 @@ export const ConnectionRequired = ({ children }: { children: ReactNode }) => {
                     className="px-5 py-[5px] !h-fit"
                   >
                     {/* <Wallet className="" /> */}
-                    Switch Network
+                    {t("Switch Network")}
                   </BlueBtn>
                 );
               }

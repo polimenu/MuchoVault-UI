@@ -70,6 +70,13 @@ export const Navbar: React.FC<INavbar> = ({ hideAccount }: { hideAccount: boolea
       </select>*/}
       <div className="flex items-center gap-[7px] whitespace-nowrap">
 
+        <img src={`/public/lang_${i18n.language}.png`} className='hover:bg-1 hover:text-1 hover:brightness-125 cursor-pointer mt-2' width={"20px"} height={"20px"} onClick={() => {
+          setPageState({
+            ...pageState,
+            isModalOpen: true,
+          });
+        }} />
+
         {!hideAccount &&
 
           <div id="dropdown-box" className="flex gap-4 items-center text-1">
@@ -77,12 +84,6 @@ export const Navbar: React.FC<INavbar> = ({ hideAccount }: { hideAccount: boolea
             <AccountDropdown />
           </div>}
 
-        <img src={`/public/lang_${i18n.language}.png`} className='hover:bg-1 hover:text-1 hover:brightness-125 cursor-pointer mt-2' width={"20px"} height={"20px"} onClick={() => {
-          setPageState({
-            ...pageState,
-            isModalOpen: true,
-          });
-        }} />
 
 
 
