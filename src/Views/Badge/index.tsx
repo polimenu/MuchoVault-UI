@@ -36,7 +36,7 @@ export const Badge = ({ admin }: { admin: boolean }) => {
   const { activeChain } = useActiveChain();
   //console.log("admin", admin);
   useEffect(() => {
-    document.title = `Mucho.finance | Badge ${admin ? "Admin" : ""}`;
+    document.title = `(mucho) finance | NFT Plan ${admin ? "Admin" : ""}`;
   }, []);
   return (
     <Background>
@@ -65,10 +65,6 @@ export const BadgePage = ({ admin }: { admin: boolean }) => {
   const data: IBadge = useGetPlans(admin);
   const { i18n, t } = useTranslation();
 
-  useEffect(() => {
-    document.title = "(mucho) finance | NFT Badge (v2)";
-  }, []);
-
   setBadgeData(data);
 
   return (
@@ -78,7 +74,7 @@ export const BadgePage = ({ admin }: { admin: boolean }) => {
         Heading={
           <>
             <div className={topStyles}>
-              <MuchoWhite width={120} /> &nbsp;Badge {admin ? "Admin" : ""}
+              <MuchoWhite width={120} /> &nbsp;NFT Plan {admin ? "Admin" : ""}
             </div>
           </>
         }

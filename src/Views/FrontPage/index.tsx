@@ -137,20 +137,18 @@ export const FrontPage = () => {
                   <div className="hero-wrapper m-auto max-w-screen-sm text-center">
                     <HeaderStyled>
                       <div dangerouslySetInnerHTML={
-                        { __html: t("title") }} />
+                        { __html: t("frontpage.title") }} />
                     </HeaderStyled>
-                    <div className="subtxt text-f18 text-2 mt-5 sm:text-f16">Our mission is to empower you to grow your wealth through secure and profitable investments. With Mucho Vault, you can deposit your tokens, and we'll take care of the rest, maximizing your earnings.
+                    <div className="subtxt text-f18 text-2 mt-5 sm:text-f16">
+                      {t("frontpage.description")}
                     </div>
                     <div className="h-7 overflow-hidden my-5">
                       <div className="animate-[roll-over_25s_ease-in-out_infinite]">
-                        <div className="text-f18 text-1 font-bold">Earn USDC, WETH or WBTC with no Impermanent Loss</div>
+                        <div className="text-f18 text-1 font-bold">{t("frontpage.Earn USDC, WETH or WBTC with no Impermanent Loss")}</div>
                       </div>
                     </div>
                     <div className="flex gap-3 flex-wrap justify-center items-stretch whitespace-nowrap" style={{ paddingLeft: "25%", paddingRight: "25%" }}>
-                      <BlueBtn onClick={() => window.location.href = "/#/v2"} className={btnHeroClasses + " w-[365px]"}>Start Earning Yield (V2)</BlueBtn>
-                    </div>
-                    <div className="flex gap-3 flex-wrap justify-center items-stretch whitespace-nowrap">
-                      <a className='text-f14 underline mt-5' href='/#/v1'>Go to vaults v1</a>
+                      <BlueBtn onClick={() => window.location.href = "/#/v2"} className={btnHeroClasses + " w-[365px]"}>{t("frontpage.Start Earning Yield")}</BlueBtn>
                     </div>
                   </div>
                   <div className="pp relative !mt-8 traa" id="hero-image" style={styleRotate}>

@@ -1,8 +1,13 @@
 {
-    "title": "Your Gateway to earn <span style='color: #3B82F6'>(mucho)</span> Profits",
 	"Connect Wallet": "Connect Wallet",
 	"Switch Network": "Switch Network",
-    "v2": {
+	"frontpage": {
+		"title": "Your Gateway to earn <span style='color: #3B82F6'>(mucho)</span> Profits"
+		,"description": "Our mission is to empower you to grow your wealth through secure and profitable investments. With Mucho Vault, you can deposit your tokens, and we'll take care of the rest, maximizing your earnings."
+		,"Earn USDC, WETH or WBTC with no Impermanent Loss": "Earn USDC, WETH or WBTC with no Impermanent Loss"
+		,"Start Earning Yield": "Start Earning Yield"
+	}
+    ,"v2": {
         "HeroText": "(mucho) Vaults V2 will automatically invest your deposits in different protocols, allowing you to earn interests. Integration with other protocols is programmatic and decentralized, so nobody will own your tokens but you."
 		,"VaultTitle": "{{vaultName}} Vault"
 		,"Max Capacity": "Max Capacity"
@@ -33,5 +38,14 @@
     },
     "badge": {
         "HeroText": "Subscribe to your plan, and you will receive a NFT token that will identify you with benefits in our protocols!"
+		,"Duration": "Duration"
+		,"Subscription Price": "Subscription Price"
+		,"Renewal Price": "Renewal Price"
+		,"Status (time left)": "Status (time left)"
+		,"Subscribe": "Subscribe"
+		,"Renew": "Renew"
     }
+	,"swap": {
+		"hero": "Swap your tokens between different blockchains."
+	}
 }

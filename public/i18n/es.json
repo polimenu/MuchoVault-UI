@@ -1,8 +1,13 @@
 {
-    "title": "Tu pasarela para ganar <span style='color: #3B82F6'>(mucho)</span> dinero",
 	"Connect Wallet": "Conectar Wallet",
 	"Switch Network": "Cambiar de Red",
-    "v2": {
+	"frontpage": {
+		"title": "Se puede ganar <span style='color: #3B82F6'>(mucho)</span> dinero en DeFi"
+		,"description": "Pon tu dinero a trabajar en DeFi, de la manera más sencilla posible."
+		,"Earn USDC, WETH or WBTC with no Impermanent Loss": "Gana USDC, WETH o WBTC en nuestros protocolos"
+		,"Start Earning Yield": "Empezar"
+	}
+    ,"v2": {
         "HeroText": "(mucho) Vaults V2 invertirá automáticamente tus depósitos en diferentes protocolos, permitiéndote beneficiarte de un interés compuesto. La integración con otros protocolos is programática y descentralizada, sólo tú eres el propietario de tus tokens."
 		,"VaultTitle": "Bóveda {{vaultName}}"
 		,"Max Capacity": "Máx Capacidad"
@@ -34,5 +39,14 @@
     },
     "badge": {
         "HeroText": "Subscríbete a tu plan, y recibirás un token NFT que te permitirá disfrutar de beneficios en nuestros protocolos"
+		,"Duration": "Duración"
+		,"Subscription Price": "Precio Subscripción"
+		,"Renewal Price": "Precio Renovación"
+		,"Status (time left)": "Estado (tiempo restante)"
+		,"Subscribe": "Subscribir"
+		,"Renew": "Renovar"
     }
+	,"swap": {
+		"hero": "Intercambia tus tokens por otros, entre distintas blockchains."
+	}
 }
