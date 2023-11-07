@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Chain, useNetwork } from 'wagmi';
-import Config from 'public/config.json';
+import Config from 'src/assets/config.json';
 import { getChains } from 'src/Config/wagmiClient';
 import { useParams } from 'react-router-dom';
 const typeofConfig = Config[421613];

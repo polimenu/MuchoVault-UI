@@ -28,7 +28,7 @@ export const LanguageModal = ({ }: {}) => {
                 {pageState.isModalOpen && <div>
                     <div className="text-f22 mb-5 mt-5">Select your language:</div>
                     <div className="flex items-center gap-[24px] whitespace-nowrap ml-[8px]">
-                        {LANGUAGES.map(l => <img src={`/public/lang_${l.code}.png`} className='hover:bg-1 hover:text-1 hover:brightness-125 cursor-pointer mt-2' width={"75px"} height={"75px"} onClick={() => {
+                        {LANGUAGES.map(l => <img src={`/lang_${l.code}.png`} className='hover:bg-1 hover:text-1 hover:brightness-125 cursor-pointer mt-2' width={"75px"} height={"75px"} onClick={() => {
                             i18n.changeLanguage(l.code);
                             localStorage.setItem("lang", l.code);
                             closeModal();
