@@ -23,7 +23,7 @@ export const Navbar: React.FC<INavbar> = ({ hideAccount }: { hideAccount: boolea
       <div className=" flex items-center gap-[24px]">
         <div
           role={'button'}
-          onClick={() => window.open('https://mucho.finance/', '_blank')}
+          onClick={() => { window.location.href = '/'; }}
         >
           {<MuchoFinanceLogoComponent
             className="h-[30px] ml-[8px] sm:mx-[2px]"
@@ -90,6 +90,6 @@ export const Navbar: React.FC<INavbar> = ({ hideAccount }: { hideAccount: boolea
       </div>
 
 
-    </header>
+    </header >
   );
 };
