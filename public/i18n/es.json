@@ -1,0 +1,60 @@
+{
+	"Connect Wallet": "Conectar Wallet",
+	"Switch Network": "Cambiar de Red",
+	"frontpage": {
+		"title": "Se puede ganar <span style='color: #3B82F6'>(mucho)</span> dinero en DeFi"
+		,"description": "Pon tu dinero a trabajar en DeFi, de la manera más sencilla posible."
+		,"Earn USDC, WETH or WBTC with no Impermanent Loss": "Gana USDC, WETH o WBTC en nuestros protocolos"
+		,"Start Earning Yield": "Empezar"
+	}
+    ,"v2": {
+        "HeroText": "(mucho) Vaults V2 invertirá automáticamente tus depósitos en diferentes protocolos, permitiéndote beneficiarte de un interés compuesto. La integración con otros protocolos is programática y descentralizada, sólo tú eres el propietario de tus tokens."
+		,"VaultTitle": "Bóveda {{vaultName}}"
+		,"Max Capacity": "Máx Capacidad"
+		,"Receipt current price": "Precio actual del recibo"
+		,"Total Staked in Vault": "Total en bóveda"
+		,"Vault APR": "APR bóveda"
+		,"NFT Bonus APR": "Bonus APR por NFT"
+		,"aprNote": "El APR total APR mostrado es la suma del APR de la bóveda + el APR Bonus por tu plan de subscripción (NFT)."
+		,"noNftNote": "¡No tienes un NFT de subscripción a ningún plan! Get one and boost your APR up to +10%."
+		,"User staked":"Tu depósito"
+		,"User (not staked) tokens in wallet":"Tus tokens en cartera (no depositados)"
+		,"Deposit Fee":"Fee de depósito"
+		,"NftHero":"Hazte &quot;socio&quot; del protocolo y obtén rendimiento del total de depósitos con nuestros <a target=&quot;_blank&quot; href='https://mucho.finance/#/badge'>NFT de subscripción</a>. Los rendimientos se reparten semanalmente."
+		,"(mucho) Subscription Plan Bonus": "(mucho) NFT Plans Bonus"
+		,"Your Subscription plan": "Tu plan"
+		,"Your Plan Multiplier": "Multiplicador de tu plan"
+		,"Your Total Investment": "Tu inversión total"
+		,"Annual Expected Yield for NFT Holders": "Rendimiento anual esperado para los NFT Holders"
+		,"Your current share": "Tu porción actual"
+		,"Your expected annual NFT Bonus Yield": "Tu rendimiento anual esperado por tu NFT Plan"
+		,"Your NFT Bonus APR": "APR Bonus de tu NFT"
+		,"Your Accumulated Rewards": "Tus recompensas acumuladas"
+		,"No active subscription": "No tienes subscripción activa"
+		,"Subscribe and earn rewards": "Subscríbete"
+		,"Harvest": "Reclamar"
+		,"Compound*": "Interés compuesto*"
+		,"CompoundNote": "*Se te pedirá firmar 3 transacciones, para reclamar tus recompensas y depositarlas en la bóveda WETH"
+		,"Deposit": "Depositar"
+		,"Withdraw": "Retirar"
+		,"Expected APR": "APR Estimado"
+		,"Not enough funds": "No hay fondos suficientes"
+		,"Not enough deposited": "No hay suficiente depositado"
+		,"Enter a poistive value": "Inserta un valor positivo"
+		,"Approve": "Aprobar"
+		,"Amount exceeds max withdrawable value.": "La cantidad es superior al máximo retirable."
+		
+    },
+    "badge": {
+        "HeroText": "Subscríbete a tu plan, y recibirás un token NFT que te permitirá disfrutar de beneficios en nuestros protocolos"
+		,"Duration": "Duración"
+		,"Subscription Price": "Precio Subscripción"
+		,"Renewal Price": "Precio Renovación"
+		,"Status (time left)": "Estado (tiempo restante)"
+		,"Subscribe": "Subscribir"
+		,"Renew": "Renovar"
+    }
+	,"swap": {
+		"hero": "Intercambia tus tokens por otros, entre distintas blockchains."
+	}
+}

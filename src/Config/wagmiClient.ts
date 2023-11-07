@@ -14,7 +14,7 @@ import {
   omniWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID;
-console.log(`projectId: `, projectId);
+//console.log(`projectId: `, projectId);
 import { connectorsForWallets } from '@rainbow-me/rainbowkit';
 
 

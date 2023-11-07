@@ -5,7 +5,7 @@ import { IMuchoVaultData, v2ContractDataAtom } from '../v2AdminAtom';
 import { V2DepositModal } from './deposit';
 import { V2SwapModal } from './swap';
 
-export const V2AdminModals = ({ data }: { data: IMuchoVaultData }) => {
+export const V2UserModals = ({ data }: { data: IMuchoVaultData }) => {
   const [pageState, setPageState] = useAtom(v2ContractDataAtom);
 
   const closeModal = () =>

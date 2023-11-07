@@ -17,6 +17,8 @@ import { V2USER_CONFIG } from '../Config/v2UserConfig';
 import MuchoVaultAbi from '../Config/Abis/MuchoVault.json';
 import { getBNtoStringCopy } from '@Utils/useReadCall';
 import { BigNumber } from 'ethers';
+import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 export const V2DepositModal = ({
   head
@@ -61,13 +63,14 @@ export const V2DepositModal = ({
 };
 
 const Common = ({ val, setVal, head, max, unit, deposit, precision, aprVal }) => {
+  const { t } = useTranslation();
   return (
     <div>
       <div className="text-f15 mb-5">{head}</div>
       <BufferInput
         header={
           <div className="flex flex-row justify-between w-full text-3 text-f14 mt-2">
-            <span>{deposit ? `Expected APR: ${aprVal}%` : 'Withdraw'}</span>
+            <span>{deposit ? `${t('v2.Expected APR')}: ${aprVal}%` : t('v2.Withdraw')}</span>
             <span className="flex flex-row items-center">
               Max:
               <Display data={max} unit={unit} precision={precision} />
@@ -78,9 +81,9 @@ const Common = ({ val, setVal, head, max, unit, deposit, precision, aprVal }) =>
           decimals: { val: 6 },
           max: {
             val: max.toString(),
-            error: (deposit ? 'Not enough funds!' : 'Not enough deposited'),
+            error: (deposit ? t('v2.Not enough funds') : t('v2.Not enough deposited')),
           },
-          min: { val: '0', error: 'Enter a poistive value' },
+          min: { val: '0', error: t('v2.Enter a poistive value') },
         }}
         placeholder="0.0"
         bgClass="!bg-1"
@@ -157,6 +160,7 @@ const Deposit = ({ vaultId, tokenContract, max, head, unit, validations, call, p
   const [approveState, setApprovalState] = useState(false);
   const { state } = useGlobal();
   const apr = useGetApr(vaultId, val, decimals);
+  const { t } = useTranslation();
 
   //console.log("Decimals:"); console.log(decimals);
   const allowance = useGetAllowance(tokenContract.contract, decimals, V2USER_CONFIG[activeChain.id]?.MuchoHub.contract, activeChain.id);
@@ -196,7 +200,7 @@ const Deposit = ({ vaultId, tokenContract, max, head, unit, validations, call, p
           isDisabled={isApproved || state.txnLoading > 1}
           isLoading={state.txnLoading === 1 && approveState}
         >
-          Approve
+          {t('v2.Approve')}
         </BlueBtn>
         <BlueBtn
           onClick={clickHandler}
@@ -204,7 +208,7 @@ const Deposit = ({ vaultId, tokenContract, max, head, unit, validations, call, p
           isDisabled={state.txnLoading > 1 || !isApproved}
           isLoading={state.txnLoading === 1 && !approveState}
         >
-          Deposit
+          {t('v2.Deposit')}
         </BlueBtn>
       </div>
     </>
@@ -222,7 +226,7 @@ const Withdraw = ({ max, head, unit, validations, call, precision, muchoConversi
     if (gt(val, max))
       return toastify({
         type: 'error',
-        msg: 'Amount exceeds max withdrawable value.',
+        msg: t('v2.Amount exceeds max withdrawable value.'),
         id: '007',
       });
 
@@ -245,7 +249,7 @@ const Withdraw = ({ max, head, unit, validations, call, precision, muchoConversi
         isDisabled={state.txnLoading > 1}
         isLoading={state.txnLoading === 1}
       >
-        Withdraw
+        {t("v2.Withdraw")}
       </BlueBtn>
     </>
   );

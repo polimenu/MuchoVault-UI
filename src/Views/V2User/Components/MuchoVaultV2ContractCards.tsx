@@ -13,6 +13,8 @@ import { Divider } from '@Views/Common/Card/Divider';
 import { V2USER_CONFIG } from '../Config/v2UserConfig';
 import { Chain } from 'wagmi';
 import { NFTButtons } from './NFTButtons';
+import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 export const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 export const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
 export const tooltipKeyClasses = '!text-f14 !text-2 !text-left !py-1 !pl-[0px]';
@@ -57,6 +59,7 @@ export const getMuchoVaultV2UserCards = (data: IMuchoVaultData) => {
 
 
 const MuchoVaultInfoCard = ({ vaultId, vaultInfo, precision, data }: { vaultId: number, vaultInfo: IVaultInfo, precision: number, data: IMuchoVaultData }) => {
+  const { t } = useTranslation();
   if (!vaultInfo) {
     return <Skeleton
       key={vaultId}
@@ -69,9 +72,9 @@ const MuchoVaultInfoCard = ({ vaultId, vaultInfo, precision, data }: { vaultId: 
     <Card
       top={
         <>
-          <span className={underLineClass}>{vaultInfo.depositToken.name} Vault</span>
+          <span className={underLineClass}>{t("v2.VaultTitle", { vaultName: vaultInfo.depositToken.name })}</span>
           <div className="text-f12 text-3  mt-2">
-            Max Capacity&nbsp;:&nbsp;
+            {t("v2.Max Capacity")}&nbsp;:&nbsp;
             <Display
               data={vaultInfo.maxCap}
               unit={vaultInfo.depositToken.name}
@@ -108,6 +111,7 @@ const MuchoVaultInfoCard = ({ vaultId, vaultInfo, precision, data }: { vaultId: 
 }
 
 const MuchoVaultInfo = ({ vaultInfo, precision, nftApr }: { vaultInfo: IVaultInfo, precision: number, nftApr: number }) => {
+  const { t } = useTranslation();
   //console.log("Plan:"); console.log(plan);
   //console.log("Enabled:"); console.log(enabledStr);
   const muchoToDepositExchange = Number(vaultInfo.muchoToken.supply) > 0 ? Number(vaultInfo.totalStaked / vaultInfo.muchoToken.supply) : 1;
@@ -126,7 +130,7 @@ const MuchoVaultInfo = ({ vaultInfo, precision, nftApr }: { vaultInfo: IVaultInf
     <>
       <TableAligner
         keysName={
-          ['Receipt current price', 'Total Staked in Vault', 'APR']
+          [t('v2.Receipt current price'), t('v2.Total Staked in Vault'), 'APR']
         }
         values={[
           <div className={`${wrapperClasses}`}>
@@ -171,7 +175,7 @@ const MuchoVaultInfo = ({ vaultInfo, precision, nftApr }: { vaultInfo: IVaultInf
               content={
                 <span>
                   <TableAligner
-                    keysName={['Vault APR', 'NFT Bonus APR']}
+                    keysName={[t('v2.Vault APR'), t('v2.NFT Bonus APR')]}
                     keyStyle={tooltipKeyClasses}
                     valueStyle={tooltipValueClasses}
                     values={[<div className={`${wrapperClasses}`}>
@@ -192,8 +196,8 @@ const MuchoVaultInfo = ({ vaultInfo, precision, nftApr }: { vaultInfo: IVaultInf
                     </div>,]}
                   ></TableAligner>
                   <div className="text-left mt-3 text-f14">
-                    {nftApr > 0 && "The total APR displayed is the sum of the vault APR itself + Bonus APR from your subscription plan."}
-                    {nftApr == 0 && "You do not have a subscription plan! Get one and boost your APR up to +10%."}
+                    {nftApr > 0 && t("v2.aprNote")}
+                    {nftApr == 0 && t("v2.noNftNote")}
                   </div>
                 </span>
               }
@@ -209,7 +213,7 @@ const MuchoVaultInfo = ({ vaultInfo, precision, nftApr }: { vaultInfo: IVaultInf
 
       <TableAligner
         keysName={
-          ['User staked', 'User (not staked) tokens in wallet']
+          [t('v2.User staked'), t('v2.User (not staked) tokens in wallet')]
         }
         values={[
 
@@ -256,7 +260,7 @@ const MuchoVaultInfo = ({ vaultInfo, precision, nftApr }: { vaultInfo: IVaultInf
 
       <TableAligner
         keysName={
-          ['Deposit Fee'/*, 'Withdraw Fee', 'Max Deposit per user'*/]
+          [t('v2.Deposit Fee')/*, 'Withdraw Fee', 'Max Deposit per user'*/]
         }
         values={[
           <div className={`${wrapperClasses}`}>
@@ -307,10 +311,8 @@ const NFTInfoCard = ({ data }: { data: IMuchoVaultData }) => {
     <Card
       top={
         <>
-          <span className={underLineClass}>(mucho) Subscription Plan Bonus</span>
-          <div className="text-f12 text-3  mt-2">
-            Become a protocol "partner" and earn profit from total TVL by owning one of our <a target="_blank" href='https://mucho.finance/#/badge'>NFT Susbcription Plans</a>.
-            Profits are rewarded on weekly basis.
+          <span className={underLineClass}>{t('v2.(mucho) Subscription Plan Bonus')}</span>
+          <div className="text-f12 text-3  mt-2" dangerouslySetInnerHTML={{ __html: t("v2.NftHero") }}>
           </div>
         </>
       }
@@ -350,7 +352,7 @@ const NFTInfo = ({ data }: { data: IMuchoVaultData }) => {
 
       <TableAligner
         keysName={
-          ['Your Subscription plan', 'Your Plan Multiplier', 'Your Total Investment']
+          [t('v2.Your Subscription plan'), t('v2.Your Plan Multiplier'), t('v2.Your Total Investment')]
         }
         values={[
           <div className={`${wrapperClasses}`}>
@@ -383,7 +385,7 @@ const NFTInfo = ({ data }: { data: IMuchoVaultData }) => {
 
       <TableAligner
         keysName={
-          ['Annual Expected Yield for NFT Holders', 'Your current share', 'Your expected annual NFT Bonus Yield']
+          [t('v2.Annual Expected Yield for NFT Holders'), t('v2.Your current share'), t('v2.Your expected annual NFT Bonus Yield')]
         }
         values={[
           <div className={`${wrapperClasses}`}>
@@ -419,7 +421,7 @@ const NFTInfo = ({ data }: { data: IMuchoVaultData }) => {
 
       <TableAligner
         keysName={
-          ['Your NFT Bonus APR ', 'Your Accumulated Rewards']
+          [t('v2.Your NFT Bonus APR'), t('v2.Your Accumulated Rewards')]
         }
         values={[
           <div className={`${wrapperClasses}`}>
