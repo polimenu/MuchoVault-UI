@@ -7,8 +7,9 @@ import { BadgeContext } from '..';
 import { IPlan, badgeAtom } from '../badgeAtom';
 import { ConnectionRequired } from '@Views/Common/Navbar/AccountDropdown';
 import { usePlanEnableDisableCalls } from '../Hooks/usePlanWriteCalls';
+import { useTranslation } from 'react-i18next';
 
-export const btnClasses = '!w-fit px-4 rounded-sm !h-7';
+export const btnClasses = '!w-fit px-4 rounded-sm !h-7 ml-auto';
 
 
 export function PlanButtons({ plan }: { plan: IPlan }) {
@@ -16,6 +17,7 @@ export function PlanButtons({ plan }: { plan: IPlan }) {
   const [state, setPageState] = useAtom(badgeAtom);
   const { activeChain } = useContext(BadgeContext);
   const { chain } = useNetwork();
+  const { t } = useTranslation();
 
   if (!account || activeChain.id !== chain?.id)
     return (
@@ -27,14 +29,14 @@ export function PlanButtons({ plan }: { plan: IPlan }) {
     );
 
   return (
-    <div className="flex gap-5">
+    <div className={`${btnClasses} flex gap-5`}>
       {!plan.isActiveForCurrentUser && !plan.isExpiredForCurrentUser && <BlueBtn
         onClick={() =>
           setPageState({ ...state, activeModal: { plan: plan, action: "subscribeUser" }, isModalOpen: true })
         }
         className={btnClasses}
       >
-        Subscribe
+        {t("badge.Subscribe")}
       </BlueBtn>}
 
       {plan.isExpiredForCurrentUser && <BlueBtn
@@ -43,7 +45,7 @@ export function PlanButtons({ plan }: { plan: IPlan }) {
         }
         className={btnClasses}
       >
-        Renew
+        {t("badge.Renew")}
       </BlueBtn>}
     </div >
   );

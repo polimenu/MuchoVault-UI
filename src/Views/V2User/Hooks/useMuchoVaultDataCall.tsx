@@ -15,6 +15,7 @@ import { useUserAccount } from '@Hooks/useUserAccount';
 import { IMuchoVaultData, IToken } from '../v2AdminAtom';
 import { getDataNumber, getDataString, getERC20Token, getERC20TokenCalls } from './useCommonUtils';
 import { InvertColorsOff } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 export const BASIS_POINTS_DIVISOR = '10000';
 export const SECONDS_PER_YEAR = '31536000';
@@ -281,6 +282,7 @@ export const useGetMuchoVaultV2Data = () => {
 };
 
 const getUserBadgeData = (data: any, account: string) => {
+  const { t } = useTranslation();
   let activeChain: Chain | null = null;
   const v2AdminContextValue = useContext(ViewContext);
   if (v2AdminContextValue) {
@@ -290,7 +292,7 @@ const getUserBadgeData = (data: any, account: string) => {
   const v2UserConfig: (typeof V2USER_CONFIG)[42161] = V2USER_CONFIG[activeChain.id];
   if (!usrMulPlan) {
     return {
-      planId: 0, planName: "No active subscription", planMultiplier: 0,
+      planId: 0, planName: t("v2.No active subscription"), planMultiplier: 0,
       currentRewards: {
         amount: 0,
         token: "",

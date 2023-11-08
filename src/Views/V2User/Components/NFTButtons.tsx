@@ -13,8 +13,9 @@ import MuchoVaultAbi from '../Config/Abis/MuchoVault.json';
 import ERC20Abi from '../Config/Abis/ERC20Ext.json';
 import { useToast } from '@Contexts/Toast';
 import { ethers } from 'ethers';
+import { useTranslation } from 'react-i18next';
 
-export const btnClasses = '!w-fit px-4 rounded-sm !h-7';
+export const btnClasses = '!w-fit px-4 rounded-sm !h-7 ml-auto';
 
 
 
@@ -68,6 +69,7 @@ const getContractCall = (contract: string, abi: any, functionName: string, args:
 
 
 export function NFTButtons({ data }: { data: IMuchoVaultData }) {
+  const { t } = useTranslation();
   const { address: account } = useUserAccount();
   const [state, setPageState] = useAtom(v2ContractDataAtom);
   const { activeChain } = useContext(ViewContext);
@@ -96,16 +98,16 @@ export function NFTButtons({ data }: { data: IMuchoVaultData }) {
   const harvestActive = data.badgeInfo.userBadgeData.currentRewards.amount > 0;
 
   return (<>
-    <div className="flex gap-5">
-      {data.badgeInfo.userBadgeData.planId == 0 && <BlueBtn key={"subscribe"} onClick={() => window.open("https://mucho.finance/#/badge")} className={btnClasses}>Subscribe and earn rewards</BlueBtn>}
-      {harvestActive && getDirectButton(withdrawCall, "Harvest")}
-      {harvestActive && getDirectButton(withdrawAndCompoundCall, "Compound*")}
+    <div className={`${btnClasses} flex gap-5`}>
+      {data.badgeInfo.userBadgeData.planId == 0 && <BlueBtn key={"subscribe"} onClick={() => window.open("https://mucho.finance/#/badge")} className={btnClasses}>{t("v2.Subscribe and earn rewards")}</BlueBtn>}
+      {harvestActive && getDirectButton(withdrawCall, t("v2.Harvest"))}
+      {harvestActive && getDirectButton(withdrawAndCompoundCall, t("v2.Compound*"))}
       {/*data.userData.muchoTokens > 0 &&
         muchoVaultData.vaultsInfo.filter(v => v.id != data.id).map(v => getModalButton(`Swap to ${v.depositToken.name}`, data, false, true, v.id))
       */}
     </div>
     {harvestActive && <div className='flex gap-5 mt-5 text-f12'>
-      *You will be asked to sign 3 transactions, to harvest your rewards and deposit them on WETH vault
+      {t("v2.CompoundNote")}
     </div>}
   </>
   );

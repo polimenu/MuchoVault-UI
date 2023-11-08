@@ -1,0 +1,59 @@
+{
+	"Connect Wallet": "Connect Wallet",
+	"Switch Network": "Switch Network",
+	"frontpage": {
+		"title": "Your Gateway to earn <span style='color: #3B82F6'>(mucho)</span> Profits"
+		,"description": "Our mission is to empower you to grow your wealth through secure and profitable investments. With Mucho Vault, you can deposit your tokens, and we'll take care of the rest, maximizing your earnings."
+		,"Earn USDC, WETH or WBTC with no Impermanent Loss": "Earn USDC, WETH or WBTC with no Impermanent Loss"
+		,"Start Earning Yield": "Start Earning Yield"
+	}
+    ,"v2": {
+        "HeroText": "(mucho) Vaults V2 will automatically invest your deposits in different protocols, allowing you to earn interests. Integration with other protocols is programmatic and decentralized, so nobody will own your tokens but you."
+		,"VaultTitle": "{{vaultName}} Vault"
+		,"Max Capacity": "Max Capacity"
+		,"Receipt current price": "Receipt current price"
+		,"Total Staked in Vault": "Total Staked in Vault"
+		,"Vault APR": "Vault APR"
+		,"NFT Bonus APR": "NFT Bonus APR"
+		,"aprNote": "The total APR displayed is the sum of the vault APR itself + Bonus APR from your subscription plan."
+		,"noNftNote": "You do not have a subscription plan! Get one and boost your APR up to +10%."
+		,"User staked":"User staked"
+		,"User (not staked) tokens in wallet":"User (not staked) tokens in wallet"
+		,"Deposit Fee":"Deposit Fee"
+		,"NftHero":"Become a protocol &quot;partner&quot; and earn profit from total TVL by owning one of our <a target=&quot;_blank&quot; href='https://mucho.finance/#/badge'>NFT Susbcription Plans</a>. Profits are rewarded on weekly basis."
+		,"(mucho) Subscription Plan Bonus": "(mucho) NFT Plans Bonus"
+		,"Your Subscription plan": "Your Subscription plan"
+		,"Your Plan Multiplier": "Your Plan Multiplier"
+		,"Your Total Investment": "Your Total Investment"
+		,"Annual Expected Yield for NFT Holders": "Annual Expected Yield for NFT Holders"
+		,"Your current share": "Your current share"
+		,"Your expected annual NFT Bonus Yield": "Your expected annual NFT Bonus Yield"
+		,"Your NFT Bonus APR": "Your NFT Bonus APR"
+		,"Your Accumulated Rewards": "Your Accumulated Rewards"
+		,"No active subscription": "No active subscription"
+		,"Subscribe and earn rewards": "Subscribe and earn rewards"
+		,"Harvest": "Harvest"
+		,"Compound*": "Compound*"
+		,"CompoundNote": "*You will be asked to sign 3 transactions, to harvest your rewards and deposit them on WETH vault"
+		,"Deposit": "Deposit"
+		,"Withdraw": "Withdraw"
+		,"Expected APR": "Expected APR"
+		,"Not enough funds": "Not enough funds"
+		,"Not enough deposited": "Not enough deposited"
+		,"Enter a poistive value": "Enter a poistive value"
+		,"Approve": "Approve"
+		,"Amount exceeds max withdrawable value.": "Amount exceeds max withdrawable value."
+    },
+    "badge": {
+        "HeroText": "Subscribe to your plan, and you will receive a NFT token that will identify you with benefits in our protocols!"
+		,"Duration": "Duration"
+		,"Subscription Price": "Subscription Price"
+		,"Renewal Price": "Renewal Price"
+		,"Status (time left)": "Status (time left)"
+		,"Subscribe": "Subscribe"
+		,"Renew": "Renew"
+    }
+	,"swap": {
+		"hero": "Swap your tokens between different blockchains."
+	}
+}

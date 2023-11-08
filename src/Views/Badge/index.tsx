@@ -16,6 +16,7 @@ import MuchoWhite from '@SVG/Elements/MuchoWhite';
 import { AddPlanButton } from './Components/PlanButtons';
 import Background from 'src/AppStyles';
 import { Navbar } from '@Views/Common/Navbar';
+import { useTranslation } from 'react-i18next';
 
 const BadgeStyles = styled.div`
   width: min(1200px, 100%);
@@ -35,7 +36,7 @@ export const Badge = ({ admin }: { admin: boolean }) => {
   const { activeChain } = useActiveChain();
   //console.log("admin", admin);
   useEffect(() => {
-    document.title = `Mucho.finance | Badge ${admin ? "Admin" : ""}`;
+    document.title = `(mucho) finance | NFT Plans ${admin ? "Admin" : ""}`;
   }, []);
   return (
     <Background>
@@ -62,12 +63,7 @@ export const Badge = ({ admin }: { admin: boolean }) => {
 export const BadgePage = ({ admin }: { admin: boolean }) => {
   const [, setBadgeData] = useAtom(writeBadgeData);
   const data: IBadge = useGetPlans(admin);
-
-  //console.log("Admin:");
-  //console.log();
-  //console.log("got tokenomics");
-  //console.log(data);
-  //console.log("tokenomics end");
+  const { i18n, t } = useTranslation();
 
   setBadgeData(data);
 
@@ -78,7 +74,7 @@ export const BadgePage = ({ admin }: { admin: boolean }) => {
         Heading={
           <>
             <div className={topStyles}>
-              <MuchoWhite width={120} /> &nbsp;Badge {admin ? "Admin" : ""}
+              <MuchoWhite width={120} /> &nbsp;NFT Plan {admin ? "Admin" : ""}
             </div>
           </>
         }
@@ -86,7 +82,7 @@ export const BadgePage = ({ admin }: { admin: boolean }) => {
         subHeading={
           <>
             <div className={descStyles}>
-              Subscribe to your plan, and you will receive a NFT token that will identify you with benefits in our protocols!
+              {t("badge.HeroText")}
             </div>
             {admin && <div className="mt-5">
               <AddPlanButton />

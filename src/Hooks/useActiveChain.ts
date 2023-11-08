@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Chain, useNetwork } from 'wagmi';
-import Config from 'public/config.json';
+import Config from 'src/assets/config.json';
 import { getChains } from 'src/Config/wagmiClient';
 import { useParams } from 'react-router-dom';
 const typeofConfig = Config[421613];
@@ -17,7 +17,7 @@ export const useActiveChain = () => {
     let activeChain: Chain | undefined = undefined;
     let isWrongChain = false;
     if (chainName !== undefined) {
-      console.log(chainName, 'chainName');
+      //console.log(chainName, 'chainName');
       activeChain = chains.find((chain) =>
         chain.name.toUpperCase().includes(chainName.toUpperCase())
       );

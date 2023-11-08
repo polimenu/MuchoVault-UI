@@ -13,6 +13,7 @@ import ContextProvider from './contexts';
 import { SWRConfig } from 'swr';
 import { Provider as JotaiProvider } from 'jotai';
 import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
+import "./i18n";
 
 const options = {
   fetcher: (url: string) =>
@@ -20,19 +21,22 @@ const options = {
   refreshInterval: 1000,
 };
 import { inject } from '@vercel/analytics';
+import { Suspense } from 'react';
 inject();
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <WagmiConfig client={wagmiClient}>
-    <RainbowKitProvider chains={chains} theme={darkTheme()}>
-      <HashRouter>
-        <SWRConfig value={options}>
-          <ContextProvider>
-            <JotaiProvider>
-              <App />
-            </JotaiProvider>
-          </ContextProvider>
-        </SWRConfig>
-      </HashRouter>
-    </RainbowKitProvider>
-  </WagmiConfig>
+  <Suspense fallback="loading">
+    <WagmiConfig client={wagmiClient}>
+      <RainbowKitProvider chains={chains} theme={darkTheme()}>
+        <HashRouter>
+          <SWRConfig value={options}>
+            <ContextProvider>
+              <JotaiProvider>
+                <App />
+              </JotaiProvider>
+            </ContextProvider>
+          </SWRConfig>
+        </HashRouter>
+      </RainbowKitProvider>
+    </WagmiConfig>
+  </Suspense>
 );

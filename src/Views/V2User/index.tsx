@@ -3,7 +3,7 @@ import { useAtom } from 'jotai';
 import React, { useEffect } from 'react';
 import Drawer from '@Views/Common/V2-Drawer';
 import { Chain } from 'wagmi';
-import { getMuchoVaultV2AdminCards, getMuchoVaultV2UserCards } from './Components/MuchoVaultV2ContractCards';
+import { getMuchoVaultV2UserCards } from './Components/MuchoVaultV2ContractCards';
 import { Section } from '../Common/Card/Section';
 import { IMuchoVaultData, writeV2AdminData } from './v2AdminAtom';
 import { useGetMuchoVaultV2Data } from './Hooks/useMuchoVaultDataCall';
@@ -13,10 +13,11 @@ import {
   ArbitrumOnly,
 } from '@Views/Common/ChainNotSupported';
 import MuchoWhite from '@SVG/Elements/MuchoWhite';
-import { V2AdminModals } from './Modals';
+import { V2UserModals } from './Modals';
 import EarnIcon from '@SVG/Elements/EarnIcon';
 import Background from 'src/AppStyles';
 import { Navbar } from '@Views/Common/Navbar';
+import { useTranslation } from 'react-i18next';
 
 const Styles = styled.div`
   width: min(1200px, 100%);
@@ -42,7 +43,7 @@ export enum V2AdminContract {
 export const V2UserPage = () => {
   const { activeChain } = useActiveChain();
   useEffect(() => {
-    document.title = "(mucho) finance | V2 Vaults";
+    document.title = "(mucho) finance | Vaults (v2)";
   }, []);
   return (
     <Background>
@@ -68,17 +69,17 @@ export const V2UserPage = () => {
 export const MuchoVaultV2UserPage = () => {
   const [, setV2AdminData] = useAtom(writeV2AdminData);
   const data: IMuchoVaultData = useGetMuchoVaultV2Data();
+  const { i18n, t } = useTranslation();
   setV2AdminData(data);
 
   return (
     <Styles>
-      <V2AdminModals data={data} />
+      <V2UserModals data={data} />
       <Section
         Heading={<div className={topStyles}><EarnIcon className="mr-3" /><MuchoWhite width={120} />
           &nbsp;Vaults V2</div>}
         Cards={getMuchoVaultV2UserCards(data ? data : null)}
-        subHeading={<div className={descStyles}>(mucho) Vaults V2 will automatically invest your deposits in different protocols, allowing you to earn interests. Integration with
-          other protocols is programmatic and decentralized, so nobody will own your tokens but you.</div>}
+        subHeading={<div className={descStyles}>{t("v2.HeroText")}</div>}
       />
     </Styles>
   );

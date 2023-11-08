@@ -2,7 +2,9 @@ import { Section } from '@Views/Common/Card/Section';
 import { Navbar } from '@Views/Common/Navbar';
 import styled from '@emotion/styled';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import Background from 'src/AppStyles';
+import { LANGUAGES } from 'src/constants';
 
 const Styles = styled.div`
   width: min(1200px, 100%);
@@ -19,6 +21,8 @@ export const SwapPage = () => {
     document.title = "(mucho) finance | Cross-chain swap";
   }, []);
 
+  const { i18n, t } = useTranslation();
+
   useEffect(() => {
     const head = document.querySelector("head");
     const script = document.createElement("script");
@@ -30,6 +34,10 @@ export const SwapPage = () => {
       head.removeChild(script);
     };
   }, []);
+
+  const locale = LANGUAGES.find(l => l.code == i18n.language)?.swapLocale;
+
+  const iframeLink = `https://changenow.io/embeds/exchange-widget/v2/widget.html?FAQ=true&amount=100&amountFiat&backgroundColor=ffff&darkMode=false&from=usdcarb&horizontal=false&isFiat=false&lang=${locale}&link_id=974fa688a3baba&locales=true&logo=false&primaryColor=3772FF&to=eth&toTheMoon=false`;
 
   /*
   <script defer type='text/javascript'
@@ -43,11 +51,11 @@ export const SwapPage = () => {
           <main className="content-drawer">
             <Styles>
               <Section
-                Heading={<div className={topStyles}>MuchoSwap</div>}
+                Heading={<div className={topStyles}>(mucho) Swap</div>}
                 Cards={[]}
-                subHeading={<div className={descStyles}>Swap your tokens between different blockchains.</div>}
+                subHeading={<div className={descStyles}>{t("swap.hero")}</div>}
               />
-              <iframe id='iframe-widget' src='https://changenow.io/embeds/exchange-widget/v2/widget.html?FAQ=true&amount=100&amountFiat&backgroundColor=ffff&darkMode=false&from=usdcarb&horizontal=false&isFiat=false&lang=en-US&link_id=974fa688a3baba&locales=true&logo=false&primaryColor=3772FF&to=eth&toTheMoon=false' style={{ height: '356px', width: '100%', border: 'none' }}></iframe>
+              <iframe id='iframe-widget' src={iframeLink} style={{ height: '356px', width: '100%', border: 'none' }}></iframe>
 
 
             </Styles>
