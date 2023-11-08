@@ -37,6 +37,6 @@ function ModalChild({ data }: { data: IMuchoAirdropManagerData }) {
     return <div></div>;
 
   return (
-    <AirdropBuyModal head={activeModal.title} />
+    <AirdropBuyModal />
   );
 }

@@ -1,7 +1,7 @@
 export const MAIDROP_CONFIG = {
   42161: {
-    ManagerContract: "0x520B3830E9C15C5773149695BE698ea2a5eb8C0c",
-    TokenContract: "0xbeeF792aa6c39908144369894c7dC28c7604B893",
+    ManagerContract: "0xd68391b25EaDA08b3b3DF5A7f94806f7dbbed819",
+    TokenContract: "0xF13a92cd15FC4ed9DE60C5BF5468606dFA688b89",
     TokenPayment: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     TokenPaymentSymbol: "USDC",
     TokenPaymentDecimals: 6,

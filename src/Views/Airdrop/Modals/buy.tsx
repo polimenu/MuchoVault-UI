@@ -16,12 +16,9 @@ import { IMuchoAirdropManagerData, v2ContractDataAtom } from '../AirdropAtom';
 import { MAIDROP_CONFIG } from '../Config/mAirdropConfig';
 import { getBNtoStringCopy } from '@Utils/useReadCall';
 import { BigNumber } from 'ethers';
+import { useTranslation } from 'react-i18next';
 
-export const AirdropBuyModal = ({
-  head
-}: {
-  head: string;
-}) => {
+export const AirdropBuyModal = ({ }: {}) => {
 
   const [pageState] = useAtom(v2ContractDataAtom);
   const activeModal = pageState.activeModal;
@@ -103,29 +100,22 @@ const Buy = ({ data, call }: { data: IMuchoAirdropManagerData, call: any }) => {
   const toastify = useToast();
   const [approveState, setApprovalState] = useState(false);
   const { state } = useGlobal();
-
-  //console.log("Decimals:", decimals);
   const allowance = useGetAllowance(MAIDROP_CONFIG[activeChain.id].TokenPayment, MAIDROP_CONFIG[activeChain.id].TokenPaymentDecimals, MAIDROP_CONFIG[activeChain.id]?.ManagerContract, activeChain.id);
-  //console.log("Allowance", allowance, V2USER_CONFIG[activeChain.id]?.MuchoHub.contract);
 
   const isApproved = gte(Number(allowance), val || '1');
 
   const clickHandler = () => {
     return call(val);
   };
-  //console.log("datarl", data);
+
   const maxAirdrop = Math.min((data.mAirdropMaxSupply - data.mAirdropCurrentSupply), data.priceTokenInWallet);
-  //console.log("maxAirdrop", maxAirdrop);
-  //console.log("1", data.mAirdropMaxSupply - data.mAirdropCurrentSupply);
-  //console.log("2", data.priceTokenInWallet);
   const maxPriceTk = maxAirdrop * data.price;
-  //console.log("data.price", data.price);
-  //console.log("maxPriceTk", maxPriceTk);
+  const { t } = useTranslation();
 
   return (
     <>
       <Common
-        head={"Buy mAirdrop"}
+        head={t("airdrop.BuyModalTitle")}
         max={maxPriceTk}
         unit={MAIDROP_CONFIG[activeChain.id].TokenPaymentSymbol}
         val={val}
@@ -139,7 +129,7 @@ const Buy = ({ data, call }: { data: IMuchoAirdropManagerData, call: any }) => {
           isDisabled={isApproved || state.txnLoading > 1}
           isLoading={state.txnLoading === 1 && approveState}
         >
-          Approve
+          {t("airdrop.ApproveButton")}
         </BlueBtn>
         <BlueBtn
           onClick={clickHandler}
@@ -147,7 +137,7 @@ const Buy = ({ data, call }: { data: IMuchoAirdropManagerData, call: any }) => {
           isDisabled={state.txnLoading > 1 || !isApproved}
           isLoading={state.txnLoading === 1 && !approveState}
         >
-          Buy mAirdrop
+          {t("airdrop.BuyButton")}
         </BlueBtn>
       </div>
     </>

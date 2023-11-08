@@ -75,7 +75,6 @@ const PlanCard = ({ plan, admin }: { plan: IPlan, admin: boolean }) => {
 
 const PlanInfoAdmin = ({ plan }: { plan: IPlan }) => {
   //console.log("Plan:", plan);
-  const enabledStr = plan.enabled ? "Enabled" : "Disabled";
   //console.log("Enabled:", enabledStr);
   return (
     <>
@@ -142,8 +141,8 @@ const PlanInfoAdmin = ({ plan }: { plan: IPlan }) => {
 const PlanInfoUser = ({ plan }: { plan: IPlan }) => {
   //console.log("Plan:"); console.log(plan);
   const { t } = useTranslation();
-  const enabledStr: string = plan.isActiveForCurrentUser ? "Subscribed" :
-    (plan.isExpiredForCurrentUser ? "Expired" : "Not subscribed");
+  const enabledStr: string = plan.isActiveForCurrentUser ? t("badge.Subscribed") :
+    (plan.isExpiredForCurrentUser ? t("badge.Expired") : t("badge.Not subscribed"));
 
   //console.log("Enabled:"); console.log(enabledStr);
   return (
@@ -156,7 +155,7 @@ const PlanInfoUser = ({ plan }: { plan: IPlan }) => {
             <Display
               className="!justify-end"
               data={plan.time}
-              unit={"days"}
+              unit={t("badge.days")}
               precision={0}
             />
           </div>,

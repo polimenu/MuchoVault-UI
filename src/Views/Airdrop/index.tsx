@@ -3,10 +3,9 @@ import { useAtom } from 'jotai';
 import React, { useEffect } from 'react';
 import Drawer from '@Views/Common/V2-Drawer';
 import { Chain } from 'wagmi';
-import { getMuchoVaultV2AdminCards, getMuchoAirdropCards } from './Components/MuchoAirdropCards';
+import { getMuchoAirdropCards } from './Components/MuchoAirdropCards';
 import { Section } from '../Common/Card/Section';
 import { IMuchoAirdropManagerData, IMuchoVaultData, writeV2AdminData } from './AirdropAtom';
-import { useGetMuchoVaultV2Data } from './Hooks/useMuchoVaultDataCall';
 //import { PlanModals } from './Modals';
 import { useActiveChain } from '@Hooks/useActiveChain';
 import {
@@ -18,6 +17,7 @@ import EarnIcon from '@SVG/Elements/EarnIcon';
 import Background from 'src/AppStyles';
 import { Navbar } from '@Views/Common/Navbar';
 import { useGetMuchoAirdrop } from './Hooks/useGetMuchoAirdrop';
+import { useTranslation } from 'react-i18next';
 
 const Styles = styled.div`
   width: min(1200px, 100%);
@@ -28,6 +28,7 @@ const Styles = styled.div`
 
 const topStyles = 'flex flex-row items-center justify-center mb-2 text-f22';
 const descStyles = 'w-[46rem] text-center m-auto tab:w-full';
+const noteStyles = 'w-[46rem] text-center m-auto tab:w-full font-weight:bold mt-5 mb-5';
 
 export const ViewContext = React.createContext<{ activeChain: Chain } | null>(
   null
@@ -69,6 +70,7 @@ export const AirdropPage = () => {
 export const AirdropUserPage = () => {
   const [, setV2AdminData] = useAtom(writeV2AdminData);
   const data: IMuchoAirdropManagerData = useGetMuchoAirdrop();
+  const { t } = useTranslation();
   setV2AdminData(data);
 
   return (
@@ -78,7 +80,7 @@ export const AirdropUserPage = () => {
         Heading={<div className={topStyles}><EarnIcon className="mr-3" /><MuchoWhite width={120} />
           &nbsp;Airdrop</div>}
         Cards={getMuchoAirdropCards(data ? data : null)}
-        subHeading={<div className={descStyles}>(mucho) Airdrop will automatically farm airdrops for you in different protocols. The more mAirdrop tokens you buy, the bigger will be your share in the airdrop distribution.</div>}
+        subHeading={<><div className={noteStyles}><strong>{t("airdrop.note")}</strong></div><div className={descStyles}>{t("airdrop.hero")}</div></>}
       />
     </Styles>
   );

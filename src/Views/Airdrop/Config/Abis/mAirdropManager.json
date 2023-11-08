@@ -47,6 +47,25 @@
         "anonymous": false,
         "inputs": [
             {
+                "indexed": true,
+                "internalType": "address",
+                "name": "previousOwner",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "OwnershipTransferred",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
                 "indexed": false,
                 "internalType": "address",
                 "name": "destination",
@@ -65,26 +84,7 @@
                 "type": "uint256"
             }
         ],
-        "name": "MovedToFarm",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "previousOwner",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "newOwner",
-                "type": "address"
-            }
-        ],
-        "name": "OwnershipTransferred",
+        "name": "Transferred",
         "type": "event"
     },
     {
@@ -98,6 +98,19 @@
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "nftId",
+                "type": "uint256"
+            }
+        ],
+        "name": "addNftAllowed",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
@@ -206,6 +219,19 @@
     },
     {
         "inputs": [],
+        "name": "getNftAllowedList",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "list",
+                "type": "uint256[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
         "name": "mAirdrop",
         "outputs": [
             {
@@ -251,6 +277,32 @@
     },
     {
         "inputs": [],
+        "name": "mBadge",
+        "outputs": [
+            {
+                "internalType": "contract IMuchoBadgeManager",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "onlyNFTHolders",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
         "name": "owner",
         "outputs": [
             {
@@ -260,6 +312,19 @@
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "nftId",
+                "type": "uint256"
+            }
+        ],
+        "name": "removeNftAllowed",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
@@ -278,6 +343,19 @@
             }
         ],
         "name": "setActive",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "contract IMuchoBadgeManager",
+                "name": "newBadge",
+                "type": "address"
+            }
+        ],
+        "name": "setBadgeManager",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -304,6 +382,19 @@
             }
         ],
         "name": "setDateIni",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bool",
+                "name": "onlyNft",
+                "type": "bool"
+            }
+        ],
+        "name": "setOnlyNft",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -370,7 +461,7 @@
                 "type": "uint256"
             }
         ],
-        "name": "transferToFarm",
+        "name": "transferToken",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

@@ -9,6 +9,7 @@ import { useContext, useEffect, useState } from 'react';
 import { AirdropButtons } from './MuchoAirdropButtons';
 import { BufferProgressBar } from '@Views/Common/BufferProgressBar.tsx';
 import { Chain } from 'wagmi';
+import { useTranslation } from 'react-i18next';
 
 export const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 export const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
@@ -54,6 +55,7 @@ export const getMuchoAirdropCards = (data: IMuchoAirdropManagerData) => {
 
 
 const MuchoAirdropCard = ({ data }: { data: IMuchoAirdropManagerData }) => {
+  const { t } = useTranslation();
   if (!data) {
     return <Skeleton
       key={0}
@@ -68,7 +70,7 @@ const MuchoAirdropCard = ({ data }: { data: IMuchoAirdropManagerData }) => {
         <>
           <span className={underLineClass}>mAirdrop Token</span>
           <div className="text-f12 text-3  mt-2">
-            Available:&nbsp;&nbsp;&nbsp;&nbsp;
+            {t("airdrop.Available")}:&nbsp;&nbsp;&nbsp;&nbsp;
             <Display
               data={data.mAirdropMaxSupply - data.mAirdropCurrentSupply}
               className="inline"
@@ -106,12 +108,12 @@ const MuchoAirdropCard = ({ data }: { data: IMuchoAirdropManagerData }) => {
 }
 
 const MuchoAirdropInfo = ({ data }: { data: IMuchoAirdropManagerData }) => {
-
+  const { t } = useTranslation();
   return (
     <>
       <TableAligner
         keysName={
-          ['Your mAirdrop in wallet', 'Price', 'Final date to buy', 'Time left to buy']
+          [t('airdrop.Your mAirdrop in wallet'), t('airdrop.Price'), t('airdrop.Final date to buy'), t('airdrop.Time left to buy')]
         }
         values={[
           <div className={`${wrapperClasses}`}>
@@ -155,17 +157,17 @@ const MuchoAirdropInfo = ({ data }: { data: IMuchoAirdropManagerData }) => {
 
 const Countdown = ({ date }: { date: Date }) => {
 
+  const { t } = useTranslation();
+  const dateLiterals = { d: t("airdrop.Days"), h: t("airdrop.Hours"), m: t("airdrop.Minutes"), s: t("airdrop.Seconds") };
   const [counter, setCounter] = useState("");
   useEffect(() => {
-    setTimeout(() => setCounter(secsToDiffDate(dateDiffInSecs(new Date(Date.now()), date))), 1000);
+    setTimeout(() => setCounter(secsToDiffDate(dateDiffInSecs(new Date(Date.now()), date), dateLiterals, t("airdrop.Sales ended!"))), 1000);
   }, [counter]);
 
 
 
   return (
-    <div>
-      <div>{counter}</div>
-    </div>
+    <div>{counter}</div>
   );
 }
 
@@ -178,9 +180,9 @@ function dateDiffInSecs(a: Date, b: Date) {
   return Math.floor((b.getTime() - a.getTime()) / 1000);
 }
 
-function secsToDiffDate(secs: number) {
+function secsToDiffDate(secs: number, dateLiterals: any, endedLiteral: string) {
   if (secs <= 0) {
-    return "Sales ended!"
+    return endedLiteral;
   }
   let days = 0, hours = 0, minutes = 0;
   const DAY_IN_SECS = 60 * 60 * 24;
@@ -202,5 +204,5 @@ function secsToDiffDate(secs: number) {
     secs -= minutes * MIN_IN_SECS;
   }
 
-  return `${days} Days ${hours} Hours ${minutes} Minutes ${secs} Seconds`;
+  return `${days} ${dateLiterals.d} ${hours} ${dateLiterals.h} ${minutes} ${dateLiterals.m} ${secs} ${dateLiterals.s}`;
 }
