@@ -1,6 +1,8 @@
 import MuchoVaultAbi from '../Config/Abis/MuchoVault.json';
 import MuchoBadgeManagerAbi from '../Config/Abis/MuchoBadgeManager.json';
 import MuchoRewardRouterAbi from '../Config/Abis/MuchoRewardRouter.json';
+import MuchoVaultConfigDataAbi from '../Config/Abis/MuchoVaultConfigData.json';
+import MuchoProtocolGmxAbi from '../Config/Abis/MuchoProtocolGmx.json';
 import MuchoHubAbi from '../Config/Abis/MuchoHub.json';
 import { V2USER_CONFIG } from '../Config/v2UserConfig';
 import { getBNtoStringCopy } from '@Utils/useReadCall';
@@ -62,6 +64,33 @@ export const useGetMuchoVaultV2Data = () => {
       map: `vaultTotalStaked_${v}`
     }
   }));
+
+  vaultInfoCalls = vaultInfoCalls.concat([
+    {
+      address: v2UserConfig.MuchoVault.configDataContract,
+      abi: MuchoVaultConfigDataAbi,
+      functionName: "realGlpApr",
+      args: [],
+      chainId: activeChain?.id,
+      map: "realGlpApr"
+    },
+    {
+      address: v2UserConfig.MuchoProtocolGmx.contract,
+      abi: MuchoProtocolGmxAbi,
+      functionName: "glpApr",
+      args: [],
+      chainId: activeChain?.id,
+      map: "glpApr"
+    },
+    {
+      address: v2UserConfig.MuchoVault.configDataContract,
+      abi: MuchoVaultConfigDataAbi,
+      functionName: "weeklyUsdNftRewards",
+      args: [],
+      chainId: activeChain?.id,
+      map: "weeklyUsdNftRewards"
+    }
+  ]);
 
   const vaultUSDCalls = v2UserConfig.MuchoVault.vaults.map(v => {
     return {
@@ -268,7 +297,7 @@ export const useGetMuchoVaultV2Data = () => {
       },
       contractsInfo: { muchoHub: getDataString(data, 'muchoHub'), priceFeed: getDataString(data, 'priceFeed'), badgeManager: getDataString(data, 'badgeManager') },
       badgeInfo: {
-        annualEarningExpected: V2USER_CONFIG[activeChain.id].RealVsParameterGLPAPR * getDataNumber(data, 'getExpectedNFTAnnualYield') / 10 ** 18 + V2USER_CONFIG[activeChain.id].NFTWeeklyBonus * 52,
+        annualEarningExpected: (getDataNumber(data, "realGlpApr") / getDataNumber(data, "glpApr")) * getDataNumber(data, 'getExpectedNFTAnnualYield') / 10 ** 18 + getDataNumber(data, 'weeklyUsdNftRewards') * 52,
         totalPonderatedInvestment: getDataNumber(data, 'getTotalPonderatedInvestment') / 10 ** 18,
         userBadgeData: getUserBadgeData(data, account),
       }

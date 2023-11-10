@@ -3,6 +3,7 @@ export const V2USER_CONFIG = {
     Plans: [1, 3],
     MuchoVault: {
       contract: "0x4D46CAe2fff3d06E992e49fc7cB61CD24E77Ef43",
+      configDataContract: "0x7adBC714072B5805c586A4483De043fC969E5dF7",
       vaults: [0, 1, 2],
       precision: [2, 5, 6],
       amountsForAprSimulation: [{ amount: 1e-6, decimals: 6 }, { amount: 1e-18, decimals: 18 }, { amount: 1e-8, decimals: 8 }],
@@ -16,6 +17,9 @@ export const V2USER_CONFIG = {
     },
     MuchoHub: {
       contract: "0xfeADb28e91337f848ADf3AFC7E0f431c4eebede2",
+    },
+    MuchoProtocolGmx: {
+      contract: "0x9fcB762ddDd71954FBcf67659d68C04Bf42a2c4e",
     },
     TokenDictionary: [
       "0xaf88d065e77c8cC2239327C5EDb3A432268e5831", //USDC
@@ -31,8 +35,6 @@ export const V2USER_CONFIG = {
       "0x01FC279A6339487c4688dF87714609b2138A4d71", //mWETH
       "0xBD5EB7fD3783f504c08Be0a44177BddeE82F991D", //mWBTC
     ],
-    RealVsParameterGLPAPR: 16.72 / 12,
-    NFTWeeklyBonus: 0 //in USD
   },
 };
 
