@@ -17,7 +17,7 @@ import { V2UserModals } from './Modals';
 import EarnIcon from '@SVG/Elements/EarnIcon';
 import Background from 'src/AppStyles';
 import { Navbar } from '@Views/Common/Navbar';
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 const Styles = styled.div`
   width: min(1200px, 100%);
@@ -69,7 +69,6 @@ export const V2UserPage = () => {
 export const MuchoVaultV2UserPage = () => {
   const [, setV2AdminData] = useAtom(writeV2AdminData);
   const data: IMuchoVaultData = useGetMuchoVaultV2Data();
-  const { i18n, t } = useTranslation();
   setV2AdminData(data);
 
   return (

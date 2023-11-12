@@ -15,6 +15,7 @@ import { SwapPage } from '@Views/Swap';
 import { RampPage } from '@Views/Ramp';
 import { AirdropPage } from '@Views/Airdrop';
 import { LanguageModal } from '@Views/Common/ModalLanguage';
+import { useTranslation } from 'react-i18next';
 
 if (import.meta.env.VITE_MODE === 'production') {
   //console.log(`import.meta.env.SENTRY_DSN: `, import.meta.env.VITE_SENTRY_DSN);
@@ -34,7 +35,9 @@ export const snackAtom = atom<{
   message: null,
 });
 
+
 function App() {
+  const { i18n, t } = useTranslation();
   return (
     <>
       <LanguageModal />
@@ -55,5 +58,8 @@ function App() {
     </>
   );
 }
+
+
+
 
 export default App;

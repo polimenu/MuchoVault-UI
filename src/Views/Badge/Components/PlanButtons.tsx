@@ -7,7 +7,7 @@ import { BadgeContext } from '..';
 import { IPlan, badgeAtom } from '../badgeAtom';
 import { ConnectionRequired } from '@Views/Common/Navbar/AccountDropdown';
 import { usePlanEnableDisableCalls } from '../Hooks/usePlanWriteCalls';
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 export const btnClasses = '!w-fit px-4 rounded-sm !h-7 ml-auto';
 
@@ -17,7 +17,6 @@ export function PlanButtons({ plan }: { plan: IPlan }) {
   const [state, setPageState] = useAtom(badgeAtom);
   const { activeChain } = useContext(BadgeContext);
   const { chain } = useNetwork();
-  const { t } = useTranslation();
 
   if (!account || activeChain.id !== chain?.id)
     return (

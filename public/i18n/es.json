@@ -42,7 +42,8 @@
 		"Not enough deposited": "No hay suficiente depositado",
 		"Enter a poistive value": "Inserta un valor positivo",
 		"Approve": "Aprobar",
-		"Amount exceeds max withdrawable value.": "La cantidad es superior al máximo retirable."
+		"Amount exceeds max withdrawable value.": "La cantidad es superior al máximo retirable.",
+		"No tokens in your wallet": "No tienes {{token}} para depositar"
 	},
 	"badge": {
 		"HeroText": "Subscríbete a tu plan, y recibirás un token NFT que te permitirá disfrutar de beneficios en nuestros protocolos",
@@ -65,7 +66,7 @@
 		"note": "NOTA: Sólo disponible temporalmente para alumnos del Campamento DeFi con el NFT",
 		"Available": "Tokens disponibles",
 		"Your mAirdrop in wallet": "Tus mAirdrop",
-		"Price": "Precio",
+		"Price": "Precios",
 		"Final date to buy": "Fecha límite para comprar",
 		"Time left to buy": "Tiempo restante",
 		"Sales ended!": "¡Venta finalizada!",
@@ -77,6 +78,7 @@
 		"NoCoins": "No tienes {{token}}",
 		"BuyModalTitle": "Comprar token mAirdrop",
 		"ApproveButton": "Autorizar",
-		"BuyButton": "Comprar mAirdrop"
+		"BuyButton": "Comprar mAirdrop",
+		"BuymAirdropsWith": "Comprar con {{token}}"
 	}
 }

@@ -7,7 +7,7 @@ import { PlanAdminButtons, PlanButtons } from './PlanButtons';
 //import { BADGE_CONFIG } from '../Config/Plans';
 import { BadgeContext } from '..';
 import { useContext } from 'react';
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 export const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 export const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
 export const tooltipKeyClasses = '!text-f14 !text-2 !text-left !py-1 !pl-[0px]';
@@ -140,7 +140,6 @@ const PlanInfoAdmin = ({ plan }: { plan: IPlan }) => {
 
 const PlanInfoUser = ({ plan }: { plan: IPlan }) => {
   //console.log("Plan:"); console.log(plan);
-  const { t } = useTranslation();
   const enabledStr: string = plan.isActiveForCurrentUser ? t("badge.Subscribed") :
     (plan.isExpiredForCurrentUser ? t("badge.Expired") : t("badge.Not subscribed"));
 

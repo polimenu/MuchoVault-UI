@@ -49,14 +49,6 @@ export const useGetMuchoAirdrop = () => {
     {
       address: config.ManagerContract,
       abi: ManagerAbi,
-      functionName: 'mAirdropTokenPrice',
-      args: [config.TokenPayment],
-      chainId: activeChain?.id,
-    },
-
-    {
-      address: config.ManagerContract,
-      abi: ManagerAbi,
       functionName: 'mAirdrop',
       args: [],
       chainId: activeChain?.id,
@@ -88,46 +80,60 @@ export const useGetMuchoAirdrop = () => {
   ];
 
 
+  //add prices calls
+  calls = calls.concat(config.PaymentTokens.map(p => {
+    return {
+      address: config.ManagerContract,
+      abi: ManagerAbi,
+      functionName: 'mAirdropTokenPrice',
+      args: [p.TokenPayment],
+      chainId: activeChain?.id,
+    };
+  }));
+
+
   const { address: account } = useUserAccount();
 
   if (account) {
     calls = calls.concat([
       {
+        address: config.TokenContract,
+        abi: TokenAbi,
+        functionName: 'balanceOf',
+        args: [account],
+        chainId: activeChain?.id,
+      },
+
+      {
+        address: config.TokenContract,
+        abi: TokenAbi,
+        functionName: 'balanceOf',
+        args: [account],
+        chainId: activeChain?.id,
+      },
+    ])
+
+    /*calls = calls.concat(config.PaymentTokens.map(p => {
+      return {
         address: config.ManagerContract,
         abi: ManagerAbi,
         functionName: 'depositedUserToken',
-        args: [account, config.TokenPayment],
+        args: [account, p.TokenPayment],
         chainId: activeChain?.id,
-      },
+      };
+    }));*/
 
-      {
-        address: config.TokenContract,
+    calls = calls.concat(config.PaymentTokens.map(p => {
+      return {
+        address: p.TokenPayment,
         abi: TokenAbi,
         functionName: 'balanceOf',
         args: [account],
         chainId: activeChain?.id,
-      },
+        map: `tokenInWallet_${p.TokenPayment}`
+      };
+    }));
 
-      {
-        address: config.TokenContract,
-        abi: TokenAbi,
-        functionName: 'balanceOf',
-        args: [account],
-        chainId: activeChain?.id,
-        map: 'mAirdropUser'
-      },
-
-      {
-        address: config.TokenPayment,
-        abi: TokenAbi,
-        functionName: 'balanceOf',
-        args: [account],
-        chainId: activeChain?.id,
-        map: 'mAirdropTokenPriceUser'
-      },
-
-
-    ])
   }
 
   //console.log("Calls before index", calls);
@@ -137,7 +143,8 @@ export const useGetMuchoAirdrop = () => {
     if (!c.map) {
       c.map = c.functionName;
       for (var i in c.args) {
-        c.map += "_" + c.args[i].toString();
+        if (c.args[i])
+          c.map += "_" + c.args[i].toString();
       }
     }
     return c;
@@ -186,11 +193,15 @@ export const useGetMuchoAirdrop = () => {
       dateEnd: endDate,
       active: getDataNumber(data, 'active'),
 
-      price: getDataNumber(data, `mAirdropTokenPrice_${config.TokenPayment}`) / (10 ** config.TokenPaymentDecimals),
-      priceTokenAddress: config.TokenPayment,
-      priceTokenSymbol: config.TokenPaymentSymbol,
-      priceTokenDecimals: config.TokenPaymentDecimals,
-      priceTokenInWallet: getDataNumber(data, `mAirdropTokenPriceUser`) / (10 ** config.TokenPaymentDecimals),
+      prices: config.PaymentTokens.map(p => {
+        return {
+          price: getDataNumber(data, `mAirdropTokenPrice_${p.TokenPayment}`) / (10 ** p.TokenPaymentDecimals),
+          priceTokenAddress: p.TokenPayment,
+          priceTokenSymbol: p.TokenPaymentSymbol,
+          priceTokenDecimals: p.TokenPaymentDecimals,
+          priceTokenInWallet: getDataNumber(data, `tokenInWallet_${p.TokenPayment}`) / (10 ** p.TokenPaymentDecimals),
+        }
+      })
     };
 
   }

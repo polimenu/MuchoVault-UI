@@ -5,7 +5,7 @@ import Drawer from '@Views/Common/V2-Drawer';
 import { Chain } from 'wagmi';
 import { getMuchoAirdropCards } from './Components/MuchoAirdropCards';
 import { Section } from '../Common/Card/Section';
-import { IMuchoAirdropManagerData, IMuchoVaultData, writeV2AdminData } from './AirdropAtom';
+import { IMuchoAirdropManagerData, writeV2AdminData } from './AirdropAtom';
 //import { PlanModals } from './Modals';
 import { useActiveChain } from '@Hooks/useActiveChain';
 import {
@@ -17,7 +17,7 @@ import EarnIcon from '@SVG/Elements/EarnIcon';
 import Background from 'src/AppStyles';
 import { Navbar } from '@Views/Common/Navbar';
 import { useGetMuchoAirdrop } from './Hooks/useGetMuchoAirdrop';
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 const Styles = styled.div`
   width: min(1200px, 100%);
@@ -70,7 +70,6 @@ export const AirdropPage = () => {
 export const AirdropUserPage = () => {
   const [, setV2AdminData] = useAtom(writeV2AdminData);
   const data: IMuchoAirdropManagerData = useGetMuchoAirdrop();
-  const { t } = useTranslation();
   setV2AdminData(data);
 
   return (

@@ -13,7 +13,6 @@ import { Divider } from '@Views/Common/Card/Divider';
 import { V2USER_CONFIG } from '../Config/v2UserConfig';
 import { Chain } from 'wagmi';
 import { NFTButtons } from './NFTButtons';
-import { useTranslation } from 'react-i18next';
 import { t } from 'i18next';
 export const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 export const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
@@ -59,7 +58,6 @@ export const getMuchoVaultV2UserCards = (data: IMuchoVaultData) => {
 
 
 const MuchoVaultInfoCard = ({ vaultId, vaultInfo, precision, data }: { vaultId: number, vaultInfo: IVaultInfo, precision: number, data: IMuchoVaultData }) => {
-  const { t } = useTranslation();
   if (!vaultInfo) {
     return <Skeleton
       key={vaultId}
@@ -103,7 +101,7 @@ const MuchoVaultInfoCard = ({ vaultId, vaultInfo, precision, data }: { vaultId: 
       </>}
       bottom={
         <div className="mt-5">
-          <VaultButtons data={vaultInfo} muchoVaultData={data} />
+          <VaultButtons data={vaultInfo} />
         </div>
       }
     />
@@ -111,7 +109,6 @@ const MuchoVaultInfoCard = ({ vaultId, vaultInfo, precision, data }: { vaultId: 
 }
 
 const MuchoVaultInfo = ({ vaultInfo, precision, nftApr }: { vaultInfo: IVaultInfo, precision: number, nftApr: number }) => {
-  const { t } = useTranslation();
   //console.log("Plan:"); console.log(plan);
   //console.log("Enabled:"); console.log(enabledStr);
   const muchoToDepositExchange = Number(vaultInfo.muchoToken.supply) > 0 ? Number(vaultInfo.totalStaked / vaultInfo.muchoToken.supply) : 1;

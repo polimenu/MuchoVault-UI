@@ -1,10 +1,11 @@
 import { Section } from '@Views/Common/Card/Section';
 import { Navbar } from '@Views/Common/Navbar';
 import styled from '@emotion/styled';
+import { t } from 'i18next';
 import { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import Background from 'src/AppStyles';
 import { LANGUAGES } from 'src/constants';
+import i18n from 'src/i18n';
 
 const Styles = styled.div`
   width: min(1200px, 100%);
@@ -21,7 +22,6 @@ export const SwapPage = () => {
     document.title = "(mucho) finance | Cross-chain swap";
   }, []);
 
-  const { i18n, t } = useTranslation();
 
   useEffect(() => {
     const head = document.querySelector("head");

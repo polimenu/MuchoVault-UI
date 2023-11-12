@@ -9,7 +9,7 @@ import { useContext, useEffect, useState } from 'react';
 import { AirdropButtons } from './MuchoAirdropButtons';
 import { BufferProgressBar } from '@Views/Common/BufferProgressBar.tsx';
 import { Chain } from 'wagmi';
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 export const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 export const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
@@ -55,7 +55,6 @@ export const getMuchoAirdropCards = (data: IMuchoAirdropManagerData) => {
 
 
 const MuchoAirdropCard = ({ data }: { data: IMuchoAirdropManagerData }) => {
-  const { t } = useTranslation();
   if (!data) {
     return <Skeleton
       key={0}
@@ -108,12 +107,17 @@ const MuchoAirdropCard = ({ data }: { data: IMuchoAirdropManagerData }) => {
 }
 
 const MuchoAirdropInfo = ({ data }: { data: IMuchoAirdropManagerData }) => {
-  const { t } = useTranslation();
+  const prices = data.prices.map(p => <div className={`${wrapperClasses}`}><Display
+    className="!justify-end"
+    data={p.price}
+    unit={p.priceTokenSymbol}
+    precision={0}
+  /></div>);
   return (
     <>
       <TableAligner
         keysName={
-          [t('airdrop.Your mAirdrop in wallet'), t('airdrop.Price'), t('airdrop.Final date to buy'), t('airdrop.Time left to buy')]
+          [t('airdrop.Your mAirdrop in wallet'), t('airdrop.Price'), '', t('airdrop.Final date to buy'), t('airdrop.Time left to buy')]
         }
         values={[
           <div className={`${wrapperClasses}`}>
@@ -125,15 +129,8 @@ const MuchoAirdropInfo = ({ data }: { data: IMuchoAirdropManagerData }) => {
               precision={2}
             />
           </div>,
-          <div className={`${wrapperClasses}`}>
-
-            <Display
-              className="!justify-end"
-              data={data.price}
-              unit={data.priceTokenSymbol}
-              precision={0}
-            />
-          </div>,
+          ...prices
+          ,
           <div className={`${wrapperClasses}`}>
             <Display
               className="!justify-end"
@@ -157,7 +154,6 @@ const MuchoAirdropInfo = ({ data }: { data: IMuchoAirdropManagerData }) => {
 
 const Countdown = ({ date }: { date: Date }) => {
 
-  const { t } = useTranslation();
   const dateLiterals = { d: t("airdrop.Days"), h: t("airdrop.Hours"), m: t("airdrop.Minutes"), s: t("airdrop.Seconds") };
   const [counter, setCounter] = useState("");
   useEffect(() => {

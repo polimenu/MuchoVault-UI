@@ -21,6 +21,10 @@ export interface IMuchoAirdropManagerData {
   dateIni: Date;
   dateEnd: Date;
   active: boolean;
+  prices: IMuchoAirdropDataPrice[];
+}
+
+export interface IMuchoAirdropDataPrice {
   price: number;
   priceTokenAddress: string;
   priceTokenSymbol: string;

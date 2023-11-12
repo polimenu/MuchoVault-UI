@@ -12,30 +12,34 @@ import { ViewContext } from '..';
 import { erc20ABI, useContractRead } from 'wagmi';
 import { IContract } from 'src/Interfaces/interfaces';
 import { useGetAllowance, useGetApprovalAmount } from '../../Common/Hooks/useAllowanceCall';
-import { IMuchoAirdropManagerData, v2ContractDataAtom } from '../AirdropAtom';
+import { IMuchoAirdropDataPrice, IMuchoAirdropManagerData, v2ContractDataAtom } from '../AirdropAtom';
 import { MAIDROP_CONFIG } from '../Config/mAirdropConfig';
 import { getBNtoStringCopy } from '@Utils/useReadCall';
 import { BigNumber } from 'ethers';
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 export const AirdropBuyModal = ({ }: {}) => {
 
   const [pageState] = useAtom(v2ContractDataAtom);
-  const activeModal = pageState.activeModal;
   const { activeChain } = useContext(ViewContext);
+  const activeModal = pageState.activeModal;
+  const currency = pageState.metadata.tokenPrice;
+  console.log("currency", currency);
 
   const data: IMuchoAirdropManagerData = activeModal.data;
-  const { buyCall } = useAirdropInteractionCalls(data);
+  const priceData: IMuchoAirdropDataPrice = data.prices.find(p => p.priceTokenSymbol == currency);
+  const { buyCall } = useAirdropInteractionCalls(priceData);
 
   return (
     <Buy
       data={data}
       call={buyCall}
+      priceData={priceData}
     />
   );
 };
 
-const Common = ({ val, setVal, head, max, unit, precision }) => {
+const Common = ({ val, setVal, head, max, unit, precision, currency }) => {
   return (
     <div>
       <div className="text-f15 mb-5">{head}</div>
@@ -84,13 +88,13 @@ const Common = ({ val, setVal, head, max, unit, precision }) => {
 
 
 
-const Buy = ({ data, call }: { data: IMuchoAirdropManagerData, call: any }) => {
+const Buy = ({ data, call, priceData }: { data: IMuchoAirdropManagerData, call: any, priceData: IMuchoAirdropDataPrice }) => {
   //console.log("DEPOSIT CALL:, call);
   const [val, setVal] = useState('');
   const { activeChain } = useContext(ViewContext);
   const tokenContract: IContract = {
     abi: erc20ABI,
-    contract: MAIDROP_CONFIG[activeChain.id].TokenPayment,
+    contract: priceData?.priceTokenAddress,
   };
   const { approve } = useGetApprovalAmount(
     tokenContract?.abi,
@@ -100,7 +104,7 @@ const Buy = ({ data, call }: { data: IMuchoAirdropManagerData, call: any }) => {
   const toastify = useToast();
   const [approveState, setApprovalState] = useState(false);
   const { state } = useGlobal();
-  const allowance = useGetAllowance(MAIDROP_CONFIG[activeChain.id].TokenPayment, MAIDROP_CONFIG[activeChain.id].TokenPaymentDecimals, MAIDROP_CONFIG[activeChain.id]?.ManagerContract, activeChain.id);
+  const allowance = useGetAllowance(priceData.priceTokenAddress, priceData.priceTokenDecimals, MAIDROP_CONFIG[activeChain.id].ManagerContract, activeChain.id);
 
   const isApproved = gte(Number(allowance), val || '1');
 
@@ -108,23 +112,23 @@ const Buy = ({ data, call }: { data: IMuchoAirdropManagerData, call: any }) => {
     return call(val);
   };
 
-  const maxAirdrop = Math.min((data.mAirdropMaxSupply - data.mAirdropCurrentSupply), data.priceTokenInWallet);
-  const maxPriceTk = maxAirdrop * data.price;
-  const { t } = useTranslation();
+  //ToDo
+  const maxAirdrop = Math.min((data.mAirdropMaxSupply - data.mAirdropCurrentSupply), priceData.priceTokenInWallet);
+  const maxPriceTk = maxAirdrop * priceData.price;
 
   return (
     <>
       <Common
         head={t("airdrop.BuyModalTitle")}
         max={maxPriceTk}
-        unit={MAIDROP_CONFIG[activeChain.id].TokenPaymentSymbol}
+        unit={priceData?.priceTokenSymbol}
         val={val}
         setVal={setVal}
         precision={2}
       />
       <div className="flex whitespace-nowrap mt-5">
         <BlueBtn
-          onClick={() => approve(toFixed(val * (10 ** MAIDROP_CONFIG[activeChain.id].TokenPaymentDecimals), 0), setApprovalState)}
+          onClick={() => approve(toFixed(val * (10 ** priceData.priceTokenDecimals), 0), setApprovalState)}
           className="mr-4 rounded"
           isDisabled={isApproved || state.txnLoading > 1}
           isLoading={state.txnLoading === 1 && approveState}

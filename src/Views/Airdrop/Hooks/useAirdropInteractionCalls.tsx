@@ -7,11 +7,11 @@ import { toFixed } from '@Utils/NumString';
 import { useContext } from 'react';
 import { ViewContext } from '..';
 import { MAIDROP_CONFIG } from '../Config/mAirdropConfig';
-import { IMuchoAirdropManagerData, v2ContractDataAtom } from '../AirdropAtom';
+import { IMuchoAirdropDataPrice, IMuchoAirdropManagerData, v2ContractDataAtom } from '../AirdropAtom';
 
 
 
-export const useAirdropInteractionCalls = (data: IMuchoAirdropManagerData) => {
+export const useAirdropInteractionCalls = (data: IMuchoAirdropDataPrice) => {
   const { activeChain } = useContext(ViewContext);
   const { writeCall } = useWriteCall(MAIDROP_CONFIG[activeChain?.id].ManagerContract, AirdopManagerAbi);
   //console.log("Write contract", V2USER_CONFIG[activeChain?.id].MuchoVault.contract, MuchoVaultABI)

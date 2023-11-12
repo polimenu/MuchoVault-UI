@@ -17,7 +17,6 @@ import { V2USER_CONFIG } from '../Config/v2UserConfig';
 import MuchoVaultAbi from '../Config/Abis/MuchoVault.json';
 import { getBNtoStringCopy } from '@Utils/useReadCall';
 import { BigNumber } from 'ethers';
-import { useTranslation } from 'react-i18next';
 import { t } from 'i18next';
 
 export const V2DepositModal = ({
@@ -63,7 +62,6 @@ export const V2DepositModal = ({
 };
 
 const Common = ({ val, setVal, head, max, unit, deposit, precision, aprVal }) => {
-  const { t } = useTranslation();
   return (
     <div>
       <div className="text-f15 mb-5">{head}</div>
@@ -160,7 +158,6 @@ const Deposit = ({ vaultId, tokenContract, max, head, unit, validations, call, p
   const [approveState, setApprovalState] = useState(false);
   const { state } = useGlobal();
   const apr = useGetApr(vaultId, val, decimals);
-  const { t } = useTranslation();
 
   //console.log("Decimals:"); console.log(decimals);
   const allowance = useGetAllowance(tokenContract.contract, decimals, V2USER_CONFIG[activeChain.id]?.MuchoHub.contract, activeChain.id);

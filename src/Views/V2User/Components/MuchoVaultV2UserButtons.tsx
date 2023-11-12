@@ -4,9 +4,9 @@ import { useContext } from 'react';
 import { BlueBtn } from '@Views/Common/V2-Button';
 import { useNetwork } from 'wagmi';
 import { ConnectionRequired } from '@Views/Common/Navbar/AccountDropdown';
-import { IMuchoVaultData, IVaultInfo, v2ContractDataAtom, writeV2AdminData } from '../v2AdminAtom';
+import { IVaultInfo, v2ContractDataAtom } from '../v2AdminAtom';
 import { ViewContext } from '..';
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 export const btnClasses = '!w-fit px-4 rounded-sm !h-7 ml-auto';
 
@@ -25,12 +25,11 @@ const getModalButton = (caption: string, vaultInfo: IVaultInfo, deposit: boolean
 }
 
 
-export function VaultButtons({ data, muchoVaultData }: { data: IVaultInfo, muchoVaultData: IMuchoVaultData }) {
+export function VaultButtons({ data }: { data: IVaultInfo }) {
   const { address: account } = useUserAccount();
   const [state, setPageState] = useAtom(v2ContractDataAtom);
   const { activeChain } = useContext(ViewContext);
   const { chain } = useNetwork();
-  const { t } = useTranslation();
 
   if (!account || activeChain.id !== chain?.id)
     return (
@@ -45,6 +44,7 @@ export function VaultButtons({ data, muchoVaultData }: { data: IVaultInfo, mucho
 
   return (<>
     <div className={`${btnClasses} flex gap-5`}>
+      {data.userData.depositTokens == 0 && <BlueBtn onClick={() => { }} className={btnClasses} isDisabled={true}>{t("v2.No tokens in your wallet", { token: data.depositToken.name })}</BlueBtn>}
       {data.userData.depositTokens > 0 && getModalButton(t("v2.Deposit"), data, true, false, 0, state, setPageState)}
       {data.userData.muchoTokens > 0 && getModalButton(t("v2.Withdraw"), data, false, false, 0, state, setPageState)}
     </div>

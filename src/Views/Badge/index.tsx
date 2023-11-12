@@ -16,7 +16,7 @@ import MuchoWhite from '@SVG/Elements/MuchoWhite';
 import { AddPlanButton } from './Components/PlanButtons';
 import Background from 'src/AppStyles';
 import { Navbar } from '@Views/Common/Navbar';
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 const BadgeStyles = styled.div`
   width: min(1200px, 100%);
@@ -63,7 +63,6 @@ export const Badge = ({ admin }: { admin: boolean }) => {
 export const BadgePage = ({ admin }: { admin: boolean }) => {
   const [, setBadgeData] = useAtom(writeBadgeData);
   const data: IBadge = useGetPlans(admin);
-  const { i18n, t } = useTranslation();
 
   setBadgeData(data);
 
