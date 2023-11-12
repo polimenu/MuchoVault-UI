@@ -1,7 +1,7 @@
 import { Skeleton } from '@mui/material';
 import { Display } from '@Views/Common/Tooltips/Display';
 import { TableAligner } from '@Views/Common/TableAligner';
-import { IMuchoAirdropManagerData } from '../AirdropAtom';
+import { IMuchoAirdropDataPrice, IMuchoAirdropManagerData } from '../AirdropAtom';
 import { Card } from '../../Common/Card/Card';
 //import { BADGE_CONFIG } from '../Config/Plans';
 import { ViewContext } from '..';
@@ -106,18 +106,45 @@ const MuchoAirdropCard = ({ data }: { data: IMuchoAirdropManagerData }) => {
   );
 }
 
+const PricesDisplay = ({ prices }: { prices: IMuchoAirdropDataPrice[] }) => {
+  let priceFields = []
+
+  for (let i = 0; i < prices.length; i++) {
+    if (i == 0 || prices[i].price != prices[i - 1].price) {
+      priceFields.push(<Display
+        className="!justify-end"
+        data={prices[i].price}
+        unit={prices[i].priceTokenSymbol}
+        precision={6}
+      />);
+    }
+    else {
+      priceFields.push(<>{prices[i].priceTokenSymbol}</>);
+    }
+
+    if (i < prices.length - 1) {
+      priceFields.push(<>&nbsp;&nbsp;/&nbsp;&nbsp;</>)
+    }
+  }
+
+  return <div className={`${wrapperClasses}`}>{priceFields}</div>;
+  /*
+    return {prices.map((p, i, a) => <>
+      {(i == 0 || p.price !== a[i - 1].price) ? (
+    {i < prices.length - 1 && <>&nbsp;&nbsp;/&nbsp;&nbsp;</>})
+      :
+    p.priceTokenSymbol}
+  
+    </>)};*/
+}
+
 const MuchoAirdropInfo = ({ data }: { data: IMuchoAirdropManagerData }) => {
-  const prices = data.prices.map(p => <div className={`${wrapperClasses}`}><Display
-    className="!justify-end"
-    data={p.price}
-    unit={p.priceTokenSymbol}
-    precision={0}
-  /></div>);
+
   return (
     <>
       <TableAligner
         keysName={
-          [t('airdrop.Your mAirdrop in wallet'), t('airdrop.Price'), '', t('airdrop.Final date to buy'), t('airdrop.Time left to buy')]
+          [t('airdrop.Your mAirdrop in wallet'), t('airdrop.Price'), t('airdrop.Final date to buy'), t('airdrop.Time left to buy')]
         }
         values={[
           <div className={`${wrapperClasses}`}>
@@ -129,7 +156,7 @@ const MuchoAirdropInfo = ({ data }: { data: IMuchoAirdropManagerData }) => {
               precision={2}
             />
           </div>,
-          ...prices
+          <PricesDisplay prices={data.prices} />
           ,
           <div className={`${wrapperClasses}`}>
             <Display
