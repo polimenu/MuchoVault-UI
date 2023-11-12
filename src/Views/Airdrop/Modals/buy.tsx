@@ -24,7 +24,7 @@ export const AirdropBuyModal = ({ }: {}) => {
   const { activeChain } = useContext(ViewContext);
   const activeModal = pageState.activeModal;
   const currency = pageState.metadata.tokenPrice;
-  console.log("currency", currency);
+  //console.log("currency", currency);
 
   const data: IMuchoAirdropManagerData = activeModal.data;
   const priceData: IMuchoAirdropDataPrice = data.prices.find(p => p.priceTokenSymbol == currency);
