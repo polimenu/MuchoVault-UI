@@ -112,6 +112,7 @@ const PricesDisplay = ({ prices }: { prices: IMuchoAirdropDataPrice[] }) => {
   for (let i = 0; i < prices.length; i++) {
     if (i == 0 || prices[i].price != prices[i - 1].price) {
       priceFields.push(<Display
+        key={`price_${i}`}
         className="!justify-end"
         data={prices[i].price}
         unit={prices[i].priceTokenSymbol}
@@ -119,11 +120,11 @@ const PricesDisplay = ({ prices }: { prices: IMuchoAirdropDataPrice[] }) => {
       />);
     }
     else {
-      priceFields.push(<>{prices[i].priceTokenSymbol}</>);
+      priceFields.push(<span key={`price_${i}`}>{prices[i].priceTokenSymbol}</span>);
     }
 
     if (i < prices.length - 1) {
-      priceFields.push(<>&nbsp;&nbsp;/&nbsp;&nbsp;</>)
+      priceFields.push(<span key={`price__${i}`}>&nbsp;&nbsp;/&nbsp;&nbsp;</span>)
     }
   }
 

@@ -112,9 +112,10 @@ const Buy = ({ data, call, priceData }: { data: IMuchoAirdropManagerData, call: 
     return call(val);
   };
 
-  //ToDo
-  const maxAirdrop = Math.min((data.mAirdropMaxSupply - data.mAirdropCurrentSupply), priceData.priceTokenInWallet);
-  const maxPriceTk = maxAirdrop * priceData.price;
+  console.log("priceData", priceData);
+  console.log("supplydeduct", data.mAirdropMaxSupply - data.mAirdropCurrentSupply);
+  const maxPriceTk = Math.min((data.mAirdropMaxSupply - data.mAirdropCurrentSupply) * priceData.price, priceData.priceTokenInWallet);
+  //const maxPriceTk = maxAirdrop * priceData.price;
 
   return (
     <>
