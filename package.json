@@ -38,6 +38,7 @@
     "@web3-react/injected-connector": "^6.0.7",
     "@web3-react/walletconnect-connector": "6.2.4",
     "add": "^2.0.6",
+    "auth0-js": "^9.23.3",
     "aws-sdk": "^2.1236.0",
     "axios": "^0.26.0",
     "axios-retry": "^3.3.1",

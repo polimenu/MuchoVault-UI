@@ -52,6 +52,7 @@ function App() {
         <Route path="/v2/admin/muchoprotocolgmx" element={<V2AdminPage pageType={V2AdminContract.MuchoProtocolGmx} />} />
         <Route path="/swap" element={<SwapPage />} />
         <Route path="/airdrop" element={<AirdropPage />} />
+        <Route path="/ramp" element={<RampPage />} />
 
 
       </Routes>

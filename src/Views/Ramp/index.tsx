@@ -1,8 +1,14 @@
 import { Section } from '@Views/Common/Card/Section';
 import { Navbar } from '@Views/Common/Navbar';
 import styled from '@emotion/styled';
-import { useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Background from 'src/AppStyles';
+import { useCountries, useLoginByEmail } from './Hooks/rampHooks';
+import BufferInput from '@Views/Common/BufferInput';
+import { BlueBtn } from '@Views/Common/V2-Button';
+import { useGlobal } from '@Contexts/Global';
+import { OnRampLogin } from './Components/login';
+import { OnRampStatus } from './Components/status';
 
 const Styles = styled.div`
   width: min(1200px, 100%);
@@ -14,46 +20,50 @@ const Styles = styled.div`
 const topStyles = 'flex flex-row items-center justify-center mb-2 text-f22';
 const descStyles = 'w-[46rem] text-center m-auto tab:w-full';
 
+export const RampContext = React.createContext<{ sessionId: string }>(
+  { sessionId: '' }
+);
+
+const OnRamp = ({ setSession }: { setSession: any }) => {
+  const { sessionId } = useContext(RampContext);
+
+  //User not logged in
+  if (!sessionId)
+    return <OnRampLogin setSession={setSession} />;
+  else
+    return <OnRampStatus />;
+}
+
 export const RampPage = () => {
   useEffect(() => {
     document.title = "(mucho) finance | On ramp";
   }, []);
 
-  useEffect(() => {
-    const head = document.querySelector("head");
-    const script = document.createElement("script");
+  //sessionStorage.setItem("ramp_session_id", "");
+  const sessionId = sessionStorage.getItem("ramp_session_id");
+  const [session, setSession] = useState(sessionId);
 
-    script.setAttribute("src", 'https://changenow.io/embeds/exchange-widget/v2/stepper-connector.js');
-    head.appendChild(script);
-
-    return () => {
-      head.removeChild(script);
-    };
-  }, []);
-
-  /*
-  <script defer type='text/javascript'
-    src='https://changenow.io/embeds/exchange-widget/v2/stepper-connector.js'></script>*/
   return (
     <>
-      <Background>
-        <Navbar hideAccount={true} />
+      <RampContext.Provider value={{ sessionId: session }}>
+        <Background>
+          <Navbar hideAccount={true} />
 
-        <div className="root w-[100vw]">
-          <main className="content-drawer">
-            <Styles>
-              <Section
-                Heading={<div className={topStyles}>MuchoSwap</div>}
-                Cards={[]}
-                subHeading={<div className={descStyles}>Swap your tokens between different blockchains.</div>}
-              />
-              <iframe id='iframe-widget' src='https://changenow.io/embeds/exchange-widget/v2/widget.html?FAQ=true&amount=100&amountFiat=1000&backgroundColor=ffff&darkMode=false&from=usdcarb&horizontal=false&isFiat=true&lang=en-US&link_id=974fa688a3baba&locales=true&logo=false&primaryColor=3772FF&to=eth&toTheMoon=false' style={{ height: '356px', width: '100%', border: 'none' }}></iframe>
+          <div className="root w-[100vw]">
+            <main className="content-drawer">
+              <Styles>
+                <Section
+                  Heading={<div className={topStyles}>On Ramp</div>}
+                  Cards={[]}
+                  subHeading={<div className={descStyles}>TEST</div>}
+                />
 
-
-            </Styles>
-          </main>
-        </div>
-      </Background>
+                <OnRamp setSession={setSession} />
+              </Styles>
+            </main>
+          </div>
+        </Background>
+      </RampContext.Provider >
     </>
   );
 };
