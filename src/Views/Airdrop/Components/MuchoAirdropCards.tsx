@@ -152,9 +152,9 @@ const MuchoAirdropInfo = ({ data }: { data: IMuchoAirdropManagerData }) => {
 
             <Display
               className="!justify-end"
-              data={data.mAirdropInWallet}
+              data={data.userBalance}
               unit={"mAirdrop"}
-              precision={2}
+              precision={4}
             />
           </div>,
           <PricesDisplay prices={data.prices} />

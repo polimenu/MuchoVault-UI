@@ -103,14 +103,6 @@ export const useGetMuchoAirdrop = () => {
         args: [account],
         chainId: activeChain?.id,
       },
-
-      {
-        address: config.TokenContract,
-        abi: TokenAbi,
-        functionName: 'balanceOf',
-        args: [account],
-        chainId: activeChain?.id,
-      },
     ])
 
     /*calls = calls.concat(config.PaymentTokens.map(p => {
@@ -187,7 +179,7 @@ export const useGetMuchoAirdrop = () => {
       mAirdropCurrentSupply: getDataNumber(data, 'totalSupply') / (10 ** getDataNumber(data, 'mAirdropDecimals')),
       mAirdropDecimals: getDataNumber(data, 'mAirdropDecimals'),
       mAirdropInWallet: getDataNumber(data, 'mAirdropUser') / (10 ** getDataNumber(data, 'mAirdropDecimals')),
-      userBalance: getDataNumber(data, `balanceOf_${account}`),
+      userBalance: getDataNumber(data, `balanceOf_${account}`) / (10 ** getDataNumber(data, 'mAirdropDecimals')),
 
       dateIni: iniDate,
       dateEnd: endDate,

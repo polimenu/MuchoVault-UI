@@ -130,6 +130,12 @@ export const getTabs = () => {
       isExternalLink: false,
     },
     {
+      to: `/airdrop`,
+      name: 'Airdrop',
+      subTabs: [],
+      isExternalLink: false,
+    },
+    {
       to: `/swap`,
       name: 'Swap',
       subTabs: [],
