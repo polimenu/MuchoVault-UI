@@ -28,7 +28,6 @@ const EmailInput = ({ email, setEmail, setLogin, state }) => {
     <BufferInput
       header={
         <div className="flex flex-row justify-between w-full text-3 text-f14 mt-2">
-          <span>Insert your e-mail</span>
         </div>
       }
       placeholder="Enter your e-mail"
@@ -59,9 +58,7 @@ const OtpInput = ({ email, setSession }: { email: string, setSession: any }) => 
     //console.log("OTP OK");
     //console.log("session_id", login.session_id);
     sessionStorage.setItem("ramp_session_id", login.session_id);
-    useEffect(() => {
-      setSession(login.session_id);
-    }, []);
+    setSession(login.session_id);
   }
   const otpLogin = () => {
     setLogin();

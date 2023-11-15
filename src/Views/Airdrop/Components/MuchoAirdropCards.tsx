@@ -25,6 +25,7 @@ export const wrapperClasses = 'flex justify-end flex-wrap';
 
 
 export const getMuchoAirdropCards = (data: IMuchoAirdropManagerData) => {
+  const viewContextValue = useContext(ViewContext);
   //console.log("getBadgeCards 0");
   //console.log("getV2AdminCards data", data);
 
@@ -42,7 +43,6 @@ export const getMuchoAirdropCards = (data: IMuchoAirdropManagerData) => {
   //console.log("Drawing cards with data", data);
 
   let activeChain: Chain | null = null;
-  const viewContextValue = useContext(ViewContext);
   if (viewContextValue) {
     activeChain = viewContextValue.activeChain;
   }

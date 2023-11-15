@@ -21,6 +21,7 @@ export const underLineClass =
 export const wrapperClasses = 'flex justify-end flex-wrap';
 
 export const getEarnCards = (data: IEarn) => {
+  const earnContextValue = useContext(EarnContext);
   //console.log("getEarnCards 0");
   if (!data?.earn) {
     //console.log("getEarnCards 1");
@@ -35,7 +36,6 @@ export const getEarnCards = (data: IEarn) => {
   //console.log("getEarnCards");
   //console.log(data);
   let activeChain: Chain | null = null;
-  const earnContextValue = useContext(EarnContext);
   if (earnContextValue) {
     activeChain = earnContextValue.activeChain;
   }

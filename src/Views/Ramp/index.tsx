@@ -57,8 +57,9 @@ export const RampPage = () => {
                   Cards={[]}
                   subHeading={<div className={descStyles}>TEST</div>}
                 />
-
-                <OnRamp setSession={setSession} />
+                <div className='w-[46rem] m-auto'>
+                  <OnRamp setSession={setSession} />
+                </div>
               </Styles>
             </main>
           </div>
