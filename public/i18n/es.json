@@ -79,6 +79,9 @@
 		"BuyModalTitle": "Comprar token mAirdrop",
 		"ApproveButton": "Autorizar",
 		"BuyButton": "Comprar mAirdrop",
-		"BuymAirdropsWith": "Comprar con {{token}}"
+		"BuymAirdropsWith": "Comprar con {{token}}",
+		"Start date": "Fecha de inicio",
+		"Will start in": "Empezará en",
+		"FINISHED": "FINALIZADO"
 	}
 }

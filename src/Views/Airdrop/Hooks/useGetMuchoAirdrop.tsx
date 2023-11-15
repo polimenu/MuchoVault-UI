@@ -79,6 +79,33 @@ export const useGetMuchoAirdrop = () => {
     },
   ];
 
+  //OldTokenContracts
+  calls = calls.concat(config.OldTokenContracts.map(c => {
+    return {
+      address: c.contract,
+      abi: TokenAbi,
+      functionName: '_maxSupply',
+      args: [],
+      chainId: activeChain?.id,
+      map: `maxSupply_${c.contract}`
+    };
+  }
+  )
+  );
+
+  calls = calls.concat(config.OldTokenContracts.map(c => {
+    return {
+      address: c.contract,
+      abi: TokenAbi,
+      functionName: 'totalSupply',
+      args: [],
+      chainId: activeChain?.id,
+      map: `totalSupply_${c.contract}`
+    };
+  }
+  )
+  );
+
 
   //add prices calls
   calls = calls.concat(config.PaymentTokens.map(p => {
@@ -123,6 +150,18 @@ export const useGetMuchoAirdrop = () => {
         args: [account],
         chainId: activeChain?.id,
         map: `tokenInWallet_${p.TokenPayment}`
+      };
+    }));
+
+    //OldTokenContracts
+    calls = calls.concat(config.OldTokenContracts.map(c => {
+      return {
+        address: c.contract,
+        abi: TokenAbi,
+        functionName: 'balanceOf',
+        args: [account],
+        chainId: activeChain?.id,
+        map: `tokenInWallet_${c.contract}`
       };
     }));
 
@@ -175,6 +214,7 @@ export const useGetMuchoAirdrop = () => {
       contract: config.ManagerContract,
 
       mAirdropContract: getDataString(data, 'mAirdrop'),
+      mAirdropVersion: config.TokenContractVersion,
       mAirdropMaxSupply: Math.round(getDataNumber(data, '_maxSupply') / (10 ** getDataNumber(data, 'mAirdropDecimals'))),
       mAirdropCurrentSupply: getDataNumber(data, 'totalSupply') / (10 ** getDataNumber(data, 'mAirdropDecimals')),
       mAirdropDecimals: getDataNumber(data, 'mAirdropDecimals'),
@@ -193,12 +233,21 @@ export const useGetMuchoAirdrop = () => {
           priceTokenDecimals: p.TokenPaymentDecimals,
           priceTokenInWallet: getDataNumber(data, `tokenInWallet_${p.TokenPayment}`) / (10 ** p.TokenPaymentDecimals),
         }
+      }),
+
+      oldTokens: config.OldTokenContracts.map(c => {
+        return {
+          maxSupply: Math.round(getDataNumber(data, `maxSupply_${c.contract}`) / (10 ** getDataNumber(data, 'mAirdropDecimals'))),
+          totalSupply: getDataNumber(data, `totalSupply_${c.contract}`) / (10 ** getDataNumber(data, 'mAirdropDecimals')),
+          userBalance: getDataNumber(data, `tokenInWallet_${c.contract}`) / (10 ** getDataNumber(data, 'mAirdropDecimals')),
+          version: c.version,
+        }
       })
     };
 
   }
 
-  //console.log("Response RPC", res);
+  console.log("Response RPC", res);
 
   return res ? res : null;
 };

@@ -17,11 +17,20 @@ export interface IMuchoAirdropManagerData {
   mAirdropCurrentSupply: number;
   mAirdropDecimals: number;
   mAirdropInWallet: number;
+  mAirdropVersion: string;
   userBalance: number;
   dateIni: Date;
   dateEnd: Date;
   active: boolean;
   prices: IMuchoAirdropDataPrice[];
+  oldTokens: IOldAirdropData[];
+}
+
+export interface IOldAirdropData {
+  maxSupply: number;
+  totalSupply: number;
+  userBalance: number;
+  version: string;
 }
 
 export interface IMuchoAirdropDataPrice {

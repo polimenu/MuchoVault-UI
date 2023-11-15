@@ -1,7 +1,7 @@
 import { Skeleton } from '@mui/material';
 import { Display } from '@Views/Common/Tooltips/Display';
 import { TableAligner } from '@Views/Common/TableAligner';
-import { IMuchoAirdropDataPrice, IMuchoAirdropManagerData } from '../AirdropAtom';
+import { IMuchoAirdropDataPrice, IMuchoAirdropManagerData, IOldAirdropData } from '../AirdropAtom';
 import { Card } from '../../Common/Card/Card';
 //import { BADGE_CONFIG } from '../Config/Plans';
 import { ViewContext } from '..';
@@ -10,6 +10,7 @@ import { AirdropButtons } from './MuchoAirdropButtons';
 import { BufferProgressBar } from '@Views/Common/BufferProgressBar.tsx';
 import { Chain } from 'wagmi';
 import { t } from 'i18next';
+import { MAIDROP_CONFIG } from '../Config/mAirdropConfig';
 
 export const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 export const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
@@ -48,11 +49,77 @@ export const getMuchoAirdropCards = (data: IMuchoAirdropManagerData) => {
   }
 
 
-  const farmsInfo = [<MuchoAirdropCard data={data} />];
+  const farmsInfo = [<MuchoAirdropCard data={data} />, data.oldTokens.map(t => <OldMuchoAirdropCard data={t} />)];
 
   return farmsInfo;
 };
 
+const OldMuchoAirdropCard = ({ data }: { data: IOldAirdropData }) => {
+  if (!data) {
+    return <Skeleton
+      key={0}
+      variant="rectangular"
+      className="w-full !h-full min-h-[370px] !transform-none !bg-1"
+    />
+  }
+
+  return (
+    <Card
+      top={
+        <>
+          <span className={underLineClass}>mAirdrop Token (v{data.version}) ({t("airdrop.FINISHED")})</span>
+          <div className="text-f12 text-3  mt-2">
+            {t("airdrop.Available")}:&nbsp;&nbsp;&nbsp;&nbsp;
+            <Display
+              data={data.maxSupply - data.totalSupply}
+              className="inline"
+              disable
+              precision={0}
+            />
+            &nbsp;
+            / &nbsp;
+            <Display
+              data={data.maxSupply}
+              unit={"mAirdrop"}
+              className="inline"
+              disable
+              precision={0}
+            />
+          </div>
+          <div className="max-w-[300px]">
+            <BufferProgressBar
+              fontSize={12}
+              progressPercent={100 - Number(100 * data.totalSupply / data.maxSupply)}
+            />
+          </div>
+        </>
+      }
+      middle={<>
+        <TableAligner
+          keysName={[t('airdrop.Your mAirdrop in wallet')]}
+          values={[
+            <div className={`${wrapperClasses}`}>
+
+              <Display
+                className="!justify-end"
+                data={data.userBalance}
+                unit={"mAirdrop"}
+                precision={4}
+              />
+            </div>
+          ]
+          }
+          keyStyle={keyClasses}
+          valueStyle={valueClasses}
+        />
+      </>}
+      bottom={
+        <div className="mt-5 !text-right">
+        </div>
+      }
+    />
+  );
+}
 
 const MuchoAirdropCard = ({ data }: { data: IMuchoAirdropManagerData }) => {
   if (!data) {
@@ -67,7 +134,7 @@ const MuchoAirdropCard = ({ data }: { data: IMuchoAirdropManagerData }) => {
     <Card
       top={
         <>
-          <span className={underLineClass}>mAirdrop Token</span>
+          <span className={underLineClass}>mAirdrop Token (v{data.mAirdropVersion})</span>
           <div className="text-f12 text-3  mt-2">
             {t("airdrop.Available")}:&nbsp;&nbsp;&nbsp;&nbsp;
             <Display
@@ -108,9 +175,13 @@ const MuchoAirdropCard = ({ data }: { data: IMuchoAirdropManagerData }) => {
 
 const PricesDisplay = ({ prices }: { prices: IMuchoAirdropDataPrice[] }) => {
   let priceFields = []
+  let anyPrice = false;
 
   for (let i = 0; i < prices.length; i++) {
     if (i == 0 || prices[i].price != prices[i - 1].price) {
+
+      anyPrice = anyPrice || Boolean(prices[i].price);
+
       priceFields.push(<Display
         key={`price_${i}`}
         className="!justify-end"
@@ -128,7 +199,7 @@ const PricesDisplay = ({ prices }: { prices: IMuchoAirdropDataPrice[] }) => {
     }
   }
 
-  return <div className={`${wrapperClasses}`}>{priceFields}</div>;
+  return <div className={`${wrapperClasses}`}>{anyPrice ? priceFields : "?"}</div>;
   /*
     return {prices.map((p, i, a) => <>
       {(i == 0 || p.price !== a[i - 1].price) ? (
@@ -140,12 +211,18 @@ const PricesDisplay = ({ prices }: { prices: IMuchoAirdropDataPrice[] }) => {
 }
 
 const MuchoAirdropInfo = ({ data }: { data: IMuchoAirdropManagerData }) => {
+  const started = data.dateIni <= new Date();
 
   return (
     <>
       <TableAligner
         keysName={
-          [t('airdrop.Your mAirdrop in wallet'), t('airdrop.Price'), t('airdrop.Final date to buy'), t('airdrop.Time left to buy')]
+          [t('airdrop.Your mAirdrop in wallet'),
+          t('airdrop.Price'),
+          t('airdrop.Start date'),
+          t('airdrop.Final date to buy'),
+          started ? t('airdrop.Time left to buy') : t('airdrop.Will start in')
+          ]
         }
         values={[
           <div className={`${wrapperClasses}`}>
@@ -162,13 +239,21 @@ const MuchoAirdropInfo = ({ data }: { data: IMuchoAirdropManagerData }) => {
           <div className={`${wrapperClasses}`}>
             <Display
               className="!justify-end"
+              data={data.dateIni.toISOString().split('T')[0]}
+            />
+
+          </div>
+          ,
+          <div className={`${wrapperClasses}`}>
+            <Display
+              className="!justify-end"
               data={data.dateEnd.toISOString().split('T')[0]}
             />
 
           </div>
           ,
           <div className={`${wrapperClasses}`}>
-            <Countdown date={data.dateEnd} />
+            <Countdown date={started ? data.dateEnd : data.dateIni} />
 
           </div>
         ]
@@ -228,5 +313,15 @@ function secsToDiffDate(secs: number, dateLiterals: any, endedLiteral: string) {
     secs -= minutes * MIN_IN_SECS;
   }
 
-  return `${days} ${dateLiterals.d} ${hours} ${dateLiterals.h} ${minutes} ${dateLiterals.m} ${secs} ${dateLiterals.s}`;
+  let countDownLiterl = '';
+  if (days > 0)
+    countDownLiterl += `${days} ${dateLiterals.d} `;
+
+  if (hours > 0 || days > 0)
+    countDownLiterl += `${hours} ${dateLiterals.h} `;
+
+  if (minutes > 0 || hours > 0 || days > 0)
+    countDownLiterl += `${minutes} ${dateLiterals.m} `;
+
+  return `${countDownLiterl} ${secs} ${dateLiterals.s}`;
 }
