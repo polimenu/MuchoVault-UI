@@ -1,9 +1,9 @@
 import { Section } from '@Views/Common/Card/Section';
 import { Navbar } from '@Views/Common/Navbar';
 import styled from '@emotion/styled';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import Background from 'src/AppStyles';
-import { useCountries, useLoginByEmail } from './Hooks/rampHooks';
+import { useCountries, useGetRampTransactions, useLoginByEmail } from './Hooks/rampHooks';
 import BufferInput from '@Views/Common/BufferInput';
 import { BlueBtn } from '@Views/Common/V2-Button';
 import { useGlobal } from '@Contexts/Global';
@@ -27,6 +27,9 @@ export const RampContext = React.createContext<{ sessionId: string }>(
 const OnRamp = ({ setSession }: { setSession: any }) => {
   const { sessionId } = useContext(RampContext);
 
+  console.log("OnRamp sessionId", sessionId);
+  useTraceUpdate({ setSession });
+
   //User not logged in
   if (!sessionId)
     return <OnRampLogin setSession={setSession} />;
@@ -34,14 +37,32 @@ const OnRamp = ({ setSession }: { setSession: any }) => {
     return <OnRampStatus />;
 }
 
-export const RampPage = () => {
+export function useTraceUpdate(props) {
+  const prev = useRef(props);
   useEffect(() => {
+    const changedProps = Object.entries(props).reduce((ps, [k, v]) => {
+      if (prev.current[k] !== v) {
+        ps[k] = [prev.current[k], v];
+      }
+      return ps;
+    }, {});
+    if (Object.keys(changedProps).length > 0) {
+      console.log('Changed props:', changedProps);
+    }
+    prev.current = props;
+  });
+}
+
+export const RampPage = () => {
+  //useTraceUpdate(props);
+  /*useEffect(() => {
     document.title = "(mucho) finance | On ramp";
-  }, []);
+  }, []);*/
 
   //sessionStorage.setItem("ramp_session_id", "");
   const sessionId = sessionStorage.getItem("ramp_session_id");
   const [session, setSession] = useState(sessionId);
+  console.log("Loading RampPage");
 
   return (
     <>

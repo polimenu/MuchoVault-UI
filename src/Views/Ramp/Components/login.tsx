@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLoginByEmail, useOtpLogin } from '../Hooks/rampHooks';
+import { setLoginByEmail, useOtpLogin } from '../Hooks/rampHooks';
 import BufferInput from '@Views/Common/BufferInput';
 import { BlueBtn } from '@Views/Common/V2-Button';
 import { useGlobal } from '@Contexts/Global';
@@ -7,20 +7,19 @@ import { useGlobal } from '@Contexts/Global';
 
 export const OnRampLogin = ({ setSession }: { setSession: any }) => {
   const [email, setEmail] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
   const { state } = useGlobal();
-  const [login, setLogin] = useLoginByEmail(email);
-  const otpSent = (login.status === "OK");
 
   if (!otpSent)
-    return <EmailInput email={email} setEmail={setEmail} setLogin={setLogin} state={state} />;
+    return <EmailInput email={email} setEmail={setEmail} setOtpSent={setOtpSent} state={state} />;
   else
     return <OtpInput email={email} setSession={setSession} />;
 }
 
-const EmailInput = ({ email, setEmail, setLogin, state }) => {
+const EmailInput = ({ email, setEmail, setOtpSent, state }) => {
 
   const emailLogin = () => {
-    setLogin();
+    setLoginByEmail(email, setOtpSent);
   };
 
   return <><div>
@@ -53,17 +52,7 @@ const EmailInput = ({ email, setEmail, setLogin, state }) => {
 const OtpInput = ({ email, setSession }: { email: string, setSession: any }) => {
   const [val, setVal] = useState('');
   const { state } = useGlobal();
-  const [login, setLogin] = useOtpLogin(email, val);
-  if (login.status === "OK") {
-    //console.log("OTP OK");
-    //console.log("session_id", login.session_id);
-    sessionStorage.setItem("ramp_session_id", login.session_id);
-    setSession(login.session_id);
-  }
-  const otpLogin = () => {
-    setLogin();
-  };
-
+  const otpLogin = () => { useOtpLogin(email, val, setSession); }
 
   return <div>
     <BufferInput

@@ -5,54 +5,61 @@ import { useGlobal } from '@Contexts/Global';
 
 const APIRAMPURL = 'http://localhost:3000';
 
-function useGetRampTransactions(sessionId: string) {
-    return useFetch(`${APIRAMPURL}/transactions`, 'GET', { session_id: sessionId });
+export const useGetRampTransactions = (sessionId: string, setTransactions: any) => {
+    const save = (obj: any[]) => {
+        console.log("setting transactions", obj);
+        setTransactions(obj);
+    }
+    fetchFromApi(`${APIRAMPURL}/transactions`, 'GET', { session_id: sessionId }, save);
 }
 
-function useLoginByEmail(email: string) {
-    return useFetch(`${APIRAMPURL}/user-login`, 'POST', { email: email });
+export const setLoginByEmail = (email: string, setLoginStatus: any) => {
+    console.log("Ferching login by email");
+    const save = (obj: { status: string }) => {
+        console.log("Saving login by email", obj);
+        setLoginStatus(obj.status === "OK");
+    }
+    fetchFromApi(`${APIRAMPURL}/user-login`, 'POST', { email: email }, save);
 }
 
-export const useOtpLogin = (email: string, otp: string) => {
-    return useFetch(`${APIRAMPURL}/login/otp-email`, 'POST', { email: email, otp: otp });
+export const useOtpLogin = (email: string, otp: string, saveSession: any) => {
+    const saveLogin = (obj: { session_id: string }) => {
+        console.log("Saving session", obj);
+        saveSession(obj.session_id);
+        sessionStorage.setItem("ramp_session_id", obj.session_id);
+    }
+    return fetchFromApi(`${APIRAMPURL}/login/otp-email`, 'POST', { email: email, otp: otp }, saveLogin);
 }
 
-function useCountries() {
+/*export const useCountries = () => {
     return useFetch(`${APIRAMPURL}/countries`, 'GET', {});
-}
+}*/
 
-function useFetch(url: string, method: string, params: any) {
+function fetchFromApi(url: string, method: string, params: any, saveFunction: any) {
     /*const webAuth = new auth0.WebAuth({
         domain: 'dev-q0bvdmwaku11gjvx.us.auth0.com',
         clientID: 'LewFivibk9f9aC4FYA3jrZEUMvE5ymaN',
         audience: 'https://mucho.finance/ramp-api'
     });*/
-    const [data, setData] = useState([]);
-    const { dispatch } = useGlobal();
+    //const { dispatch } = useGlobal();
 
     if (method == 'GET') {
         url = url + '?' + encode(params);
     }
 
-
-    const fetchIt = () => {
-        dispatch({ type: 'SET_TXN_LOADING', payload: 1 });
-        fetch(url, {
-            method: method,
-            headers: {
-                'Accept': "application/json",
-                'Content-Type': "application/json",
-            },
-            body: (method === 'GET') ? null : JSON.stringify(params),
-        }).then(response => {
-            response.json().then(json => {
-                dispatch({ type: 'SET_TXN_LOADING', payload: 0 });
-                setData(json);
-            })
-        });
-    }
-
-    return [data, fetchIt];
+    //dispatch({ type: 'SET_TXN_LOADING', payload: 1 });
+    fetch(url, {
+        method: method,
+        headers: {
+            'Accept': "application/json",
+            'Content-Type': "application/json",
+        },
+        body: (method === 'GET') ? null : JSON.stringify(params),
+    }).then(response => {
+        response.json().then(json => {
+            //dispatch({ type: 'SET_TXN_LOADING', payload: 0 });
+            console.log("Txn finished", json);
+            saveFunction(json);
+        })
+    });
 }
-
-export { useCountries, useLoginByEmail, useGetRampTransactions };

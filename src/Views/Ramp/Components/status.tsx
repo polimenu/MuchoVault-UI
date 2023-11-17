@@ -3,17 +3,21 @@ import { useGetRampTransactions, useLoginByEmail, useOtpLogin } from '../Hooks/r
 import BufferInput from '@Views/Common/BufferInput';
 import { BlueBtn } from '@Views/Common/V2-Button';
 import { useGlobal } from '@Contexts/Global';
-import { RampContext } from '..';
+import { RampContext, useTraceUpdate } from '..';
 
 
 export const OnRampStatus = () => {
-  return <OnRampTransactions />
+  const { sessionId } = useContext(RampContext);
+  console.log("OnRampStatus loading");
+  const [transactions, setTransactions] = useState();
+
+  if (!transactions)
+    useGetRampTransactions(sessionId, setTransactions);
+
+  return <OnRampTransactions transactions={transactions} />
 }
 
-const OnRampTransactions = () => {
-  const { sessionId } = useContext(RampContext);
-  console.log("sessionId", sessionId);
-  const [transactions, fetchTransactions] = useGetRampTransactions(sessionId);
+const OnRampTransactions = ({ transactions }) => {
   //fetchTransactions();
 
   if (!transactions)
