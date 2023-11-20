@@ -1,25 +1,31 @@
 import { useEffect, useState } from 'react';
-import { setLoginByEmail, useOtpLogin } from '../Hooks/rampHooks';
+import { useOtpSent, useOtpLogin, useRampSession } from '../Hooks/rampHooks';
 import BufferInput from '@Views/Common/BufferInput';
 import { BlueBtn } from '@Views/Common/V2-Button';
 import { useGlobal } from '@Contexts/Global';
 
 
-export const OnRampLogin = ({ setSession }: { setSession: any }) => {
+export const OnRampLogin = () => {
   const [email, setEmail] = useState('');
-  const [otpSent, setOtpSent] = useState(false);
   const { state } = useGlobal();
+  const [loginOtpSent] = useOtpSent(email);
+  const [session, setSession] = useRampSession();
+  const [otp, setOtp] = useState('');
+  useOtpLogin(email, otp, setSession);
 
-  if (!otpSent)
-    return <EmailInput email={email} setEmail={setEmail} setOtpSent={setOtpSent} state={state} />;
-  else
-    return <OtpInput email={email} setSession={setSession} />;
+  if (!session) {
+    if (!loginOtpSent)
+      return <EmailInput email={email} setEmail={setEmail} state={state} />;
+    else
+      return <OtpInput email={email} setOtp={setOtp} />;
+  }
 }
 
-const EmailInput = ({ email, setEmail, setOtpSent, state }) => {
+const EmailInput = ({ email, setEmail, state }) => {
+  const [val, setVal] = useState('');
 
   const emailLogin = () => {
-    setLoginByEmail(email, setOtpSent);
+    setEmail(val);
   };
 
   return <><div>
@@ -32,9 +38,9 @@ const EmailInput = ({ email, setEmail, setOtpSent, state }) => {
       placeholder="Enter your e-mail"
       bgClass="!bg-1"
       ipClass="mt-1"
-      value={email}
+      value={val}
       onChange={(val) => {
-        setEmail(val);
+        setVal(val);
       }}
     />
     <BlueBtn
@@ -49,10 +55,9 @@ const EmailInput = ({ email, setEmail, setOtpSent, state }) => {
   </>;
 }
 
-const OtpInput = ({ email, setSession }: { email: string, setSession: any }) => {
+const OtpInput = ({ email, setOtp }: { email: string, setOtp: any }) => {
   const [val, setVal] = useState('');
   const { state } = useGlobal();
-  const otpLogin = () => { useOtpLogin(email, val, setSession); }
 
   return <div>
     <BufferInput
@@ -70,7 +75,7 @@ const OtpInput = ({ email, setSession }: { email: string, setSession: any }) => 
       }}
     />
     <BlueBtn
-      onClick={otpLogin}
+      onClick={() => { setOtp(val); }}
       className="rounded"
       isDisabled={state.txnLoading > 1}
       isLoading={state.txnLoading === 1}
