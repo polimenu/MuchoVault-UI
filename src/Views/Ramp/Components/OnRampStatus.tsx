@@ -23,21 +23,17 @@ export const underLineClass =
   'underline underline-offset-4 decoration decoration-[#ffffff30] w-fit ml-auto pointer';
 
 export const OnRampStatus = () => {
-  const [pageState] = useAtom(rampAtom);
-  const sessionId = pageState.sessionId;
-  //const [sessionId] = useRampSession();
+  console.log("Getting session ID from OnRampSatus");
+  const [sessionId] = useRampSession();
 
-  if (sessionId) {
+  console.log("OnRampStatus loading, session", sessionId);
 
-    console.log("OnRampStatus loading");
+  const [transactions] = useGetRampTransactions(sessionId);
 
-    const [transactions] = useGetRampTransactions(sessionId);
-
-    return <div>
-      <UserDetailsAndTokenPreferences />
-      <OnRampTransactions transactions={transactions} />
-    </div>;
-  }
+  return <div hidden={!sessionId}>
+    <UserDetailsAndTokenPreferences />
+    <OnRampTransactions transactions={transactions} />
+  </div>;
 
   return <></>;
 }
@@ -69,6 +65,7 @@ const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
 
 const UserDetailsCard = ({ userDetails }: { userDetails: IUserDetails }) => {
+  const [state, setPageState] = useAtom(rampAtom);
   if (!userDetails) {
     return <Skeleton
       key="userDetailsCard"
@@ -80,10 +77,12 @@ const UserDetailsCard = ({ userDetails }: { userDetails: IUserDetails }) => {
     top={
       <>User Details</>
     }
+
+
     middle={<>{userDetails &&
       <TableAligner
         keysName={
-          ['Name', 'Last name', 'User Status', 'E-mail', 'Date of birth', 'Address', 'Postal Code', 'City', 'Country']
+          ['Name', 'Last name', 'KYC Status', 'E-mail', 'Date of birth', 'Address', 'Postal Code', 'City', 'Country']
         }
         values={[
           <div className={`${wrapperClasses}`}>
@@ -103,7 +102,7 @@ const UserDetailsCard = ({ userDetails }: { userDetails: IUserDetails }) => {
           <div className={`${wrapperClasses}`}>
             <Display
               className="!justify-end"
-              data={userDetails.status}
+              data={userDetails.kyc_status}
             />
           </div>
           ,
@@ -161,12 +160,17 @@ const UserDetailsCard = ({ userDetails }: { userDetails: IUserDetails }) => {
         keyStyle={keyClasses}
         valueStyle={valueClasses}
       />}
+
+
     </>}
+
+    bottom={userDetails.canCreateKYC && <BlueBtn onClick={() => { setPageState({ ...state, isModalOpen: true, activeModal: "KYC" }) }}>Start KYC</BlueBtn>}
   />;
 }
 
 const TokenPreferencesCard = ({ tps, userDetails }: { tps: ITokenPreference[], userDetails: IUserDetails }) => {
   const [state, setPageState] = useAtom(rampAtom);
+  const editIconClass = 'w-[1vw] h-[1vw] inline ml-5';
   if (!tps || !userDetails) {
     return <Skeleton
       key="TokenPreferencesCard"
@@ -181,9 +185,11 @@ const TokenPreferencesCard = ({ tps, userDetails }: { tps: ITokenPreference[], u
         ['On Ramp target address', ...tps.map(t => `Convert ${t.currency} to`)]
       }
       values={[
-        <span className={underLineClass} onClick={() => { setPageState({ isModalOpen: true, activeModal: "TARGET_ADDRESS", auxModalData: { currentAddress: userDetails.target_address } }) }}>{userDetails.target_address ? addressSummary(userDetails.target_address) : 'Not set!'}</span>
+        <span className='pointer' onClick={() => { setPageState({ isModalOpen: true, activeModal: "TARGET_ADDRESS", auxModalData: { currentAddress: userDetails.target_address } }) }}>{userDetails.target_address ? addressSummary(userDetails.target_address) : 'Not set!'}
+          <img src='edit_wh.png' className={editIconClass} />
+        </span>
         , ...tps.map(t => {
-          return <div className={`${wrapperClasses} ${underLineClass}`}
+          return <span className={`${wrapperClasses} pointer`}
             onClick={() => { setPageState({ isModalOpen: true, activeModal: "ONRAMP_PREF", auxModalData: t }) }}>
             <Display
               className="!justify-end"
@@ -194,7 +200,8 @@ const TokenPreferencesCard = ({ tps, userDetails }: { tps: ITokenPreference[], u
               className="!justify-end"
               data={t.chain}
             />)
-          </div>
+            <img src='edit_wh.png' className={editIconClass} />
+          </span>
         })]}
       keyStyle={keyClasses}
       valueStyle={valueClasses}

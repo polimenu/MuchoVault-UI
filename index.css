@@ -470,6 +470,15 @@ html .scale0-6x {
   margin-bottom: 1px;
 }
 
+
+.w-\[1vw\] {
+  width: 1vw;
+}
+
+.h-\[1vw\] {
+  height: 1vw;
+}
+
 #mobile-sidebar-logo {
   transform: translateY(2px);
 }
@@ -1893,6 +1902,15 @@ html .capitalize {
 
 .y-auto {
   overflow-y: auto;
+}
+
+
+.\!y-auto {
+  overflow-y: auto !important;
+}
+
+.h-\[10vw\] {
+  height: 10vw;
 }
 
 ::-webkit-scrollbar {

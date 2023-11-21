@@ -22,17 +22,46 @@ export interface IUserDetails {
     first_name: string;
     last_name: string;
     status: string;
+    kyc_status: string;
     uuid: string;
     bvn: string;
+    canCreateKYC: boolean;
+}
+
+
+const kycStatus = (userStatus: string): string => {
+    switch (userStatus) {
+        case "CREATED":
+            return "Pending. 1 transaction allowed (<700€)."
+        case "KYC_NEEDED":
+            return "Pending. No transactions allowed."
+        case "PENDING_KYC_DATA":
+            return "Pending to receive your data. No transactions allowed."
+        case "KYC_PENDING":
+            return "Verification in progress. No transactions allowed."
+        case "SOFT_KYC_FAILED":
+            return "Failed. No transactions allowed."
+        case "HARD_KYC_FAILED":
+            return "Failed. No transactions allowed."
+        case "FULL_USER":
+            return "Done!"
+        case "SUSPENDED":
+            return "User suspended."
+        default:
+            return "Unknown status - " + userStatus;
+    }
 }
 
 export const useGetUserDetails = (sessionId: string): (IUserDetails | undefined)[] => {
     const { dispatch } = useGlobal();
     const [userDetails, setUserDetails] = useState<IUserDetails>();
+
     const save = (obj: IUserDetails) => {
         console.log("setting user details", obj);
         //parse date
         obj.date_of_birth = obj.date_of_birth && obj.date_of_birth.substring(0, 10);
+        obj.kyc_status = kycStatus(obj.status);
+        obj.canCreateKYC = (["CREATED", "KYC_NEEDED"].indexOf(obj.status) >= 0);
         setUserDetails(obj);
     }
 
@@ -124,6 +153,24 @@ export const useRampTokens = () => {
 
 }
 
+export const useRampCountries = () => {
+    const { dispatch } = useGlobal();
+    const toastify = useToast();
+    const [countries, setCountries] = useState<IRampCurrency[]>([]);
+    const save = (obj: IRampCurrency[]) => {
+        console.log("Saving countries", obj);
+        setCountries(obj);
+    }
+
+    useEffect(() => {
+        fetchFromApi(`${APIRAMPURL}/countries`, 'GET', {}, save, dispatch, toastify);
+    }, []);
+
+
+    return [countries];
+
+}
+
 export const useOtpSent = (email: string) => {
     const { dispatch } = useGlobal();
     const toastify = useToast();
@@ -152,25 +199,25 @@ export const useOtpSent = (email: string) => {
 
 export const useRampSession = () => {
     const [pageState, setPageState] = useAtom(rampAtom);
-    const [sesId, setSesId] = useState('');
     const savedSession = sessionStorage.getItem("ramp_session_id");
+    //console.log("stored session", savedSession);
 
     const updateSession = (session: string) => {
         sessionStorage.setItem("ramp_session_id", session);
         const newState = pageState;
         newState.sessionId = session;
+        //console.log("new pagestate", newState);
         setPageState(newState);
-        setSesId(session);
     }
 
     if (savedSession && savedSession !== pageState.sessionId) {
+        //console.log("Session stored is different, updating", savedSession);
         updateSession(savedSession);
-        /*const newState = pageState;
-        newState.sessionId = savedSession;
-        setPageState(newState);*/
     }
 
-    return [sesId, updateSession];
+    //console.log("Returning session", pageState.sessionId);
+
+    return [pageState.sessionId, updateSession];
 }
 
 export interface ITokenChain {
@@ -202,6 +249,76 @@ export const usePatchTokenPref = (session_id: string, currency: string, token: I
     }, [session_id, currency, token]);
 
     return [patchResult];
+}
+
+export interface IKYCRequest {
+    address_line_1: string;
+    address_line_2: string;
+    post_code: string;
+    city: string;
+    country: string;
+    date_of_birth: string;
+    source_of_funds: string;
+}
+
+const validateKYCRequest = (request: IKYCRequest): [boolean, string] => {
+    if (request.address_line_1.length < 4)
+        return [true, "Address line 1 is required"];
+    if (request.post_code.length < 3)
+        return [true, "Postal code is required"];
+    if (request.city.length < 2)
+        return [true, "City is required"];
+    if (request.country.length !== 2)
+        return [true, "Country is required"];
+    if (request.date_of_birth.length !== 10)
+        return [true, "Date of birth format is wrong, use YYYY-MM-DD"];
+    const [year, month, day] = request.date_of_birth.split("-");
+    if (isNaN(year) || year < 1900 || year > (new Date()).getFullYear() - 18)
+        return [true, "Date of birth format is wrong, use YYYY-MM-DD"];
+    if (isNaN(month) || month < 1 || month > 12)
+        return [true, "Date of birth format is wrong, use YYYY-MM-DD"];
+    if (isNaN(day) || day < 1 || day > 31)
+        return [true, "Date of birth format is wrong, use YYYY-MM-DD"];
+
+
+    return [false, ""];
+}
+
+export const useCreateKYC = (session_id: string, request: IKYCRequest) => {
+    ///user/target-address
+    const { dispatch } = useGlobal();
+    const toastify = useToast();
+    const [result, setResult] = useState(false);
+
+    const save = (obj: { status: string, errorMessage: string }) => {
+        console.log("Obj res KYC", obj);
+        if (obj.status === "OK") {
+            console.log("KYC created ok", obj);
+            setResult(true);
+            window.location.reload();
+        }
+        else {
+            toastify({ type: "error", msg: "Could not create KYC" + (obj.errorMessage ? "" : ": " + obj.errorMessage) });
+        }
+    }
+
+    useEffect(() => {
+        if (request && session_id && request.address_line_1 && request.post_code && request.city && request.country && request.date_of_birth && request.source_of_funds) {
+            const [isError, message] = validateKYCRequest(request);
+            if (!isError) {
+                console.log("Fetching KYC creation");
+                fetchFromApi(`${APIRAMPURL}/kyc`, 'POST', { ...request, session_id }, save, dispatch, toastify);
+            }
+            else {
+                toastify({ type: "error", msg: message });
+            }
+        }
+        /*else {
+            toastify({ type: "error", msg: "Please fill all fields" });
+        }*/
+    }, [request]);
+
+    return [result];
 }
 
 export const usePatchAddress = (session_id: string, address: string) => {
