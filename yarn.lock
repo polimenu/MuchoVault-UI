@@ -3621,6 +3621,11 @@
     "@stablelib/random" "^1.0.2"
     "@stablelib/wipe" "^1.0.1"
 
+"@sumsub/websdk@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@sumsub/websdk/-/websdk-2.0.1.tgz#be841452f64b459901dfe3114e023e5869b16ad8"
+  integrity sha512-uNwBKX97+dnmLQfi7DnaHVaqbSSgpwdBWyPjGEpPpBI2/jgE6qGTwki6b4qg4etno6yucjGlDqFL65SdcyFk8w==
+
 "@synthetixio/js@2.41.0":
   version "2.41.0"
   resolved "https://registry.npmjs.org/@synthetixio/js/-/js-2.41.0.tgz"
