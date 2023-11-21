@@ -15,9 +15,9 @@ export const OnRampLogin = () => {
 
   if (!session) {
     if (!loginOtpSent)
-      return <EmailInput email={email} setEmail={setEmail} state={state} />;
+      return <div className='w-[46rem] m-auto mt-5'><EmailInput email={email} setEmail={setEmail} state={state} /></div>;
     else
-      return <OtpInput email={email} setOtp={setOtp} />;
+      return <div className='w-[46rem] m-auto mt-5'><OtpInput email={email} setOtp={setOtp} /></div>;
   }
 }
 
@@ -45,7 +45,7 @@ const EmailInput = ({ email, setEmail, state }) => {
     />
     <BlueBtn
       onClick={emailLogin}
-      className="rounded"
+      className="rounded mt-5"
       isDisabled={state.txnLoading > 1}
       isLoading={state.txnLoading === 1}
     >
@@ -60,12 +60,8 @@ const OtpInput = ({ email, setOtp }: { email: string, setOtp: any }) => {
   const { state } = useGlobal();
 
   return <div>
+    <div className="text-f15 mb-5">Enter the one-time code sent to your e-mail:</div>
     <BufferInput
-      header={
-        <div className="flex flex-row justify-between w-full text-3 text-f14 mt-2">
-          <span>A one-time password has been sent to your e-mail, please enter it:</span>
-        </div>
-      }
       placeholder="One-time code"
       bgClass="!bg-1"
       ipClass="mt-1"
@@ -76,7 +72,7 @@ const OtpInput = ({ email, setOtp }: { email: string, setOtp: any }) => {
     />
     <BlueBtn
       onClick={() => { setOtp(val); }}
-      className="rounded"
+      className="rounded mt-5"
       isDisabled={state.txnLoading > 1}
       isLoading={state.txnLoading === 1}
     >

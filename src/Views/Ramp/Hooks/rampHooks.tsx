@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { encode } from 'querystring';
 import { useGlobal } from '@Contexts/Global';
+import { useToast } from '@Contexts/Toast';
 //import auth0 from 'auth0-js';
 
 const APIRAMPURL = 'http://localhost:3000';
@@ -97,20 +98,49 @@ export const useGetRampTransactions = (sessionId: string): (ITransaction[] | und
     return [transactions];
 }
 
+export interface IRampCurrency {
+    currency_name: string;
+    currency_label: string;
+    network_name?: string[];
+}
+
+export const useRampTokens = () => {
+    const { dispatch } = useGlobal();
+    const toastify = useToast();
+    const [tokens, setTokens] = useState<IRampCurrency[]>([]);
+    const save = (obj: IRampCurrency[]) => {
+        console.log("Saving token currencies", obj);
+        setTokens(obj.filter(o => o.network_name && o.network_name.length > 0));
+    }
+
+    useEffect(() => {
+        fetchFromApi(`${APIRAMPURL}/currencies`, 'GET', {}, save, dispatch, toastify);
+    }, []);
+
+
+    return [tokens];
+
+}
+
 export const useOtpSent = (email: string) => {
     const { dispatch } = useGlobal();
+    const toastify = useToast();
     const [loginStatus, setLoginStatus] = useState(false);
-    const save = (obj: { status: string }) => {
+    const save = (obj: { status: string, errorMessage?: string }) => {
         console.log("Saving login by email", obj);
-        setLoginStatus(obj.status === "OK");
+        if (obj.status === "OK")
+            setLoginStatus(true);
+        else
+            toastify({ type: "error", msg: obj.errorMessage });
     }
 
     useEffect(() => {
         if (!email)
             setLoginStatus(false);
         else {
-            console.log("Ferching login by email");
-            fetchFromApi(`${APIRAMPURL}/user-login`, 'POST', { email: email }, save, dispatch);
+            console.log("Fetching login by email");
+            console.log("Sending toaster", toastify);
+            fetchFromApi(`${APIRAMPURL}/user-login`, 'POST', { email: email }, save, dispatch, toastify);
         }
     }, [email]);
 
@@ -127,18 +157,81 @@ export const useRampSession = () => {
     return [session, setSession];
 }
 
+export interface ITokenChain {
+    token: string;
+    chain: string;
+}
+
+export const usePatchTokenPref = (session_id: string, currency: string, token: ITokenChain) => {
+    ///user/target-address
+    const { dispatch } = useGlobal();
+    const toastify = useToast();
+    const [patchResult, setPatchResult] = useState(false);
+
+    const save = (obj: { status: string }) => {
+        if (obj.status === "OK") {
+            console.log("Patched ok", obj);
+            setPatchResult(true);
+        }
+        else {
+            toastify({ type: "error", msg: "Could not set new target token" });
+        }
+    }
+
+    useEffect(() => {
+        if (session_id && currency && token.token && token.chain) {
+            console.log("Fetching token pref patch");
+            fetchFromApi(`${APIRAMPURL}/token-preferences`, 'PATCH', { session_id: session_id, currency: currency, token: token.token, chain: token.chain }, save, dispatch, toastify);
+        }
+    }, [session_id, currency, token]);
+
+    return [patchResult];
+}
+
+export const usePatchAddress = (session_id: string, address: string) => {
+    ///user/target-address
+    const { dispatch } = useGlobal();
+    const toastify = useToast();
+    const [patchResult, setPatchResult] = useState(false);
+
+    const save = (obj: { status: string }) => {
+        if (obj.status === "OK") {
+            console.log("Patched ok", obj);
+            setPatchResult(true);
+        }
+        else {
+            toastify({ type: "error", msg: "Could not set new target address" });
+        }
+    }
+
+    useEffect(() => {
+        if (session_id && address) {
+            console.log("Fetching target address patch");
+            fetchFromApi(`${APIRAMPURL}/user/target-address`, 'PATCH', { session_id: session_id, target_address: address }, save, dispatch, toastify);
+        }
+    }, [session_id, address]);
+
+    return [patchResult];
+}
+
 export const useOtpLogin = (email: string, otp: string, saveSession: any) => {
     const { dispatch } = useGlobal();
+    const toastify = useToast();
     const saveLogin = (obj: { session_id: string }) => {
-        console.log("Saving session", obj);
-        saveSession(obj.session_id);
-        sessionStorage.setItem("ramp_session_id", obj.session_id);
+        if (obj.status === "OK") {
+            console.log("Saving session", obj);
+            saveSession(obj.session_id);
+            sessionStorage.setItem("ramp_session_id", obj.session_id);
+        }
+        else {
+            toastify({ type: "error", msg: "Invalid OTP code" });
+        }
     }
 
     useEffect(() => {
         if (email && otp) {
             console.log("Fetching OTP session");
-            fetchFromApi(`${APIRAMPURL}/login/otp-email`, 'POST', { email: email, otp: otp }, saveLogin, dispatch);
+            fetchFromApi(`${APIRAMPURL}/login/otp-email`, 'POST', { email: email, otp: otp }, saveLogin, dispatch, toastify);
         }
         /*else {
             console.log("Saving null session");
@@ -151,11 +244,13 @@ export const useOtpLogin = (email: string, otp: string, saveSession: any) => {
     return useFetch(`${APIRAMPURL}/countries`, 'GET', {});
 }*/
 
-function fetchFromApi(url: string, method: string, params: any, saveFunction: any, dispatch: any) {
+function fetchFromApi(url: string, method: string, params: any, saveFunction: any, dispatch: any, toastify: any = null) {
 
     if (method == 'GET') {
         url = url + '?' + encode(params);
     }
+
+    console.log("Sending request", url, method, params);
 
     dispatch({ type: 'SET_TXN_LOADING', payload: 1 });
     fetch(url, {
@@ -171,5 +266,14 @@ function fetchFromApi(url: string, method: string, params: any, saveFunction: an
             console.log("Txn finished", json);
             saveFunction(json);
         })
+    }).catch(e => {
+        console.log("Error API", e);
+        if (toastify) {
+            toastify({
+                type: 'error',
+                msg: "Unknown error",
+            });
+        }
+        dispatch({ type: 'SET_TXN_LOADING', payload: 0 });
     });
 }

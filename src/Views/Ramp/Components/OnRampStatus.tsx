@@ -10,10 +10,17 @@ import { Display } from '@Views/Common/Tooltips/Display';
 import { json } from 'react-router-dom';
 import { Card } from '@Views/Common/Card/Card';
 import { TableAligner } from '@Views/Common/TableAligner';
+import { Skeleton } from '@mui/material';
+import { useAtom } from 'jotai';
+import { rampAtom } from '../rampAtom';
+import { addressSummary } from '@Views/Common/Utils';
 
 
 const topStyles = 'mx-3 text-f22';
 const descStyles = 'mx-3';
+
+export const underLineClass =
+  'underline underline-offset-4 decoration decoration-[#ffffff30] w-fit ml-auto pointer';
 
 export const OnRampStatus = () => {
   const [sessionId] = useRampSession();
@@ -21,14 +28,32 @@ export const OnRampStatus = () => {
   console.log("OnRampStatus loading");
 
   const [transactions] = useGetRampTransactions(sessionId);
-  const [userDetails] = useGetUserDetails(sessionId);
-  const [tps] = useGetTokenPreferences(sessionId);
 
   return <div>
-    <UserDetails userDetails={userDetails} />
-    <TokenPreferences tps={tps} />
+    <UserDetailsAndTokenPreferences />
     <OnRampTransactions transactions={transactions} />
   </div>;
+}
+
+const UserDetailsAndTokenPreferences = () => {
+  const [sessionId] = useRampSession();
+  const [tps] = useGetTokenPreferences(sessionId);
+  const [userDetails] = useGetUserDetails(sessionId);
+
+  return <Section
+    Heading={<div className={topStyles}>User details and token preferences</div>}
+    subHeading={
+      <div className={descStyles}>
+
+      </div>
+    }
+    Cards={
+      [
+        <UserDetailsCard userDetails={userDetails} />,
+        <TokenPreferencesCard tps={tps} userDetails={userDetails} />
+      ]
+    }
+  />;
 }
 
 
@@ -36,8 +61,14 @@ const wrapperClasses = 'flex justify-end flex-wrap';
 const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
 
-const UserDetails = ({ userDetails }: { userDetails: IUserDetails }) => {
-
+const UserDetailsCard = ({ userDetails }: { userDetails: IUserDetails }) => {
+  if (!userDetails) {
+    return <Skeleton
+      key="userDetailsCard"
+      variant="rectangular"
+      className="w-full !h-full min-h-[370px] !transform-none !bg-1"
+    />
+  }
   return <Card
     top={
       <>User Details</>
@@ -117,6 +148,7 @@ const UserDetails = ({ userDetails }: { userDetails: IUserDetails }) => {
           </div>
           ,
 
+
         ]
         }
         keyStyle={keyClasses}
@@ -126,46 +158,40 @@ const UserDetails = ({ userDetails }: { userDetails: IUserDetails }) => {
   />;
 }
 
-const TokenPreferences = ({ tps }: { tps: ITokenPreference[] }) => {
-  return <Section
-    Heading={<div className={topStyles}>Token preferences</div>}
-    subHeading={
-      <div className={descStyles}>
-        Select your choices
-      </div>
-    }
-    Cards={
-      tps ? tps.map(t => {
-        return <Card
-          top={`Currency ${t.currency}`}
-          middle={<TableAligner
-            keysName={
-              ['To chain', 'To token']
-            }
-            values={[
-              <div className={`${wrapperClasses}`}>
-                <Display
-                  className="!justify-end"
-                  data={t.chain}
-                />
-              </div>
-              ,
-              <div className={`${wrapperClasses}`}>
-                <Display
-                  className="!justify-end"
-                  data={t.token}
-                />
-              </div>
-              ,
-
-            ]
-            }
-            keyStyle={keyClasses}
-            valueStyle={valueClasses}
-          />} />
-      }) : [<div></div>]
-    }
-  />;
+const TokenPreferencesCard = ({ tps, userDetails }: { tps: ITokenPreference[], userDetails: IUserDetails }) => {
+  const [state, setPageState] = useAtom(rampAtom);
+  if (!tps || !userDetails) {
+    return <Skeleton
+      key="TokenPreferencesCard"
+      variant="rectangular"
+      className="w-full !h-full min-h-[370px] !transform-none !bg-1"
+    />
+  }
+  return <Card
+    top="On Ramp Preferences"
+    middle={<TableAligner
+      keysName={
+        ['On Ramp target address', ...tps.map(t => `Convert ${t.currency} to`)]
+      }
+      values={[
+        <span className={underLineClass} onClick={() => { setPageState({ isModalOpen: true, activeModal: "TARGET_ADDRESS", auxModalData: { currentAddress: userDetails.target_address } }) }}>{userDetails.target_address ? addressSummary(userDetails.target_address) : 'Not set!'}</span>
+        , ...tps.map(t => {
+          return <div className={`${wrapperClasses} ${underLineClass}`}
+            onClick={() => { setPageState({ isModalOpen: true, activeModal: "ONRAMP_PREF", auxModalData: t }) }}>
+            <Display
+              className="!justify-end"
+              data={t.token}
+            />
+            &nbsp;
+            (<Display
+              className="!justify-end"
+              data={t.chain}
+            />)
+          </div>
+        })]}
+      keyStyle={keyClasses}
+      valueStyle={valueClasses}
+    />} />;
 }
 
 const OnRampTransactions = ({ transactions }) => {
@@ -237,6 +263,11 @@ const OnRampTransactions = ({ transactions }) => {
       sortedData: typeof dashboardData
     ) => {
       const currentData = sortedData[row][col];
+      let classNames = "";
+      if (currentData.indexOf("COMPLETED") > 0)
+        classNames += "green";
+      else if (currentData.indexOf("REJECTED") > 0)
+        classNames += "red";
       //console.log("currentData", currentData);
       return <CellContent
         content={[
@@ -245,6 +276,7 @@ const OnRampTransactions = ({ transactions }) => {
             className="!justify-start"
           />,
         ]}
+        className={classNames}
       />;
     }
 

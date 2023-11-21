@@ -6,9 +6,11 @@ import Background from 'src/AppStyles';
 import BufferInput from '@Views/Common/BufferInput';
 import { BlueBtn } from '@Views/Common/V2-Button';
 import { useGlobal } from '@Contexts/Global';
-import { OnRampLogin } from './Components/login';
+import { OnRampLogin } from './Components/OnRampLogin';
 import { OnRampStatus } from './Components/OnRampStatus';
 import { useRampSession } from './Hooks/rampHooks';
+import { useToast } from '@Contexts/Toast';
+import { RampModals } from './Modals';
 
 const Styles = styled.div`
   width: min(1300px, 100%);
@@ -73,6 +75,7 @@ export const RampPage = () => {
     document.title = "(mucho) finance | On & Off ramp";
   }, []);
 
+
   //sessionStorage.setItem("ramp_session_id", "");
   console.log("Loading RampPage");
 
@@ -84,6 +87,7 @@ export const RampPage = () => {
         <div className="root w-[100vw]">
           <main className="content-drawer">
             <Styles>
+              <RampModals />
               <Section
                 Heading={<div className={topStyles}>On & Off Ramp</div>}
                 Cards={[]}
