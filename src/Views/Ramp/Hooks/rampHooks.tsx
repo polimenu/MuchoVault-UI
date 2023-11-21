@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { encode } from 'querystring';
 import { useGlobal } from '@Contexts/Global';
 import { useToast } from '@Contexts/Toast';
+import { rampAtom } from '../rampAtom';
+import { useAtom } from 'jotai';
 //import auth0 from 'auth0-js';
 
 const APIRAMPURL = 'http://localhost:3000';
@@ -131,7 +133,7 @@ export const useOtpSent = (email: string) => {
         if (obj.status === "OK")
             setLoginStatus(true);
         else
-            toastify({ type: "error", msg: obj.errorMessage });
+            toastify({ type: "error", msg: obj.errorMessage ? obj.errorMessage : "Login error" });
     }
 
     useEffect(() => {
@@ -149,12 +151,26 @@ export const useOtpSent = (email: string) => {
 }
 
 export const useRampSession = () => {
-    const [session, setSession] = useState('');
+    const [pageState, setPageState] = useAtom(rampAtom);
+    const [sesId, setSesId] = useState('');
     const savedSession = sessionStorage.getItem("ramp_session_id");
-    if (savedSession && savedSession != session)
-        setSession(savedSession);
 
-    return [session, setSession];
+    const updateSession = (session: string) => {
+        sessionStorage.setItem("ramp_session_id", session);
+        const newState = pageState;
+        newState.sessionId = session;
+        setPageState(newState);
+        setSesId(session);
+    }
+
+    if (savedSession && savedSession !== pageState.sessionId) {
+        updateSession(savedSession);
+        /*const newState = pageState;
+        newState.sessionId = savedSession;
+        setPageState(newState);*/
+    }
+
+    return [sesId, updateSession];
 }
 
 export interface ITokenChain {
@@ -221,7 +237,6 @@ export const useOtpLogin = (email: string, otp: string, saveSession: any) => {
         if (obj.status === "OK") {
             console.log("Saving session", obj);
             saveSession(obj.session_id);
-            sessionStorage.setItem("ramp_session_id", obj.session_id);
         }
         else {
             toastify({ type: "error", msg: "Invalid OTP code" });

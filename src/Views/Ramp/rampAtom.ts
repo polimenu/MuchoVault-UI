@@ -4,6 +4,7 @@ export interface IRampAtom {
     isModalOpen: boolean;
     activeModal: string;
     auxModalData?: any;
+    sessionId?: string;
 }
 
 export const rampAtom = atom<IRampAtom>({

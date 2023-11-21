@@ -19,6 +19,8 @@ export const OnRampLogin = () => {
     else
       return <div className='w-[46rem] m-auto mt-5'><OtpInput email={email} setOtp={setOtp} /></div>;
   }
+
+  return <></>;
 }
 
 const EmailInput = ({ email, setEmail, state }) => {

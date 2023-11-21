@@ -42,16 +42,23 @@ const descStyles = 'w-[46rem] text-center m-auto tab:w-full';
 
 
 const OnRamp = () => {
-  const [sessionId] = useRampSession();
+  //const [sessionId] = useRampSession();
 
-  console.log("OnRamp sessionId", sessionId);
+  //console.log("OnRamp sessionId", sessionId);
   //useTraceUpdate({ setSession });
 
   //User not logged in
-  if (!sessionId)
+  /*if (!sessionId) {
+    console.log("Loading login component");
     return <OnRampLogin />;
-  else
+  }
+  else {
+    console.log("Loading status component");
     return <OnRampStatus />;
+  }*/
+
+
+  return <><OnRampLogin /><OnRampStatus /></>;
 }
 
 export function useTraceUpdate(props) {
@@ -82,7 +89,7 @@ export const RampPage = () => {
   return (
     <>
       <Background>
-        <Navbar hideAccount={true} />
+        <Navbar />
 
         <div className="root w-[100vw]">
           <main className="content-drawer">
@@ -90,10 +97,10 @@ export const RampPage = () => {
               <RampModals />
               <Section
                 Heading={<div className={topStyles}>On & Off Ramp</div>}
-                Cards={[]}
                 subHeading={<div className={descStyles}>Move from FIAT to Crypto, or counterwise</div>}
+                other={<OnRamp />}
               />
-              <OnRamp />
+
             </Styles>
           </main>
         </div>

@@ -23,16 +23,23 @@ export const underLineClass =
   'underline underline-offset-4 decoration decoration-[#ffffff30] w-fit ml-auto pointer';
 
 export const OnRampStatus = () => {
-  const [sessionId] = useRampSession();
+  const [pageState] = useAtom(rampAtom);
+  const sessionId = pageState.sessionId;
+  //const [sessionId] = useRampSession();
 
-  console.log("OnRampStatus loading");
+  if (sessionId) {
 
-  const [transactions] = useGetRampTransactions(sessionId);
+    console.log("OnRampStatus loading");
 
-  return <div>
-    <UserDetailsAndTokenPreferences />
-    <OnRampTransactions transactions={transactions} />
-  </div>;
+    const [transactions] = useGetRampTransactions(sessionId);
+
+    return <div>
+      <UserDetailsAndTokenPreferences />
+      <OnRampTransactions transactions={transactions} />
+    </div>;
+  }
+
+  return <></>;
 }
 
 const UserDetailsAndTokenPreferences = () => {
