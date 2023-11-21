@@ -1,5 +1,5 @@
 import { ReactNode, useContext, useEffect, useState } from 'react';
-import { ITokenPreference, IUserDetails, useGetRampTransactions, useGetTokenPreferences, useGetUserDetails, useLoginByEmail, useOtpLogin, useRampSession } from '../Hooks/rampHooks';
+import { ITokenPreference, IUserDetails, useGetRampTransactions, useGetTokenPreferences, useGetUserDetails, useLoginByEmail, useOtpLogin, useRampSession, useRampSumsubToken } from '../Hooks/rampHooks';
 import BufferInput from '@Views/Common/BufferInput';
 import { BlueBtn } from '@Views/Common/V2-Button';
 import { useGlobal } from '@Contexts/Global';
@@ -66,6 +66,9 @@ const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
 
 const UserDetailsCard = ({ userDetails }: { userDetails: IUserDetails }) => {
   const [state, setPageState] = useAtom(rampAtom);
+  const [getToken, setGetToken] = useState(false);
+  const [token] = useRampSumsubToken(getToken);
+
   if (!userDetails) {
     return <Skeleton
       key="userDetailsCard"
@@ -164,7 +167,10 @@ const UserDetailsCard = ({ userDetails }: { userDetails: IUserDetails }) => {
 
     </>}
 
-    bottom={userDetails.canCreateKYC && <BlueBtn onClick={() => { setPageState({ ...state, isModalOpen: true, activeModal: "KYC" }) }}>Start KYC</BlueBtn>}
+    bottom={<>
+      {userDetails.canCreateKYC && <BlueBtn onClick={() => { setPageState({ ...state, isModalOpen: true, activeModal: "KYC" }) }}>Start KYC</BlueBtn>}
+      {userDetails.status == "PENDING_KYC_DATA" && <BlueBtn onClick={() => { setGetToken(true); }}>Upload KYC data</BlueBtn>}
+    </>}
   />;
 }
 

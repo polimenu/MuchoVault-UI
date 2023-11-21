@@ -188,13 +188,36 @@ export const useOtpSent = (email: string) => {
             setLoginStatus(false);
         else {
             console.log("Fetching login by email");
-            console.log("Sending toaster", toastify);
             fetchFromApi(`${APIRAMPURL}/user-login`, 'POST', { email: email }, save, dispatch, toastify);
         }
     }, [email]);
 
 
     return [loginStatus];
+}
+
+export const useRampSumsubToken = (getToken: boolean) => {
+    const { dispatch } = useGlobal();
+    const toastify = useToast();
+    const [session] = useRampSession();
+    const [sumsubToken, setSumsubToken] = useState('');
+    const save = (obj: { status: string, token: string, errorMessage?: string }) => {
+        console.log("Saving KYC sumsub token", obj);
+        if (obj.status === "OK")
+            setSumsubToken(obj.token);
+        else
+            toastify({ type: "error", msg: obj.errorMessage ? obj.errorMessage : "KYC token error" });
+    }
+
+    useEffect(() => {
+        if (session && getToken) {
+            console.log("Fetching get KYC sumsub token");
+            fetchFromApi(`${APIRAMPURL}/kyc/token`, 'GET', { session_id: session }, save, dispatch, toastify);
+        }
+    }, [getToken]);
+
+
+    return [sumsubToken];
 }
 
 export const useRampSession = () => {
