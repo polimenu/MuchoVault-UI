@@ -11,9 +11,8 @@ import { V2USER_CONFIG } from '../Config/v2UserConfig';
 import MuchoRewardRouterAbi from '../Config/Abis/MuchoRewardRouter.json';
 import MuchoVaultAbi from '../Config/Abis/MuchoVault.json';
 import ERC20Abi from '../Config/Abis/ERC20Ext.json';
-import { useToast } from '@Contexts/Toast';
 import { ethers } from 'ethers';
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 export const btnClasses = '!w-fit px-4 rounded-sm !h-7 ml-auto';
 
@@ -69,9 +68,7 @@ const getContractCall = (contract: string, abi: any, functionName: string, args:
 
 
 export function NFTButtons({ data }: { data: IMuchoVaultData }) {
-  const { t } = useTranslation();
   const { address: account } = useUserAccount();
-  const [state, setPageState] = useAtom(v2ContractDataAtom);
   const { activeChain } = useContext(ViewContext);
   const { chain } = useNetwork();
   const rewardsToken = V2USER_CONFIG[activeChain.id].MuchoRewardRouter.rewardsToken;

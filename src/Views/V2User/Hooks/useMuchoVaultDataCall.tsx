@@ -16,8 +16,7 @@ import { useContext } from 'react';
 import { useUserAccount } from '@Hooks/useUserAccount';
 import { IMuchoVaultData, IToken } from '../v2AdminAtom';
 import { getDataNumber, getDataString, getERC20Token, getERC20TokenCalls } from './useCommonUtils';
-import { InvertColorsOff } from '@mui/icons-material';
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 
 export const BASIS_POINTS_DIVISOR = '10000';
 export const SECONDS_PER_YEAR = '31536000';
@@ -311,7 +310,6 @@ export const useGetMuchoVaultV2Data = () => {
 };
 
 const getUserBadgeData = (data: any, account: string) => {
-  const { t } = useTranslation();
   let activeChain: Chain | null = null;
   const v2AdminContextValue = useContext(ViewContext);
   if (v2AdminContextValue) {
