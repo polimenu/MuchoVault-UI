@@ -1,19 +1,15 @@
-import { ReactNode, useContext, useEffect, useState } from 'react';
-import { ITokenPreference, IUserDetails, useGetRampTransactions, useGetTokenPreferences, useGetUserDetails, useLoginByEmail, useOtpLogin, useRampSession, useRampSumsubToken } from '../Hooks/rampHooks';
-import BufferInput from '@Views/Common/BufferInput';
+import { ReactNode, useState } from 'react';
 import { BlueBtn } from '@Views/Common/V2-Button';
-import { useGlobal } from '@Contexts/Global';
-import { useTraceUpdate } from '..';
 import { Section } from '@Views/Common/Card/Section';
 import TransactionTable from './TransactionTable';
 import { Display } from '@Views/Common/Tooltips/Display';
-import { json } from 'react-router-dom';
 import { Card } from '@Views/Common/Card/Card';
 import { TableAligner } from '@Views/Common/TableAligner';
 import { Skeleton } from '@mui/material';
 import { useAtom } from 'jotai';
-import { rampAtom } from '../rampAtom';
+import { IRampTokenPreference, IRampTransaction, IRampUserDetails, rampAtom, rampDataAtom } from '../rampAtom';
 import { addressSummary } from '@Views/Common/Utils';
+import { useRampSumsubToken } from '../Hooks/kyc';
 
 
 const topStyles = 'mx-3 text-f22';
@@ -23,25 +19,19 @@ export const underLineClass =
   'underline underline-offset-4 decoration decoration-[#ffffff30] w-fit ml-auto pointer';
 
 export const OnRampStatus = () => {
-  console.log("Getting session ID from OnRampSatus");
-  const [sessionId] = useRampSession();
+  const [rampData] = useAtom(rampDataAtom);
 
-  console.log("OnRampStatus loading, session", sessionId);
+  console.log("OnRampStatus loading", rampData);
 
-  const [transactions] = useGetRampTransactions(sessionId);
-
-  return <div hidden={!sessionId}>
-    <UserDetailsAndTokenPreferences />
-    <OnRampTransactions transactions={transactions} />
+  return <div>
+    <UserDetailsAndTokenPreferences userDetails={rampData.userDetails} tokenPreferences={rampData.tokenPreferences} />
+    <OnRampTransactions transactions={rampData.transactions} />
   </div>;
 
   return <></>;
 }
 
-const UserDetailsAndTokenPreferences = () => {
-  const [sessionId] = useRampSession();
-  const [tps] = useGetTokenPreferences(sessionId);
-  const [userDetails] = useGetUserDetails(sessionId);
+const UserDetailsAndTokenPreferences = ({ userDetails, tokenPreferences }: { userDetails?: IRampUserDetails, tokenPreferences?: IRampTokenPreference[] }) => {
 
   return <Section
     Heading={<div className={topStyles}>User details and token preferences</div>}
@@ -53,7 +43,7 @@ const UserDetailsAndTokenPreferences = () => {
     Cards={
       [
         <UserDetailsCard userDetails={userDetails} />,
-        <TokenPreferencesCard tps={tps} userDetails={userDetails} />
+        <TokenPreferencesCard tokenPreferences={tokenPreferences} userDetails={userDetails} />
       ]
     }
   />;
@@ -174,10 +164,10 @@ const UserDetailsCard = ({ userDetails }: { userDetails: IUserDetails }) => {
   />;
 }
 
-const TokenPreferencesCard = ({ tps, userDetails }: { tps: ITokenPreference[], userDetails: IUserDetails }) => {
+const TokenPreferencesCard = ({ tokenPreferences, userDetails }: { tokenPreferences?: IRampTokenPreference[], userDetails?: IRampUserDetails }) => {
   const [state, setPageState] = useAtom(rampAtom);
   const editIconClass = 'w-[1vw] h-[1vw] inline ml-5';
-  if (!tps || !userDetails) {
+  if (!tokenPreferences || !userDetails) {
     return <Skeleton
       key="TokenPreferencesCard"
       variant="rectangular"
@@ -188,15 +178,15 @@ const TokenPreferencesCard = ({ tps, userDetails }: { tps: ITokenPreference[], u
     top="On Ramp Preferences"
     middle={<TableAligner
       keysName={
-        ['On Ramp target address', ...tps.map(t => `Convert ${t.currency} to`)]
+        ['On Ramp target address', ...tokenPreferences.map(t => `Convert ${t.currency} to`)]
       }
       values={[
-        <span className='pointer' onClick={() => { setPageState({ isModalOpen: true, activeModal: "TARGET_ADDRESS", auxModalData: { currentAddress: userDetails.target_address } }) }}>{userDetails.target_address ? addressSummary(userDetails.target_address) : 'Not set!'}
+        <span className='pointer' onClick={() => { setPageState({ ...state, isModalOpen: true, activeModal: "TARGET_ADDRESS", auxModalData: { currentAddress: userDetails.target_address } }) }}>{userDetails.target_address ? addressSummary(userDetails.target_address) : 'Not set!'}
           <img src='edit_wh.png' className={editIconClass} />
         </span>
-        , ...tps.map(t => {
+        , ...tokenPreferences.map(t => {
           return <span className={`${wrapperClasses} pointer`}
-            onClick={() => { setPageState({ isModalOpen: true, activeModal: "ONRAMP_PREF", auxModalData: t }) }}>
+            onClick={() => { setPageState({ ...state, isModalOpen: true, activeModal: "ONRAMP_PREF", auxModalData: t }) }}>
             <Display
               className="!justify-end"
               data={t.token}
@@ -214,7 +204,7 @@ const TokenPreferencesCard = ({ tps, userDetails }: { tps: ITokenPreference[], u
     />} />;
 }
 
-const OnRampTransactions = ({ transactions }) => {
+const OnRampTransactions = ({ transactions }: { transactions?: IRampTransaction[] }) => {
   //fetchTransactions();
 
   if (!transactions)
@@ -331,26 +321,3 @@ const OnRampTransactions = ({ transactions }) => {
     </>;
   }
 }
-
-/*
-<table>
-            <thead>
-              <tr>
-                <th>Direction</th>
-                <th>Input</th>
-                <th>Transaction ID</th>
-                <th>Output</th>
-              </tr>
-            </thead>
-            <tbody>
-              {
-                transactions.map(t => <tr key={t.input.transaction_id}>
-                  <td>{t.direction}</td>
-                  <td>{t.input.amount} {t.input.currency}</td>
-                  <td>{t.input.transaction_id}</td>
-                  <td>{t.output.currency}</td>
-                </tr>)
-              }
-            </tbody>
-          </table>
-*/

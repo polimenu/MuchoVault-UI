@@ -11,19 +11,18 @@ interface IActiveModal {
 
 interface IEarnAtom {
   isModalOpen: boolean;
-  activeModal: IActiveModal;
+  activeModal?: IActiveModal;
 }
 
 export const earnAtom = atom<IEarnAtom>({
-  isModalOpen: false,
-  activeModal: null,
+  isModalOpen: false
 });
 
 export const writeEarnAtom = atom(null, (get, set, update: IEarnAtom) =>
   set(earnAtom, update)
 );
 
-const earnData = atom<IEarn>({ earn: null });
+const earnData = atom<IEarn>({});
 export const readEarnData = atom((get) => get(earnData));
 export const writeEarnData = atom(null, (get, set, update: IEarn) => {
   set(earnData, update);

@@ -1,16 +1,17 @@
 import { Section } from '@Views/Common/Card/Section';
 import { Navbar } from '@Views/Common/Navbar';
 import styled from '@emotion/styled';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import Background from 'src/AppStyles';
-import BufferInput from '@Views/Common/BufferInput';
-import { BlueBtn } from '@Views/Common/V2-Button';
-import { useGlobal } from '@Contexts/Global';
-import { OnRampLogin } from './Components/OnRampLogin';
+import { OnRampLoginEmail } from './Components/OnRampLoginEmail';
 import { OnRampStatus } from './Components/OnRampStatus';
-import { useRampSession } from './Hooks/rampHooks';
-import { useToast } from '@Contexts/Toast';
+import { useGetRampData } from './Hooks/rampData';
 import { RampModals } from './Modals';
+import { useAtom } from 'jotai';
+import { ERampStatus, rampAtom, rampDataAtom } from './rampAtom';
+import { OnRampLoginOtp } from './Components/OnRampLoginOtp';
+import { useRampSession } from './Hooks/login';
+import { OnRampSumsubKYC } from './Components/OnRampSumsubKYC';
 
 const Styles = styled.div`
   width: min(1300px, 100%);
@@ -41,46 +42,21 @@ const topStyles = 'flex flex-row items-center justify-center mb-2 text-f22';
 const descStyles = 'w-[46rem] text-center m-auto tab:w-full';
 
 
-const OnRamp = () => {
-  //const [sessionId] = useRampSession();
-
-  //console.log("OnRamp sessionId", sessionId);
-  //useTraceUpdate({ setSession });
-
-  //User not logged in
-  /*if (!sessionId) {
-    console.log("Loading login component");
-    return <OnRampLogin />;
-  }
-  else {
-    console.log("Loading status component");
-    return <OnRampStatus />;
-  }*/
-
-
-  return <><OnRampLogin /><OnRampStatus /></>;
-}
-
-export function useTraceUpdate(props) {
-  const prev = useRef(props);
-  useEffect(() => {
-    const changedProps = Object.entries(props).reduce((ps, [k, v]) => {
-      if (prev.current[k] !== v) {
-        ps[k] = [prev.current[k], v];
-      }
-      return ps;
-    }, {});
-    if (Object.keys(changedProps).length > 0) {
-      console.log('Changed props:', changedProps);
-    }
-    prev.current = props;
-  });
-}
 
 export const RampPage = () => {
   useEffect(() => {
     document.title = "(mucho) finance | On & Off ramp";
   }, []);
+
+
+  const [rampState,] = useAtom(rampAtom);
+  const [, setRampData] = useAtom(rampDataAtom);
+  useRampSession();
+  const rampData = useGetRampData();
+  useEffect(() => {
+    setRampData(rampData);
+    console.log("Rampdata set", rampData);
+  }, [rampData]);
 
 
   //sessionStorage.setItem("ramp_session_id", "");
@@ -98,7 +74,12 @@ export const RampPage = () => {
               <Section
                 Heading={<div className={topStyles}>On & Off Ramp</div>}
                 subHeading={<div className={descStyles}>Move from FIAT to Crypto, or counterwise</div>}
-                other={<OnRamp />}
+                other={<>
+                  {rampState.loginStatus == ERampStatus.NOT_LOGGED && <OnRampLoginEmail />}
+                  {rampState.loginStatus == ERampStatus.OTP_SENT && <OnRampLoginOtp />}
+                  {rampState.loginStatus == ERampStatus.LOGGED && <OnRampStatus />}
+                  <OnRampSumsubKYC />
+                </>}
               />
 
             </Styles>

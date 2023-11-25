@@ -1,15 +1,17 @@
 import { CloseOutlined } from '@mui/icons-material';
 import { Dialog, IconButton } from '@mui/material';
 import { useAtom } from 'jotai';
-import { rampAtom } from '../rampAtom';
+import { rampAtom, rampDataAtom } from '../rampAtom';
 import BufferInput from '@Views/Common/BufferInput';
 import { useState } from 'react';
 import { BlueBtn } from '@Views/Common/V2-Button';
 import { useGlobal } from '@Contexts/Global';
-import { IKYCRequest, ITokenChain, useCreateKYC, usePatchAddress, usePatchTokenPref, useRampCountries, useRampSession, useRampTokens } from '../Hooks/rampHooks';
 import { underLineClass } from '../Components/OnRampStatus';
 import { BufferDropdown } from '@Views/Common/Buffer-Dropdown';
 import { DropdownArrow } from '@SVG/Elements/DropDownArrow';
+import { ITokenChain, usePatchAddress, usePatchTokenPref } from '../Hooks/user';
+import { IKYCRequest, useCreateKYC } from '../Hooks/kyc';
+import snsWebSdk from '@sumsub/websdk';
 
 export const RampModals = () => {
     const [pageState, setPageState] = useAtom(rampAtom);
@@ -58,12 +60,12 @@ function ModalChild() {
 
 function TargetAddressModal() {
     const [pageState] = useAtom(rampAtom);
+    const [rampData] = useAtom(rampDataAtom);
     const currentAddress = pageState.auxModalData && pageState.auxModalData.currentAddress ? pageState.auxModalData.currentAddress : "";
     const [val, setVal] = useState(currentAddress);
     const [addr, setAddr] = useState('');
     const { state } = useGlobal();
-    const [sessionId] = useRampSession();
-    const [isPatched] = usePatchAddress(sessionId, addr);
+    const [isPatched] = usePatchAddress(pageState.sessionId, addr);
     if (isPatched) {
         window.location.reload();
     }
@@ -97,10 +99,10 @@ function TargetAddressModal() {
 
 function TargetTokenModal() {
     const [pageState] = useAtom(rampAtom);
-    const [sessionId] = useRampSession();
-    const [tokens] = useRampTokens();
+    const [rampData] = useAtom(rampDataAtom);
+    const tokens = rampData.allowedCurrencies;
     const [token, setToken] = useState<ITokenChain>({ token: '', chain: '' });
-    const [isPatched] = usePatchTokenPref(sessionId, pageState.auxModalData.currency, token);
+    const [isPatched] = usePatchTokenPref(pageState.sessionId, pageState.auxModalData.currency, token);
 
     if (isPatched) {
         window.location.reload();
@@ -131,6 +133,7 @@ function TargetTokenModal() {
 
 
 function CreateKYCModal() {
+    const [pageState] = useAtom(rampAtom);
     const [address_line_1, setAddr1] = useState('');
     const [address_line_2, setAddr2] = useState('');
     const [post_code, setPC] = useState('');
@@ -141,8 +144,7 @@ function CreateKYCModal() {
     const [kycReq, setKycReq] = useState<IKYCRequest>();
 
     const { state } = useGlobal();
-    const [sessionId] = useRampSession();
-    const [isDone] = useCreateKYC(sessionId, kycReq);
+    const [isDone] = useCreateKYC(pageState.sessionId, kycReq);
     if (isDone) {
         window.location.reload();
     }
@@ -180,7 +182,8 @@ function CreateKYCModal() {
 
 
 const CountriesDropDown = ({ setCountry, country }: { setCountry: any; country: { country_code: string, country_name: string } }) => {
-    const [countries] = useRampCountries();
+    const [rampData] = useAtom(rampDataAtom);
+    const countries = rampData.allowedCountries;
     const defaultCountry = { country_code: "ES", country_name: "Spain" };
     //setCountry(defaultCountry);
     const classes = {
@@ -188,6 +191,9 @@ const CountriesDropDown = ({ setCountry, country }: { setCountry: any; country: 
         itemFontSize: 'text-f14',
         verticalPadding: 'py-[6px]',
     };
+
+    if (!countries)
+        return <></>;
 
     return (
         <BufferDropdown

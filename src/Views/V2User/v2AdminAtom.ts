@@ -10,7 +10,7 @@ export interface IActiveModal {
 
 export interface IV2UserAtom {
   isModalOpen: boolean;
-  activeModal: IActiveModal;
+  activeModal?: IActiveModal;
 }
 
 export interface IMuchoVaultData {
@@ -80,8 +80,7 @@ export interface IMuchoVaultContracts {
 }
 
 export const v2ContractDataAtom = atom<IV2UserAtom>({
-  isModalOpen: false,
-  activeModal: null,
+  isModalOpen: false
 });
 
 const v2AdminData = atom<IMuchoVaultData>({ contract: "", vaultsInfo: [], parametersInfo: null, contractsInfo: null });
