@@ -3,7 +3,7 @@ import { useToast } from "@Contexts/Toast";
 import { useEffect, useState } from "react";
 import { fetchFromRampApi } from "./fetch";
 import { useAtom } from "jotai";
-import { ERampStatus, rampAtom } from "../rampAtom";
+import { ERampStatus, rampAtom, rampDataAtom } from "../rampAtom";
 
 export interface IKYCRequest {
     address_line_1: string;
@@ -79,16 +79,19 @@ export const useRampSumsubToken = (getToken: boolean) => {
     const { dispatch } = useGlobal();
     const toastify = useToast();
     const [rampState, setRampState] = useAtom(rampAtom);
+    const [rampData] = useAtom(rampDataAtom);
     const session = rampState.sessionId;
     const [sumsubToken, setSumsubToken] = useState('');
-    const save = (obj: { status: string, token: string, errorMessage?: string }) => {
+    const save = (obj: { status?: string, token?: string, errorMessage?: string }) => {
         console.log("Saving KYC sumsub token", obj);
-        if (obj.status === "OK") {
-            setSumsubToken(obj.token);
-            setRampState({ ...rampState, loginStatus: ERampStatus.SUMSUB, sumsubToken: obj.token });
-        }
-        else
+        if (!obj.token || obj.status !== "OK") {
             toastify({ type: "error", msg: obj.errorMessage ? obj.errorMessage : "KYC token error" });
+        }
+        else {
+            setSumsubToken(obj.token);
+            setRampState({ ...rampState, loginStatus: ERampStatus.SUMSUB, sumsubToken: obj.token, email: rampData.userDetails?.email });
+            console.log("Setting sumsub Rampstate", { ...rampState, loginStatus: ERampStatus.SUMSUB, sumsubToken: obj.token, email: rampData.userDetails?.email });
+        }
     }
 
     useEffect(() => {

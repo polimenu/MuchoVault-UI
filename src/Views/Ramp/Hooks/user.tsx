@@ -3,6 +3,7 @@ import { useToast } from "@Contexts/Toast";
 import { fetchFromRampApi } from "./fetch";
 import { useEffect, useState } from "react";
 import { IRampTokenPreference, IRampTransaction, IRampUserDetails } from "../rampAtom";
+import { RAMP_CONFIG } from "../Config/rampConfig";
 
 
 export interface ITokenChain {
@@ -62,7 +63,7 @@ export const useGetTokenPreferences = (sessionId?: string): (IRampTokenPreferenc
     const save = (obj: IRampTokenPreference[]) => {
         console.log("setting user token preferences", obj);
         //parse date
-        setUserTPs(obj);
+        setUserTPs(obj.filter(t => RAMP_CONFIG.AllowedFiatCurrencies.indexOf(t.currency) >= 0));
     }
 
     useEffect(() => {

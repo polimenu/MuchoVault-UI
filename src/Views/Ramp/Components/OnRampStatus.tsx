@@ -10,6 +10,8 @@ import { useAtom } from 'jotai';
 import { IRampTokenPreference, IRampTransaction, IRampUserDetails, rampAtom, rampDataAtom } from '../rampAtom';
 import { addressSummary } from '@Views/Common/Utils';
 import { useRampSumsubToken } from '../Hooks/kyc';
+import { RAMP_CONFIG } from '../Config/rampConfig';
+import { networkBeautify, tokenBeautify } from '../Modals';
 
 
 const topStyles = 'mx-3 text-f22';
@@ -25,7 +27,17 @@ export const OnRampStatus = () => {
 
   return <div>
     <UserDetailsAndTokenPreferences userDetails={rampData.userDetails} tokenPreferences={rampData.tokenPreferences} />
-    <OnRampTransactions transactions={rampData.transactions} />
+    <Section
+      Heading={<div className={topStyles}>Last Transactions</div>}
+      subHeading={
+        <div className={descStyles}>
+          List of your last transactions
+          {/* (Stats since 30th Jan, 2023) */}
+        </div>
+      }
+      other={<OnRampTransactions transactions={rampData.transactions} />}
+    />
+
   </div>;
 
   return <></>;
@@ -189,12 +201,12 @@ const TokenPreferencesCard = ({ tokenPreferences, userDetails }: { tokenPreferen
             onClick={() => { setPageState({ ...state, isModalOpen: true, activeModal: "ONRAMP_PREF", auxModalData: t }) }}>
             <Display
               className="!justify-end"
-              data={t.token}
+              data={tokenBeautify(t.token)}
             />
             &nbsp;
             (<Display
               className="!justify-end"
-              data={t.chain}
+              data={networkBeautify(t.chain)}
             />)
             <img src='edit_wh.png' className={editIconClass} />
           </span>
@@ -208,7 +220,11 @@ const OnRampTransactions = ({ transactions }: { transactions?: IRampTransaction[
   //fetchTransactions();
 
   if (!transactions)
-    return <div>No transactions</div>;
+    return <Skeleton
+      key="OnRampTransactionsCard"
+      variant="rectangular"
+      className="w-full !h-full min-h-[370px] !transform-none !bg-1"
+    />
 
   else {
     const headerJSX = [
@@ -292,32 +308,23 @@ const OnRampTransactions = ({ transactions }: { transactions?: IRampTransaction[
 
 
     return <>
-      <Section
-        Heading={<div className={topStyles}>Last Transactions</div>}
-        subHeading={
-          <div className={descStyles}>
-            List of your last transactions
-            {/* (Stats since 30th Jan, 2023) */}
-          </div>
-        }
-        other={<div>
-          <TransactionTable
-            defaultSortId="direction"
-            defaultOrder="desc"
-            headerJSX={headerJSX}
-            cols={headerJSX.length}
-            data={dashboardData}
-            rows={dashboardData?.length}
-            bodyJSX={bodyJSX}
-            loading={!dashboardData.length}
-            onRowClick={(idx) => {
-              //navigate(`/binary/${dashboardData[idx].pair}`);
-            }}
-            widths={['30%', '20%', '15%', '15%', '20%']}
-            shouldShowMobile={true}
-          />
-        </div>}
-      />
+      <div>
+        <TransactionTable
+          defaultSortId="direction"
+          defaultOrder="desc"
+          headerJSX={headerJSX}
+          cols={headerJSX.length}
+          data={dashboardData}
+          rows={dashboardData?.length}
+          bodyJSX={bodyJSX}
+          loading={!dashboardData.length}
+          onRowClick={(idx) => {
+            //navigate(`/binary/${dashboardData[idx].pair}`);
+          }}
+          widths={['30%', '20%', '15%', '15%', '20%']}
+          shouldShowMobile={true}
+        />
+      </div>
     </>;
   }
 }

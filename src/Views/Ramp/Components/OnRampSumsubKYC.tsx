@@ -3,32 +3,40 @@ import { useGlobal } from '@Contexts/Global';
 import { useAtom } from 'jotai';
 import { ERampStatus, rampAtom } from '../rampAtom';
 import snsWebSdk from '@sumsub/websdk';
+import i18n from 'src/i18n';
 
 
 
 export const OnRampSumsubKYC = () => {
-  const { state } = useGlobal();
-  const [rampState, setRampStateAtom] = useAtom(rampAtom);
+  const [rampState] = useAtom(rampAtom);
 
-  //Script for sumsub KYC
   useEffect(() => {
+    if (rampState.sumsubToken && rampState.email && rampState.loginStatus == ERampStatus.SUMSUB) {
+      document.title = "(mucho) finance | Sumsub KYC";
 
-    if (rampState.loginStatus == ERampStatus.SUMSUB && rampState.sumsubToken) {
       const head = document.querySelector("head");
       const script = document.createElement("script");
 
       script.setAttribute("src", 'https://static.sumsub.com/idensic/static/sns-websdk-builder.js');
       head.appendChild(script);
-      launchSumSubKYC(rampState.sumsubToken);
 
-      return () => {
-        head.removeChild(script);
-      };
+      //console.log("added sumsub script");
 
+      //console.log("Loading KYC SumSub");
+      launchSumSubKYC(rampState.sumsubToken, rampState.email)
     }
-  }, []);
 
-  return <div id="sumsub-websdk-container"></div>;
+  }, [rampState]);
+
+
+  //sessionStorage.setItem("ramp_session_id", "");
+  //console.log("Loading Sumsub KYC");
+
+  return (
+    <>
+      <div id="sumsub-websdk-container"></div>
+    </>
+  );
 }
 
 
@@ -36,7 +44,7 @@ export const OnRampSumsubKYC = () => {
 /**
  * @param accessToken - access token that you generated on the backend in Step 2
  */
-const launchSumSubKYC = (accessToken: string) => {
+const launchSumSubKYC = (accessToken: string, email: string) => {
   let snsWebSdkInstance = snsWebSdk.init(
     accessToken,
     // token update callback, must return Promise
@@ -45,7 +53,8 @@ const launchSumSubKYC = (accessToken: string) => {
     () => this.getNewAccessToken()
   )
     .withConf({
-      lang: 'en', //language of WebSDK texts and comments (ISO 639-1 format)
+      lang: i18n.language, //language of WebSDK texts and comments (ISO 639-1 format)
+      email: email,
     })
     .withOptions({ addViewportTag: false, adaptIframeHeight: true })
     // see below what kind of messages WebSDK generates

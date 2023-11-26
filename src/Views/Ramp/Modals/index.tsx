@@ -3,7 +3,7 @@ import { Dialog, IconButton } from '@mui/material';
 import { useAtom } from 'jotai';
 import { rampAtom, rampDataAtom } from '../rampAtom';
 import BufferInput from '@Views/Common/BufferInput';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BlueBtn } from '@Views/Common/V2-Button';
 import { useGlobal } from '@Contexts/Global';
 import { underLineClass } from '../Components/OnRampStatus';
@@ -41,12 +41,12 @@ function ModalChild() {
     const [pageState, setPageState] = useAtom(rampAtom);
     const activeModal = pageState.activeModal;
 
+
     if (!activeModal)
         return <div>No modal</div>;
 
     if (activeModal == "TARGET_ADDRESS")
         return <TargetAddressModal />;
-
 
     if (activeModal == "ONRAMP_PREF")
         return <TargetTokenModal />;
@@ -98,33 +98,34 @@ function TargetAddressModal() {
 }
 
 function TargetTokenModal() {
-    const [pageState] = useAtom(rampAtom);
-    const [rampData] = useAtom(rampDataAtom);
-    const tokens = rampData.allowedCurrencies;
+    const [pageState, setPageState] = useAtom(rampAtom);
+    const [rampData, setRampData] = useAtom(rampDataAtom);
+    const current = rampData.tokenPreferences ? rampData.tokenPreferences.find(t => t.currency == pageState.auxModalData.currency) : null;
+    const defaultToken = current ? { token: current.token, chain: current.chain } : { token: "", chain: "" };
+    const [chain, setChain] = useState(defaultToken.chain);
     const [token, setToken] = useState<ITokenChain>({ token: '', chain: '' });
-    const [isPatched] = usePatchTokenPref(pageState.sessionId, pageState.auxModalData.currency, token);
+    const [tokenChain, setTokenChain] = useState<ITokenChain>({ token: '', chain: '' });
+    const [isPatched] = usePatchTokenPref(pageState.sessionId, pageState.auxModalData.currency, tokenChain);
 
-    if (isPatched) {
-        window.location.reload();
-    }
+    useEffect(() => {
+        if (isPatched) {
+            window.location.reload();
+            //setPageState({ ...pageState, isModalOpen: false, activeModal: "", auxModalData: null })
+        }
+    }, [isPatched]);
+
     return (
         <>
             <div className='mr-5'>
                 <div className="text-f15 mb-5 mr-5">Select {pageState.auxModalData.currency} target token:</div>
-                <ul className='text-f12'>
-                    {tokens && tokens.map(t => {
-
-                        return t.network_name &&
-                            t.network_name.map(n => {
-                                return <li key={t.currency_label + "_" + n} className={`${underLineClass} m-auto`}
-                                    onClick={() => {
-                                        setToken({ token: t.currency_label.toLowerCase(), chain: n.toLowerCase() })
-                                    }}>{t.currency_label} ({n})</li>;
-                            });
-                    }
-                    )
-                    }
-                </ul>
+                <div className="text-f12 mb-5 mr-5">Chain:
+                    <ChainsDropDown setChain={setChain} chain={chain} />
+                </div>
+                <div className="text-f12 mb-5 mr-5">Token:
+                    <TokensDropDown chain={chain} setToken={setToken} token={token} />
+                </div>
+                <div className="text-f15 mb-5 mr-5">&nbsp;</div>
+                <div className="text-f15 mb-5 mr-5 m-auto"><BlueBtn onClick={() => { setTokenChain(token) }} >Change</BlueBtn></div>
             </div>
         </>
     );
@@ -179,6 +180,145 @@ function CreateKYCModal() {
         </>
     );
 }
+
+
+const ChainsDropDown = ({ chain, setChain }: { chain: string; setChain: any }) => {
+    const [rampData] = useAtom(rampDataAtom);
+    const [pageState] = useAtom(rampAtom);
+    let chains: string[] = [];
+    rampData.allowedCurrencies.forEach(c => {
+        c.network_name.forEach(n => {
+            if (chains.indexOf(n) < 0)
+                chains.push(n);
+        })
+    });
+
+
+    console.log("Chains dropdown", chains);
+    const current = rampData.tokenPreferences ? rampData.tokenPreferences.find(t => t.currency == pageState.auxModalData.currency) : null;
+    const defaultChain = current ? current.chain : "";
+    //setToken(defaultToken);
+
+    const classes = {
+        fontSize: 'text-f15',
+        itemFontSize: 'text-f14',
+        verticalPadding: 'py-[6px]',
+    };
+
+    if (!chains)
+        return <></>;
+
+    return (
+        <BufferDropdown
+            rootClass="w-fit inline mt-5 mb-5 !y-auto"
+            className="py-4 px-4 bg-2 h-[10vw] !y-auto"
+            dropdownBox={(a, open, disabled) => (
+                <div
+                    className={`flex items-center justify-between ${classes.fontSize} font-medium bg-[#2c2c41] pl-3 pr-[0] ${classes.verticalPadding} rounded-sm text-1`}
+                >
+                    <div className="flex items-center">
+                        {networkBeautify(chain ? chain : defaultChain)}
+                    </div>
+                    <DropdownArrow open={open} />
+                </div>
+            )}
+            items={chains}
+            item={(tab, handleClose, onChange, isActive, index) => {
+                //console.log("Drawing tab", tab);
+                return (
+                    <div key={`chain_${tab}`}
+                        className={`${classes.itemFontSize} whitespace-nowrap ${index === chains.length - 1 ? '' : 'pb-[6px]'
+                            } ${index === 0 ? '' : 'pt-[6px]'} ${(defaultChain === tab) ? 'text-1' : 'text-2'
+                            }`}
+                        onClick={() => setChain(tab)}
+                    >
+                        <div className="flex">
+                            {networkBeautify(tab)}
+                        </div>
+                    </div>
+                );
+            }}
+        />
+    );
+};
+
+export const networkBeautify = (network: string): string => {
+    if (network == "mainnet")
+        return "Ethereum";
+
+    return network.charAt(0).toUpperCase() + network.slice(1);
+}
+
+export const tokenBeautify = (token: string): string => {
+    if (token == "usdce")
+        return "USDC.e";
+
+    if (token.toLowerCase() == token)
+        return token.toUpperCase();
+
+    return token;
+}
+
+const TokensDropDown = ({ chain, setToken, token }: { chain: string; setToken: any; token: ITokenChain }) => {
+    const [rampData] = useAtom(rampDataAtom);
+
+    if (!chain)
+        return <></>
+
+    let tokens: ITokenChain[] = [];
+    rampData.allowedCurrencies.forEach(c => {
+        c.network_name.forEach(n => {
+            if (n == chain)
+                tokens.push({ token: c.currency_label, chain: n });
+        })
+    });
+
+
+    console.log("Tokens dropdown", tokens);
+    //setToken(defaultToken);
+
+    const classes = {
+        fontSize: 'text-f15',
+        itemFontSize: 'text-f14',
+        verticalPadding: 'py-[6px]',
+    };
+
+    if (!tokens)
+        return <></>;
+
+    return (
+        <BufferDropdown
+            rootClass="w-fit inline mt-5 mb-5 !y-auto"
+            className="py-4 px-4 bg-2 h-[10vw] !y-auto"
+            dropdownBox={(a, open, disabled) => (
+                <div
+                    className={`flex items-center justify-between ${classes.fontSize} font-medium bg-[#2c2c41] pl-3 pr-[0] ${classes.verticalPadding} rounded-sm text-1`}
+                >
+                    <div className="flex items-center">
+                        {token.token ? `${tokenBeautify(token.token)} (${networkBeautify(token.chain)})` : ''}
+                    </div>
+                    <DropdownArrow open={open} />
+                </div>
+            )}
+            items={tokens}
+            item={(tab, handleClose, onChange, isActive, index) => {
+                //console.log("Drawing tab", tab);
+                return (
+                    <div key={`token_${tab.token}_${tab.chain}`}
+                        className={`${classes.itemFontSize} whitespace-nowrap ${index === tokens.length - 1 ? '' : 'pb-[6px]'
+                            } ${index === 0 ? '' : 'pt-[6px]'} ${(token.token === tab.token && token.chain === tab.chain) ? 'text-1' : 'text-2'
+                            }`}
+                        onClick={() => setToken(tab)}
+                    >
+                        <div className="flex">
+                            {tokenBeautify(tab.token)} ({networkBeautify(tab.chain)})
+                        </div>
+                    </div>
+                );
+            }}
+        />
+    );
+};
 
 
 const CountriesDropDown = ({ setCountry, country }: { setCountry: any; country: { country_code: string, country_name: string } }) => {

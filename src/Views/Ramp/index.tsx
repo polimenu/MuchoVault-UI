@@ -53,6 +53,7 @@ export const RampPage = () => {
   const [, setRampData] = useAtom(rampDataAtom);
   useRampSession();
   const rampData = useGetRampData();
+
   useEffect(() => {
     setRampData(rampData);
     console.log("Rampdata set", rampData);
