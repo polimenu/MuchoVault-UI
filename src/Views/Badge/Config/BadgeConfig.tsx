@@ -8,6 +8,11 @@ export const BADGE_CONFIG = {
 export const VALID_TOKENS = {
   "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8": {
     contract: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+    symbol: "USDC.e",
+    decimals: 6
+  },
+  "0xaf88d065e77c8cC2239327C5EDb3A432268e5831": {
+    contract: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     symbol: "USDC",
     decimals: 6
   },
