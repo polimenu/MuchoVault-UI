@@ -134,13 +134,13 @@ export const getTabs = () => {
       name: 'Airdrop',
       subTabs: [],
       isExternalLink: false,
-    },
+    },/*
     {
       to: `/swap`,
       name: 'Swap',
       subTabs: [],
       isExternalLink: false,
-    },
+    },*/
     {
       to: 'https://docs.mucho.finance/',
       name: 'Docs',
