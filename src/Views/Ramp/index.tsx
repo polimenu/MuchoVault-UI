@@ -12,6 +12,7 @@ import { ERampStatus, rampAtom, rampDataAtom } from './rampAtom';
 import { OnRampLoginOtp } from './Components/OnRampLoginOtp';
 import { useRampSession } from './Hooks/login';
 import { OnRampSumsubKYC } from './Components/OnRampSumsubKYC';
+import { OnRampCreateUser } from './Components/OnRampCreateUser';
 
 const Styles = styled.div`
   width: min(1300px, 100%);
@@ -76,7 +77,11 @@ export const RampPage = () => {
                 Heading={<div className={topStyles}>On & Off Ramp</div>}
                 subHeading={<div className={descStyles}>Move from FIAT to Crypto, or counterwise</div>}
                 other={<>
-                  {rampState.loginStatus == ERampStatus.NOT_LOGGED && <OnRampLoginEmail />}
+                  {rampState.loginStatus == ERampStatus.NOT_LOGGED && <>
+                    <OnRampLoginEmail />
+                    <div className="w-[46rem] text-f15 mb-5 mt-5 m-auto text-center">- or -</div>
+                    <OnRampCreateUser />
+                  </>}
                   {rampState.loginStatus == ERampStatus.OTP_SENT && <OnRampLoginOtp />}
                   {rampState.loginStatus == ERampStatus.LOGGED && <OnRampStatus />}
                   <OnRampSumsubKYC />

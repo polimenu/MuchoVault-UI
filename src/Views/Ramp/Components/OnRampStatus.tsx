@@ -11,7 +11,8 @@ import { IRampTokenPreference, IRampTransaction, IRampUserDetails, rampAtom, ram
 import { addressSummary } from '@Views/Common/Utils';
 import { useRampSumsubToken } from '../Hooks/kyc';
 import { RAMP_CONFIG } from '../Config/rampConfig';
-import { networkBeautify, tokenBeautify } from '../Modals';
+import { networkBeautify, tokenBeautify } from '../Utils';
+import { useGlobal } from '@Contexts/Global';
 
 
 const topStyles = 'mx-3 text-f22';
@@ -67,9 +68,10 @@ const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
 
 const UserDetailsCard = ({ userDetails }: { userDetails: IUserDetails }) => {
-  const [state, setPageState] = useAtom(rampAtom);
+  const [rampState, setRampState] = useAtom(rampAtom);
   const [getToken, setGetToken] = useState(false);
   const [token] = useRampSumsubToken(getToken);
+  const { state } = useGlobal();
 
   if (!userDetails) {
     return <Skeleton
@@ -169,15 +171,20 @@ const UserDetailsCard = ({ userDetails }: { userDetails: IUserDetails }) => {
 
     </>}
 
-    bottom={<>
-      {userDetails.canCreateKYC && <BlueBtn onClick={() => { setPageState({ ...state, isModalOpen: true, activeModal: "KYC" }) }}>Start KYC</BlueBtn>}
-      {userDetails.status == "PENDING_KYC_DATA" && <BlueBtn onClick={() => { setGetToken(true); }}>Upload KYC data</BlueBtn>}
+    bottom={(userDetails.canCreateKYC || userDetails.status == "PENDING_KYC_DATA") && <>
+      {userDetails.canCreateKYC && <BlueBtn
+        isDisabled={state.txnLoading > 1}
+        isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "KYC" }) }}>Start KYC</BlueBtn>}
+      {userDetails.status == "PENDING_KYC_DATA" && <BlueBtn
+        isDisabled={state.txnLoading > 1}
+        isLoading={state.txnLoading === 1} onClick={() => { setGetToken(true); }}>Finish KYC</BlueBtn>}
     </>}
   />;
 }
 
 const TokenPreferencesCard = ({ tokenPreferences, userDetails }: { tokenPreferences?: IRampTokenPreference[], userDetails?: IRampUserDetails }) => {
-  const [state, setPageState] = useAtom(rampAtom);
+  const [rampState, setRampState] = useAtom(rampAtom);
+  const { state } = useGlobal();
   const editIconClass = 'w-[1vw] h-[1vw] inline ml-5';
   if (!tokenPreferences || !userDetails) {
     return <Skeleton
@@ -193,12 +200,12 @@ const TokenPreferencesCard = ({ tokenPreferences, userDetails }: { tokenPreferen
         ['On Ramp target address', ...tokenPreferences.map(t => `Convert ${t.currency} to`)]
       }
       values={[
-        <span className='pointer' onClick={() => { setPageState({ ...state, isModalOpen: true, activeModal: "TARGET_ADDRESS", auxModalData: { currentAddress: userDetails.target_address } }) }}>{userDetails.target_address ? addressSummary(userDetails.target_address) : 'Not set!'}
+        <span className='pointer' onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "TARGET_ADDRESS", auxModalData: { currentAddress: userDetails.target_address } }) }}>{userDetails.target_address ? addressSummary(userDetails.target_address) : 'Not set!'}
           <img src='edit_wh.png' className={editIconClass} />
         </span>
         , ...tokenPreferences.map(t => {
           return <span className={`${wrapperClasses} pointer`}
-            onClick={() => { setPageState({ ...state, isModalOpen: true, activeModal: "ONRAMP_PREF", auxModalData: t }) }}>
+            onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "ONRAMP_PREF", auxModalData: t }) }}>
             <Display
               className="!justify-end"
               data={tokenBeautify(t.token)}
@@ -213,7 +220,18 @@ const TokenPreferencesCard = ({ tokenPreferences, userDetails }: { tokenPreferen
         })]}
       keyStyle={keyClasses}
       valueStyle={valueClasses}
-    />} />;
+
+    />}
+    bottom={userDetails.kyc_status == "Done!" && <>
+      <div className="flex gap-5">
+        <BlueBtn
+          isDisabled={state.txnLoading > 1}
+          isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "ONRAMP" }) }}>FIAT to Crypto</BlueBtn>
+        <BlueBtn
+          isDisabled={state.txnLoading > 1}
+          isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "OFFRAMP" }) }}>Crypto to FIAT</BlueBtn>
+      </div>
+    </>} />;
 }
 
 const OnRampTransactions = ({ transactions }: { transactions?: IRampTransaction[] }) => {

@@ -3,15 +3,14 @@ import { Dialog, IconButton } from '@mui/material';
 import { useAtom } from 'jotai';
 import { rampAtom, rampDataAtom } from '../rampAtom';
 import BufferInput from '@Views/Common/BufferInput';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BlueBtn } from '@Views/Common/V2-Button';
 import { useGlobal } from '@Contexts/Global';
-import { underLineClass } from '../Components/OnRampStatus';
 import { BufferDropdown } from '@Views/Common/Buffer-Dropdown';
 import { DropdownArrow } from '@SVG/Elements/DropDownArrow';
 import { ITokenChain, usePatchAddress, usePatchTokenPref } from '../Hooks/user';
-import { IKYCRequest, useCreateKYC } from '../Hooks/kyc';
-import snsWebSdk from '@sumsub/websdk';
+import { IKYCRequest, INewUserRequest, useCreateKYC, useCreateUser } from '../Hooks/kyc';
+import { networkBeautify, tokenBeautify } from '../Utils';
 
 export const RampModals = () => {
     const [pageState, setPageState] = useAtom(rampAtom);
@@ -52,7 +51,10 @@ function ModalChild() {
         return <TargetTokenModal />;
 
     if (activeModal == "KYC")
-        return <CreateKYCModal />;
+        return <CompleteKYCModal />;
+
+    if (activeModal == "NEWUSER")
+        return <NewUserModal />;
 
 
     return <div>{activeModal}</div>;
@@ -98,12 +100,13 @@ function TargetAddressModal() {
 }
 
 function TargetTokenModal() {
+    const { state } = useGlobal();
     const [pageState, setPageState] = useAtom(rampAtom);
     const [rampData, setRampData] = useAtom(rampDataAtom);
     const current = rampData.tokenPreferences ? rampData.tokenPreferences.find(t => t.currency == pageState.auxModalData.currency) : null;
     const defaultToken = current ? { token: current.token, chain: current.chain } : { token: "", chain: "" };
     const [chain, setChain] = useState(defaultToken.chain);
-    const [token, setToken] = useState<ITokenChain>({ token: '', chain: '' });
+    const [token, setToken] = useState<ITokenChain>(defaultToken);
     const [tokenChain, setTokenChain] = useState<ITokenChain>({ token: '', chain: '' });
     const [isPatched] = usePatchTokenPref(pageState.sessionId, pageState.auxModalData.currency, tokenChain);
 
@@ -119,21 +122,66 @@ function TargetTokenModal() {
             <div className='mr-5'>
                 <div className="text-f15 mb-5 mr-5">Select {pageState.auxModalData.currency} target token:</div>
                 <div className="text-f12 mb-5 mr-5">Chain:
-                    <ChainsDropDown setChain={setChain} chain={chain} />
+                    <ChainsDropDown setChain={setChain} chain={chain} defaultChain={defaultToken.chain} />
                 </div>
                 <div className="text-f12 mb-5 mr-5">Token:
                     <TokensDropDown chain={chain} setToken={setToken} token={token} />
                 </div>
                 <div className="text-f15 mb-5 mr-5">&nbsp;</div>
-                <div className="text-f15 mb-5 mr-5 m-auto"><BlueBtn onClick={() => { setTokenChain(token) }} >Change</BlueBtn></div>
+                <div className="text-f15 mb-5 mr-5 m-auto"><BlueBtn
+                    isDisabled={state.txnLoading > 1}
+                    isLoading={state.txnLoading === 1} onClick={() => { setTokenChain(token) }} >Save</BlueBtn></div>
             </div>
         </>
     );
 }
 
 
+function NewUserModal() {
+    const [pageState] = useAtom(rampAtom);
+    const [email, setEmail] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [req, setReq] = useState<INewUserRequest>();
+    const [country, setCountry] = useState({ country_code: "ES", country_name: "Spain" });
 
-function CreateKYCModal() {
+    const { state } = useGlobal();
+    const [isDone] = useCreateUser(req);
+
+    if (isDone) {
+        window.location.reload();
+    }
+    return (
+        <>
+            <div className="text-f14">
+                <div className="text-f15 mb-5">Enter your data:</div>
+                <div className='mt-5'>E-mail:</div>
+                <BufferInput placeholder={"Name"} bgClass="!bg-1" ipClass="mt-1" value={email} onChange={(val) => { setEmail(val); }} />
+                <div className='mt-5'>Country:</div>
+                <CountriesDropDown setCountry={setCountry} country={country} />
+                <div className='mt-5'>First Name:</div>
+                <BufferInput placeholder={"Name"} bgClass="!bg-1" ipClass="mt-1" value={firstName} onChange={(val) => { setFirstName(val); }} />
+                <div className='mt-5'>Last Name:</div>
+                <BufferInput placeholder={"Name"} bgClass="!bg-1" ipClass="mt-1" value={lastName} onChange={(val) => { setLastName(val); }} />
+
+
+            </div>
+            <div className="flex whitespace-nowrap mt-5">
+                <BlueBtn
+                    onClick={() => { setReq({ email, first_name: firstName, last_name: lastName, country: country.country_code }); }}
+                    className="rounded"
+                    isDisabled={state.txnLoading > 1}
+                    isLoading={state.txnLoading === 1}
+                >
+                    New User
+                </BlueBtn>
+            </div>
+        </>
+    );
+}
+
+
+function CompleteKYCModal() {
     const [pageState] = useAtom(rampAtom);
     const [address_line_1, setAddr1] = useState('');
     const [address_line_2, setAddr2] = useState('');
@@ -153,7 +201,7 @@ function CreateKYCModal() {
         <>
             <div className="text-f14">
                 <div className="text-f15 mb-5">Enter your data:</div>
-                <span>Address:</span>
+                <div className='mt-5'>Address:</div>
                 <BufferInput placeholder={"Line 1"} bgClass="!bg-1" ipClass="mt-1" value={address_line_1} onChange={(val) => { setAddr1(val); }} />
                 <BufferInput placeholder={"Line 2"} bgClass="!bg-1" ipClass="mt-1" value={address_line_2} onChange={(val) => { setAddr2(val); }} />
                 <div className='mt-5'>Source of funds:</div>
@@ -182,7 +230,7 @@ function CreateKYCModal() {
 }
 
 
-const ChainsDropDown = ({ chain, setChain }: { chain: string; setChain: any }) => {
+const ChainsDropDown = ({ chain, setChain, defaultChain }: { chain: string; setChain: any, defaultChain: string }) => {
     const [rampData] = useAtom(rampDataAtom);
     const [pageState] = useAtom(rampAtom);
     let chains: string[] = [];
@@ -195,8 +243,6 @@ const ChainsDropDown = ({ chain, setChain }: { chain: string; setChain: any }) =
 
 
     console.log("Chains dropdown", chains);
-    const current = rampData.tokenPreferences ? rampData.tokenPreferences.find(t => t.currency == pageState.auxModalData.currency) : null;
-    const defaultChain = current ? current.chain : "";
     //setToken(defaultToken);
 
     const classes = {
@@ -242,25 +288,17 @@ const ChainsDropDown = ({ chain, setChain }: { chain: string; setChain: any }) =
     );
 };
 
-export const networkBeautify = (network: string): string => {
-    if (network == "mainnet")
-        return "Ethereum";
-
-    return network.charAt(0).toUpperCase() + network.slice(1);
-}
-
-export const tokenBeautify = (token: string): string => {
-    if (token == "usdce")
-        return "USDC.e";
-
-    if (token.toLowerCase() == token)
-        return token.toUpperCase();
-
-    return token;
-}
-
 const TokensDropDown = ({ chain, setToken, token }: { chain: string; setToken: any; token: ITokenChain }) => {
     const [rampData] = useAtom(rampDataAtom);
+    const firstLoad = useRef(true);
+    useEffect(() => {
+        if (!firstLoad.current) {
+            setToken('');
+            console.log("resetting token");
+        }
+        else
+            firstLoad.current = false
+    }, [chain]);
 
     if (!chain)
         return <></>
@@ -275,6 +313,8 @@ const TokensDropDown = ({ chain, setToken, token }: { chain: string; setToken: a
 
 
     console.log("Tokens dropdown", tokens);
+
+
     //setToken(defaultToken);
 
     const classes = {
@@ -295,7 +335,7 @@ const TokensDropDown = ({ chain, setToken, token }: { chain: string; setToken: a
                     className={`flex items-center justify-between ${classes.fontSize} font-medium bg-[#2c2c41] pl-3 pr-[0] ${classes.verticalPadding} rounded-sm text-1`}
                 >
                     <div className="flex items-center">
-                        {token.token ? `${tokenBeautify(token.token)} (${networkBeautify(token.chain)})` : ''}
+                        {tokenBeautify(token.token)}
                     </div>
                     <DropdownArrow open={open} />
                 </div>
