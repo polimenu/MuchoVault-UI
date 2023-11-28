@@ -8,9 +8,10 @@ import { BlueBtn } from '@Views/Common/V2-Button';
 import { useGlobal } from '@Contexts/Global';
 import { BufferDropdown } from '@Views/Common/Buffer-Dropdown';
 import { DropdownArrow } from '@SVG/Elements/DropDownArrow';
-import { ITokenChain, usePatchAddress, usePatchTokenPref } from '../Hooks/user';
-import { IKYCRequest, INewUserRequest, useCreateKYC, useCreateUser } from '../Hooks/kyc';
+import { INewUserRequest, ITokenChain, useAddAccount, useCreateUser, usePatchAddress, usePatchTokenPref, useSetMainBankAccount } from '../Hooks/user';
+import { IKYCRequest, useCreateKYC } from '../Hooks/kyc';
 import { networkBeautify, tokenBeautify } from '../Utils';
+import { useToast } from '@Contexts/Toast';
 
 export const RampModals = () => {
     const [pageState, setPageState] = useAtom(rampAtom);
@@ -56,13 +57,20 @@ function ModalChild() {
     if (activeModal == "NEWUSER")
         return <NewUserModal />;
 
+    if (activeModal == "BANK_MAIN")
+        return <BankMainModal />;
+
+    if (activeModal == "BANK_ADD")
+        return <BankAddModal />;
+
+    if (activeModal == "ONRAMP")
+        return <OnRampModal />;
 
     return <div>{activeModal}</div>;
 }
 
 function TargetAddressModal() {
     const [pageState] = useAtom(rampAtom);
-    const [rampData] = useAtom(rampDataAtom);
     const currentAddress = pageState.auxModalData && pageState.auxModalData.currentAddress ? pageState.auxModalData.currentAddress : "";
     const [val, setVal] = useState(currentAddress);
     const [addr, setAddr] = useState('');
@@ -93,6 +101,108 @@ function TargetAddressModal() {
                     isLoading={state.txnLoading === 1}
                 >
                     Change address
+                </BlueBtn>
+            </div>
+        </>
+    );
+}
+
+
+//ToDo soft code currency
+function OnRampModal() {
+    const [val, setVal] = useState("");
+    const [pageState, setPageState] = useAtom(rampAtom);
+    const [rampData] = useAtom(rampDataAtom);
+    const { state } = useGlobal();
+    const { currency } = pageState.auxModalData;
+    if (!rampData.tokenPreferences)
+        return <></>;
+
+    const { chain, token } = rampData.tokenPreferences.find(tp => tp.currency == currency);
+
+    return (
+        <div>
+            <div className="text-f15 mb-5">Enter {currency} amount:</div>
+            <BufferInput
+
+                numericValidations={{
+                    decimals: { val: 6 },
+                    min: { val: '0', error: 'Enter a positive value' },
+                }}
+                placeholder="0.0"
+                bgClass="!bg-1"
+                ipClass="mt-1"
+                value={val}
+                onChange={(val) => {
+                    setVal(val);
+                }}
+                unit={
+                    <span className="text-f16 flex justify-between w-fit">
+                        {"EUR"}
+                    </span>
+                }
+            />
+            <div className="text-f15">&nbsp;</div>
+            <div className="text-f15 mt-5 mb-5">Estimated return amount:</div>
+            <BufferInput
+                placeholder="0.0"
+                bgClass="!bg-1"
+                ipClass="mt-1"
+                isDisabled={true}
+                value={val}
+                onChange={() => { }}
+                unit={
+                    <span className="text-f16 flex justify-between w-fit">
+                        {tokenBeautify(token)} ({networkBeautify(chain)})
+                    </span>
+                }
+            />
+            <div className="flex whitespace-nowrap mt-5">
+                <BlueBtn
+                    onClick={() => { }}
+                    className="mr-4 rounded"
+                    isLoading={state.txnLoading === 1}
+                >
+                    Convert to {tokenBeautify(token)} ({networkBeautify(chain)})
+                </BlueBtn>
+            </div>
+        </div>
+    );
+}
+
+
+function BankAddModal() {
+    const [pageState] = useAtom(rampAtom);
+    const [rampData] = useAtom(rampDataAtom);
+    const [val, setVal] = useState('');
+    const [account, setAccount] = useState('');
+    const { state } = useGlobal();
+    const [isAdded] = useAddAccount(pageState.sessionId, account, pageState.auxModalData.currency);
+    if (isAdded) {
+        window.location.reload();
+    }
+    return (
+        <>
+            <div>
+                <div className="text-f15 mb-5">Add bank account for {pageState.auxModalData.currency}</div>
+                <BufferInput
+                    placeholder={"Enter IBAN"}
+                    bgClass="!bg-1"
+                    ipClass="mt-1"
+                    value={val}
+                    onChange={(val) => {
+                        setVal(val);
+                    }}
+                />
+            </div>
+            <div className="flex whitespace-nowrap mt-5">
+                <BlueBtn
+                    onClick={() => { setAccount(val); }}
+                    className="rounded"
+                    isDisabled={state.txnLoading > 1}
+                    isLoading={state.txnLoading === 1}
+                >
+                    Add account
                 </BlueBtn>
             </div>
         </>
@@ -174,6 +284,43 @@ function NewUserModal() {
                     isLoading={state.txnLoading === 1}
                 >
                     New User
+                </BlueBtn>
+            </div>
+        </>
+    );
+}
+
+
+function BankMainModal() {
+    const [pageState] = useAtom(rampAtom);
+    const [update, setUpdate] = useState(false);
+    const toastify = useToast();
+    const [result] = useSetMainBankAccount(pageState.sessionId, pageState.auxModalData.uuid, update, toastify)
+    const { state } = useGlobal();
+
+    if (result.done && result.status) {
+        toastify("Main bank account updated successfully");
+        window.location.reload();
+        return <></>;
+    }
+    else if (result.done) {
+        toastify({ type: "error", message: result.errorMessage })
+        return <></>;
+    }
+    return (
+        <>
+            <div className="text-f14">
+                <div className="text-f15 mb-5">Account IBAN:</div>
+                <div className='mt-5'>{pageState.auxModalData.iban}</div>
+            </div>
+            <div className="flex whitespace-nowrap mt-5">
+                <BlueBtn
+                    onClick={() => { setUpdate(true); }}
+                    className="rounded"
+                    isDisabled={state.txnLoading > 1}
+                    isLoading={state.txnLoading === 1}
+                >
+                    Set as main account
                 </BlueBtn>
             </div>
         </>

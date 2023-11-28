@@ -20,6 +20,13 @@ export const useRampSession = () => {
     return pageState.sessionId;
 }
 
+export const useLogout = () => {
+    //const [rampState, setRampState] = useAtom(rampAtom)
+    sessionStorage.removeItem("ramp_session_id");
+    window.location.reload();
+    //setRampState({ sessionId: "", loginStatus: ERampStatus.NOT_LOGGED, isModalOpen: false, activeModal: "", email: "" })
+}
+
 export const useOtpSent = (email: string) => {
     const { dispatch } = useGlobal();
     const toastify = useToast();

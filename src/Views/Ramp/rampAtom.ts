@@ -30,6 +30,14 @@ export interface IRampData {
     transactions?: IRampTransaction[];
     allowedCurrencies?: IRampCurrency[];
     allowedCountries?: IRampCountry[];
+    bankAccounts?: IRampBankAccount[];
+}
+
+export interface IRampBankAccount {
+    uuid: string;
+    isMain: boolean;
+    iban: string;
+    currency: string;
 }
 
 export const rampDataAtom = atom<IRampData>({});
@@ -48,7 +56,11 @@ export interface IRampUserDetails {
     first_name: string;
     last_name: string;
     status: string;
-    kyc_status: string;
+    kyc_status: {
+        status: string;
+        explanation: string;
+        canTransact: boolean;
+    }
     uuid: string;
     bvn: string;
     canCreateKYC: boolean;

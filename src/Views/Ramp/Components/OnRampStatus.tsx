@@ -7,12 +7,13 @@ import { Card } from '@Views/Common/Card/Card';
 import { TableAligner } from '@Views/Common/TableAligner';
 import { Skeleton } from '@mui/material';
 import { useAtom } from 'jotai';
-import { IRampTokenPreference, IRampTransaction, IRampUserDetails, rampAtom, rampDataAtom } from '../rampAtom';
+import { IRampBankAccount, IRampData, IRampTokenPreference, IRampTransaction, IRampUserDetails, rampAtom, rampDataAtom } from '../rampAtom';
 import { addressSummary } from '@Views/Common/Utils';
 import { useRampSumsubToken } from '../Hooks/kyc';
 import { RAMP_CONFIG } from '../Config/rampConfig';
 import { networkBeautify, tokenBeautify } from '../Utils';
 import { useGlobal } from '@Contexts/Global';
+import { useLogout } from '../Hooks/login';
 
 
 const topStyles = 'mx-3 text-f22';
@@ -27,7 +28,8 @@ export const OnRampStatus = () => {
   console.log("OnRampStatus loading", rampData);
 
   return <div>
-    <UserDetailsAndTokenPreferences userDetails={rampData.userDetails} tokenPreferences={rampData.tokenPreferences} />
+    <UserDetailsSection userDetails={rampData.userDetails} />
+    <OnOffRampSection rampData={rampData} />
     <Section
       Heading={<div className={topStyles}>Last Transactions</div>}
       subHeading={
@@ -44,10 +46,29 @@ export const OnRampStatus = () => {
   return <></>;
 }
 
-const UserDetailsAndTokenPreferences = ({ userDetails, tokenPreferences }: { userDetails?: IRampUserDetails, tokenPreferences?: IRampTokenPreference[] }) => {
+const OnOffRampSection = ({ rampData }: { rampData: IRampData }) => {
 
   return <Section
-    Heading={<div className={topStyles}>User details and token preferences</div>}
+    Heading={<div className={topStyles}>On / Off Ramp</div>}
+    subHeading={
+      <div className={descStyles}>
+        Move from EUR to Crypto or viceversa
+      </div>
+    }
+    Cards={
+      [
+        <OnRampCard tokenPreferences={rampData.tokenPreferences} userDetails={rampData.userDetails} />,
+        <OffRampCard bankAccounts={rampData.bankAccounts} userDetails={rampData.userDetails} />,
+
+      ]
+    }
+  />;
+}
+
+const UserDetailsSection = ({ userDetails }: { userDetails?: IRampUserDetails }) => {
+
+  return <Section
+    Heading={<div className={topStyles}>User details and KYC status</div>}
     subHeading={
       <div className={descStyles}>
 
@@ -56,7 +77,8 @@ const UserDetailsAndTokenPreferences = ({ userDetails, tokenPreferences }: { use
     Cards={
       [
         <UserDetailsCard userDetails={userDetails} />,
-        <TokenPreferencesCard tokenPreferences={tokenPreferences} userDetails={userDetails} />
+        <KYCCard userDetails={userDetails} />,
+
       ]
     }
   />;
@@ -67,11 +89,7 @@ const wrapperClasses = 'flex justify-end flex-wrap';
 const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
 
-const UserDetailsCard = ({ userDetails }: { userDetails: IUserDetails }) => {
-  const [rampState, setRampState] = useAtom(rampAtom);
-  const [getToken, setGetToken] = useState(false);
-  const [token] = useRampSumsubToken(getToken);
-  const { state } = useGlobal();
+const UserDetailsCard = ({ userDetails }: { userDetails: IRampUserDetails }) => {
 
   if (!userDetails) {
     return <Skeleton
@@ -82,34 +100,24 @@ const UserDetailsCard = ({ userDetails }: { userDetails: IUserDetails }) => {
   }
   return <Card
     top={
-      <>User Details</>
+      <div className="flex">
+        <div className="text-1 text-f16 w-full">User Details</div>
+        <div className="text-f12 underline pointer" onClick={() => { useLogout(); }}>Logout</div>
+      </div>
     }
 
 
     middle={<>{userDetails &&
       <TableAligner
         keysName={
-          ['Name', 'Last name', 'KYC Status', 'E-mail', 'Date of birth', 'Address', 'Postal Code', 'City', 'Country']
+          // ['Name', 'Last name', 'E-mail', 'Date of birth', 'Address', 'Postal Code', 'City', 'Country']
+          ['Name', 'E-mail', 'Date of birth', 'Address']
         }
         values={[
           <div className={`${wrapperClasses}`}>
             <Display
               className="!justify-end"
-              data={userDetails.first_name}
-            />
-          </div>
-          ,
-          <div className={`${wrapperClasses}`}>
-            <Display
-              className="!justify-end"
-              data={userDetails.last_name}
-            />
-          </div>
-          ,
-          <div className={`${wrapperClasses}`}>
-            <Display
-              className="!justify-end"
-              data={userDetails.kyc_status}
+              data={userDetails.first_name + " " + userDetails.last_name}
             />
           </div>
           ,
@@ -132,31 +140,7 @@ const UserDetailsCard = ({ userDetails }: { userDetails: IUserDetails }) => {
           <div className={`${wrapperClasses}`}>
             <Display
               className="!justify-end"
-              data={userDetails.address ? `${userDetails.address.address_line_1} ${userDetails.address.address_line_2}` : ''}
-            />
-          </div>
-          ,
-
-          <div className={`${wrapperClasses}`}>
-            <Display
-              className="!justify-end"
-              data={`${userDetails.address.city}`}
-            />
-          </div>
-          ,
-
-          <div className={`${wrapperClasses}`}>
-            <Display
-              className="!justify-end"
-              data={` ${userDetails.address.post_code}`}
-            />
-          </div>
-          ,
-
-          <div className={`${wrapperClasses}`}>
-            <Display
-              className="!justify-end"
-              data={`${userDetails.address.country}`}
+              data={userDetails.address ? `${userDetails.address.address_line_1} ${userDetails.address.address_line_2}. ${userDetails.address.post_code} ${userDetails.address.city} (${userDetails.address.country})` : ''}
             />
           </div>
           ,
@@ -171,6 +155,37 @@ const UserDetailsCard = ({ userDetails }: { userDetails: IUserDetails }) => {
 
     </>}
 
+  />;
+}
+
+
+const KYCCard = ({ userDetails }: { userDetails?: IRampUserDetails }) => {
+  const [rampState, setRampState] = useAtom(rampAtom);
+  const [getToken, setGetToken] = useState(false);
+  const [token] = useRampSumsubToken(getToken);
+  const { state } = useGlobal();
+
+  if (!userDetails) {
+    return <Skeleton
+      key="userDetailsCard"
+      variant="rectangular"
+      className="w-full !h-full min-h-[370px] !transform-none !bg-1"
+    />
+  }
+  return <Card
+    top={
+      <>KYC Status: <span
+        className={"!justify-end " + (userDetails.kyc_status.canTransact ? " green" : " red")}
+      >{userDetails.kyc_status.status}</span></>
+    }
+
+
+    middle={<>
+      <div className={keyClasses}>
+        {userDetails.kyc_status.explanation}
+      </div>
+    </>}
+
     bottom={(userDetails.canCreateKYC || userDetails.status == "PENDING_KYC_DATA") && <>
       {userDetails.canCreateKYC && <BlueBtn
         isDisabled={state.txnLoading > 1}
@@ -182,7 +197,9 @@ const UserDetailsCard = ({ userDetails }: { userDetails: IUserDetails }) => {
   />;
 }
 
-const TokenPreferencesCard = ({ tokenPreferences, userDetails }: { tokenPreferences?: IRampTokenPreference[], userDetails?: IRampUserDetails }) => {
+
+//ToDo soft code currency
+const OnRampCard = ({ tokenPreferences, userDetails }: { tokenPreferences?: IRampTokenPreference[], userDetails?: IRampUserDetails }) => {
   const [rampState, setRampState] = useAtom(rampAtom);
   const { state } = useGlobal();
   const editIconClass = 'w-[1vw] h-[1vw] inline ml-5';
@@ -194,10 +211,10 @@ const TokenPreferencesCard = ({ tokenPreferences, userDetails }: { tokenPreferen
     />
   }
   return <Card
-    top="On Ramp Preferences"
+    top="From EUR to Crypto"
     middle={<TableAligner
       keysName={
-        ['On Ramp target address', ...tokenPreferences.map(t => `Convert ${t.currency} to`)]
+        ['Target address', ...tokenPreferences.map(t => `Convert ${t.currency} to`)]
       }
       values={[
         <span className='pointer' onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "TARGET_ADDRESS", auxModalData: { currentAddress: userDetails.target_address } }) }}>{userDetails.target_address ? addressSummary(userDetails.target_address) : 'Not set!'}
@@ -222,16 +239,69 @@ const TokenPreferencesCard = ({ tokenPreferences, userDetails }: { tokenPreferen
       valueStyle={valueClasses}
 
     />}
-    bottom={userDetails.kyc_status == "Done!" && <>
+    bottom={userDetails.kyc_status.canTransact && <>
       <div className="flex gap-5">
         <BlueBtn
           isDisabled={state.txnLoading > 1}
-          isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "ONRAMP" }) }}>FIAT to Crypto</BlueBtn>
-        <BlueBtn
-          isDisabled={state.txnLoading > 1}
-          isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "OFFRAMP" }) }}>Crypto to FIAT</BlueBtn>
+          isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "ONRAMP", auxModalData: { currency: "EUR" } }) }}>OnRamp (from EUR to Crypto)</BlueBtn>
       </div>
     </>} />;
+}
+
+
+const OffRampCard = ({ bankAccounts, userDetails }: { bankAccounts?: IRampBankAccount[], userDetails?: IRampUserDetails }) => {
+  const [rampState, setRampState] = useAtom(rampAtom);
+  const { state } = useGlobal();
+
+  if (!bankAccounts || !userDetails) {
+    return <Skeleton
+      key="OffRampCard"
+      variant="rectangular"
+      className="w-full !h-full min-h-[370px] !transform-none !bg-1"
+    />
+  }
+
+  //const currencies = [...new Set(bankAccounts.map(b => b.currency))];
+
+  //ToDo soft code currency
+  return <Card
+    top={<div className='flex'>
+      <div className='w-full'>From Crypto to EUR</div>
+      <div><BlueBtn onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "BANK_ADD", auxModalData: { currency: "EUR" } }) }}>&nbsp;&nbsp;&nbsp;Add&nbsp;&nbsp;&nbsp;</BlueBtn></div>
+    </div>}
+    middle={<TableAligner
+      keysName={
+        [...bankAccounts.map((b, i) => {
+          if (i > 0 && b.currency === bankAccounts[i - 1].currency)
+            return '';
+
+          return `${b.currency} destination account(s)`;
+        })]
+      }
+      values={[
+        ...bankAccounts.map(b => {
+          return <span className={`${wrapperClasses}${b.isMain ? '' : ' pointer'}`}
+            onClick={() => { if (!b.isMain) setRampState({ ...rampState, isModalOpen: true, activeModal: "BANK_MAIN", auxModalData: b }) }}>
+            <Display
+              className="!justify-end"
+              data={<>{b.isMain ? <span className='green'>(main)</span> : <></>} {b.iban}</>}
+            />&nbsp;
+          </span>
+        })]}
+      keyStyle={keyClasses}
+      valueStyle={valueClasses}
+
+    />
+    }
+    bottom={
+      userDetails.kyc_status.canTransact && <>
+        <div className="flex gap-5">
+          <BlueBtn
+            isDisabled={state.txnLoading > 1}
+            isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "OFFRAMP" }) }}>OffRamp (Crypto to EUR)</BlueBtn>
+        </div>
+      </>
+    } />;
 }
 
 const OnRampTransactions = ({ transactions }: { transactions?: IRampTransaction[] }) => {

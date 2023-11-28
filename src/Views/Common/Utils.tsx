@@ -3,5 +3,5 @@ export const contractLink = (contract: string, name: string) => {
 }
 
 export const addressSummary = (address: string) => {
-    return address.substring(0, 6) + "..." + address.substring(address.length - 6, address.length);
+    return address.substring(0, 10) + "..." + address.substring(address.length - 10, address.length);
 }

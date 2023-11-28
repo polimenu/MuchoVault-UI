@@ -15,12 +15,6 @@ export interface IKYCRequest {
     source_of_funds: string;
 }
 
-export interface INewUserRequest {
-    first_name: string;
-    last_name: string;
-    email: string;
-    country: string;
-}
 
 const validateKYCRequest = (request: IKYCRequest): [boolean, string] => {
     if (request.address_line_1.length < 4)
@@ -47,57 +41,7 @@ const validateKYCRequest = (request: IKYCRequest): [boolean, string] => {
 
 
 
-const validateNewUser = (request: INewUserRequest): [boolean, string] => {
-    if (request.first_name.length < 3)
-        return [true, "First name is required"];
-    if (request.last_name.length < 3)
-        return [true, "Last name is required"];
-    if (request.email.length < 3)
-        return [true, "E-mail is required"];
-    if (request.country.length !== 2)
-        return [true, "Country is required"];
 
-    return [false, ""];
-}
-
-
-
-export const useCreateUser = (request?: INewUserRequest) => {
-    ///user/target-address
-    const { dispatch } = useGlobal();
-    const toastify = useToast();
-    const [result, setResult] = useState(false);
-
-    const save = (obj: { status: string, errorMessage: string }) => {
-        console.log("Obj res create user", obj);
-        if (obj.status === "OK") {
-            console.log("User created ok", obj);
-            setResult(true);
-            window.location.reload();
-        }
-        else {
-            toastify({ type: "error", msg: "Could not create User" + (obj.errorMessage ? "" : ": " + obj.errorMessage) });
-        }
-    }
-
-    useEffect(() => {
-        if (request && request.first_name && request.last_name && request.country && request.email) {
-            const [isError, message] = validateNewUser(request);
-            if (!isError) {
-                console.log("Fetching User creation");
-                fetchFromRampApi('/user', 'POST', request, save, dispatch, toastify);
-            }
-            else {
-                toastify({ type: "error", msg: message });
-            }
-        }
-        /*else {
-            toastify({ type: "error", msg: "Please fill all fields" });
-        }*/
-    }, [request]);
-
-    return [result];
-}
 
 export const useCreateKYC = (session_id?: string, request?: IKYCRequest) => {
     ///user/target-address
