@@ -12,6 +12,7 @@ import { INewUserRequest, ITokenChain, useAddAccount, useCreateUser, usePatchAdd
 import { IKYCRequest, useCreateKYC } from '../Hooks/kyc';
 import { networkBeautify, tokenBeautify } from '../Utils';
 import { useToast } from '@Contexts/Toast';
+import { useGetOnRampQuote, useOnRampAccounts } from '../Hooks/onramp';
 
 export const RampModals = () => {
     const [pageState, setPageState] = useAtom(rampAtom);
@@ -111,62 +112,82 @@ function TargetAddressModal() {
 //ToDo soft code currency
 function OnRampModal() {
     const [val, setVal] = useState("");
-    const [pageState, setPageState] = useAtom(rampAtom);
+    const [pageState] = useAtom(rampAtom);
     const [rampData] = useAtom(rampDataAtom);
     const { state } = useGlobal();
     const { currency } = pageState.auxModalData;
+    const [inputAccount] = useOnRampAccounts(pageState.sessionId, currency);
+    const [visibleAccount, setVisibleAccount] = useState(false);
+
     if (!rampData.tokenPreferences)
         return <></>;
 
     const { chain, token } = rampData.tokenPreferences.find(tp => tp.currency == currency);
+    const [quote] = useGetOnRampQuote(currency, token, val);
 
     return (
         <div>
-            <div className="text-f15 mb-5">Enter {currency} amount:</div>
-            <BufferInput
+            <div hidden={visibleAccount}>
+                <div className="text-f15 mb-5">Enter {currency} amount:</div>
+                <BufferInput
 
-                numericValidations={{
-                    decimals: { val: 6 },
-                    min: { val: '0', error: 'Enter a positive value' },
-                }}
-                placeholder="0.0"
-                bgClass="!bg-1"
-                ipClass="mt-1"
-                value={val}
-                onChange={(val) => {
-                    setVal(val);
-                }}
-                unit={
-                    <span className="text-f16 flex justify-between w-fit">
-                        {"EUR"}
-                    </span>
-                }
-            />
-            <div className="text-f15">&nbsp;</div>
-            <div className="text-f15 mt-5 mb-5">Estimated return amount:</div>
-            <BufferInput
-                placeholder="0.0"
-                bgClass="!bg-1"
-                ipClass="mt-1"
-                isDisabled={true}
-                value={val}
-                onChange={() => { }}
-                unit={
-                    <span className="text-f16 flex justify-between w-fit">
-                        {tokenBeautify(token)} ({networkBeautify(chain)})
-                    </span>
-                }
-            />
-            <div className="flex whitespace-nowrap mt-5">
-                <BlueBtn
-                    onClick={() => { }}
-                    className="mr-4 rounded"
-                    isLoading={state.txnLoading === 1}
-                >
-                    Convert to {tokenBeautify(token)} ({networkBeautify(chain)})
-                </BlueBtn>
+                    numericValidations={{
+                        decimals: { val: 6 },
+                        min: { val: '0', error: 'Enter a positive value' },
+                    }}
+                    placeholder="0.0"
+                    bgClass="!bg-1"
+                    ipClass="mt-1"
+                    value={val}
+                    onChange={(val) => {
+                        setVal(val);
+                    }}
+                    unit={
+                        <span className="text-f16 flex justify-between w-fit">
+                            {"EUR"}
+                        </span>
+                    }
+                />
+                <div className="text-f15">&nbsp;</div>
+                <div className="text-f15 mt-5 mb-5">Estimated return amount:</div>
+                <BufferInput
+                    placeholder="0.0"
+                    bgClass="!bg-1"
+                    ipClass="mt-1"
+                    isDisabled={true}
+                    value={quote}
+                    onChange={() => { }}
+                    unit={
+                        <span className="text-f16 flex justify-between w-fit">
+                            {tokenBeautify(token)} ({networkBeautify(chain)})
+                        </span>
+                    }
+                />
+                <div className="flex whitespace-nowrap mt-5">
+                    <BlueBtn
+                        onClick={() => { setVisibleAccount(true); }}
+                        className="mr-4 rounded"
+                        isLoading={state.txnLoading === 1}
+
+                    >
+                        Convert to {tokenBeautify(token)} ({networkBeautify(chain)})
+                    </BlueBtn>
+                </div>
             </div>
-        </div>
+            <div className="mt-5" hidden={!visibleAccount}>
+                <div className="flex whitespace-nowrap mt-5 text-f16 strong">Next step:</div>
+                <div className="flex mt-5 text-f14">Deposit {val} {currency} on the next account and your transaction will be processed shortly. </div>
+                <div className="flex mt-5 text-f14">
+                    Note we cannot guarantee exact exchange amount, due to fluctuations the stablecoin price may have.</div>
+                <div className="green mt-5 ml-5 text-f14">
+                    <ul>
+                        <li>IBAN: {inputAccount.iban}</li>
+                        <li>BIC: {inputAccount.bic}</li>
+                        <li>Country: {inputAccount.bank_country}</li>
+                    </ul>
+                </div>
+            </div>
+        </div >
     );
 }
 

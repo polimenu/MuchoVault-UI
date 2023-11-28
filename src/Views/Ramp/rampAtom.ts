@@ -40,6 +40,15 @@ export interface IRampBankAccount {
     currency: string;
 }
 
+
+export interface IRampOnRampBankAccount {
+    uuid: string;
+    iban: string;
+    bic: string;
+    currency: string;
+    bank_country: string;
+}
+
 export const rampDataAtom = atom<IRampData>({});
 
 export interface IRampUserDetails {
