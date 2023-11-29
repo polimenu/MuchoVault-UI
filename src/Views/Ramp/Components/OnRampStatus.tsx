@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useContext, useState } from 'react';
 import { BlueBtn } from '@Views/Common/V2-Button';
 import { Section } from '@Views/Common/Card/Section';
 import TransactionTable from './TransactionTable';
@@ -14,6 +14,10 @@ import { RAMP_CONFIG } from '../Config/rampConfig';
 import { networkBeautify, tokenBeautify } from '../Utils';
 import { useGlobal } from '@Contexts/Global';
 import { useLogout } from '../Hooks/login';
+import { ConnectionRequired } from '@Views/Common/Navbar/AccountDropdown';
+import { useUserAccount } from '@Hooks/useUserAccount';
+import { ViewContext } from '..';
+import { useNetwork } from 'wagmi';
 
 
 const topStyles = 'mx-3 text-f22';
@@ -295,13 +299,40 @@ const OffRampCard = ({ bankAccounts, userDetails }: { bankAccounts?: IRampBankAc
     }
     bottom={
       userDetails.kyc_status.canTransact && <>
-        <div className="flex gap-5">
-          <BlueBtn
-            isDisabled={state.txnLoading > 1}
-            isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "OFFRAMP" }) }}>OffRamp (Crypto to EUR)</BlueBtn>
-        </div>
+        <OffRampButtons />
       </>
     } />;
+}
+
+export function OffRampButtons() {
+  const [rampState, setRampState] = useAtom(rampAtom);
+  const { state } = useGlobal();
+  const { address: account } = useUserAccount();
+  const { activeChain } = useContext(ViewContext);
+  const { chain } = useNetwork();
+
+  const btnClasses = '';
+
+  if (!account || activeChain.id !== chain?.id)
+    return (
+      <div className={btnClasses}>
+        <ConnectionRequired>
+          <></>
+        </ConnectionRequired>
+      </div>
+    );
+
+  //console.log("Max Cap", id, data.maxCap);
+
+  return (<>
+    <div className={`${btnClasses} flex gap-5`}>
+      <BlueBtn
+        isDisabled={state.txnLoading > 1}
+        isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "OFFRAMP" }) }}>OffRamp (Crypto to EUR)</BlueBtn>
+    </div>
+  </>
+  );
+
 }
 
 const OnRampTransactions = ({ transactions }: { transactions?: IRampTransaction[] }) => {
