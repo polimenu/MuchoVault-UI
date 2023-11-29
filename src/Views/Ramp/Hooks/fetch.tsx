@@ -1,6 +1,6 @@
 import { encode } from 'querystring';
+import { APIRAMPURL } from '../Config/rampConfig';
 
-const APIRAMPURL = 'http://localhost:3000';
 
 export function fetchFromRampApi(call: string, method: string, params: any, saveFunction: any, dispatch: any, toastify: any = null) {
 

@@ -1,7 +1,7 @@
 import { Section } from '@Views/Common/Card/Section';
 import { Navbar } from '@Views/Common/Navbar';
 import styled from '@emotion/styled';
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Background from 'src/AppStyles';
 import { OnRampLoginEmail } from './Components/OnRampLoginEmail';
 import { OnRampStatus } from './Components/OnRampStatus';
@@ -13,6 +13,10 @@ import { OnRampLoginOtp } from './Components/OnRampLoginOtp';
 import { useRampSession } from './Hooks/login';
 import { OnRampSumsubKYC } from './Components/OnRampSumsubKYC';
 import { OnRampCreateUser } from './Components/OnRampCreateUser';
+import { Chain } from 'wagmi';
+import { useActiveChain } from '@Hooks/useActiveChain';
+import { ArbitrumOnly } from '@Views/Common/ChainNotSupported';
+import { Drawer } from '@mui/material';
 
 const Styles = styled.div`
   width: min(1300px, 100%);
@@ -43,13 +47,18 @@ const topStyles = 'flex flex-row items-center justify-center mb-2 text-f22';
 const descStyles = 'w-[46rem] text-center m-auto tab:w-full';
 
 
+export const ViewContext = React.createContext<{ activeChain: Chain } | null>(
+  null
+);
+const ViewContextProvider = ViewContext.Provider;
+
 
 export const RampPage = () => {
   useEffect(() => {
     document.title = "(mucho) finance | On & Off ramp";
   }, []);
 
-
+  const { activeChain } = useActiveChain();
   const [rampState,] = useAtom(rampAtom);
   const [, setRampData] = useAtom(rampDataAtom);
   useRampSession();
@@ -69,28 +78,36 @@ export const RampPage = () => {
       <Background>
         <Navbar />
 
-        <div className="root w-[100vw]">
-          <main className="content-drawer">
-            <Styles>
-              <RampModals />
-              <Section
-                Heading={<div className={topStyles}>On & Off Ramp</div>}
-                subHeading={<div className={descStyles}>Move from FIAT to Crypto, or counterwise</div>}
-                other={<>
-                  {rampState.loginStatus == ERampStatus.NOT_LOGGED && <>
-                    <OnRampLoginEmail />
-                    <div className="w-[46rem] text-f15 mb-5 mt-5 m-auto text-center">- or -</div>
-                    <OnRampCreateUser />
-                  </>}
-                  {rampState.loginStatus == ERampStatus.OTP_SENT && <OnRampLoginOtp />}
-                  {rampState.loginStatus == ERampStatus.LOGGED && <OnRampStatus />}
-                  <OnRampSumsubKYC />
-                </>}
-              />
+        <ArbitrumOnly>
+          <ViewContextProvider value={{ activeChain }}>
+            <div className="root w-[100vw]">
+              <main className="content-drawer">
+                <Styles>
+                  <RampModals />
+                  <Section
+                    Heading={<div className={topStyles}>On & Off Ramp</div>}
+                    subHeading={<div className={descStyles}>Move from FIAT to Crypto, or counterwise</div>}
+                    other={<>
+                      {rampState.loginStatus == ERampStatus.NOT_LOGGED && <>
+                        <OnRampLoginEmail />
+                        <div className="w-[46rem] text-f15 mb-5 mt-5 m-auto text-center">- or -</div>
+                        <OnRampCreateUser />
+                      </>}
+                      {rampState.loginStatus == ERampStatus.OTP_SENT && <OnRampLoginOtp />}
+                      {rampState.loginStatus == ERampStatus.LOGGED && <OnRampStatus />}
+                      <OnRampSumsubKYC />
+                    </>}
+                  />
 
-            </Styles>
-          </main>
-        </div>
+                </Styles>
+              </main>
+
+              <Drawer open={false}>
+                <></>
+              </Drawer>
+            </div>
+          </ViewContextProvider>
+        </ArbitrumOnly>
       </Background>
     </>
   );
