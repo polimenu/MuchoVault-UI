@@ -35,8 +35,11 @@ export const useOtpSent = (email: string) => {
         console.log("Saving login by email", obj);
         if (obj.status === "OK")
             setLoginStatus(true);
-        else
+        else {
+            console.log("Toastifying error", obj);
             toastify({ type: "error", msg: obj.errorMessage ? obj.errorMessage : "Login error" });
+            console.log("Toastified error");
+        }
     }
 
     useEffect(() => {

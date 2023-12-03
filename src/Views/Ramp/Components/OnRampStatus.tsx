@@ -271,7 +271,7 @@ const OffRampCard = ({ bankAccounts, userDetails }: { bankAccounts?: IRampBankAc
   return <Card
     top={<div className='flex'>
       <div className='w-full'>From Crypto to EUR</div>
-      <div><BlueBtn onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "BANK_ADD", auxModalData: { currency: "EUR" } }) }}>&nbsp;&nbsp;&nbsp;Add&nbsp;&nbsp;&nbsp;</BlueBtn></div>
+      <div><BlueBtn onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "BANK_ADD", auxModalData: { currency: "EUR" } }) }}>&nbsp;&nbsp;&nbsp;Add&nbsp;Account&nbsp;&nbsp;&nbsp;</BlueBtn></div>
     </div>}
     middle={<TableAligner
       keysName={
@@ -299,12 +299,12 @@ const OffRampCard = ({ bankAccounts, userDetails }: { bankAccounts?: IRampBankAc
     }
     bottom={
       userDetails.kyc_status.canTransact && <>
-        <OffRampButtons />
+        <OffRampButtons bankAccounts={bankAccounts} />
       </>
     } />;
 }
 
-export function OffRampButtons() {
+export function OffRampButtons({ bankAccounts }: { bankAccounts: IRampBankAccount[] }) {
   const [rampState, setRampState] = useAtom(rampAtom);
   const { state } = useGlobal();
   const { address: account } = useUserAccount();
@@ -312,6 +312,8 @@ export function OffRampButtons() {
   const { chain } = useNetwork();
 
   const btnClasses = '';
+  const hasBank = bankAccounts && bankAccounts.length > 0
+
 
   if (!account || activeChain.id !== chain?.id)
     return (
@@ -325,13 +327,17 @@ export function OffRampButtons() {
   //console.log("Max Cap", id, data.maxCap);
 
   return (<>
-    <div className={`${btnClasses} flex gap-5`}>
+    {hasBank && <div className={`${btnClasses} flex gap-5`}>
       <BlueBtn
         isDisabled={state.txnLoading > 1}
         isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "OFFRAMP" }) }}>OffRamp (Crypto to EUR)</BlueBtn>
-    </div>
-  </>
-  );
+    </div>}
+    {!hasBank && <div className={`${btnClasses} flex gap-5`}>
+      <BlueBtn
+        isDisabled={true}
+        onClick={() => { }}>Please add a bank account</BlueBtn>
+    </div>}
+  </>);
 
 }
 

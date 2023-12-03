@@ -183,17 +183,23 @@ function OnRampModal() {
                 </div>
             </div>
             <div className="mt-5" hidden={!visibleAccount}>
-                <div className="flex whitespace-nowrap mt-5 text-f18 strong">Next step:</div>
-                <div className="flex mt-5 text-f16">Transfer {val} {currency} to the next account and your transaction will be processed shortly. </div>
-                <div className="green mt-5 ml-5 text-f16">
-                    <ul>
-                        <li>IBAN: {inputAccount.iban}</li>
-                        <li>BIC: {inputAccount.bic}</li>
-                        <li>Country: {inputAccount.bank_country}</li>
-                    </ul>
-                </div>
-                <div className="flex mt-5 text-f14">
-                    Note: we cannot guarantee exact exchange amount, due to fluctuations the stablecoin price may have.</div>
+                {inputAccount && <>
+                    <div className="flex whitespace-nowrap mt-5 text-f18 strong">Next step:</div>
+                    <div className="flex mt-5 text-f16">Transfer {val} {currency} to the next account and your transaction will be processed shortly. </div>
+                    <div className="green mt-5 ml-5 text-f16">
+                        <ul>
+                            <li>IBAN: {inputAccount.iban}</li>
+                            <li>BIC: {inputAccount.bic}</li>
+                            <li>Country: {inputAccount.bank_country}</li>
+                        </ul>
+                    </div>
+                    <div className="flex mt-5 text-f14">
+                        Note: we cannot guarantee exact exchange amount, due to fluctuations the stablecoin price may have.</div>
+                </>}
+                {!inputAccount && <>
+                    <div className="flex whitespace-nowrap mt-5 text-f18 strong">No bank account</div>
+                    <div className="flex mt-5 text-f16">Sorry, we could not generate a bank account for your onramping. Maybe fiinishing your KYC is needed. Please contact us for more help. </div>
+                </>}
             </div>
         </div >
     );
@@ -344,7 +350,7 @@ function TargetTokenModal() {
                     <ChainsDropDown setChain={setChain} chain={chain} defaultChain={defaultToken.chain} />
                 </div>
                 <div className="text-f12 mb-5 mr-5">Token:
-                    <TokensDropDown token={chain} setToken={setToken} token={token} />
+                    <TokensDropDown chain={chain} setToken={setToken} token={token} />
                 </div>
                 <div className="text-f15 mb-5 mr-5">&nbsp;</div>
                 <div className="text-f15 mb-5 mr-5 m-auto"><BlueBtn
