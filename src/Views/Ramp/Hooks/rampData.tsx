@@ -18,7 +18,7 @@ export const useGetRampData = () => {
     const interval = */
 
 
-    console.log("***********useGetRampData************", rampStateAtom.sessionId)
+    //console.log("***********useGetRampData************", rampStateAtom.sessionId)
 
     let rampData: IRampData = {
         allowedCountries: [],

@@ -22,7 +22,7 @@ export function fetchFromRampApi(call: string, method: string, params: any, save
     }).then(response => {
         response.json().then(json => {
             dispatch({ type: 'SET_TXN_LOADING', payload: 0 });
-            console.log("Txn finished", json);
+            //console.log("Txn finished", json);
             saveFunction(json);
         })
     }).catch(e => {

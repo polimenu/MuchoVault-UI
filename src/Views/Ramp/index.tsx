@@ -63,6 +63,7 @@ export const RampPage = () => {
   const [, setRampData] = useAtom(rampDataAtom);
   useRampSession();
   const rampData = useGetRampData();
+  console.log("Rampdata", rampData);
 
   useEffect(() => {
     setRampData(rampData);
@@ -71,7 +72,7 @@ export const RampPage = () => {
 
 
   //sessionStorage.setItem("ramp_session_id", "");
-  console.log("Loading RampPage");
+  //console.log("Loading RampPage");
 
   return (
     <>

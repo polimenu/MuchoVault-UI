@@ -102,6 +102,17 @@ const UserDetailsCard = ({ userDetails }: { userDetails: IRampUserDetails }) => 
       className="w-full !h-full min-h-[370px] !transform-none !bg-1"
     />
   }
+
+  let parsedAddress = "";
+  if (userDetails.address) {
+    if (userDetails.address.address_line_1)
+      parsedAddress = `${userDetails.address.address_line_1} ${userDetails.address.address_line_2}. ${userDetails.address.post_code} ${userDetails.address.city} (${userDetails.address.country})`;
+    else if (userDetails.address.post_code || userDetails.address)
+      parsedAddress = `${userDetails.address.post_code} ${userDetails.address.city} (${userDetails.address.country})`;
+    else
+      parsedAddress = userDetails.address.country;
+  }
+
   return <Card
     top={
       <div className="flex">
@@ -136,7 +147,7 @@ const UserDetailsCard = ({ userDetails }: { userDetails: IRampUserDetails }) => 
           <div className={`${wrapperClasses}`}>
             <Display
               className="!justify-end"
-              data={userDetails.date_of_birth}
+              data={userDetails.date_of_birth ? userDetails.date_of_birth : ""}
             />
           </div>
           ,
@@ -144,7 +155,7 @@ const UserDetailsCard = ({ userDetails }: { userDetails: IRampUserDetails }) => 
           <div className={`${wrapperClasses}`}>
             <Display
               className="!justify-end"
-              data={userDetails.address ? `${userDetails.address.address_line_1} ${userDetails.address.address_line_2}. ${userDetails.address.post_code} ${userDetails.address.city} (${userDetails.address.country})` : ''}
+              data={parsedAddress}
             />
           </div>
           ,
