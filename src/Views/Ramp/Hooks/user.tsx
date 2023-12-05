@@ -63,12 +63,18 @@ export const useGetUserDetails = (sessionId?: string): (IRampUserDetails | undef
     const [userDetails, setUserDetails] = useState<IRampUserDetails>();
 
     const save = (obj: any) => {
-        console.log("setting user details", obj);
+        //console.log("setting user details", obj);
         if (obj.status !== "KO") {
             //parse date
-            obj.date_of_birth = obj.date_of_birth && obj.date_of_birth.substring(0, 10);
+            //console.log("Parsing user data", obj);
+            if (obj.date_of_birth)
+                obj.date_of_birth = obj.date_of_birth && obj.date_of_birth.substring(0, 10);
+            else
+                obj.date_of_birth = "";
+
             obj.kyc_status = kycStatus(obj.status);
             obj.canCreateKYC = (["CREATED", "KYC_NEEDED"].indexOf(obj.status) >= 0);
+            //console.log("Parsed user data", obj);
             setUserDetails(obj);
         }
         else {

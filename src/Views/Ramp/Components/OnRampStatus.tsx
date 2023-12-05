@@ -113,6 +113,8 @@ const UserDetailsCard = ({ userDetails }: { userDetails: IRampUserDetails }) => 
       parsedAddress = userDetails.address.country;
   }
 
+
+
   return <Card
     top={
       <div className="flex">
@@ -187,6 +189,9 @@ const KYCCard = ({ userDetails }: { userDetails?: IRampUserDetails }) => {
       className="w-full !h-full min-h-[370px] !transform-none !bg-1"
     />
   }
+
+  const toFinishKYC = ["PENDING_KYC_DATA", "SOFT_KYC_FAILED"].indexOf(userDetails?.status) >= 0
+
   return <Card
     top={
       <>KYC Status: <span
@@ -201,11 +206,11 @@ const KYCCard = ({ userDetails }: { userDetails?: IRampUserDetails }) => {
       </div>
     </>}
 
-    bottom={(userDetails.canCreateKYC || userDetails.status == "PENDING_KYC_DATA") && <>
+    bottom={(userDetails.canCreateKYC || toFinishKYC) && <>
       {userDetails.canCreateKYC && <BlueBtn
         isDisabled={state.txnLoading > 1}
         isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "KYC" }) }}>Start KYC</BlueBtn>}
-      {userDetails.status == "PENDING_KYC_DATA" && <BlueBtn
+      {toFinishKYC && <BlueBtn
         isDisabled={state.txnLoading > 1}
         isLoading={state.txnLoading === 1} onClick={() => { setGetToken(true); }}>Finish KYC</BlueBtn>}
     </>}
@@ -355,13 +360,17 @@ export function OffRampButtons({ bankAccounts }: { bankAccounts: IRampBankAccoun
 const OnRampTransactions = ({ transactions }: { transactions?: IRampTransaction[] }) => {
   //fetchTransactions();
 
-  if (!transactions)
+
+  if (transactions === undefined || transactions === null) {
     return <Skeleton
       key="OnRampTransactionsCard"
       variant="rectangular"
       className="w-full !h-full min-h-[370px] !transform-none !bg-1"
     />
-
+  }
+  else if (!transactions) {
+    return <div>No transactions done yet</div>
+  }
   else {
     const headerJSX = [
       { id: 'tid', label: 'Transaction ID' },

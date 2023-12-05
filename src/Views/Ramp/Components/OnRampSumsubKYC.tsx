@@ -34,7 +34,7 @@ export const OnRampSumsubKYC = () => {
 
   return (
     <>
-      <div id="sumsub-websdk-container"></div>
+      <div id="sumsub-websdk-container" style={{ backgroundColor: "#F6F6F6" }}></div>
     </>
   );
 }
