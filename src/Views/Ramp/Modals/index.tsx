@@ -373,6 +373,7 @@ function NewUserModal() {
     const { state } = useGlobal();
     const [isDone] = useCreateUser(req);
 
+
     if (isDone) {
         window.location.reload();
     }
