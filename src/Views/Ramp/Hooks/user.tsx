@@ -40,21 +40,21 @@ const kycStatus = (userStatus: string): { status: string, explanation: string, c
         case "CREATED":
             return { status: "Pending", explanation: "You are only allowed to make 1 transaction, for less than 700€", canTransact: true }
         case "KYC_NEEDED":
-            return { status: "Pending", explanation: "No transactions allowed. Please proceed to KYC.", canTransact: false }
+            return { status: "Pending", explanation: "No transactions allowed. You need to finish your KYC.", canTransact: false }
         case "PENDING_KYC_DATA":
             return { status: "Pending to receive KYC data", explanation: "No transactions allowed. Please finish your KYC.", canTransact: false }
         case "KYC_PENDING":
             return { status: "Verification in progress", explanation: "No transactions allowed. Please wait until KYC revision is ended.", canTransact: false }
         case "SOFT_KYC_FAILED":
-            return { status: "Failed", explanation: "No transactions allowed", canTransact: false }
+            return { status: "Failed", explanation: "No transactions allowed. You can retry your KYC application.", canTransact: false }
         case "HARD_KYC_FAILED":
-            return { status: "Failed", explanation: "No transactions allowed", canTransact: false }
+            return { status: "Failed", explanation: "No transactions allowed. Please contact us at info@mucho.finance", canTransact: false }
         case "FULL_USER":
             return { status: "Passed", explanation: "Congratulations! You are allowed to transact without limits", canTransact: true }
         case "SUSPENDED":
-            return { status: "User suspended", explanation: "No transactions allowed", canTransact: false }
+            return { status: "User suspended", explanation: "No transactions allowed. For further information, contact us at info@mucho.finance", canTransact: false }
         default:
-            return { status: "Unknown status", explanation: "No transactions allowed", canTransact: false }
+            return { status: "Unknown status", explanation: "No transactions allowed. For further information, contact us at info@mucho.finance", canTransact: false }
     }
 }
 
