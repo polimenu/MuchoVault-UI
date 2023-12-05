@@ -388,7 +388,7 @@ const OnRampTransactions = ({ transactions }: { transactions?: IRampTransaction[
         output: t.output.currency
       }*/
       return [
-        t.input.transaction_id,
+        addressSummary(t.input.transaction_id),
         t.direction,
         `${t.input.amount} ${t.input.currency}`,
         t.output.currency,
