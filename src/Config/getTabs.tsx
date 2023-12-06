@@ -124,6 +124,12 @@ export const getTabs = () => {
       isExternalLink: false,
     },
     {
+      to: `/ramp`,
+      name: 'OnRamp',
+      subTabs: [],
+      isExternalLink: false,
+    },
+    {
       to: `/badge`,
       name: 'NFT Plans',
       subTabs: [],
