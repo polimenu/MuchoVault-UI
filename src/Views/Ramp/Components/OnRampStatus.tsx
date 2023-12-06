@@ -18,6 +18,7 @@ import { ConnectionRequired } from '@Views/Common/Navbar/AccountDropdown';
 import { useUserAccount } from '@Hooks/useUserAccount';
 import { ViewContext } from '..';
 import { useNetwork } from 'wagmi';
+import { t } from 'i18next';
 
 
 const topStyles = 'mx-3 text-f22';
@@ -43,10 +44,10 @@ export const OnRampStatus = () => {
 const OnOffRampSection = ({ rampData }: { rampData: IRampData }) => {
 
   return <Section
-    Heading={<div className={topStyles}>On / Off Ramp</div>}
+    Heading={<div className={topStyles}>{t("ramp.On & Off Ramp")}</div>}
     subHeading={
       <div className={descStyles}>
-        Move from EUR to Crypto or viceversa
+        {t("ramp.Move from FIAT to Crypto, or counterwise")}
       </div>
     }
     Cards={
@@ -62,7 +63,7 @@ const OnOffRampSection = ({ rampData }: { rampData: IRampData }) => {
 const UserDetailsSection = ({ userDetails }: { userDetails?: IRampUserDetails }) => {
 
   return <Section
-    Heading={<div className={topStyles}>User details and KYC status</div>}
+    Heading={<div className={topStyles}>{t("ramp.User details and KYC status")}</div>}
     subHeading={
       <div className={descStyles}>
 
@@ -108,8 +109,10 @@ const UserDetailsCard = ({ userDetails }: { userDetails: IRampUserDetails }) => 
   return <Card
     top={
       <div className="flex">
-        <div className="text-1 text-f16 w-full">User Details</div>
-        <div className="text-f12 underline pointer" onClick={() => { useLogout(); }}>Logout</div>
+        <div className="text-1 text-f16 w-full">{t("ramp.User Details")}</div>
+        <div className="text-f12 underline pointer" onClick={() => { useLogout(); }} dangerouslySetInnerHTML={
+          { __html: t("ramp.Logout", { interpolation: { escapeValue: false } }) }
+        }></div>
       </div>
     }
 
@@ -117,8 +120,8 @@ const UserDetailsCard = ({ userDetails }: { userDetails: IRampUserDetails }) => 
     middle={<>{userDetails &&
       <TableAligner
         keysName={
-          // ['Name', 'Last name', 'E-mail', 'Date of birth', 'Address', 'Postal Code', 'City', 'Country']
-          ['Name', 'E-mail', 'Date of birth', 'Address']
+          // ["Name", "Last name", "E-mail", "Date of birth", "Address", "Postal Code", "City", "Country"]
+          [t("ramp.Name"), t("ramp.E-mail"), t("ramp.Date of birth"), t("ramp.Address")]
         }
         values={[
           <div className={`${wrapperClasses}`}>
@@ -199,10 +202,10 @@ const KYCCard = ({ userDetails }: { userDetails?: IRampUserDetails }) => {
     bottom={(userDetails.canCreateKYC || toFinishKYC) && <>
       {userDetails.canCreateKYC && <BlueBtn
         isDisabled={state.txnLoading > 1}
-        isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "KYC" }) }}>Start KYC</BlueBtn>}
+        isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "KYC" }) }}>{t("ramp.Start KYC")}</BlueBtn>}
       {toFinishKYC && <BlueBtn
         isDisabled={state.txnLoading > 1}
-        isLoading={state.txnLoading === 1} onClick={() => { setGetToken(true); }}>Finish KYC</BlueBtn>}
+        isLoading={state.txnLoading === 1} onClick={() => { setGetToken(true); }}>{t("ramp.Finish KYC")}</BlueBtn>}
     </>}
   />;
 }
@@ -221,13 +224,13 @@ const OnRampCard = ({ tokenPreferences, userDetails }: { tokenPreferences?: IRam
     />
   }
   return <Card
-    top="From EUR to Crypto"
+    top={t("ramp.From EUR to Crypto")}
     middle={<TableAligner
       keysName={
-        ['Target address', ...tokenPreferences.map(t => `Convert ${t.currency} to`)]
+        [t("ramp.Target address"), ...tokenPreferences.map(z => t("ramp.Convert currency to", { currency: z.currency }))]
       }
       values={[
-        <span className='pointer' onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "TARGET_ADDRESS", auxModalData: { currentAddress: userDetails.target_address } }) }}>{userDetails.target_address ? addressSummary(userDetails.target_address) : 'Not set!'}
+        <span className='pointer' onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "TARGET_ADDRESS", auxModalData: { currentAddress: userDetails.target_address } }) }}>{userDetails.target_address ? addressSummary(userDetails.target_address) : t("ramp.Not set!")}
           <img src='edit_wh.png' className={editIconClass} />
         </span>
         , ...tokenPreferences.map(t => {
@@ -250,11 +253,15 @@ const OnRampCard = ({ tokenPreferences, userDetails }: { tokenPreferences?: IRam
 
     />}
     bottom={userDetails.kyc_status.canTransact && <>
-      <div className="flex gap-5">
+      {userDetails.target_address && <div className="flex gap-5">
         <BlueBtn
           isDisabled={state.txnLoading > 1}
-          isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "ONRAMP", auxModalData: { currency: "EUR" } }) }}>OnRamp (from EUR to Crypto)</BlueBtn>
-      </div>
+          isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "ONRAMP", auxModalData: { currency: "EUR" } }) }}>{t("ramp.OnRamp (from EUR to Crypto)")}</BlueBtn>
+      </div>}
+      {!userDetails.target_address && <div className="flex gap-5">
+        <BlueBtn
+          isDisabled={true} onClick={() => { }}>{t("ramp.Please set a target address")}</BlueBtn>
+      </div>}
     </>} />;
 }
 
@@ -276,8 +283,10 @@ const OffRampCard = ({ bankAccounts, userDetails }: { bankAccounts?: IRampBankAc
   //ToDo soft code currency
   return <Card
     top={<div className='flex'>
-      <div className='w-full'>From Crypto to EUR</div>
-      <div><BlueBtn onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "BANK_ADD", auxModalData: { currency: "EUR" } }) }}>&nbsp;&nbsp;&nbsp;Add&nbsp;Account&nbsp;&nbsp;&nbsp;</BlueBtn></div>
+      <div className='w-full'>{t("ramp.From Crypto to EUR")}</div>
+      <div><BlueBtn onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "BANK_ADD", auxModalData: { currency: "EUR" } }) }}>&nbsp;&nbsp;&nbsp;<span dangerouslySetInnerHTML={
+        { __html: t("ramp.Add&nbsp;Account", { interpolation: { escapeValue: false } }) }
+      }></span>&nbsp;&nbsp;&nbsp;</BlueBtn></div>
     </div>}
     middle={<TableAligner
       keysName={
@@ -285,7 +294,7 @@ const OffRampCard = ({ bankAccounts, userDetails }: { bankAccounts?: IRampBankAc
           if (i > 0 && b.currency === bankAccounts[i - 1].currency)
             return '';
 
-          return `${b.currency} destination account(s)`;
+          return t("ramp.currency destination account(s)", { currency: b.currency });
         })]
       }
       values={[
@@ -294,7 +303,7 @@ const OffRampCard = ({ bankAccounts, userDetails }: { bankAccounts?: IRampBankAc
             onClick={() => { if (!b.isMain) setRampState({ ...rampState, isModalOpen: true, activeModal: "BANK_MAIN", auxModalData: b }) }}>
             <Display
               className="!justify-end"
-              data={<>{b.isMain ? <span className='green'>(main)</span> : <></>} {b.iban}</>}
+              data={<>{b.isMain ? <span className='green'>({t("ramp.main")})</span> : <></>} {b.iban}</>}
             />&nbsp;
           </span>
         })]}
@@ -336,12 +345,12 @@ export function OffRampButtons({ bankAccounts }: { bankAccounts: IRampBankAccoun
     {hasBank && <div className={`${btnClasses} flex gap-5`}>
       <BlueBtn
         isDisabled={state.txnLoading > 1}
-        isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "OFFRAMP" }) }}>OffRamp (Crypto to EUR)</BlueBtn>
+        isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "OFFRAMP" }) }}>{t("ramp.OffRamp (Crypto to EUR)")}</BlueBtn>
     </div>}
     {!hasBank && <div className={`${btnClasses} flex gap-5`}>
       <BlueBtn
         isDisabled={true}
-        onClick={() => { }}>Please add a bank account</BlueBtn>
+        onClick={() => { }}>{t("ramp.Please add a bank account")}</BlueBtn>
     </div>}
   </>);
 
@@ -356,11 +365,10 @@ const OnRampTransactions = ({ transactions }: { transactions?: IRampTransaction[
   }
   else {
     return <Section
-      Heading={<div className={topStyles}>Last Transactions</div>}
+      Heading={<div className={topStyles}>{t("ramp.Last Transactions")}</div>}
       subHeading={
         <div className={descStyles}>
-          List of your last transactions
-          {/* (Stats since 30th Jan, 2023) */}
+          {t("ramp.List of your last transactions")}
         </div>
       }
       other={<OnRampTransactionList transactions={transactions} />}
@@ -381,11 +389,11 @@ const OnRampTransactionList = ({ transactions }: { transactions?: IRampTransacti
   }
   else {
     const headerJSX = [
-      { id: 'tid', label: 'Transaction ID' },
-      { id: 'direction', label: 'Direction' },
-      { id: 'input', label: 'Input' },
-      { id: 'output', label: 'Output' },
-      { id: 'status', label: 'Status' },
+      { id: "tid", label: t("ramp.Transaction ID") },
+      { id: "direction", label: t("ramp.Direction") },
+      { id: "input", label: t("ramp.Input") },
+      { id: "output", label: t("ramp.Output") },
+      { id: "status", label: t("ramp.Status") },
     ];
 
     const dashboardData = transactions.map(t => {

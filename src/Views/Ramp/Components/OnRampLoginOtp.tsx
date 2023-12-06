@@ -5,6 +5,7 @@ import { useGlobal } from '@Contexts/Global';
 import { useAtom } from 'jotai';
 import { ERampStatus, rampAtom, rampDataAtom } from '../rampAtom';
 import { useOtpLogin } from '../Hooks/login';
+import { t } from 'i18next';
 
 
 export const OnRampLoginOtp = () => {
@@ -25,9 +26,9 @@ export const OnRampLoginOtp = () => {
 
   if (rampState.loginStatus == ERampStatus.OTP_SENT) {
     return <div className='w-[46rem] m-auto mt-5'><div>
-      <div className="text-f15 mb-5">Enter the one-time code sent to your e-mail:</div>
+      <div className="text-f15 mb-5">{t("ramp.Enter the one-time code sent to your e-mail")}:</div>
       <BufferInput
-        placeholder="One-time code"
+        placeholder={t("ramp.One-time code")}
         bgClass="!bg-1"
         ipClass="mt-1"
         value={val}
@@ -41,11 +42,11 @@ export const OnRampLoginOtp = () => {
         isDisabled={state.txnLoading > 1}
         isLoading={state.txnLoading === 1}
       >
-        Login
+        {t("ramp.Login")}
       </BlueBtn>
     </div></div>;
   }
 
-  console.log("SESSION OK, OTP NOT RENDERING", rampState);
+  //console.log("SESSION OK, OTP NOT RENDERING", rampState);
   return <></>;
 }

@@ -1,5 +1,6 @@
 import { encode } from 'querystring';
 import { APIRAMPURL } from '../Config/rampConfig';
+import { t } from 'i18next';
 
 
 export function fetchFromRampApi(call: string, method: string, params: any, saveFunction: any, dispatch: any, toastify: any = null) {
@@ -30,7 +31,7 @@ export function fetchFromRampApi(call: string, method: string, params: any, save
         if (toastify) {
             toastify({
                 type: 'error',
-                msg: "Unknown error",
+                msg: t("ramp.Unknown error"),
             });
         }
         dispatch({ type: 'SET_TXN_LOADING', payload: 0 });

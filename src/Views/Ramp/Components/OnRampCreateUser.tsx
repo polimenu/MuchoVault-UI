@@ -2,6 +2,7 @@ import { BlueBtn } from '@Views/Common/V2-Button';
 import { useGlobal } from '@Contexts/Global';
 import { useAtom } from 'jotai';
 import { ERampStatus, rampAtom, rampDataAtom } from '../rampAtom';
+import { t } from 'i18next';
 
 
 export const OnRampCreateUser = () => {
@@ -16,7 +17,7 @@ export const OnRampCreateUser = () => {
         isDisabled={state.txnLoading > 1}
         isLoading={state.txnLoading === 1}
       >
-        Create New User
+        {t("ramp.Create New User")}
       </BlueBtn>
     </div>
       ;

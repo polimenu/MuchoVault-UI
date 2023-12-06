@@ -17,6 +17,7 @@ import { Chain } from 'wagmi';
 import { useActiveChain } from '@Hooks/useActiveChain';
 import { ArbitrumOnly } from '@Views/Common/ChainNotSupported';
 import { Drawer } from '@mui/material';
+import { t } from 'i18next';
 
 const Styles = styled.div`
   width: min(1300px, 100%);
@@ -63,11 +64,11 @@ export const RampPage = () => {
   const [, setRampData] = useAtom(rampDataAtom);
   useRampSession();
   const rampData = useGetRampData();
-  console.log("Rampdata", rampData);
+  //console.log("Rampdata", rampData);
 
   useEffect(() => {
     setRampData(rampData);
-    console.log("Rampdata set", rampData);
+    //console.log("Rampdata set", rampData);
   }, [rampData]);
 
 
@@ -86,12 +87,12 @@ export const RampPage = () => {
                 <Styles>
                   <RampModals />
                   <Section
-                    Heading={<div className={topStyles}>On & Off Ramp</div>}
-                    subHeading={<div className={descStyles}>Move from FIAT to Crypto, or counterwise</div>}
+                    Heading={<div className={topStyles}>{t("ramp.On & Off Ramp")}</div>}
+                    subHeading={<div className={descStyles}>{t("ramp.Move from FIAT to Crypto, or counterwise")}</div>}
                     other={<>
                       {rampState.loginStatus == ERampStatus.NOT_LOGGED && <>
                         <OnRampLoginEmail />
-                        <div className="w-[46rem] text-f15 mb-5 mt-5 m-auto text-center">- or -</div>
+                        <div className="w-[46rem] text-f15 mb-5 mt-5 m-auto text-center">{t("ramp.- or -")}</div>
                         <OnRampCreateUser />
                       </>}
                       {rampState.loginStatus == ERampStatus.OTP_SENT && <OnRampLoginOtp />}

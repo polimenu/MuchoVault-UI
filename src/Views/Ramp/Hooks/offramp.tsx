@@ -58,7 +58,7 @@ export const useOffRampWallet = (sessionId: string, chain: string) => {
     const [wallet, setWallet] = useState("");
 
     const save = (obj: any) => {
-        console.log("$$$$$$$$$$$$$$$$$$$$  Got wallet", obj, sessionId, chain);
+        //console.log("$$$$$$$$$$$$$$$$$$$$  Got wallet", obj, sessionId, chain);
         if (obj.status !== "KO") {
             setWallet(obj[0].address);
         }
@@ -66,12 +66,8 @@ export const useOffRampWallet = (sessionId: string, chain: string) => {
 
     useEffect(() => {
         if (sessionId && chain) {
-            console.log("FETCHING OFFRAMP WALLET");
+            //console.log("FETCHING OFFRAMP WALLET");
             fetchFromRampApi(`/offramp/wallet`, 'GET', { session_id: sessionId, chain }, save, dispatch);
-        }
-        else {
-
-            console.log("NOT FETCHING OFFRAMP WALLET");
         }
     }, [sessionId, chain]);
 
@@ -80,7 +76,7 @@ export const useOffRampWallet = (sessionId: string, chain: string) => {
 
 export const useSendToken = (address: string, destination: string, value: number, decimals: number) => {
     const { activeChain } = useContext(ViewContext);
-    console.log("Active Chain", activeChain);
+    //console.log("Active Chain", activeChain);
     const { writeCall } = useWriteCall(address, ERC20AbiExt);
     const [pageState, setPageState] = useAtom(rampAtom);
     function callBack(res) {
@@ -121,11 +117,11 @@ export const useGetAmountInWallet = (address: string, decimals: number) => {
 
     let { data } = useContractRead(call);
     if (data) {
-        console.log("getamountinwallet", data);
+        //console.log("getamountinwallet", data);
         data = getBNtoStringCopy([data]);
-        console.log("getamountinwallet after bn", data);
+        //console.log("getamountinwallet after bn", data);
         const amount = data[0] / (10 ** decimals);
-        console.log("getamountinwallet after bn number", amount);
+        //console.log("getamountinwallet after bn number", amount);
 
         return [amount];
     }

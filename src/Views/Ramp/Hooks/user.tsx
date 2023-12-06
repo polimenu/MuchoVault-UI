@@ -6,6 +6,7 @@ import { ERampStatus, IRampBankAccount, IRampTokenPreference, IRampTransaction, 
 import { RAMP_CONFIG } from "../Config/rampConfig";
 import { useAtom } from "jotai";
 import { useLogout } from "./login";
+import { t } from "i18next";
 
 
 export interface ITokenChain {
@@ -23,13 +24,13 @@ export interface INewUserRequest {
 
 const validateNewUser = (request: INewUserRequest): [boolean, string] => {
     if (request.first_name.length < 3)
-        return [true, "First name is required"];
+        return [true, t("ramp.First name is required")];
     if (request.last_name.length < 3)
-        return [true, "Last name is required"];
+        return [true, t("ramp.Last name is required")];
     if (request.email.length < 3)
-        return [true, "E-mail is required"];
+        return [true, t("ramp.E-mail is required")];
     if (request.country.length !== 2)
-        return [true, "Country is required"];
+        return [true, t("ramp.Country is required")];
 
     return [false, ""];
 }
@@ -38,23 +39,23 @@ const validateNewUser = (request: INewUserRequest): [boolean, string] => {
 const kycStatus = (userStatus: string): { status: string, explanation: string, canTransact: boolean } => {
     switch (userStatus) {
         case "CREATED":
-            return { status: "Pending", explanation: "You are only allowed to make 1 transaction, for less than 700€", canTransact: true }
+            return { status: t("ramp.Pending"), explanation: t("ramp.You are only allowed to make 1 transaction, for less than 700€"), canTransact: true }
         case "KYC_NEEDED":
-            return { status: "Pending", explanation: "No transactions allowed. You need to finish your KYC.", canTransact: false }
+            return { status: t("ramp.Pending"), explanation: t("ramp.No transactions allowed. You need to finish your KYC."), canTransact: false }
         case "PENDING_KYC_DATA":
-            return { status: "Pending to receive KYC data", explanation: "No transactions allowed. Please finish your KYC.", canTransact: false }
+            return { status: t("ramp.Pending to receive KYC data"), explanation: t("ramp.No transactions allowed. Please finish your KYC."), canTransact: false }
         case "KYC_PENDING":
-            return { status: "Verification in progress", explanation: "No transactions allowed. Please wait until KYC revision is ended.", canTransact: false }
+            return { status: t("ramp.Verification in progress"), explanation: t("ramp.No transactions allowed. Please wait until KYC revision is ended."), canTransact: false }
         case "SOFT_KYC_FAILED":
-            return { status: "Failed", explanation: "No transactions allowed. You can retry your KYC application.", canTransact: false }
+            return { status: t("ramp.Failed"), explanation: t("ramp.No transactions allowed. You can retry your KYC application."), canTransact: false }
         case "HARD_KYC_FAILED":
-            return { status: "Failed", explanation: "No transactions allowed. Please contact us at info@mucho.finance", canTransact: false }
+            return { status: t("ramp.Failed"), explanation: t("ramp.No transactions allowed. Please contact us at info@mucho.finance"), canTransact: false }
         case "FULL_USER":
-            return { status: "Passed", explanation: "Congratulations! You are allowed to transact without limits", canTransact: true }
+            return { status: t("ramp.Passed"), explanation: t("ramp.Congratulations! You are allowed to transact without limits"), canTransact: true }
         case "SUSPENDED":
-            return { status: "User suspended", explanation: "No transactions allowed. For further information, contact us at info@mucho.finance", canTransact: false }
+            return { status: t("ramp.User suspended"), explanation: t("ramp.No transactions allowed. For further information, contact us at info@mucho.finance"), canTransact: false }
         default:
-            return { status: "Unknown status", explanation: "No transactions allowed. For further information, contact us at info@mucho.finance", canTransact: false }
+            return { status: t("ramp.Unknown status"), explanation: t("ramp.No transactions allowed. For further information, contact us at info@mucho.finance"), canTransact: false }
     }
 }
 
@@ -96,7 +97,7 @@ export const useGetTokenPreferences = (sessionId?: string): (IRampTokenPreferenc
     const { dispatch } = useGlobal();
     const [userTPs, setUserTPs] = useState<IRampTokenPreference[]>();
     const save = (obj: IRampTokenPreference[]) => {
-        console.log("setting user token preferences", obj);
+        //console.log("setting user token preferences", obj);
         //parse date
         setUserTPs(obj.filter(t => RAMP_CONFIG.AllowedFiatCurrencies.indexOf(t.currency) >= 0));
     }
@@ -142,7 +143,7 @@ export const useGetRampTransactions = (sessionId?: string): (IRampTransaction[] 
     const { dispatch } = useGlobal();
     const [transactions, setTransactions] = useState<IRampTransaction[]>();
     const save = (obj: IRampTransaction[]) => {
-        console.log("setting transactions", obj);
+        //console.log("setting transactions", obj);
         setTransactions(obj);
     }
 
@@ -163,9 +164,9 @@ export const useSetMainBankAccount = (sessionId: string, uuid: string, go: boole
     //const [rampState, setRampState] = useAtom(rampAtom);
 
     const save = (obj: { status: string, errorMessage: string }) => {
-        console.log("Obj res main bank account", obj);
+        //console.log("Obj res main bank account", obj);
         if (obj.status === "OK") {
-            console.log("Set main bank account ok", obj);
+            //console.log("Set main bank account ok", obj);
             setResult({ done: true, status: true, errorMessage: "" });
             //window.location.reload();
             //setRampState({ ...rampState, isModalOpen: false });
@@ -194,16 +195,16 @@ export const useCreateUser = (request?: INewUserRequest) => {
     const [rampState, setRampState] = useAtom(rampAtom);
 
     const save = (obj: { status: string, errorMessage: string }) => {
-        console.log("Obj res create user", obj);
+        //console.log("Obj res create user", obj);
         if (obj.status === "OK") {
-            console.log("User created ok", obj);
+            //console.log("User created ok", obj);
             setResult(true);
             //window.location.reload();
-            toastify("User successfully created. You can login now.");
+            toastify(t("ramp.User successfully created. You can login now."));
             setRampState({ ...rampState, isModalOpen: false });
         }
         else {
-            toastify({ type: "error", msg: (obj.errorMessage ? obj.errorMessage : "Could not create User") });
+            toastify({ type: "error", msg: (obj.errorMessage ? obj.errorMessage : t("ramp.Could not create User")) });
         }
     }
 
@@ -218,9 +219,6 @@ export const useCreateUser = (request?: INewUserRequest) => {
                 toastify({ type: "error", msg: message });
             }
         }
-        /*else {
-            toastify({ type: "error", msg: "Please fill all fields" });
-        }*/
     }, [request]);
 
     return [result];
@@ -234,17 +232,17 @@ export const usePatchTokenPref = (session_id?: string, currency: string, token: 
 
     const save = (obj: { status: string }) => {
         if (obj.status === "OK") {
-            console.log("Patched ok", obj);
+            //console.log("Patched ok", obj);
             setPatchResult(true);
         }
         else {
-            toastify({ type: "error", msg: "Could not set new target token" });
+            toastify({ type: "error", msg: t("ramp.Could not set new target token") });
         }
     }
 
     useEffect(() => {
         if (session_id && currency && token.token && token.chain) {
-            console.log("Fetching token pref patch");
+            //console.log("Fetching token pref patch");
             fetchFromRampApi(`/token-preferences`, 'PATCH', { session_id: session_id, currency: currency, token: token.token, chain: token.chain }, save, dispatch, toastify);
         }
     }, [session_id, currency, token]);
@@ -260,17 +258,17 @@ export const usePatchAddress = (session_id?: string, address: string) => {
 
     const save = (obj: { status: string }) => {
         if (obj.status === "OK") {
-            console.log("Patched ok", obj);
+            //console.log("Patched ok", obj);
             setPatchResult(true);
         }
         else {
-            toastify({ type: "error", msg: "Could not set new target address" });
+            toastify({ type: "error", msg: t("ramp.Could not set new target address") });
         }
     }
 
     useEffect(() => {
         if (session_id && address) {
-            console.log("Fetching target address patch");
+            //console.log("Fetching target address patch");
             fetchFromRampApi(`/user/target-address`, 'PATCH', { session_id: session_id, target_address: address }, save, dispatch, toastify);
         }
     }, [session_id, address]);
@@ -286,17 +284,17 @@ export const useAddAccount = (session_id: string, iban: string, currency: string
 
     const save = (obj: { status: string }) => {
         if (obj.status === "OK") {
-            console.log("Account added ok", obj);
+            //console.log("Account added ok", obj);
             setResult(true);
         }
         else {
-            toastify({ type: "error", msg: "Could not add new bank account" });
+            toastify({ type: "error", msg: t("ramp.Could not add new bank account") });
         }
     }
 
     useEffect(() => {
         if (session_id && iban && currency) {
-            console.log("Fetching target address patch");
+            //console.log("Fetching target address patch");
             fetchFromRampApi(`/offramp/bank-account`, 'POST', { session_id: session_id, name: "", isMain: false, currency, iban }, save, dispatch, toastify);
         }
     }, [session_id, iban, currency]);

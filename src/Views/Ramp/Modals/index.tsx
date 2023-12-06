@@ -91,9 +91,9 @@ function TargetAddressModal() {
     return (
         <>
             <div>
-                <div className="text-f15 mb-5">Change target address</div>
+                <div className="text-f15 mb-5">{t("ramp.Change target address")}</div>
                 <BufferInput
-                    placeholder={"Enter your new address"}
+                    placeholder={t("ramp.Enter your new address")}
                     bgClass="!bg-1"
                     ipClass="mt-1"
                     value={val}
@@ -109,7 +109,7 @@ function TargetAddressModal() {
                     isDisabled={state.txnLoading > 1}
                     isLoading={state.txnLoading === 1}
                 >
-                    Change address
+                    {t("ramp.Change address")}
                 </BlueBtn>
             </div>
         </>
@@ -143,12 +143,12 @@ function OnRampModal() {
     return (
         <div>
             <div hidden={visibleAccount}>
-                <div className="text-f15 mb-5">Enter {currency} amount:</div>
+                <div className="text-f15 mb-5">{t("ramp.Enter amount currency", { currency: currency })}:</div>
                 <BufferInput
 
                     numericValidations={{
                         decimals: { val: 6 },
-                        min: { val: '0', error: 'Enter a positive value' },
+                        min: { val: '0', error: t("ramp.Enter a positive value") },
                     }}
                     placeholder="0.0"
                     bgClass="!bg-1"
@@ -164,7 +164,7 @@ function OnRampModal() {
                     }
                 />
                 <div className="text-f15">&nbsp;</div>
-                <div className="text-f15 mt-5 mb-5">Estimated return amount:</div>
+                <div className="text-f15 mt-5 mb-5">{t("ramp.Estimated return amount")}:</div>
                 <BufferInput
                     placeholder="0.0"
                     bgClass="!bg-1"
@@ -186,27 +186,27 @@ function OnRampModal() {
                         isDisabled={val <= 0}
 
                     >
-                        Convert to {tokenBeautify(token)} ({networkBeautify(chain)})
+                        {t("ramp.Convert to")} {tokenBeautify(token)} ({networkBeautify(chain)})
                     </BlueBtn>
                 </div>
             </div>
             <div className="mt-5" hidden={!visibleAccount}>
                 {inputAccount && inputAccount.iban && <>
-                    <div className="flex whitespace-nowrap mt-5 text-f18 strong">Next step:</div>
-                    <div className="flex mt-5 text-f16">Transfer {val} {currency} to the next account and your transaction will be processed shortly. </div>
+                    <div className="flex whitespace-nowrap mt-5 text-f18 strong">{t("ramp.Next step")}:</div>
+                    <div className="flex mt-5 text-f16">{t("ramp.Transfer to the next account and your transaction will be processed shortly.", { amount: val, currency: currency })} </div>
                     <div className="green mt-5 ml-5 text-f16">
                         <ul>
                             <li>IBAN: {inputAccount.iban}</li>
                             <li>BIC: {inputAccount.bic}</li>
-                            <li>Country: {inputAccount.bank_country}</li>
+                            <li>{t("ramp.Country")}: {inputAccount.bank_country}</li>
                         </ul>
                     </div>
                     <div className="flex mt-5 text-f14">
-                        Note: we cannot guarantee exact exchange amount, due to fluctuations the stablecoin price may have.</div>
+                        {t("ramp.Note we cannot guarantee exact exchange amount, due to fluctuations the stablecoin price may have.")}</div>
                 </>}
                 {!inputAccount && <>
-                    <div className="flex whitespace-nowrap mt-5 text-f18 strong">No bank account</div>
-                    <div className="flex mt-5 text-f16">Sorry, we could not generate a bank account for your onramping. Maybe fiinishing your KYC is needed. Please contact us for more help. </div>
+                    <div className="flex whitespace-nowrap mt-5 text-f18 strong">{t("ramp.No bank account")}</div>
+                    <div className="flex mt-5 text-f16">{t("ramp.Sorry, we could not generate a bank account for your onramping. Maybe fiinishing your KYC is needed. Please contact us for more help.")}</div>
                 </>}
             </div>
         </div >
@@ -232,7 +232,7 @@ function OffRampModal() {
     return (
         <div>
             <div>
-                <div className="text-f15 mb-5">Enter amount:</div>
+                <div className="text-f15 mb-5">{t("ramp.Enter amount")}:</div>
                 <BufferInput
                     header={
                         <div className="flex flex-row justify-between w-full text-3 text-f14 mt-2">
@@ -264,7 +264,7 @@ function OffRampModal() {
                     }
                 />
                 <div className="text-f15">&nbsp;</div>
-                <div className="text-f15 mt-5 mb-5">Estimated return amount:</div>
+                <div className="text-f15 mt-5 mb-5">{t("ramp.Estimated return amount")}:</div>
                 <BufferInput
                     placeholder="0.0"
                     bgClass="!bg-1"
@@ -285,7 +285,7 @@ function OffRampModal() {
                         isLoading={state.txnLoading === 1}
 
                     >
-                        Convert to {currency}
+                        {t("ramp.Convert to")} {currency}
                     </BlueBtn>
                 </div>
             </div>
@@ -307,7 +307,7 @@ function BankAddModal() {
     return (
         <>
             <div>
-                <div className="text-f15 mb-5">Add bank account for {pageState.auxModalData.currency}</div>
+                <div className="text-f15 mb-5">{t("ramp.Add bank account for")} {pageState.auxModalData.currency}</div>
                 <BufferInput
                     placeholder={"Enter IBAN"}
                     bgClass="!bg-1"
@@ -325,7 +325,7 @@ function BankAddModal() {
                     isDisabled={state.txnLoading > 1}
                     isLoading={state.txnLoading === 1}
                 >
-                    Add account
+                    {t("ramp.Add account")}
                 </BlueBtn>
             </div>
         </>
@@ -353,17 +353,17 @@ function TargetTokenModal() {
     return (
         <>
             <div className='mr-5'>
-                <div className="text-f15 mb-5 mr-5">Select {pageState.auxModalData.currency} target token:</div>
-                <div className="text-f12 mb-5 mr-5">Chain:
+                <div className="text-f15 mb-5 mr-5">{t("ramp.Select target token", { currency: pageState.auxModalData.currency })}:</div>
+                <div className="text-f12 mb-5 mr-5">{t("ramp.Chain")}:
                     <ChainsDropDown setChain={setChain} chain={chain} defaultChain={defaultToken.chain} />
                 </div>
-                <div className="text-f12 mb-5 mr-5">Token:
+                <div className="text-f12 mb-5 mr-5">{t("ramp.Token")}:
                     <TokensDropDown chain={chain} setToken={setToken} token={token} />
                 </div>
                 <div className="text-f15 mb-5 mr-5">&nbsp;</div>
                 <div className="text-f15 mb-5 mr-5 m-auto"><BlueBtn
                     isDisabled={state.txnLoading > 1}
-                    isLoading={state.txnLoading === 1} onClick={() => { setTokenChain(token) }} >Save</BlueBtn></div>
+                    isLoading={state.txnLoading === 1} onClick={() => { setTokenChain(token) }} >{t("ramp.Save")}</BlueBtn></div>
             </div>
         </>
     );
@@ -388,14 +388,14 @@ function NewUserModal() {
     return (
         <>
             <div className="text-f14">
-                <div className="text-f15 mb-5">Enter your data:</div>
-                <div className='mt-5'>E-mail:</div>
+                <div className="text-f15 mb-5">{t("ramp.Enter your data")}:</div>
+                <div className='mt-5'>{t("ramp.E-mail")}:</div>
                 <BufferInput placeholder={"Name"} bgClass="!bg-1" ipClass="mt-1" value={email} onChange={(val) => { setEmail(val); }} />
-                <div className='mt-5'>Country:</div>
+                <div className='mt-5'>{t("ramp.Country")}:</div>
                 <CountriesDropDown setCountry={setCountry} country={country} />
-                <div className='mt-5'>First Name:</div>
+                <div className='mt-5'>{t("ramp.First Name")}:</div>
                 <BufferInput placeholder={"Name"} bgClass="!bg-1" ipClass="mt-1" value={firstName} onChange={(val) => { setFirstName(val); }} />
-                <div className='mt-5'>Last Name:</div>
+                <div className='mt-5'>{t("ramp.Last Name")}:</div>
                 <BufferInput placeholder={"Name"} bgClass="!bg-1" ipClass="mt-1" value={lastName} onChange={(val) => { setLastName(val); }} />
 
 
@@ -407,7 +407,7 @@ function NewUserModal() {
                     isDisabled={state.txnLoading > 1}
                     isLoading={state.txnLoading === 1}
                 >
-                    New User
+                    {t("ramp.New User")}
                 </BlueBtn>
             </div>
         </>
@@ -423,7 +423,7 @@ function BankMainModal() {
     const { state } = useGlobal();
 
     if (result.done && result.status) {
-        toastify("Main bank account updated successfully");
+        toastify(t("ramp.Main bank account updated successfully"));
         window.location.reload();
         return <></>;
     }
@@ -434,7 +434,7 @@ function BankMainModal() {
     return (
         <>
             <div className="text-f14">
-                <div className="text-f15 mb-5">Account IBAN:</div>
+                <div className="text-f15 mb-5">IBAN:</div>
                 <div className='mt-5'>{pageState.auxModalData.iban}</div>
             </div>
             <div className="flex whitespace-nowrap mt-5">
@@ -444,7 +444,7 @@ function BankMainModal() {
                     isDisabled={state.txnLoading > 1}
                     isLoading={state.txnLoading === 1}
                 >
-                    Set as main account
+                    {t("ramp.Set as main account")}
                 </BlueBtn>
             </div>
         </>
@@ -471,19 +471,19 @@ function CompleteKYCModal() {
     return (
         <>
             <div className="text-f14">
-                <div className="text-f15 mb-5">Enter your data:</div>
-                <div className='mt-5'>Address:</div>
+                <div className="text-f15 mb-5">{t("ramp.Enter your data")}:</div>
+                <div className='mt-5'>{t("ramp.Address")}:</div>
                 <BufferInput placeholder={"Line 1"} bgClass="!bg-1" ipClass="mt-1" value={address_line_1} onChange={(val) => { setAddr1(val); }} />
                 <BufferInput placeholder={"Line 2"} bgClass="!bg-1" ipClass="mt-1" value={address_line_2} onChange={(val) => { setAddr2(val); }} />
-                <div className='mt-5'>Source of funds:</div>
+                <div className='mt-5'>{t("ramp.Source of funds")}:</div>
                 <SofDropDown setSof={setSof} sof={source_of_funds} />
-                <div className='mt-5'>Country:</div>
+                <div className='mt-5'>{t("ramp.Country")}:</div>
                 <CountriesDropDown setCountry={setCountry} country={country} />
-                <div className='mt-5'>Postal Code:</div>
+                <div className='mt-5'>{t("ramp.Postal Code")}:</div>
                 <BufferInput placeholder={"Postal code"} bgClass="!bg-1" ipClass="mt-1" value={post_code} onChange={(val) => { setPC(val); }} />
-                <div className='mt-5'>City:</div>
+                <div className='mt-5'>{t("ramp.City")}:</div>
                 <BufferInput placeholder={"City"} bgClass="!bg-1" ipClass="mt-1" value={city} onChange={(val) => { setCity(val); }} />
-                <div className='mt-5'>Date of birth:</div>
+                <div className='mt-5'>{t("ramp.Date of birth")}:</div>
                 <BufferInput placeholder={"YYYY-MM-DD"} bgClass="!bg-1" ipClass="mt-1" value={date_of_birth} onChange={(val) => { setDob(val); }} />
             </div>
             <div className="flex whitespace-nowrap mt-5">
@@ -493,7 +493,7 @@ function CompleteKYCModal() {
                     isDisabled={state.txnLoading > 1}
                     isLoading={state.txnLoading === 1}
                 >
-                    Start KYC
+                    {t("ramp.Start KYC")}
                 </BlueBtn>
             </div>
         </>
@@ -512,7 +512,7 @@ const ChainsDropDown = ({ chain, setChain, defaultChain }: { chain: string; setC
     });
 
 
-    console.log("Chains dropdown", chains);
+    //console.log("Chains dropdown", chains);
     //setToken(defaultToken);
 
     const classes = {
@@ -564,7 +564,7 @@ const TokensDropDown = ({ chain, setToken, token }: { chain: string; setToken: a
     useEffect(() => {
         if (!firstLoad.current) {
             setToken('');
-            console.log("resetting token");
+            //console.log("resetting token");
         }
         else
             firstLoad.current = false
@@ -581,11 +581,7 @@ const TokensDropDown = ({ chain, setToken, token }: { chain: string; setToken: a
         })
     });
 
-
-    console.log("Tokens dropdown", tokens);
-
-
-    //setToken(defaultToken);
+    //console.log("Tokens dropdown", tokens);
 
     const classes = {
         fontSize: 'text-f15',
@@ -635,11 +631,9 @@ const TokensDropDown = ({ chain, setToken, token }: { chain: string; setToken: a
 const OfframpTokensDropDown = ({ setToken, token, tokenList }: { setToken: any; token: { symbol: string, address: string, decimals: number }; tokenList: { symbol: string, address: string, decimals: number }[] }) => {
 
     const tokens = tokenList;
-    console.log("Tokens dropdown", tokens);
-
+    //console.log("Tokens dropdown", tokens);
 
     //setToken(defaultToken);
-
     const classes = {
         fontSize: 'text-f15',
         itemFontSize: 'text-f14',
@@ -753,7 +747,7 @@ const SofDropDown = ({ setSof, sof }: { setSof: any; sof: string }) => {
                     className={`flex items-center justify-between ${classes.fontSize} font-medium bg-[#2c2c41] pl-3 pr-[0] ${classes.verticalPadding} rounded-sm text-1`}
                 >
                     <div className="flex items-center">
-                        {sof}
+                        {t("ramp." + sof)}
                     </div>
                     <DropdownArrow open={open} />
                 </div>
@@ -768,7 +762,7 @@ const SofDropDown = ({ setSof, sof }: { setSof: any; sof: string }) => {
                         onClick={() => setSof(tab)}
                     >
                         <div className="flex">
-                            {tab}
+                            {t("ramp." + tab)}
                         </div>
                     </div>
                 );

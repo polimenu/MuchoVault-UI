@@ -12,10 +12,9 @@ export const OnRampSumsubKYC = () => {
 
   useEffect(() => {
     if (rampState.sumsubToken && rampState.email && rampState.loginStatus == ERampStatus.SUMSUB) {
-      document.title = "(mucho) finance | Sumsub KYC";
 
       const head = document.querySelector("head");
-      const script = document.createElement("script");
+      const script = document.createElement("ramp.script");
 
       script.setAttribute("src", 'https://static.sumsub.com/idensic/static/sns-websdk-builder.js');
       head.appendChild(script);

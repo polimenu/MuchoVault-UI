@@ -4,6 +4,7 @@ import { fetchFromRampApi } from "./fetch";
 import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { ERampStatus, rampAtom } from "../rampAtom";
+import { t } from "i18next";
 
 export const useRampSession = () => {
     const [pageState, setPageState] = useAtom(rampAtom);
@@ -32,13 +33,13 @@ export const useOtpSent = (email: string) => {
     const toastify = useToast();
     const [loginStatus, setLoginStatus] = useState(false);
     const save = (obj: { status: string, errorMessage?: string }) => {
-        console.log("Saving login by email", obj);
+        //console.log("Saving login by email", obj);
         if (obj.status === "OK")
             setLoginStatus(true);
         else {
-            console.log("Toastifying error", obj);
-            toastify({ type: "error", msg: obj.errorMessage ? obj.errorMessage : "Login error" });
-            console.log("Toastified error");
+            //console.log("Toastifying error", obj);
+            toastify({ type: "error", msg: obj.errorMessage ? obj.errorMessage : t("ramp.Login error") });
+            //console.log("Toastified error");
         }
     }
 
@@ -46,7 +47,7 @@ export const useOtpSent = (email: string) => {
         if (!email)
             setLoginStatus(false);
         else {
-            console.log("Fetching login by email");
+            //console.log("Fetching login by email");
             fetchFromRampApi(`/user-login`, 'POST', { email: email }, save, dispatch, toastify);
         }
     }, [email]);
@@ -60,17 +61,17 @@ export const useOtpLogin = (email?: string, otp?: string, saveSession?: any) => 
     const toastify = useToast();
     const saveLogin = (obj: { status: string, session_id: string }) => {
         if (obj.status === "OK") {
-            console.log("Saving session", obj);
+            //console.log("Saving session", obj);
             saveSession(obj.session_id);
         }
         else {
-            toastify({ type: "error", msg: "Invalid OTP code" });
+            toastify({ type: "error", msg: t("ramp.Invalid OTP code") });
         }
     }
 
     useEffect(() => {
         if (email && otp) {
-            console.log("Fetching OTP session");
+            //console.log("Fetching OTP session");
             fetchFromRampApi(`/login/otp-email`, 'POST', { email: email, otp: otp }, saveLogin, dispatch, toastify);
         }
     }, [email, otp]);
