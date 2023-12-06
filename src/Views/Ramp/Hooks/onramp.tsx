@@ -39,14 +39,15 @@ export const useGetOnRampQuote = (currencyIn: string, currencyOut: string, amoun
 }
 
 
-export const useOnRampAccounts = (sessionId: string, currency: string) => {
+export const useOnRampAccounts = (sessionId: string, currency: string, trigger: boolean) => {
     const { dispatch } = useGlobal();
-    const [account, setAccount] = useState<IRampOnRampBankAccount>({ iban: "", bic: "", bank_country: "", currency: "", uuid: "" });
+    const [account, setAccount] = useState<IRampOnRampBankAccount | undefined>(undefined);
 
     const save = (obj: any) => {
         console.log("Got account", obj);
         if (obj.status !== "KO") {
-            setAccount(obj.filter(a => a.currency == currency)[0]);
+            const account = obj.filter(a => a.currency == currency)[0];
+            setAccount(account ? account : {});
         }
     }
 
@@ -55,11 +56,29 @@ export const useOnRampAccounts = (sessionId: string, currency: string) => {
             console.log("FETCHING ONRAMP BANK ACCOUNT");
             fetchFromRampApi(`/onramp/bank-account`, 'GET', { session_id: sessionId }, save, dispatch);
         }
-        else {
+    }, [sessionId, currency, trigger]);
 
-            console.log("NOT FETCHING ONRAMP BANK ACCOUNT");
+    return [account];
+}
+
+
+export const useCreateOnRampAccount = (sessionId: string, currency: string, send: boolean) => {
+    const { dispatch } = useGlobal();
+    const [account, setAccount] = useState(false);
+
+    const save = (obj: any) => {
+        console.log("Created account", obj);
+        if (obj.status !== "KO") {
+            setAccount(true);
         }
-    }, [sessionId, currency]);
+    }
+
+    useEffect(() => {
+        if (sessionId && currency && send) {
+            console.log("CREATING ONRAMP BANK ACCOUNT");
+            fetchFromRampApi(`/onramp/bank-account`, 'POST', { session_id: sessionId, currency: currency }, save, dispatch);
+        }
+    }, [sessionId, currency, send]);
 
     return [account];
 }

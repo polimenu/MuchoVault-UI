@@ -12,7 +12,7 @@ import { INewUserRequest, ITokenChain, useAddAccount, useCreateUser, usePatchAdd
 import { IKYCRequest, useCreateKYC } from '../Hooks/kyc';
 import { networkBeautify, tokenBeautify } from '../Utils';
 import { useToast } from '@Contexts/Toast';
-import { useGetOnRampQuote, useOnRampAccounts } from '../Hooks/onramp';
+import { useCreateOnRampAccount, useGetOnRampQuote, useOnRampAccounts } from '../Hooks/onramp';
 import { RAMP_CONFIG } from '../Config/rampConfig';
 import { useGetAmountInWallet, useGetOffRampQuote, useOffRampWallet, useSendToken } from '../Hooks/offramp';
 import { useActiveChain } from '@Hooks/useActiveChain';
@@ -123,8 +123,16 @@ function OnRampModal() {
     const [rampData] = useAtom(rampDataAtom);
     const { state } = useGlobal();
     const { currency } = pageState.auxModalData;
-    const [inputAccount] = useOnRampAccounts(pageState.sessionId, currency);
+    const [trigger, setTrigger] = useState(true);
+    const [inputAccount] = useOnRampAccounts(pageState.sessionId, currency, trigger);
     const [visibleAccount, setVisibleAccount] = useState(false);
+    const [createdAccount] = useCreateOnRampAccount(pageState.sessionId, currency, Boolean(inputAccount) && !inputAccount?.iban);
+
+    useEffect(() => {
+        if (createdAccount) {
+            setTrigger(!trigger);
+        }
+    }, [createdAccount]);
 
     if (!rampData.tokenPreferences)
         return <></>;
@@ -183,7 +191,7 @@ function OnRampModal() {
                 </div>
             </div>
             <div className="mt-5" hidden={!visibleAccount}>
-                {inputAccount && <>
+                {inputAccount && inputAccount.iban && <>
                     <div className="flex whitespace-nowrap mt-5 text-f18 strong">Next step:</div>
                     <div className="flex mt-5 text-f16">Transfer {val} {currency} to the next account and your transaction will be processed shortly. </div>
                     <div className="green mt-5 ml-5 text-f16">

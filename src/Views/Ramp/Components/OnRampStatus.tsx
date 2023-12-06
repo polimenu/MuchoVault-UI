@@ -34,17 +34,7 @@ export const OnRampStatus = () => {
   return <div>
     <UserDetailsSection userDetails={rampData.userDetails} />
     <OnOffRampSection rampData={rampData} />
-    <Section
-      Heading={<div className={topStyles}>Last Transactions</div>}
-      subHeading={
-        <div className={descStyles}>
-          List of your last transactions
-          {/* (Stats since 30th Jan, 2023) */}
-        </div>
-      }
-      other={<OnRampTransactions transactions={rampData.transactions} />}
-    />
-
+    <OnRampTransactions transactions={rampData.transactions} />
   </div>;
 
   return <></>;
@@ -361,15 +351,33 @@ const OnRampTransactions = ({ transactions }: { transactions?: IRampTransaction[
   //fetchTransactions();
 
 
-  if (transactions === undefined || transactions === null) {
+  if (transactions && transactions.length == 0) {
+    return <></>
+  }
+  else {
+    return <Section
+      Heading={<div className={topStyles}>Last Transactions</div>}
+      subHeading={
+        <div className={descStyles}>
+          List of your last transactions
+          {/* (Stats since 30th Jan, 2023) */}
+        </div>
+      }
+      other={<OnRampTransactionList transactions={transactions} />}
+    />
+  }
+
+
+}
+
+
+const OnRampTransactionList = ({ transactions }: { transactions?: IRampTransaction[] }) => {
+  if (!transactions) {
     return <Skeleton
       key="OnRampTransactionsCard"
       variant="rectangular"
       className="w-full !h-full min-h-[370px] !transform-none !bg-1"
     />
-  }
-  else if (!transactions) {
-    return <div>No transactions done yet</div>
   }
   else {
     const headerJSX = [
