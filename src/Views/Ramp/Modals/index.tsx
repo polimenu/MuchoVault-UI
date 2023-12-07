@@ -18,6 +18,7 @@ import { useGetAmountInWallet, useGetOffRampQuote, useOffRampWallet, useSendToke
 import { useActiveChain } from '@Hooks/useActiveChain';
 import { t } from 'i18next';
 import { Display } from '@Views/Common/Tooltips/Display';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 export const RampModals = () => {
     const [pageState, setPageState] = useAtom(rampAtom);
@@ -139,6 +140,7 @@ function OnRampModal() {
 
     const { chain, token } = rampData.tokenPreferences.find(tp => tp.currency == currency);
     const [quote] = useGetOnRampQuote(currency, token, val);
+    const [fieldCopied, setFieldCopied] = useState("");
 
     return (
         <div>
@@ -194,11 +196,13 @@ function OnRampModal() {
                 {inputAccount && inputAccount.iban && <>
                     <div className="flex whitespace-nowrap mt-5 text-f18 strong">{t("ramp.Next step")}:</div>
                     <div className="flex mt-5 text-f16">{t("ramp.Transfer to the next account and your transaction will be processed shortly.", { amount: val, currency: currency })} </div>
-                    <div className="green mt-5 ml-5 text-f16">
+                    <div className="flex mt-5 text-f16">{t("ramp.Note this bank account is a virtual IBAN generated with your name, so the receptor will be yourself, the funds will never be shared with other users.")} </div>
+                    <div className="mt-5 ml-5 text-f16">
                         <ul>
-                            <li>IBAN: {inputAccount.iban}</li>
-                            <li>BIC: {inputAccount.bic}</li>
-                            <li>{t("ramp.Country")}: {inputAccount.bank_country}</li>
+                            <OffRampBankField label="Name" value={`${rampData.userDetails?.first_name} ${rampData.userDetails?.last_name}`} fieldCopied={fieldCopied} setFieldCopied={setFieldCopied} />
+                            <OffRampBankField label="IBAN" value={inputAccount.iban} fieldCopied={fieldCopied} setFieldCopied={setFieldCopied} />
+                            <OffRampBankField label="BIC" value={inputAccount.bic} fieldCopied={fieldCopied} setFieldCopied={setFieldCopied} />
+                            <OffRampBankField label={t("ramp.Country")} value={inputAccount.bank_country} fieldCopied={fieldCopied} setFieldCopied={setFieldCopied} />
                         </ul>
                     </div>
                     <div className="flex mt-5 text-f14">
@@ -211,6 +215,17 @@ function OnRampModal() {
             </div>
         </div >
     );
+}
+
+const OffRampBankField = ({ label, value, fieldCopied, setFieldCopied }: { label: string, value: string, fieldCopied: string, setFieldCopied: any }) => {
+    return <li key={label}>
+        <strong>{label}: </strong>
+        <span className='green'>{value}</span>
+        <CopyToClipboard text={value} onCopy={() => { setFieldCopied(label); }}>
+            <img src="/clipboard.png" className='underline pointer w-[1vw] inline ml-5' />
+        </CopyToClipboard>
+        {fieldCopied == label && <span className='text-f12'> {t("ramp.Copied to clipboard!")}</span>}
+    </li>;
 }
 
 //ToDo softcode chain
@@ -309,12 +324,12 @@ function BankAddModal() {
             <div>
                 <div className="text-f15 mb-5">{t("ramp.Add bank account for")} {pageState.auxModalData.currency}</div>
                 <BufferInput
-                    placeholder={"Enter IBAN"}
+                    placeholder={t("ramp.Enter IBAN")}
                     bgClass="!bg-1"
                     ipClass="mt-1"
                     value={val}
                     onChange={(val) => {
-                        setVal(val);
+                        setVal(val.replaceAll(" ", ""));
                     }}
                 />
             </div>

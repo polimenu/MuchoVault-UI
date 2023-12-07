@@ -97,7 +97,7 @@
 		"Please set a target address": "Por favor configura una dirección de destino",
 		"Start KYC": "Iniciar KYC",
 		"Finish KYC": "Finalizar KYC",
-		"Enter the one-time code sent to your e-mail": "Introduce el código de un solo uso enviado a tu e-mail",
+		"Enter the one-time code sent to your e-mail": "Se ha enviado a tu e-mail un código de un solo uso, por favor introdúcelo para verificar tu identidad. Si no lo recibes, revisa tu carpeta de spam",
 		"One-time code": "Código de un solo uso",
 		"Login": "Iniciar sesión",
 		"Name": "Nombre",
@@ -162,7 +162,8 @@
 		"Estimated return amount": "Cantidad estimada de retorno",
 		"Convert to": "Convertir a",
 		"Next step": "Siguiente paso",
-		"Transfer to the next account and your transaction will be processed shortly.": "Transfiere {{amount}} {{currency}} a la siguiente cuenta y tu transacción se procesará pronto.",
+		"Transfer to the next account and your transaction will be processed shortly.": "Transfiere {{amount}} {{currency}} a la siguiente cuenta y tu transacción se procesará en breve.",
+		"Note this bank account is a virtual IBAN generated with your name, so the receptor will be yourself, the funds will never be shared with other users.": "Ten en cuenta que esta cuenta bancaria es un IBAN virtual generado a tu nombre, así que el receptor eres tú mismo. Los fondos nunca se comparten con otros usuarios.",
 		"Country": "País",
 		"Note we cannot guarantee exact exchange amount, due to fluctuations the stablecoin price may have.": "Nota: no podemos garantizar la cantidad exacta de cambio debido a las fluctuaciones que pueda tener el precio de la stablecoin.",
 		"No bank account": "Sin cuenta bancaria",
@@ -188,6 +189,8 @@
 		"BUSINESS_INCOME": "Ingresos empresariales",
 		"PENSION": "Pensión",
 		"OTHER": "Otro",
-		"Save": "Guardar"
+		"Save": "Guardar",
+		"Copied to clipboard!": "Copiado al portapapeles!",
+		"Enter IBAN": "Introduce tu IBAN"
 	}
 }

@@ -97,7 +97,7 @@
 		"Please set a target address": "Please set a target address",
 		"Start KYC": "Start KYC",
 		"Finish KYC": "Finish KYC",
-		"Enter the one-time code sent to your e-mail": "Enter the one-time code sent to your e-mail",
+		"Enter the one-time code sent to your e-mail": "A one-time access code sent to your e-mail, please enter it to verify your identity. If you do not see it in your inbox, check your spam folder",
 		"One-time code": "One-time code",
 		"Login": "Login",
 		"Name": "Name",
@@ -163,6 +163,7 @@
 		"Convert to": "Convert to",
 		"Next step": "Next step",
 		"Transfer to the next account and your transaction will be processed shortly.": "Transfer {{amount}} {{currency}} to the next account and your transaction will be processed shortly.",
+		"Note this bank account is a virtual IBAN generated with your name, so the receptor will be yourself, the funds will never be shared with other users.": "Note this bank account is a virtual IBAN generated with your name, so the receptor will be yourself, funds will never be shared with other users.",
 		"Country": "Country",
 		"Note we cannot guarantee exact exchange amount, due to fluctuations the stablecoin price may have.": "Note: we cannot guarantee exact exchange amount, due to fluctuations the stablecoin price may have.",
 		"No bank account": "No bank account",
@@ -188,6 +189,8 @@
 		"BUSINESS_INCOME": "Business Income",
 		"PENSION": "Pension",
 		"OTHER": "Other",
-		"Save": "Save"
+		"Save": "Save",
+		"Copied to clipboard!": "Copied to clipboard!",
+		"Enter IBAN": "Enter IBAN"
 	}
 }
