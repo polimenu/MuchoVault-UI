@@ -16,6 +16,7 @@ import { RampPage } from '@Views/Ramp';
 import { AirdropPage } from '@Views/Airdrop';
 import { LanguageModal } from '@Views/Common/ModalLanguage';
 import { useTranslation } from 'react-i18next';
+import { RampAdminPage } from '@Views/Ramp/admin';
 
 if (import.meta.env.VITE_MODE === 'production') {
   //console.log(`import.meta.env.SENTRY_DSN: `, import.meta.env.VITE_SENTRY_DSN);
@@ -53,6 +54,7 @@ function App() {
         {/*<Route path="/swap" element={<SwapPage />} />*/}
         <Route path="/airdrop" element={<AirdropPage />} />
         <Route path="/ramp" element={<RampPage />} />
+        <Route path="/ramp/admin" element={<RampAdminPage />} />
 
 
       </Routes>

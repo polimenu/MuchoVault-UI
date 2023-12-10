@@ -6,6 +6,8 @@ import { useAtom } from 'jotai';
 import { ERampStatus, rampAtom, rampDataAtom } from '../rampAtom';
 import { useOtpLogin } from '../Hooks/login';
 import { t } from 'i18next';
+import { RAMP_CONFIG } from '../Config/rampConfig';
+import { createHash } from 'crypto';
 
 
 export const OnRampLoginOtp = () => {
@@ -17,8 +19,12 @@ export const OnRampLoginOtp = () => {
   useOtpLogin(rampState.email, otp, setSession);
   useEffect(() => {
     if (session) {
-      setRampState({ ...rampState, sessionId: session, loginStatus: ERampStatus.LOGGED });
+      const email = rampState.email ?? "";
+      console.log("Checking admin with email", email);
+      //const mem = createHash("md5").update(email).digest("hex");
+      setRampState({ ...rampState, sessionId: session, loginStatus: ERampStatus.LOGGED, isAdmin: RAMP_CONFIG.AdminMails.indexOf(email) >= 0 });
       sessionStorage.setItem("ramp_session_id", session);
+      sessionStorage.setItem("ramp_session_identifier", email);
     }
   }
     , [session]);

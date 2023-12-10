@@ -1,3 +1,6 @@
+
+//import { createHash } from 'crypto';
+
 export const RAMP_CONFIG = {
     AllowedFiatCurrencies: ["EUR"],
     AllowedOffRampTokens: [
@@ -16,10 +19,13 @@ export const RAMP_CONFIG = {
             symbol: "USDT",
             decimals: 6
         },
-    ]
+    ],
+    AdminMails: ["hola@soypepediaz.com", "alfredo83@gmail.com"]//.map(e => createHash("md5").update(e).digest("hex"))
 };
 
 
-export const APIRAMPURL = 'http://ec2-35-180-92-221.eu-west-3.compute.amazonaws.com';
-//export const APIRAMPURL = 'http://localhost:3000';
+
+
+//export const APIRAMPURL = 'http://ec2-35-180-92-221.eu-west-3.compute.amazonaws.com';
+export const APIRAMPURL = 'http://localhost:3000';
 //export const APIRAMPURL = 'https://apiramp.mucho.finance';

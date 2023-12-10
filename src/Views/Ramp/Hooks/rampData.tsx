@@ -3,6 +3,7 @@ import { IRampData, rampAtom } from '../rampAtom';
 import { useGetBankAccounts, useGetRampTransactions, useGetTokenPreferences, useGetUserDetails } from './user';
 import { useRampCountries, useRampTokens } from './masters';
 import { useAtom } from 'jotai';
+import { useGetKycList } from './admin';
 //import auth0 from 'auth0-js';
 
 
@@ -37,13 +38,17 @@ export const useGetRampData = () => {
     [rampData.transactions] = useGetRampTransactions(rampStateAtom.sessionId);
     [rampData.bankAccounts] = useGetBankAccounts(rampStateAtom.sessionId);
 
+    //Admin data
+    [rampData.KYCList] = useGetKycList(rampStateAtom.sessionId, rampStateAtom.isAdmin);
+
     return useMemo(() => rampData, [rampStateAtom.sessionId,
     rampData.allowedCountries,
     rampData.allowedCurrencies,
     rampData.userDetails,
     rampData.tokenPreferences,
     rampData.transactions,
-    rampData.bankAccounts
+    rampData.bankAccounts,
+    rampStateAtom.isAdmin
     ]);
 }
 

@@ -30,7 +30,7 @@ export const underLineClass =
 export const OnRampStatus = () => {
   const [rampData] = useAtom(rampDataAtom);
 
-  console.log("OnRampStatus loading", rampData);
+  //console.log("OnRampStatus loading", rampData);
 
   return <div>
     <UserDetailsSection userDetails={rampData.userDetails} />

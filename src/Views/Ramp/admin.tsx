@@ -1,23 +1,20 @@
 import { Section } from '@Views/Common/Card/Section';
 import { Navbar } from '@Views/Common/Navbar';
 import styled from '@emotion/styled';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import Background from 'src/AppStyles';
 import { OnRampLoginEmail } from './Components/OnRampLoginEmail';
-import { OnRampStatus } from './Components/OnRampStatus';
 import { useGetRampData } from './Hooks/rampData';
 import { RampModals } from './Modals';
 import { useAtom } from 'jotai';
 import { ERampStatus, rampAtom, rampDataAtom } from './rampAtom';
 import { OnRampLoginOtp } from './Components/OnRampLoginOtp';
 import { useRampSession } from './Hooks/login';
-import { OnRampSumsubKYC } from './Components/OnRampSumsubKYC';
-import { OnRampCreateUser } from './Components/OnRampCreateUser';
 import { Chain } from 'wagmi';
 import { useActiveChain } from '@Hooks/useActiveChain';
 import { ArbitrumOnly } from '@Views/Common/ChainNotSupported';
 import { Drawer } from '@mui/material';
-import { t } from 'i18next';
+import { OnRampAdminStatus } from './Components/OnRampAdminStatus';
 
 const Styles = styled.div`
   width: min(1300px, 100%);
@@ -54,7 +51,7 @@ export const ViewContext = React.createContext<{ activeChain: Chain } | null>(
 const ViewContextProvider = ViewContext.Provider;
 
 
-export const RampPage = () => {
+export const RampAdminPage = () => {
   useEffect(() => {
     document.title = "(mucho) finance | On & Off ramp";
   }, []);
@@ -64,16 +61,15 @@ export const RampPage = () => {
   const [, setRampData] = useAtom(rampDataAtom);
   useRampSession();
   const rampData = useGetRampData();
+  //console.log("Rampdata", rampData);
 
   useEffect(() => {
     setRampData(rampData);
     //console.log("Rampdata set", rampData);
   }, [rampData]);
 
-
   console.log("Rampdata", rampData);
-
-
+  console.log("rampState", rampState);
   //sessionStorage.setItem("ramp_session_id", "");
   //console.log("Loading RampPage");
 
@@ -89,17 +85,14 @@ export const RampPage = () => {
                 <Styles>
                   <RampModals />
                   <Section
-                    Heading={<div className={topStyles}>{t("ramp.On & Off Ramp")}</div>}
-                    subHeading={<div className={descStyles}>{t("ramp.Move from FIAT to Crypto, or counterwise")}</div>}
+                    Heading={<div className={topStyles}>On & Off Ramp Admin</div>}
+                    subHeading={<div className={descStyles}></div>}
                     other={<>
                       {rampState.loginStatus == ERampStatus.NOT_LOGGED && <>
                         <OnRampLoginEmail />
-                        <div className="w-[46rem] text-f15 mb-5 mt-5 m-auto text-center">{t("ramp.- or -")}</div>
-                        <OnRampCreateUser />
                       </>}
                       {rampState.loginStatus == ERampStatus.OTP_SENT && <OnRampLoginOtp />}
-                      {rampState.loginStatus == ERampStatus.LOGGED && <OnRampStatus />}
-                      <OnRampSumsubKYC />
+                      {rampState.loginStatus == ERampStatus.LOGGED && rampState.isAdmin && <OnRampAdminStatus />}
                     </>}
                   />
 

@@ -10,7 +10,7 @@ export function fetchFromRampApi(call: string, method: string, params: any, save
     }
     call = `${APIRAMPURL}${call}`
 
-    console.log("Sending request", call, method, params);
+    //console.log("Sending request", call, method, params);
 
     dispatch({ type: 'SET_TXN_LOADING', payload: 1 });
     fetch(call, {

@@ -1,5 +1,20 @@
 import { atom } from 'jotai';
 
+export interface IRampKYC {
+    email: string;
+    user_id: string;
+    last_subtype: string;
+    init: string;
+    last: string;
+    interactions: IRampKYCInteraction[];
+}
+
+export interface IRampKYCInteraction {
+    subtype: string;
+    date: Date;
+    data: string;
+}
+
 export enum ERampStatus {
     NOT_LOGGED,
     OTP_SENT,
@@ -16,6 +31,7 @@ export interface IRampAtom {
     sessionId?: string;
     email?: string;
     sumsubToken?: string;
+    isAdmin?: boolean;
 }
 
 export const rampAtom = atom<IRampAtom>({
@@ -31,7 +47,9 @@ export interface IRampData {
     allowedCurrencies?: IRampCurrency[];
     allowedCountries?: IRampCountry[];
     bankAccounts?: IRampBankAccount[];
+    KYCList: IRampKYC[];
 }
+
 
 export interface IRampBankAccount {
     uuid: string;

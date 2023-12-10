@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { ERampStatus, rampAtom } from "../rampAtom";
 import { t } from "i18next";
+import { RAMP_CONFIG } from "../Config/rampConfig";
 
 export const useRampSession = () => {
     const [pageState, setPageState] = useAtom(rampAtom);
@@ -13,8 +14,9 @@ export const useRampSession = () => {
 
     if (savedSession && savedSession !== pageState.sessionId) {
         //console.log("Session stored is different, updating", savedSession);
+        const savedMD = sessionStorage.getItem("ramp_session_identifier") ?? "";
         sessionStorage.setItem("ramp_session_id", savedSession);
-        setPageState({ ...pageState, sessionId: savedSession, loginStatus: ERampStatus.LOGGED });
+        setPageState({ ...pageState, sessionId: savedSession, loginStatus: ERampStatus.LOGGED, isAdmin: RAMP_CONFIG.AdminMails.indexOf(savedMD) >= 0 });
     }
     //console.log("Returning session", pageState.sessionId);
 
