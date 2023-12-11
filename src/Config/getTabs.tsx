@@ -130,14 +130,14 @@ export const getTabs = () => {
       isExternalLink: false,
     },
     {
-      to: `/badge`,
-      name: 'NFT Plans',
+      to: `/airdrop`,
+      name: 'Airdrop',
       subTabs: [],
       isExternalLink: false,
     },
     {
-      to: `/airdrop`,
-      name: 'Airdrop',
+      to: `/badge`,
+      name: 'NFT',
       subTabs: [],
       isExternalLink: false,
     },/*

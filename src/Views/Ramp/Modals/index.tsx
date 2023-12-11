@@ -405,13 +405,13 @@ function NewUserModal() {
             <div className="text-f14">
                 <div className="text-f15 mb-5">{t("ramp.Enter your data")}:</div>
                 <div className='mt-5'>{t("ramp.E-mail")}:</div>
-                <BufferInput placeholder={"Name"} bgClass="!bg-1" ipClass="mt-1" value={email} onChange={(val) => { setEmail(val); }} />
+                <BufferInput placeholder={t("ramp.E-mail")} bgClass="!bg-1" ipClass="mt-1" value={email} onChange={(val) => { setEmail(val); }} />
                 <div className='mt-5'>{t("ramp.Country")}:</div>
                 <CountriesDropDown setCountry={setCountry} country={country} />
                 <div className='mt-5'>{t("ramp.First Name")}:</div>
-                <BufferInput placeholder={"Name"} bgClass="!bg-1" ipClass="mt-1" value={firstName} onChange={(val) => { setFirstName(val); }} />
-                <div className='mt-5'>{t("ramp.Last Name")}:</div>
-                <BufferInput placeholder={"Name"} bgClass="!bg-1" ipClass="mt-1" value={lastName} onChange={(val) => { setLastName(val); }} />
+                <BufferInput placeholder={t("ramp.First Name")} bgClass="!bg-1" ipClass="mt-1" value={firstName} onChange={(val) => { setFirstName(val); }} />
+                <div className='mt-5'>{t("ramp.Last Name")} ({t("ramp.Last Name Explanation")}):</div>
+                <BufferInput placeholder={t("ramp.Last Name")} bgClass="!bg-1" ipClass="mt-1" value={lastName} onChange={(val) => { setLastName(val); }} />
 
 
             </div>

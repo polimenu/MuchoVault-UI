@@ -17,7 +17,7 @@ export const Navbar: React.FC<INavbar> = ({ hideAccount }: { hideAccount: boolea
   const tabs = getTabs();
   const { t, i18n } = useTranslation();
   const [pageState, setPageState] = useAtom(LanguageDataAtom);
-  const VISIBLETABS = 4;
+  const VISIBLETABS = 3;
   return (
     <header className="bg-primary flex justify-between w-full h-[45px] pr-[8px] header top-0 border-b-2 border-solid border-1 relative z-[102]">
       <div className=" flex items-center gap-[24px]">
@@ -31,7 +31,7 @@ export const Navbar: React.FC<INavbar> = ({ hideAccount }: { hideAccount: boolea
           />}
         </div>
 
-        <div className="tab:hidden flex gap-[6px] b1200:!hidden ">
+        <div className="flex gap-[6px]">
           {tabs.slice(0, VISIBLETABS).map((tab, index) => {
             if (tab.isExternalLink) {
               return (
@@ -58,16 +58,6 @@ export const Navbar: React.FC<INavbar> = ({ hideAccount }: { hideAccount: boolea
         </div>
       </div>
 
-      {/*<select defaultValue={"es"} onChange={(e) => {
-        console.log("newlang", e.target.value);
-        i18n.changeLanguage(e.target.value);
-      }}>
-        {LANGUAGES.map(({ code, label }) => (
-          <option key={code} value={code}>
-            {label}
-          </option>
-        ))}
-      </select>*/}
       <div className="flex items-center gap-[7px] whitespace-nowrap">
 
         <img src={`/lang_${i18n.language}.png`} className='hover:bg-1 hover:text-1 hover:brightness-125 cursor-pointer mt-2' width={"20px"} height={"20px"} onClick={() => {

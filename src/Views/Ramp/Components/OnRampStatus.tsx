@@ -187,15 +187,15 @@ const KYCCard = ({ userDetails }: { userDetails?: IRampUserDetails }) => {
 
   return <Card
     top={
-      <>KYC Status: <span
-        className={"!justify-end " + (userDetails.kyc_status.canTransact ? " green" : " red")}
-      >{userDetails.kyc_status.status}</span></>
+      <>{t("ramp.KYC Status")}: <span
+        className={"!justify-end " + (userDetails.status == "FULL_USER" ? " green" : " red")}
+      >{t(userDetails.kyc_status.status)}</span></>
     }
 
 
     middle={<>
       <div className={keyClasses}>
-        {userDetails.kyc_status.explanation}
+        {t(userDetails.kyc_status.explanation)}
       </div>
     </>}
 

@@ -39,23 +39,23 @@ const validateNewUser = (request: INewUserRequest): [boolean, string] => {
 const kycStatus = (userStatus: string): { status: string, explanation: string, canTransact: boolean } => {
     switch (userStatus) {
         case "CREATED":
-            return { status: t("ramp.Pending"), explanation: t("ramp.You are only allowed to make 1 transaction, for less than 700€"), canTransact: true }
+            return { status: ("ramp.Pending"), explanation: ("ramp.You are only allowed to make 1 transaction, for less than 700€"), canTransact: true }
         case "KYC_NEEDED":
-            return { status: t("ramp.Pending"), explanation: t("ramp.No transactions allowed. You need to finish your KYC."), canTransact: false }
+            return { status: ("ramp.Pending"), explanation: ("ramp.No transactions allowed. You need to finish your KYC."), canTransact: false }
         case "PENDING_KYC_DATA":
-            return { status: t("ramp.Pending to receive KYC data"), explanation: t("ramp.No transactions allowed. Please finish your KYC."), canTransact: false }
+            return { status: ("ramp.Pending to receive KYC data"), explanation: ("ramp.No transactions allowed. Please finish your KYC."), canTransact: false }
         case "KYC_PENDING":
-            return { status: t("ramp.Verification in progress"), explanation: t("ramp.No transactions allowed. Please wait until KYC revision is ended."), canTransact: false }
+            return { status: ("ramp.Verification in progress"), explanation: ("ramp.No transactions allowed. Please wait until KYC revision is ended."), canTransact: false }
         case "SOFT_KYC_FAILED":
-            return { status: t("ramp.Failed"), explanation: t("ramp.No transactions allowed. You can retry your KYC application."), canTransact: false }
+            return { status: ("ramp.Failed"), explanation: ("ramp.No transactions allowed. You can retry your KYC application."), canTransact: false }
         case "HARD_KYC_FAILED":
-            return { status: t("ramp.Failed"), explanation: t("ramp.No transactions allowed. Please contact us at info@mucho.finance"), canTransact: false }
+            return { status: ("ramp.Failed"), explanation: ("ramp.No transactions allowed. Please contact us at info@mucho.finance"), canTransact: false }
         case "FULL_USER":
-            return { status: t("ramp.Passed"), explanation: t("ramp.Congratulations! You are allowed to transact without limits"), canTransact: true }
+            return { status: ("ramp.Passed"), explanation: ("ramp.Congratulations! You are allowed to transact without limits"), canTransact: true }
         case "SUSPENDED":
-            return { status: t("ramp.User suspended"), explanation: t("ramp.No transactions allowed. For further information, contact us at info@mucho.finance"), canTransact: false }
+            return { status: ("ramp.User suspended"), explanation: ("ramp.No transactions allowed. For further information, contact us at info@mucho.finance"), canTransact: false }
         default:
-            return { status: t("ramp.Unknown status"), explanation: t("ramp.No transactions allowed. For further information, contact us at info@mucho.finance"), canTransact: false }
+            return { status: ("ramp.Unknown status"), explanation: ("ramp.No transactions allowed. For further information, contact us at info@mucho.finance"), canTransact: false }
     }
 }
 
