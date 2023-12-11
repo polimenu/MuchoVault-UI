@@ -116,7 +116,7 @@ export const useGetBankAccounts = (sessionId?: string): (IRampBankAccount[] | un
     const { dispatch } = useGlobal();
     const [userBAs, setUserBAs] = useState<IRampBankAccount[]>();
     const save = (obj: any) => {
-        console.log("*********************************************************setting user bank accounts", obj);
+        //console.log("*********************************************************setting user bank accounts", obj);
         //parse
         const filteredBAs = obj.response.filter(t => RAMP_CONFIG.AllowedFiatCurrencies.indexOf(t.currency) >= 0);
         if (filteredBAs)

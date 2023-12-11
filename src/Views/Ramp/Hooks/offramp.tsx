@@ -20,7 +20,7 @@ export const useGetOffRampQuote = (currencyIn: string, currencyOut: string, amou
 
     const save = (obj: any) => {
         if (obj.status !== "KO") {
-            setQuote(Math.round(obj.response.amountOut * 100) / 100);
+            setQuote(Math.round(obj.amountOut * 100) / 100);
         }
         else {
             setQuote("Error!");

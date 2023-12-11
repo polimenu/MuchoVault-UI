@@ -19,8 +19,7 @@ export const RAMP_CONFIG = {
             symbol: "USDT",
             decimals: 6
         },
-    ],
-    AdminMails: ["hola@soypepediaz.com", "alfredo83@gmail.com"]//.map(e => createHash("md5").update(e).digest("hex"))
+    ]
 };
 
 

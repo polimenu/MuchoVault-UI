@@ -16,7 +16,7 @@ export const useRampSession = () => {
         //console.log("Session stored is different, updating", savedSession);
         const savedMD = sessionStorage.getItem("ramp_session_identifier") ?? "";
         sessionStorage.setItem("ramp_session_id", savedSession);
-        setPageState({ ...pageState, sessionId: savedSession, loginStatus: ERampStatus.LOGGED, isAdmin: RAMP_CONFIG.AdminMails.indexOf(savedMD) >= 0 });
+        setPageState({ ...pageState, sessionId: savedSession, loginStatus: ERampStatus.LOGGED });
     }
     //console.log("Returning session", pageState.sessionId);
 

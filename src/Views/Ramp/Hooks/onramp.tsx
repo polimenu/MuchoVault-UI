@@ -10,8 +10,9 @@ export const useGetOnRampQuote = (currencyIn: string, currencyOut: string, amoun
     const [timer, setTimer] = useState<NodeJS.Timeout>();
 
     const save = (obj: any) => {
+        //console.log("Quote", obj);
         if (obj.status !== "KO") {
-            setQuote(Math.round(obj.response.amountOut * 100) / 100);
+            setQuote(Math.round(obj.amountOut * 100) / 100);
         }
         else {
             setQuote("Error!");
