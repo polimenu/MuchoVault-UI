@@ -11,7 +11,7 @@ export const useGetOnRampQuote = (currencyIn: string, currencyOut: string, amoun
 
     const save = (obj: any) => {
         if (obj.status !== "KO") {
-            setQuote(Math.round(obj.amountOut * 100) / 100);
+            setQuote(Math.round(obj.response.amountOut * 100) / 100);
         }
         else {
             setQuote("Error!");
@@ -46,7 +46,7 @@ export const useOnRampAccounts = (sessionId: string, currency: string, trigger: 
     const save = (obj: any) => {
         //console.log("Got account", obj);
         if (obj.status !== "KO") {
-            const account = obj.filter(a => a.currency == currency)[0];
+            const account = obj.response.filter(a => a.currency == currency)[0];
             setAccount(account ? account : {});
         }
     }

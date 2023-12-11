@@ -19,12 +19,8 @@ export const OnRampLoginOtp = () => {
   useOtpLogin(rampState.email, otp, setSession);
   useEffect(() => {
     if (session) {
-      const email = rampState.email ?? "";
-      console.log("Checking admin with email", email);
-      //const mem = createHash("md5").update(email).digest("hex");
-      setRampState({ ...rampState, sessionId: session, loginStatus: ERampStatus.LOGGED, isAdmin: RAMP_CONFIG.AdminMails.indexOf(email) >= 0 });
+      setRampState({ ...rampState, sessionId: session, loginStatus: ERampStatus.LOGGED });
       sessionStorage.setItem("ramp_session_id", session);
-      sessionStorage.setItem("ramp_session_identifier", email);
     }
   }
     , [session]);

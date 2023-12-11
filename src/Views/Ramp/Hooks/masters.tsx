@@ -9,9 +9,9 @@ export const useRampTokens = () => {
     const { dispatch } = useGlobal();
     const toastify = useToast();
     const [tokens, setTokens] = useState<IRampCurrency[]>([]);
-    const save = (obj: IRampCurrency[]) => {
-        //console.log("Saving token currencies", obj);
-        setTokens(obj.filter(o => o.network_name && o.network_name.length > 0));
+    const save = (obj: { response: IRampCurrency[] }) => {
+        console.log("Saving token currencies", obj);
+        setTokens(obj.response.filter(o => o.network_name && o.network_name.length > 0));
     }
 
     useEffect(() => {
@@ -27,9 +27,9 @@ export const useRampCountries = () => {
     const { dispatch } = useGlobal();
     const toastify = useToast();
     const [countries, setCountries] = useState<IRampCountry[]>([]);
-    const save = (obj: IRampCountry[]) => {
-        //console.log("Saving countries", obj);
-        setCountries(obj);
+    const save = (obj: any) => {
+        console.log("Saving countries", obj);
+        setCountries(obj.response);
     }
 
     useEffect(() => {

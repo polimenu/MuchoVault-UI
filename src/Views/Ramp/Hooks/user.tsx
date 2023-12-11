@@ -68,15 +68,15 @@ export const useGetUserDetails = (sessionId?: string): (IRampUserDetails | undef
         if (obj.status !== "KO") {
             //parse date
             //console.log("Parsing user data", obj);
-            if (obj.date_of_birth)
-                obj.date_of_birth = obj.date_of_birth && obj.date_of_birth.substring(0, 10);
+            if (obj.response.date_of_birth)
+                obj.response.date_of_birth = obj.response.date_of_birth && obj.response.date_of_birth.substring(0, 10);
             else
-                obj.date_of_birth = "";
+                obj.response.date_of_birth = "";
 
-            obj.kyc_status = kycStatus(obj.status);
-            obj.canCreateKYC = (["CREATED", "KYC_NEEDED"].indexOf(obj.status) >= 0);
+            obj.response.kyc_status = kycStatus(obj.response.status);
+            obj.response.canCreateKYC = (["CREATED", "KYC_NEEDED"].indexOf(obj.response.status) >= 0);
             //console.log("Parsed user data", obj);
-            setUserDetails(obj);
+            setUserDetails(obj.response);
         }
         else {
             useLogout();
@@ -96,10 +96,10 @@ export const useGetUserDetails = (sessionId?: string): (IRampUserDetails | undef
 export const useGetTokenPreferences = (sessionId?: string): (IRampTokenPreference[] | undefined)[] => {
     const { dispatch } = useGlobal();
     const [userTPs, setUserTPs] = useState<IRampTokenPreference[]>();
-    const save = (obj: IRampTokenPreference[]) => {
+    const save = (obj: { response: IRampTokenPreference[] }) => {
         //console.log("setting user token preferences", obj);
         //parse date
-        setUserTPs(obj.filter(t => RAMP_CONFIG.AllowedFiatCurrencies.indexOf(t.currency) >= 0));
+        setUserTPs(obj.response.filter(t => RAMP_CONFIG.AllowedFiatCurrencies.indexOf(t.currency) >= 0));
     }
 
     useEffect(() => {
@@ -116,9 +116,9 @@ export const useGetBankAccounts = (sessionId?: string): (IRampBankAccount[] | un
     const { dispatch } = useGlobal();
     const [userBAs, setUserBAs] = useState<IRampBankAccount[]>();
     const save = (obj: any) => {
-        //console.log("*********************************************************setting user bank accounts", obj);
+        console.log("*********************************************************setting user bank accounts", obj);
         //parse
-        const filteredBAs = obj.accounts.filter(t => RAMP_CONFIG.AllowedFiatCurrencies.indexOf(t.currency) >= 0);
+        const filteredBAs = obj.response.filter(t => RAMP_CONFIG.AllowedFiatCurrencies.indexOf(t.currency) >= 0);
         if (filteredBAs)
             setUserBAs(filteredBAs.map(b => {
                 return {
@@ -142,9 +142,9 @@ export const useGetBankAccounts = (sessionId?: string): (IRampBankAccount[] | un
 export const useGetRampTransactions = (sessionId?: string): (IRampTransaction[] | undefined)[] => {
     const { dispatch } = useGlobal();
     const [transactions, setTransactions] = useState<IRampTransaction[]>();
-    const save = (obj: IRampTransaction[]) => {
+    const save = (obj: { response: IRampTransaction[] }) => {
         //console.log("setting transactions", obj);
-        setTransactions(obj);
+        setTransactions(obj.response);
     }
 
     useEffect(() => {
@@ -164,9 +164,9 @@ export const useSetMainBankAccount = (sessionId: string, uuid: string, go: boole
     //const [rampState, setRampState] = useAtom(rampAtom);
 
     const save = (obj: { status: string, errorMessage: string }) => {
-        //console.log("Obj res main bank account", obj);
+        console.log("Obj res main bank account", obj);
         if (obj.status === "OK") {
-            //console.log("Set main bank account ok", obj);
+            console.log("Set main bank account ok", obj);
             setResult({ done: true, status: true, errorMessage: "" });
             //window.location.reload();
             //setRampState({ ...rampState, isModalOpen: false });

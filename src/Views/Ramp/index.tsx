@@ -71,7 +71,7 @@ export const RampPage = () => {
   }, [rampData]);
 
 
-  console.log("Rampdata", rampData);
+  //console.log("Rampdata", rampData);
 
 
   //sessionStorage.setItem("ramp_session_id", "");

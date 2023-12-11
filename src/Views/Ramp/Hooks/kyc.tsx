@@ -88,14 +88,14 @@ export const useRampSumsubToken = (getToken: boolean) => {
     const [rampData] = useAtom(rampDataAtom);
     const session = rampState.sessionId;
     const [sumsubToken, setSumsubToken] = useState('');
-    const save = (obj: { status?: string, token?: string, errorMessage?: string }) => {
+    const save = (obj: { status?: string, response?: { token?: string }, errorMessage?: string }) => {
         //console.log("Saving KYC sumsub token", obj);
-        if (!obj.token || obj.status !== "OK") {
+        if (!obj.response || !obj.response.token || obj.status !== "OK") {
             toastify({ type: "error", msg: obj.errorMessage ? obj.errorMessage : t("ramp.KYC token error") });
         }
         else {
-            setSumsubToken(obj.token);
-            setRampState({ ...rampState, loginStatus: ERampStatus.SUMSUB, sumsubToken: obj.token, email: rampData.userDetails?.email });
+            setSumsubToken(obj.response.token);
+            setRampState({ ...rampState, loginStatus: ERampStatus.SUMSUB, sumsubToken: obj.response.token, email: rampData.userDetails?.email });
             //console.log("Setting sumsub Rampstate", { ...rampState, loginStatus: ERampStatus.SUMSUB, sumsubToken: obj.token, email: rampData.userDetails?.email });
         }
     }

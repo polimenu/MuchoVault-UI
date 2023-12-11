@@ -20,7 +20,7 @@ export const useGetOffRampQuote = (currencyIn: string, currencyOut: string, amou
 
     const save = (obj: any) => {
         if (obj.status !== "KO") {
-            setQuote(Math.round(obj.amountOut * 100) / 100);
+            setQuote(Math.round(obj.response.amountOut * 100) / 100);
         }
         else {
             setQuote("Error!");
@@ -60,7 +60,7 @@ export const useOffRampWallet = (sessionId: string, chain: string) => {
     const save = (obj: any) => {
         //console.log("$$$$$$$$$$$$$$$$$$$$  Got wallet", obj, sessionId, chain);
         if (obj.status !== "KO") {
-            setWallet(obj[0].address);
+            setWallet(obj[0].response.address);
         }
     }
 
