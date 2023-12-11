@@ -29,7 +29,7 @@ export const OnRampLoginEmail = () => {
       setEmail(val);
     };
 
-    return <div className='w-[46rem] m-auto mt-5'>
+    return <div className='w-[36rem] m-auto mt-5'>
       <div>
         <div className="text-f15 mb-5">{t("ramp.Login with your e-mail")}</div>
         <BufferInput

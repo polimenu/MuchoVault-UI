@@ -17,10 +17,10 @@ export const Navbar: React.FC<INavbar> = ({ hideAccount }: { hideAccount: boolea
   const tabs = getTabs();
   const { t, i18n } = useTranslation();
   const [pageState, setPageState] = useAtom(LanguageDataAtom);
-  const VISIBLETABS = 3;
+  const VISIBLETABS = 4;
   return (
     <header className="bg-primary flex justify-between w-full h-[45px] pr-[8px] header top-0 border-b-2 border-solid border-1 relative z-[102]">
-      <div className=" flex items-center gap-[24px]">
+      <div className=" flex items-center gap-[24px] tab:hidden b1200:!hidden">
         <div
           role={'button'}
           onClick={() => { window.location.href = '/'; }}
@@ -54,6 +54,25 @@ export const Navbar: React.FC<INavbar> = ({ hideAccount }: { hideAccount: boolea
 
           {tabs.length > VISIBLETABS && (
             <TabsDropdown tabs={tabs.slice(VISIBLETABS)} defaultName="More" />
+          )}
+        </div>
+      </div>
+
+
+      <div className=" flex items-center gap-[24px] a1200:!hidden">
+        <div
+          role={'button'}
+          onClick={() => { window.location.href = '/'; }}
+        >
+          {<MuchoFinanceLogoComponent
+            className="h-[30px] ml-[8px] sm:mx-[2px]"
+            hideText
+          />}
+        </div>
+
+        <div className="flex gap-[6px]">
+          {tabs.length > VISIBLETABS && (
+            <TabsDropdown tabs={tabs} defaultName="Menu" />
           )}
         </div>
       </div>

@@ -94,7 +94,7 @@ export const RampPage = () => {
                     other={<>
                       {rampState.loginStatus == ERampStatus.NOT_LOGGED && <>
                         <OnRampLoginEmail />
-                        <div className="w-[46rem] text-f15 mb-5 mt-5 m-auto text-center">{t("ramp.- or -")}</div>
+                        <div className="w-[36rem] text-f15 mb-5 mt-5 m-auto text-center">{t("ramp.- or -")}</div>
                         <OnRampCreateUser />
                       </>}
                       {rampState.loginStatus == ERampStatus.OTP_SENT && <OnRampLoginOtp />}

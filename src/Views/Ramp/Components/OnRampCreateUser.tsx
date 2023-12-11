@@ -10,7 +10,7 @@ export const OnRampCreateUser = () => {
   const [rampState, setRampState] = useAtom(rampAtom);
 
   if (rampState.loginStatus == ERampStatus.NOT_LOGGED) {
-    return <div className='w-[46rem] m-auto mt-5'>
+    return <div className='w-[36rem] m-auto mt-5'>
       <BlueBtn
         onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "NEWUSER" }) }}
         className="rounded mt-5"

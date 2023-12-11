@@ -27,7 +27,7 @@ export const OnRampLoginOtp = () => {
 
 
   if (rampState.loginStatus == ERampStatus.OTP_SENT) {
-    return <div className='w-[46rem] m-auto mt-5'><div>
+    return <div className='w-[36rem] m-auto mt-5'><div>
       <div className="text-f15 mb-5">{t("ramp.Enter the one-time code sent to your e-mail")}:</div>
       <BufferInput
         placeholder={t("ramp.One-time code")}
