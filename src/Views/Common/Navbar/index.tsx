@@ -8,6 +8,8 @@ import { LANGUAGES } from 'src/constants';
 import { useTranslation } from 'react-i18next';
 import { useAtom } from 'jotai';
 import { LanguageDataAtom } from '../ModalLanguage';
+import BackIcon from '@SVG/buttons/back';
+import { HamburguerIcon } from '@SVG/buttons/hamburguer';
 /*import { activeMarketFromStorageAtom } from '@Views/BinaryOptions';*/
 
 
@@ -60,6 +62,13 @@ export const Navbar: React.FC<INavbar> = ({ hideAccount }: { hideAccount: boolea
 
 
       <div className=" flex items-center gap-[24px] a1200:!hidden">
+
+        <div className="flex gap-[6px]">
+          {tabs.length > VISIBLETABS && (
+            <TabsDropdown tabs={tabs} defaultName={<img src='/burguer.png' />} hideArrow={true} bghover='' bgout='' />
+          )}
+        </div>
+
         <div
           role={'button'}
           onClick={() => { window.location.href = '/'; }}
@@ -70,11 +79,6 @@ export const Navbar: React.FC<INavbar> = ({ hideAccount }: { hideAccount: boolea
           />}
         </div>
 
-        <div className="flex gap-[6px]">
-          {tabs.length > VISIBLETABS && (
-            <TabsDropdown tabs={tabs} defaultName="Menu" />
-          )}
-        </div>
       </div>
 
       <div className="flex items-center gap-[7px] whitespace-nowrap">

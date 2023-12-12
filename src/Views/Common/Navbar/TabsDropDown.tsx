@@ -7,9 +7,16 @@ import { ITab } from 'src/Config/getTabs';
 export const TabsDropdown = ({
   tabs,
   defaultName,
+  hideArrow = false,
+  bgout = "bg-3",
+  bghover = "hover:bg-1"
 }: {
   tabs: ITab[];
   defaultName: string;
+  hideArrow: boolean;
+  bgout: string;
+  bghover: string;
+
 }) => {
   const [open, setOpen] = useState(false);
   return (
@@ -21,19 +28,18 @@ export const TabsDropdown = ({
       >
         <div className="z-[1] relative rounded-1">
           <button
-            className={`transition-all duration-300 text-4 text-f15  pl-4 pr-1 py-[4px] rounded-[8px] flex items-center ${
-              open
-                ? 'bg-3 text-1'
-                : 'hover:bg-1 hover:text-1 hover:brightness-125'
-            } `}
+            className={`transition-all duration-300 text-4 text-f15  pl-4 pr-1 py-[4px] rounded-[8px] flex items-center ${open
+              ? bgout + ' text-1'
+              : bghover + ' hover:text-1 hover:brightness-125'
+              } `}
             onClick={() => setOpen(!open)}
           >
             {defaultName}
-            <ArrowDropDownRounded
-              className={`transition-transform duration-200 ease-out dropdown-arrow ${
-                open ? 'origin rotate-180' : ''
-              }`}
-            />
+            {!hideArrow &&
+              <ArrowDropDownRounded
+                className={`transition-transform duration-200 ease-out dropdown-arrow ${open ? 'origin rotate-180' : ''
+                  }`}
+              />}
           </button>
 
           {open && (
@@ -67,8 +73,7 @@ export const TabsDropdown = ({
                     key={tab.name}
                     to={tab.to}
                     className={({ isActive }) =>
-                      `!h-fit py-3 text-4 text-f15 hover:text-1 ${
-                        isActive ? ' text-1' : ''
+                      `!h-fit py-3 text-4 text-f15 hover:text-1 ${isActive ? ' text-1' : ''
                       } `
                     }
                     onClick={() => {

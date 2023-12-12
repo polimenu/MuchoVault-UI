@@ -50,6 +50,13 @@ const KYCListSection = ({ KYCList }: { KYCList?: IRampKYC[] }) => {
       { id: "initdate", label: "Init Date" },
     ];
 
+    const counter = {
+      total: KYCList.length,
+      full: KYCList.filter(k => k.last_subtype == "FULL_USER").length,
+      pending: KYCList.filter(k => k.last_subtype.indexOf("PENDING") >= 0).length,
+      failed: KYCList.filter(k => k.last_subtype.indexOf("FAILED") >= 0).length
+    }
+
     const dashboardData = KYCList.map(t => {
       return [
         addressSummary(t.user_id),
@@ -117,7 +124,7 @@ const KYCListSection = ({ KYCList }: { KYCList?: IRampKYC[] }) => {
 
 
     return <Section
-      Heading={<div className={topStyles}>KYC Processes</div>}
+      Heading={<div className={topStyles}>KYC Processes ({`${counter.total} total, ${counter.full} done, ${counter.pending} pending, ${counter.failed} failed`})</div>}
       subHeading={
         <div className={descStyles}>
         </div>
@@ -171,6 +178,14 @@ const OnRampTransactionsSection = ({ trxList }: { trxList?: IRampAdminTransactio
       { id: "fees", label: "Fees" },
       { id: "exchange", label: "Exchange Rate" },
     ];
+
+
+    const counter = {
+      total: trxList.length,
+      full: trxList.filter(k => k.last_subtype == "SUCCESS").length,
+      amount: Math.round(100 * trxList.filter(k => k.last_subtype == "SUCCESS").map(t => t.amountFiat ? parseFloat(t.amountFiat) : 0).reduce((p, c) => c + p, 0)) / 100,
+      fees: Math.round(100 * trxList.filter(k => k.last_subtype == "SUCCESS").map(t => t.fees ? parseFloat(t.fees) : 0).reduce((p, c) => c + p, 0)) / 100
+    }
 
     const dashboardData = trxList.map(t => {
       /*return {
@@ -250,7 +265,7 @@ const OnRampTransactionsSection = ({ trxList }: { trxList?: IRampAdminTransactio
 
 
     return <Section
-      Heading={<div className={topStyles}>On Ramp Transactions</div>}
+      Heading={<div className={topStyles}>On Ramp Transactions ({`${counter.total} transactions, ${counter.full} done, ${counter.amount} EUR, ${counter.fees} EUR fees`})</div>}
       subHeading={
         <div className={descStyles}>
         </div>
@@ -303,6 +318,13 @@ const OffRampTransactionsSection = ({ trxList }: { trxList?: IRampAdminTransacti
       { id: "fees", label: "Fees" },
       { id: "exchange", label: "Exchange Rate" },
     ];
+
+    const counter = {
+      total: trxList.length,
+      full: trxList.filter(k => k.last_subtype == "SUCCESS").length,
+      amount: Math.round(100 * trxList.filter(k => k.last_subtype == "SUCCESS").map(t => t.amountCrypto ? parseFloat(t.amountCrypto) : 0).reduce((p, c) => c + p, 0)) / 100,
+      fees: Math.round(100 * trxList.filter(k => k.last_subtype == "SUCCESS").map(t => t.fees ? parseFloat(t.fees) : 0).reduce((p, c) => c + p, 0)) / 100
+    }
 
     const dashboardData = trxList.map(t => {
       /*return {
@@ -382,7 +404,7 @@ const OffRampTransactionsSection = ({ trxList }: { trxList?: IRampAdminTransacti
 
 
     return <Section
-      Heading={<div className={topStyles}>Off Ramp Transactions</div>}
+      Heading={<div className={topStyles}>Off Ramp Transactions ({`${counter.total} transactions, ${counter.full} done, ${counter.amount} USD, ${counter.fees} USD fees`})</div>}
       subHeading={
         <div className={descStyles}>
         </div>
