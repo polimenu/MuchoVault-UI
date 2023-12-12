@@ -7,7 +7,7 @@ import { OnRampLoginEmail } from './Components/OnRampLoginEmail';
 import { useGetRampData } from './Hooks/rampData';
 import { RampModals } from './Modals';
 import { useAtom } from 'jotai';
-import { ERampStatus, rampAtom, rampDataAtom } from './rampAtom';
+import { ERampStatus, rampAtom, rampAdminDataAtom, IRampAdminData } from './rampAtom';
 import { OnRampLoginOtp } from './Components/OnRampLoginOtp';
 import { useRampSession } from './Hooks/login';
 import { Chain } from 'wagmi';
@@ -15,6 +15,7 @@ import { useActiveChain } from '@Hooks/useActiveChain';
 import { ArbitrumOnly } from '@Views/Common/ChainNotSupported';
 import { Drawer } from '@mui/material';
 import { OnRampAdminStatus } from './Components/OnRampAdminStatus';
+import { useGetRampAdminData } from './Hooks/admin';
 
 const Styles = styled.div`
   width: min(1300px, 100%);
@@ -58,17 +59,17 @@ export const RampAdminPage = () => {
 
   const { activeChain } = useActiveChain();
   const [rampState,] = useAtom(rampAtom);
-  const [, setRampData] = useAtom(rampDataAtom);
+  const [, setRampAdminData] = useAtom(rampAdminDataAtom);
   useRampSession();
-  const rampData = useGetRampData();
+  const rampAdminData = useGetRampAdminData();
   //console.log("Rampdata", rampData);
 
   useEffect(() => {
-    setRampData(rampData);
+    setRampAdminData(rampAdminData);
     //console.log("Rampdata set", rampData);
-  }, [rampData]);
+  }, [rampAdminData]);
 
-  console.log("Rampdata", rampData);
+  console.log("RampAdmindata", rampAdminData);
   console.log("rampState", rampState);
   //sessionStorage.setItem("ramp_session_id", "");
   //console.log("Loading RampPage");
@@ -92,7 +93,7 @@ export const RampAdminPage = () => {
                         <OnRampLoginEmail />
                       </>}
                       {rampState.loginStatus == ERampStatus.OTP_SENT && <OnRampLoginOtp />}
-                      {rampState.loginStatus == ERampStatus.LOGGED && rampState.isAdmin && <OnRampAdminStatus />}
+                      {rampState.loginStatus == ERampStatus.LOGGED && <OnRampAdminStatus />}
                     </>}
                   />
 

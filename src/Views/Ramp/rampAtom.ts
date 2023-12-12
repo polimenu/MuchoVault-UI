@@ -11,8 +11,8 @@ export interface IRampKYC {
 
 export interface IRampKYCInteraction {
     subtype: string;
-    date: Date;
-    data: string;
+    date: number;
+    data: any;
 }
 
 export enum ERampStatus {
@@ -31,7 +31,6 @@ export interface IRampAtom {
     sessionId?: string;
     email?: string;
     sumsubToken?: string;
-    isAdmin?: boolean;
 }
 
 export const rampAtom = atom<IRampAtom>({
@@ -47,9 +46,13 @@ export interface IRampData {
     allowedCurrencies?: IRampCurrency[];
     allowedCountries?: IRampCountry[];
     bankAccounts?: IRampBankAccount[];
-    KYCList: IRampKYC[];
 }
 
+export interface IRampAdminData {
+    KYCList: IRampKYC[];
+    OnRampList: IRampAdminTransaction[];
+    OffRampList: IRampAdminTransaction[];
+}
 
 export interface IRampBankAccount {
     uuid: string;
@@ -68,6 +71,7 @@ export interface IRampOnRampBankAccount {
 }
 
 export const rampDataAtom = atom<IRampData>({});
+export const rampAdminDataAtom = atom<IRampAdminData>({ KYCList: [] });
 
 export interface IRampUserDetails {
     address: {
@@ -109,6 +113,23 @@ export interface IRampTransaction {
         transaction_id: string
     },
     output: { currency: string }
+}
+
+export interface IRampAdminTransaction {
+    email: string;
+    user_id: string;
+    transaction_id: string;
+    last_subtype: string;
+    init: number;
+    last: number;
+    amountCrypto: string;
+    currencyCrypto: string;
+    chain: string;
+    amountFiat: string;
+    currencyFiat: string;
+    fees: string;
+    exchange_rate: string;
+    interactions: any[];
 }
 
 export interface IRampCurrency {

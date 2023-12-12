@@ -20,3 +20,9 @@ export const tokenBeautify = (token: string): string => {
 
     return token;
 }
+
+
+
+export const formatDate = (ts: number) => {
+    return (new Date(ts)).toISOString().replaceAll("T", " ").replaceAll("Z", " ").substring(0, 19);
+}

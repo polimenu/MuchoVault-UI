@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { IRampData, rampAtom } from '../rampAtom';
 import { useGetBankAccounts, useGetRampTransactions, useGetTokenPreferences, useGetUserDetails } from './user';
 import { useRampCountries, useRampTokens } from './masters';
 import { useAtom } from 'jotai';
-import { useGetKycList } from './admin';
 //import auth0 from 'auth0-js';
 
 
@@ -37,9 +36,6 @@ export const useGetRampData = () => {
     [rampData.tokenPreferences] = useGetTokenPreferences(rampStateAtom.sessionId);
     [rampData.transactions] = useGetRampTransactions(rampStateAtom.sessionId);
     [rampData.bankAccounts] = useGetBankAccounts(rampStateAtom.sessionId);
-
-    //Admin data
-    [rampData.KYCList] = useGetKycList(rampStateAtom.sessionId, rampStateAtom.isAdmin);
 
     return useMemo(() => rampData, [rampStateAtom.sessionId,
     rampData.allowedCountries,

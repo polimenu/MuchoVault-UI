@@ -1,16 +1,16 @@
 import { CloseOutlined } from '@mui/icons-material';
 import { Dialog, IconButton } from '@mui/material';
 import { useAtom } from 'jotai';
-import { rampAtom, rampDataAtom } from '../rampAtom';
+import { rampAdminDataAtom, rampAtom, rampDataAtom } from '../rampAtom';
 import BufferInput from '@Views/Common/BufferInput';
-import { useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { BlueBtn } from '@Views/Common/V2-Button';
 import { useGlobal } from '@Contexts/Global';
 import { BufferDropdown } from '@Views/Common/Buffer-Dropdown';
 import { DropdownArrow } from '@SVG/Elements/DropDownArrow';
 import { INewUserRequest, ITokenChain, useAddAccount, useCreateUser, usePatchAddress, usePatchTokenPref, useSetMainBankAccount } from '../Hooks/user';
 import { IKYCRequest, useCreateKYC } from '../Hooks/kyc';
-import { networkBeautify, tokenBeautify } from '../Utils';
+import { formatDate, networkBeautify, tokenBeautify } from '../Utils';
 import { useToast } from '@Contexts/Toast';
 import { useCreateOnRampAccount, useGetOnRampQuote, useOnRampAccounts } from '../Hooks/onramp';
 import { RAMP_CONFIG } from '../Config/rampConfig';
@@ -19,6 +19,9 @@ import { useActiveChain } from '@Hooks/useActiveChain';
 import { t } from 'i18next';
 import { Display } from '@Views/Common/Tooltips/Display';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { Section } from '@Views/Common/Card/Section';
+import TransactionTable from '../Components/TransactionTable';
+import { addressSummary } from '@Views/Common/Utils';
 
 export const RampModals = () => {
     const [pageState, setPageState] = useAtom(rampAtom);
@@ -76,7 +79,236 @@ function ModalChild() {
     if (activeModal == "OFFRAMP")
         return <OffRampModal />;
 
+    if (activeModal == "ADMIN_KYC_DETAIL")
+        return <KycDetail />;
+
+    if (activeModal == "ADMIN_TRX_DETAIL")
+        return <TrxDetail />;
+
     return <div>{activeModal}</div>;
+}
+
+
+const topStyles = 'mx-3 text-f22';
+const descStyles = 'mx-3';
+
+function KycDetail() {
+    const [pageState] = useAtom(rampAtom);
+    const [rampAdminData] = useAtom(rampAdminDataAtom);
+    const uid = pageState.auxModalData.uid;
+    const kyc = rampAdminData.KYCList.find(k => k.user_id == uid);
+
+    if (!kyc) {
+        return <div>No data found!</div>;
+    }
+
+    const headerJSX = [
+        { id: "date", label: "Date" },
+        { id: "status", label: "Status" },
+        { id: "checkId", label: "CheckId" },
+    ];
+
+    const dashboardData = kyc.interactions.map(t => {
+        return [
+            formatDate(t.date),
+            t.data.status,
+            t.data.checkUuid ?? ""
+        ]
+    });
+    //console.log("dashboardData", dashboardData);
+
+    interface ICellContent {
+        content: ReactNode[];
+        className?: string;
+        classNames?: string[];
+        preventDefault?: boolean;
+    }
+
+    const CellContent: React.FC<ICellContent> = ({
+        content,
+        classNames,
+        preventDefault,
+        className,
+    }) => {
+        if (!content.length) return;
+        return (
+            <div className={`${className} flex flex-col`}>
+                {content.map((cellInfo, key) => {
+                    return (
+                        <span
+                            className={`${key && !preventDefault && " text-4 "}`}
+                            key={key}
+                        >
+                            {cellInfo}
+                        </span>
+                    );
+                })}
+            </div>
+        );
+    };
+
+    const bodyJSX = (
+        row: number,
+        col: number,
+        sortedData: typeof dashboardData
+    ) => {
+        const currentData = sortedData[row][col] ?? "";
+        let classNames = "";
+        if (currentData.indexOf("COMPLETED") > 0)
+            classNames += "green";
+        else if (currentData.indexOf("REJECTED") > 0)
+            classNames += "red";
+        //console.log("currentData", currentData);
+        return <CellContent
+            content={[
+                <Display
+                    data={currentData}
+                    className="!justify-start"
+                />,
+            ]}
+            className={classNames}
+        />;
+    }
+
+
+    return <Section
+        Heading={<div className={topStyles}>KYC Processes</div>}
+        subHeading={
+            <div className={descStyles}>
+            </div>
+        }
+        other={<div>
+            <TransactionTable
+                defaultSortId="direction"
+                defaultOrder="desc"
+                headerJSX={headerJSX}
+                cols={headerJSX.length}
+                data={dashboardData}
+                rows={dashboardData?.length}
+                bodyJSX={bodyJSX}
+                loading={!dashboardData.length}
+                onRowClick={() => { }}
+                widths={['34%', '33%', '33%']}
+                shouldShowMobile={true}
+            />
+        </div>}
+    />
+
+}
+
+
+function TrxDetail() {
+    const [pageState] = useAtom(rampAtom);
+    const [rampAdminData] = useAtom(rampAdminDataAtom);
+    const tid = pageState.auxModalData.tid;
+    const offramp = rampAdminData.OffRampList.find(r => r.transaction_id == tid);
+    const onramp = rampAdminData.OnRampList.find(r => r.transaction_id == tid);
+    const trx = offramp ?? onramp;
+
+    if (!trx) {
+        return <div>No data found!</div>;
+    }
+
+    const headerJSX = [
+        { id: "date", label: "Date" },
+        { id: "status", label: "Status" },
+        { id: "tx", label: "Tx Hash" },
+        { id: "fiat", label: "FIAT" },
+        { id: "crypto", label: "Crypto" },
+        { id: "fees", label: "Fees" },
+        { id: "exchange", label: "Exchange Rate" },
+    ];
+
+    const dashboardData = trx.interactions.map(t => {
+        return [
+            formatDate(t.date),
+            t.data.status.replaceAll("_", " "),
+            t.data.transactionHash ? addressSummary(t.data.transactionHash) : "",
+            `${t.data.amountFiat ?? ""} ${t.data.currencyFiat ?? ""}`,
+            `${t.data.amountCrypto ?? ""} ${t.data.currencyCrypto ?? ""} (${t.data.chain ?? ""})`,
+            t.data.fees ? t.data.fees.toString() : "",
+            t.data.exchangeRate ? t.data.exchangeRate.toString() : ""
+        ]
+    });
+    //console.log("dashboardData", dashboardData);
+
+    interface ICellContent {
+        content: ReactNode[];
+        className?: string;
+        classNames?: string[];
+        preventDefault?: boolean;
+    }
+
+    const CellContent: React.FC<ICellContent> = ({
+        content,
+        classNames,
+        preventDefault,
+        className,
+    }) => {
+        if (!content.length) return;
+        return (
+            <div className={`${className} flex flex-col`}>
+                {content.map((cellInfo, key) => {
+                    return (
+                        <span
+                            className={`${key && !preventDefault && " text-4 "}`}
+                            key={key}
+                        >
+                            {cellInfo}
+                        </span>
+                    );
+                })}
+            </div>
+        );
+    };
+
+    const bodyJSX = (
+        row: number,
+        col: number,
+        sortedData: typeof dashboardData
+    ) => {
+        const currentData = sortedData[row][col] ?? "";
+        let classNames = "";
+        if (currentData.indexOf("COMPLETED") > 0)
+            classNames += "green";
+        else if (currentData.indexOf("REJECTED") > 0)
+            classNames += "red";
+        //console.log("currentData", currentData);
+        return <CellContent
+            content={[
+                <Display
+                    data={currentData}
+                    className="!justify-start"
+                />,
+            ]}
+            className={classNames}
+        />;
+    }
+
+
+    return <Section
+        Heading={<div className={topStyles}>Transaction Details</div>}
+        subHeading={
+            <div className={descStyles}>
+            </div>
+        }
+        other={<div>
+            <TransactionTable
+                defaultSortId="direction"
+                defaultOrder="desc"
+                headerJSX={headerJSX}
+                cols={headerJSX.length}
+                data={dashboardData}
+                rows={dashboardData?.length}
+                bodyJSX={bodyJSX}
+                loading={!dashboardData.length}
+                onRowClick={() => { }}
+                widths={['15%', '15%', '20%', '10%', '10%', '10%']}
+                shouldShowMobile={true}
+            />
+        </div>}
+    />
+
 }
 
 function TargetAddressModal() {

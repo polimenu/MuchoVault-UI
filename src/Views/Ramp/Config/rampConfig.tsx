@@ -26,5 +26,5 @@ export const RAMP_CONFIG = {
 
 
 //export const APIRAMPURL = 'http://ec2-35-180-92-221.eu-west-3.compute.amazonaws.com';
-//export const APIRAMPURL = 'http://localhost:3000';
-export const APIRAMPURL = 'https://apiramp.mucho.finance';
+export const APIRAMPURL = 'http://localhost:3000';
+//export const APIRAMPURL = 'https://apiramp.mucho.finance';
