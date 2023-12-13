@@ -60,7 +60,7 @@ export const useOffRampWallet = (sessionId: string, chain: string) => {
     const save = (obj: any) => {
         //console.log("$$$$$$$$$$$$$$$$$$$$  Got wallet", obj, sessionId, chain);
         if (obj.status !== "KO") {
-            setWallet(obj[0].response.address);
+            setWallet(obj.response[0].address);
         }
     }
 
