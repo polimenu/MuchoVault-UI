@@ -22,6 +22,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Section } from '@Views/Common/Card/Section';
 import TransactionTable from '../Components/TransactionTable';
 import { addressSummary } from '@Views/Common/Utils';
+import { prettyPrintJson } from 'pretty-print-json';
 
 export const RampModals = () => {
     const [pageState, setPageState] = useAtom(rampAtom);
@@ -85,6 +86,10 @@ function ModalChild() {
     if (activeModal == "ADMIN_TRX_DETAIL")
         return <TrxDetail />;
 
+    if (activeModal == "INTERACTION_DETAIL")
+        return <pre className='json-container !text-f14 h-[30vw] oauto' dangerouslySetInnerHTML={{ __html: prettyPrintJson.toHtml(pageState.auxModalData.interaction) }}>
+        </pre>
+
     return <div>{activeModal}</div>;
 }
 
@@ -93,7 +98,7 @@ const topStyles = 'mx-3 text-f22';
 const descStyles = 'mx-3';
 
 function KycDetail() {
-    const [pageState] = useAtom(rampAtom);
+    const [pageState, setPageState] = useAtom(rampAtom);
     const [rampAdminData] = useAtom(rampAdminDataAtom);
     const uid = pageState.auxModalData.uid;
     const kyc = rampAdminData.KYCList.find(k => k.user_id == uid);
@@ -187,7 +192,7 @@ function KycDetail() {
                 rows={dashboardData?.length}
                 bodyJSX={bodyJSX}
                 loading={!dashboardData.length}
-                onRowClick={() => { }}
+                onRowClick={(i) => { setPageState({ ...pageState, isModalOpen: true, activeModal: "INTERACTION_DETAIL", auxModalData: { interaction: kyc.interactions[i] } }) }}
                 widths={['34%', '33%', '33%']}
                 shouldShowMobile={true}
             />
@@ -198,7 +203,7 @@ function KycDetail() {
 
 
 function TrxDetail() {
-    const [pageState] = useAtom(rampAtom);
+    const [pageState, setPageState] = useAtom(rampAtom);
     const [rampAdminData] = useAtom(rampAdminDataAtom);
     const tid = pageState.auxModalData.tid;
     const offramp = rampAdminData.OffRampList.find(r => r.transaction_id == tid);
@@ -302,7 +307,7 @@ function TrxDetail() {
                 rows={dashboardData?.length}
                 bodyJSX={bodyJSX}
                 loading={!dashboardData.length}
-                onRowClick={() => { }}
+                onRowClick={(i) => { setPageState({ ...pageState, isModalOpen: true, activeModal: "INTERACTION_DETAIL", auxModalData: { interaction: trx.interactions[i] } }) }}
                 widths={['15%', '15%', '20%', '10%', '10%', '10%']}
                 shouldShowMobile={true}
             />

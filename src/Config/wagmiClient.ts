@@ -10,7 +10,7 @@ import {
   coinbaseWallet,
   walletConnectWallet,
   imTokenWallet,
-  ledgerWallet,
+  //ledgerWallet,
   omniWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID;
@@ -49,7 +49,7 @@ const getWallets = (chains: Chain[]) => {
       wallets: [
         rainbowWallet({ chains, projectId }),
         imTokenWallet({ chains, projectId }),
-        ledgerWallet({ chains, projectId }),
+        //ledgerWallet({ chains, projectId }),
         omniWallet({ chains, projectId }),
         braveWallet({ chains }),
         // argentWallet({ chains }),

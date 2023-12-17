@@ -3,7 +3,7 @@ export enum ConnectorNames {
   Network = 'Network',
   WalletConnect = 'WalletConnect',
   WalletLink = 'WalletLink',
-  Ledger = 'Ledger',
+  //Ledger = 'Ledger',
   Trezor = 'Trezor',
   Lattice = 'Lattice',
   Frame = 'Frame',

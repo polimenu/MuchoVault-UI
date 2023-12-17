@@ -230,6 +230,10 @@ onUpEnd(c-(idx)
   overflow: auto;
 }
 
+.oauto {
+  overflow: auto !important;
+}
+
 .wavy-desc {
   --offset: 42px;
   grid-area: desc;
