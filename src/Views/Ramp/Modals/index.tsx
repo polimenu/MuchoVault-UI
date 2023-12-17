@@ -27,12 +27,14 @@ import { prettyPrintJson } from 'pretty-print-json';
 export const RampModals = () => {
     const [pageState, setPageState] = useAtom(rampAtom);
 
-    const closeModal = () =>
-        setPageState({
-            ...pageState,
-            isModalOpen: false,
-            activeModal: "",
-        });
+    const closeModal = () => {
+        if (pageState.auxModalData && pageState.auxModalData.bakPageState) {
+            setPageState(pageState.auxModalData.bakPageState);
+        }
+        else {
+            setPageState({ ...pageState, isModalOpen: false, activeModal: "" });
+        }
+    }
     return (
         <Dialog open={pageState.isModalOpen} onClose={closeModal} className='w-full'>
             <div className="text-1 bg-2 p-6 rounded-md relative w-full">
@@ -192,7 +194,7 @@ function KycDetail() {
                 rows={dashboardData?.length}
                 bodyJSX={bodyJSX}
                 loading={!dashboardData.length}
-                onRowClick={(i) => { setPageState({ ...pageState, isModalOpen: true, activeModal: "INTERACTION_DETAIL", auxModalData: { interaction: kyc.interactions[i] } }) }}
+                onRowClick={(i) => { setPageState({ ...pageState, isModalOpen: true, activeModal: "INTERACTION_DETAIL", auxModalData: { interaction: kyc.interactions[i], bakPageState: pageState } }) }}
                 widths={['34%', '33%', '33%']}
                 shouldShowMobile={true}
             />
@@ -307,7 +309,7 @@ function TrxDetail() {
                 rows={dashboardData?.length}
                 bodyJSX={bodyJSX}
                 loading={!dashboardData.length}
-                onRowClick={(i) => { setPageState({ ...pageState, isModalOpen: true, activeModal: "INTERACTION_DETAIL", auxModalData: { interaction: trx.interactions[i] } }) }}
+                onRowClick={(i) => { setPageState({ ...pageState, isModalOpen: true, activeModal: "INTERACTION_DETAIL", auxModalData: { interaction: trx.interactions[i], bakPageState: pageState } }) }}
                 widths={['15%', '15%', '20%', '10%', '10%', '10%']}
                 shouldShowMobile={true}
             />
