@@ -11,6 +11,8 @@ import { RAMP_CONFIG } from "../Config/rampConfig";
 import { useGetAmountInWallet, useGetOffRampQuote, useOffRampWallet, useSendToken } from "../Hooks/offramp";
 import { useActiveChain } from "@Hooks/useActiveChain";
 import { OfframpTokensDropDown } from "../Utils/OffRampTokensDropDown";
+import { toFixed } from "@Utils/NumString";
+import { gt } from "@Utils/NumString/stringArithmatics";
 
 
 //ToDo softcode chain
@@ -59,6 +61,15 @@ export const OffRampModal = () => {
                     }}
                     unit={
                         <span className="text-f16 flex justify-between w-fit">
+                            <BlueBtn
+                                isDisabled={!gt(max, '0')}
+                                onClick={() => {
+                                    setVal(toFixed(max, 6));
+                                }}
+                                className="!py-1 !px-3 !h-fit text-f13 rounded-sm mr-3"
+                            >
+                                Max
+                            </BlueBtn>
                             <OfframpTokensDropDown token={token} setToken={setToken} tokenList={tokenList} />
                         </span>
                     }
