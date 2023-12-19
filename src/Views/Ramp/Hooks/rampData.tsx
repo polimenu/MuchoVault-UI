@@ -43,8 +43,7 @@ export const useGetRampData = () => {
     rampData.userDetails,
     rampData.tokenPreferences,
     rampData.transactions,
-    rampData.bankAccounts,
-    rampStateAtom.isAdmin
+    rampData.bankAccounts
     ]);
 }
 
