@@ -152,7 +152,7 @@ export const useGetRampTransactions = (sessionId?: string): (IRampTransaction[] 
             save([]);
         else {
             const call = () => {
-                console.log("CALLING GET TRANSACTIONS");
+                //console.log("CALLING GET TRANSACTIONS");
                 fetchFromRampApi(`/transactions`, 'GET', { session_id: sessionId }, save, dispatch);
             }
             call();
