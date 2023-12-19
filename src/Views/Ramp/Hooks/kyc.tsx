@@ -66,7 +66,7 @@ export const useCreateKYC = (session_id?: string, request?: IKYCRequest) => {
         if (request && session_id && request.address_line_1 && request.post_code && request.city && request.country && request.date_of_birth && request.source_of_funds) {
             const [isError, message] = validateKYCRequest(request);
             if (!isError) {
-                //console.log("Fetching KYC creation");
+                console.log("Fetching KYC creation");
                 fetchFromRampApi('/kyc', 'POST', { ...request, session_id }, save, dispatch, toastify);
             }
             else {

@@ -193,6 +193,7 @@
 		"OTHER": "Otro",
 		"Save": "Guardar",
 		"Copied to clipboard!": "Copiado al portapapeles!",
-		"Enter IBAN": "Introduce tu IBAN"
+		"Enter IBAN": "Introduce tu IBAN",
+		"Enter account name": "Introduce un nombre o alias para tu cuenta"
 	}
 }

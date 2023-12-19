@@ -304,7 +304,7 @@ const OffRampCard = ({ bankAccounts, userDetails }: { bankAccounts?: IRampBankAc
             onClick={() => { if (!b.isMain) setRampState({ ...rampState, isModalOpen: true, activeModal: "BANK_MAIN", auxModalData: b }) }}>
             <Display
               className="!justify-end"
-              data={<>{b.isMain ? <span className='green'>({t("ramp.main")})</span> : <></>} {b.iban}</>}
+              data={<>{b.isMain ? <span className='green'>({t("ramp.main")})</span> : <></>} {b.name ? `${b.name} (${b.iban.substring(0, 4)}...${b.iban.substring(b.iban.length - 4)})` : b.iban}</>}
             />&nbsp;
           </span>
         })]}

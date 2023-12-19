@@ -116,7 +116,7 @@ export const useGetBankAccounts = (sessionId?: string): (IRampBankAccount[] | un
     const { dispatch } = useGlobal();
     const [userBAs, setUserBAs] = useState<IRampBankAccount[]>();
     const save = (obj: any) => {
-        //console.log("*********************************************************setting user bank accounts", obj);
+        console.log("*********************************************************setting user bank accounts", obj);
         //parse
         const filteredBAs = obj.response.filter(t => RAMP_CONFIG.AllowedFiatCurrencies.indexOf(t.currency) >= 0);
         if (filteredBAs)
@@ -126,6 +126,7 @@ export const useGetBankAccounts = (sessionId?: string): (IRampBankAccount[] | un
                     iban: b.iban,
                     isMain: b.main_beneficiary,
                     uuid: b.uuid,
+                    name: b.account_name
                 };
             }));
     }
@@ -153,7 +154,7 @@ export const useGetRampTransactions = (sessionId?: string): (IRampTransaction[] 
         else {
             const call = () => {
                 //console.log("CALLING GET TRANSACTIONS");
-                fetchFromRampApi(`/transactions`, 'GET', { session_id: sessionId }, save, dispatch);
+                fetchFromRampApi(`/transactions`, 'GET', { session_id: sessionId }, save, () => { });
             }
             call();
             const interval = setInterval(() => call(), RAMP_CONFIG.DelayTransactionsRefreshSeconds * 1000);
@@ -265,13 +266,13 @@ export const usePatchAddress = (session_id?: string, address: string) => {
     const toastify = useToast();
     const [patchResult, setPatchResult] = useState(false);
 
-    const save = (obj: { status: string }) => {
+    const save = (obj: { status: string, errorMessage?: string }) => {
         if (obj.status === "OK") {
             //console.log("Patched ok", obj);
             setPatchResult(true);
         }
         else {
-            toastify({ type: "error", msg: t("ramp.Could not set new target address") });
+            toastify({ type: "error", msg: `${t("ramp.Could not set new target address")}: ${obj.errorMessage ?? ""}` });
         }
     }
 
@@ -286,27 +287,28 @@ export const usePatchAddress = (session_id?: string, address: string) => {
 }
 
 
-export const useAddAccount = (session_id: string, iban: string, currency: string) => {
+export const useAddAccount = (session_id: string, account: { name: string, iban: string }, currency: string) => {
     const { dispatch } = useGlobal();
     const toastify = useToast();
     const [result, setResult] = useState(false);
 
-    const save = (obj: { status: string }) => {
+    const save = (obj: { status: string, errorMessage?: string }) => {
+        console.log("save useAddAccount", obj);
         if (obj.status === "OK") {
             //console.log("Account added ok", obj);
             setResult(true);
         }
         else {
-            toastify({ type: "error", msg: t("ramp.Could not add new bank account") });
+            toastify({ type: "error", msg: `${t("ramp.Could not add new bank account")}: ${obj.errorMessage ?? ""}` });
         }
     }
 
     useEffect(() => {
-        if (session_id && iban && currency) {
+        if (session_id && account.iban && currency) {
             //console.log("Fetching target address patch");
-            fetchFromRampApi(`/offramp/bank-account`, 'POST', { session_id: session_id, name: "", isMain: false, currency, iban }, save, dispatch, toastify);
+            fetchFromRampApi(`/offramp/bank-account`, 'POST', { session_id: session_id, isMain: false, currency, iban: account.iban, name: account.name ?? "" }, save, dispatch, toastify);
         }
-    }, [session_id, iban, currency]);
+    }, [session_id, account, currency]);
 
     return [result];
 }

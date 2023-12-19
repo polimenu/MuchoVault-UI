@@ -193,6 +193,7 @@
 		"OTHER": "Other",
 		"Save": "Save",
 		"Copied to clipboard!": "Copied to clipboard!",
-		"Enter IBAN": "Enter IBAN"
+		"Enter IBAN": "Enter IBAN",
+		"Enter account name": "Enter account name/alias"
 	}
 }

@@ -58,6 +58,7 @@ export interface IRampBankAccount {
     isMain: boolean;
     iban: string;
     currency: string;
+    name: string;
 }
 
 

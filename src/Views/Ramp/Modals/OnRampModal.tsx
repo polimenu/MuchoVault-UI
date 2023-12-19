@@ -9,6 +9,7 @@ import { BlueBtn } from "@Views/Common/V2-Button";
 import { networkBeautify, tokenBeautify } from "../Utils";
 import { useCreateOnRampAccount, useGetOnRampQuote, useOnRampAccounts } from "../Hooks/onramp";
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useToast } from "@Contexts/Toast";
 
 
 export const OnRampModal = () => {
@@ -21,6 +22,12 @@ export const OnRampModal = () => {
     const [inputAccount] = useOnRampAccounts(pageState.sessionId, currency, trigger);
     const [visibleAccount, setVisibleAccount] = useState(false);
     const [createdAccount] = useCreateOnRampAccount(pageState.sessionId, currency, Boolean(inputAccount) && !inputAccount?.iban);
+    const toastify = useToast();
+    const { chain, token } = rampData.tokenPreferences ? rampData.tokenPreferences.find(tp => tp.currency == currency) : { chain: "", token: "" };
+    const [quote] = useGetOnRampQuote(currency, token, val);
+    const messageCopied = () => {
+        toastify(t("ramp.Copied to clipboard!"));
+    }
 
     useEffect(() => {
         if (createdAccount) {
@@ -31,9 +38,6 @@ export const OnRampModal = () => {
     if (!rampData.tokenPreferences)
         return <></>;
 
-    const { chain, token } = rampData.tokenPreferences.find(tp => tp.currency == currency);
-    const [quote] = useGetOnRampQuote(currency, token, val);
-    const [fieldCopied, setFieldCopied] = useState("");
 
     return (
         <div>
@@ -92,10 +96,10 @@ export const OnRampModal = () => {
                     <div className="flex mt-5 text-f16">{t("ramp.Note this bank account is a virtual IBAN generated with your name, so the receptor will be yourself, the funds will never be shared with other users.")} </div>
                     <div className="mt-5 ml-5 text-f16">
                         <ul>
-                            <OnRampBankField label="Name" value={`${rampData.userDetails?.first_name} ${rampData.userDetails?.last_name}`} fieldCopied={fieldCopied} setFieldCopied={setFieldCopied} />
-                            <OnRampBankField label="IBAN" value={inputAccount.iban} fieldCopied={fieldCopied} setFieldCopied={setFieldCopied} />
-                            <OnRampBankField label="BIC" value={inputAccount.bic} fieldCopied={fieldCopied} setFieldCopied={setFieldCopied} />
-                            <OnRampBankField label={t("ramp.Country")} value={inputAccount.bank_country} fieldCopied={fieldCopied} setFieldCopied={setFieldCopied} />
+                            <OnRampBankField label="Name" value={`${rampData.userDetails?.first_name} ${rampData.userDetails?.last_name}`} messageCopied={messageCopied} />
+                            <OnRampBankField label="IBAN" value={inputAccount.iban} messageCopied={messageCopied} />
+                            <OnRampBankField label="BIC" value={inputAccount.bic} messageCopied={messageCopied} />
+                            <OnRampBankField label={t("ramp.Country")} value={inputAccount.bank_country} messageCopied={messageCopied} />
                         </ul>
                     </div>
                     <div className="flex mt-5 text-f14">
@@ -110,13 +114,12 @@ export const OnRampModal = () => {
     );
 }
 
-const OnRampBankField = ({ label, value, fieldCopied, setFieldCopied }: { label: string, value: string, fieldCopied: string, setFieldCopied: any }) => {
+const OnRampBankField = ({ label, value, messageCopied }: { label: string, value: string, messageCopied: any }) => {
     return <li key={label}>
         <strong>{label}: </strong>
         <span className='green'>{value}</span>
-        <CopyToClipboard text={value} onCopy={() => { setFieldCopied(label); }}>
+        <CopyToClipboard text={value} onCopy={() => { messageCopied(); }}>
             <img src="/clipboard.png" className='underline pointer w-[1vw] inline ml-5' />
         </CopyToClipboard>
-        {fieldCopied == label && <span className='text-f12'> {t("ramp.Copied to clipboard!")}</span>}
     </li>;
 }

@@ -11,7 +11,8 @@ export const BankAddModal = () => {
     const [pageState] = useAtom(rampAtom);
     const [rampData] = useAtom(rampDataAtom);
     const [val, setVal] = useState('');
-    const [account, setAccount] = useState('');
+    const [name, setName] = useState('');
+    const [account, setAccount] = useState({ name: "", iban: "" });
     const { state } = useGlobal();
     const [isAdded] = useAddAccount(pageState.sessionId, account, pageState.auxModalData.currency);
     if (isAdded) {
@@ -22,18 +23,28 @@ export const BankAddModal = () => {
             <div>
                 <div className="text-f15 mb-5">{t("ramp.Add bank account for")} {pageState.auxModalData.currency}</div>
                 <BufferInput
+                    className="mb-5"
+                    placeholder={t("ramp.Enter account name")}
+                    bgClass="!bg-1"
+                    ipClass="mt-1"
+                    value={name}
+                    onChange={(n) => {
+                        setName(n);
+                    }}
+                />
+                <BufferInput
                     placeholder={t("ramp.Enter IBAN")}
                     bgClass="!bg-1"
                     ipClass="mt-1"
                     value={val}
-                    onChange={(val) => {
-                        setVal(val.replaceAll(" ", ""));
+                    onChange={(v) => {
+                        setVal(v.replaceAll(" ", ""));
                     }}
                 />
             </div>
             <div className="flex whitespace-nowrap mt-5">
                 <BlueBtn
-                    onClick={() => { setAccount(val); }}
+                    onClick={() => { setAccount({ iban: val, name: name }); }}
                     className="rounded"
                     isDisabled={state.txnLoading > 1}
                     isLoading={state.txnLoading === 1}
