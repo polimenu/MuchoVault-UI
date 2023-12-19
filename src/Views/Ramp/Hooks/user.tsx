@@ -116,7 +116,7 @@ export const useGetBankAccounts = (sessionId?: string): (IRampBankAccount[] | un
     const { dispatch } = useGlobal();
     const [userBAs, setUserBAs] = useState<IRampBankAccount[]>();
     const save = (obj: any) => {
-        console.log("*********************************************************setting user bank accounts", obj);
+        //console.log("*********************************************************setting user bank accounts", obj);
         //parse
         const filteredBAs = obj.response.filter(t => RAMP_CONFIG.AllowedFiatCurrencies.indexOf(t.currency) >= 0);
         if (filteredBAs)
@@ -174,9 +174,9 @@ export const useSetMainBankAccount = (sessionId: string, uuid: string, go: boole
     //const [rampState, setRampState] = useAtom(rampAtom);
 
     const save = (obj: { status: string, errorMessage: string }) => {
-        console.log("Obj res main bank account", obj);
+        //console.log("Obj res main bank account", obj);
         if (obj.status === "OK") {
-            console.log("Set main bank account ok", obj);
+            //console.log("Set main bank account ok", obj);
             setResult({ done: true, status: true, errorMessage: "" });
             //window.location.reload();
             //setRampState({ ...rampState, isModalOpen: false });
