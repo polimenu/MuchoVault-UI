@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import { rampAtom, rampDataAtom } from "../rampAtom";
 import { BufferDropdown } from "@Views/Common/Buffer-Dropdown";
-import { networkBeautify } from ".";
+import { networkBeautify } from "../Utils";
 import { DropdownArrow } from "@SVG/Elements/DropDownArrow";
 
 export const ChainsDropDown = ({ chain, setChain, defaultChain }: { chain: string; setChain: any, defaultChain: string }) => {

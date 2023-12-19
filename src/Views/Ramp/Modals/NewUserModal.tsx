@@ -4,7 +4,7 @@ import { useGlobal } from "@Contexts/Global";
 import BufferInput from "@Views/Common/BufferInput";
 import { t } from "i18next";
 import { BlueBtn } from "@Views/Common/V2-Button";
-import { CountriesDropDown } from "../Utils/CountriesDropDown";
+import { CountriesDropDown } from "../Components/CountriesDropDown";
 import { INewUserRequest, useCreateUser } from "../Hooks/user";
 
 export const NewUserModal = () => {

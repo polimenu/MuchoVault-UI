@@ -2,6 +2,7 @@
 //import { createHash } from 'crypto';
 
 export const RAMP_CONFIG = {
+    DelayTransactionsRefreshSeconds: 10,
     AllowedFiatCurrencies: ["EUR"],
     AllowedOffRampTokens: [
         {

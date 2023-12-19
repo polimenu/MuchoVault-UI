@@ -5,8 +5,8 @@ import { useGlobal } from "@Contexts/Global";
 import { ITokenChain, usePatchTokenPref } from "../Hooks/user";
 import { BlueBtn } from "@Views/Common/V2-Button";
 import { t } from "i18next";
-import { ChainsDropDown } from "../Utils/ChainsDropDown";
-import { TokensDropDown } from "../Utils/TokensDropDown";
+import { ChainsDropDown } from "../Components/ChainsDropDown";
+import { TokensDropDown } from "../Components/TokensDropDown";
 
 
 export const TargetTokenModal = () => {

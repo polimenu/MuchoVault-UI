@@ -150,8 +150,17 @@ export const useGetRampTransactions = (sessionId?: string): (IRampTransaction[] 
     useEffect(() => {
         if (!sessionId)
             save([]);
-        else
-            fetchFromRampApi(`/transactions`, 'GET', { session_id: sessionId }, save, dispatch);
+        else {
+            const call = () => {
+                console.log("CALLING GET TRANSACTIONS");
+                fetchFromRampApi(`/transactions`, 'GET', { session_id: sessionId }, save, dispatch);
+            }
+            call();
+            const interval = setInterval(() => call(), RAMP_CONFIG.DelayTransactionsRefreshSeconds * 1000);
+            return () => {
+                clearInterval(interval);
+            }
+        }
     }, [sessionId]);
 
     return [transactions];

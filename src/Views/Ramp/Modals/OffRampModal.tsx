@@ -10,9 +10,9 @@ import { Display } from "@Views/Common/Tooltips/Display";
 import { RAMP_CONFIG } from "../Config/rampConfig";
 import { useGetAmountInWallet, useGetOffRampQuote, useOffRampWallet, useSendToken } from "../Hooks/offramp";
 import { useActiveChain } from "@Hooks/useActiveChain";
-import { OfframpTokensDropDown } from "../Utils/OffRampTokensDropDown";
 import { toFixed } from "@Utils/NumString";
 import { gt } from "@Utils/NumString/stringArithmatics";
+import { OfframpTokensDropDown } from "../Components/OffRampTokensDropDown";
 
 
 //ToDo softcode chain

@@ -42,7 +42,6 @@ export const rampAtom = atom<IRampAtom>({
 export interface IRampData {
     userDetails?: IRampUserDetails;
     tokenPreferences?: IRampTokenPreference[];
-    transactions?: IRampTransaction[];
     allowedCurrencies?: IRampCurrency[];
     allowedCountries?: IRampCountry[];
     bankAccounts?: IRampBankAccount[];

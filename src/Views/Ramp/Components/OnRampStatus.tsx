@@ -19,6 +19,7 @@ import { useUserAccount } from '@Hooks/useUserAccount';
 import { ViewContext } from '..';
 import { useNetwork } from 'wagmi';
 import { t } from 'i18next';
+import { useGetRampTransactions } from '../Hooks/user';
 
 
 const topStyles = 'mx-3 text-f22';
@@ -35,7 +36,7 @@ export const OnRampStatus = () => {
   return <div>
     <UserDetailsSection userDetails={rampData.userDetails} />
     <OnOffRampSection rampData={rampData} />
-    <OnRampTransactions transactions={rampData.transactions} />
+    <OnRampTransactions />
   </div>;
 
   return <></>;
@@ -356,8 +357,10 @@ export function OffRampButtons({ bankAccounts }: { bankAccounts: IRampBankAccoun
 
 }
 
-const OnRampTransactions = ({ transactions }: { transactions?: IRampTransaction[] }) => {
+const OnRampTransactions = () => {
   //fetchTransactions();
+  const [rampState] = useAtom(rampAtom);
+  const [transactions] = useGetRampTransactions(rampState.sessionId);
 
 
   if (transactions && transactions.length == 0) {

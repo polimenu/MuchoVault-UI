@@ -6,8 +6,8 @@ import BufferInput from "@Views/Common/BufferInput";
 import { t } from "i18next";
 import { BlueBtn } from "@Views/Common/V2-Button";
 import { IKYCRequest, useCreateKYC } from "../Hooks/kyc";
-import { SofDropDown } from "../Utils/SofDropDown";
-import { CountriesDropDown } from "../Utils/CountriesDropDown";
+import { SofDropDown } from "../Components/SofDropDown";
+import { CountriesDropDown } from "../Components/CountriesDropDown";
 
 export const CompleteKYCModal = () => {
     const [pageState] = useAtom(rampAtom);
