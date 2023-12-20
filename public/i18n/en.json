@@ -181,7 +181,6 @@
 		"Last Name Explanation": "if you have 2 surnames, write both",
 		"New User": "New User",
 		"Main bank account updated successfully": "Main bank account updated successfully",
-		"Set as main account": "Set as main account",
 		"Address": "Address",
 		"Source of funds": "Source of funds",
 		"Postal Code": "Postal Code",
@@ -194,6 +193,8 @@
 		"Save": "Save",
 		"Copied to clipboard!": "Copied to clipboard!",
 		"Enter IBAN": "Enter IBAN",
-		"Enter account name": "Enter account name/alias"
+		"Enter account name": "Enter account name/alias",
+		"Main account": "Default account",
+		"Click to set as main account": "Set as default account"
 	}
 }

@@ -23,7 +23,6 @@ export const useGetRampData = () => {
     //User associated data
     [rampData.userDetails] = useGetUserDetails(rampStateAtom.sessionId);
     [rampData.tokenPreferences] = useGetTokenPreferences(rampStateAtom.sessionId);
-    [rampData.bankAccounts] = useGetBankAccounts(rampStateAtom.sessionId);
 
     return useMemo(() => rampData, [rampStateAtom.sessionId,
     rampData.allowedCountries,

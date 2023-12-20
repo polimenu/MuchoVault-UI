@@ -111,7 +111,7 @@ export const useGetTokenPreferences = (sessionId?: string): (IRampTokenPreferenc
 }
 
 
-export const useGetBankAccounts = (sessionId?: string): (IRampBankAccount[] | undefined)[] => {
+export const useGetBankAccounts = (sessionId?: string, reloadTime?: number): (IRampBankAccount[] | undefined)[] => {
     //console.log("*******************GETTING BANK ACCOUNTS********************", sessionId);
     const { dispatch } = useGlobal();
     const [userBAs, setUserBAs] = useState<IRampBankAccount[]>();
@@ -133,9 +133,10 @@ export const useGetBankAccounts = (sessionId?: string): (IRampBankAccount[] | un
 
     useEffect(() => {
         if (sessionId) {
-            fetchFromRampApi(`/offramp/bank-accounts`, 'GET', { session_id: sessionId }, save, dispatch);
+            console.log("FETCHING BANK ACCOUNTS");
+            fetchFromRampApi(`/offramp/bank-accounts`, 'GET', { session_id: sessionId }, save, () => { });
         }
-    }, [sessionId]);
+    }, [sessionId, reloadTime]);
 
     return [userBAs];
 }
@@ -167,9 +168,7 @@ export const useGetRampTransactions = (sessionId?: string): (IRampTransaction[] 
     return [transactions];
 }
 
-export const useSetMainBankAccount = (sessionId: string, uuid: string, go: boolean) => {
-    //console.log("*******************GETTING BANK ACCOUNTS********************", sessionId);
-    const { dispatch } = useGlobal();
+export const useSetMainBankAccount = (sessionId: string, uuid: string) => {
     const [result, setResult] = useState({ done: false, status: false, errorMessage: "" });
     //const [rampState, setRampState] = useAtom(rampAtom);
 
@@ -180,7 +179,7 @@ export const useSetMainBankAccount = (sessionId: string, uuid: string, go: boole
             setResult({ done: true, status: true, errorMessage: "" });
             //window.location.reload();
             //setRampState({ ...rampState, isModalOpen: false });
-            window.location.reload();
+            //window.location.reload();
         }
         else {
             setResult({ done: true, status: false, errorMessage: (obj.errorMessage ? obj.errorMessage : "Could set as main bank account") });
@@ -188,10 +187,10 @@ export const useSetMainBankAccount = (sessionId: string, uuid: string, go: boole
     }
 
     useEffect(() => {
-        if (sessionId && uuid && go) {
-            fetchFromRampApi(`/offramp/main-bank-account`, 'PATCH', { session_id: sessionId, uuid: uuid }, save, dispatch);
+        if (sessionId && uuid) {
+            fetchFromRampApi(`/offramp/main-bank-account`, 'PATCH', { session_id: sessionId, uuid: uuid }, save, () => { });
         }
-    }, [sessionId, uuid, go]);
+    }, [sessionId, uuid]);
 
     return [result];
 }

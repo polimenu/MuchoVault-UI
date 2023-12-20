@@ -181,7 +181,6 @@
 		"Last Name Explanation": "si tienes 2 apellidos, escribe ambos",
 		"New User": "Nuevo Usuario",
 		"Main bank account updated successfully": "La cuenta bancaria principal se actualizó correctamente",
-		"Set as main account": "Establecer como cuenta principal",
 		"Address": "Dirección",
 		"Source of funds": "Fuente de fondos",
 		"Postal Code": "Código postal",
@@ -194,6 +193,8 @@
 		"Save": "Guardar",
 		"Copied to clipboard!": "Copiado al portapapeles!",
 		"Enter IBAN": "Introduce tu IBAN",
-		"Enter account name": "Introduce un nombre o alias para tu cuenta"
+		"Enter account name": "Introduce un nombre o alias para tu cuenta",
+		"Main account": "Cuenta por defecto",
+		"Click to set as main account": "Establecer como cuenta por defecto"
 	}
 }

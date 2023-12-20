@@ -7,7 +7,6 @@ import { TargetAddressModal } from './TargetAddressModal';
 import { TargetTokenModal } from './TargetTokenModal';
 import { CompleteKYCModal } from './CompleteKYCModal';
 import { NewUserModal } from './NewUserModal';
-import { BankMainModal } from './BankMainModal';
 import { BankAddModal } from './BankAddModal';
 import { OnRampModal } from './OnRampModal';
 import { OffRampModal } from './OffRampModal';
@@ -59,9 +58,6 @@ function ModalChild() {
 
     if (activeModal == "NEWUSER")
         return <NewUserModal />;
-
-    if (activeModal == "BANK_MAIN")
-        return <BankMainModal />;
 
     if (activeModal == "BANK_ADD")
         return <BankAddModal />;

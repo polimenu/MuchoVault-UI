@@ -44,7 +44,6 @@ export interface IRampData {
     tokenPreferences?: IRampTokenPreference[];
     allowedCurrencies?: IRampCurrency[];
     allowedCountries?: IRampCountry[];
-    bankAccounts?: IRampBankAccount[];
 }
 
 export interface IRampAdminData {
