@@ -133,7 +133,7 @@ export const useGetBankAccounts = (sessionId?: string, reloadTime?: number): (IR
 
     useEffect(() => {
         if (sessionId) {
-            console.log("FETCHING BANK ACCOUNTS");
+            //console.log("FETCHING BANK ACCOUNTS");
             fetchFromRampApi(`/offramp/bank-accounts`, 'GET', { session_id: sessionId }, save, () => { });
         }
     }, [sessionId, reloadTime]);

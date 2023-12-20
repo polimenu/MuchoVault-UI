@@ -107,14 +107,15 @@ const OffRampButtons = ({ bankAccounts }: { bankAccounts: IRampBankAccount[] }) 
     const [rampState, setRampState] = useAtom(rampAtom);
     const { state } = useGlobal();
     const { address: account } = useUserAccount();
-    const { activeChain } = useContext(ViewContext) ?? { activeChain: null };
+    //const { activeChain } = useContext(ViewContext) ?? { activeChain: null };
     const { chain } = useNetwork();
+    const ALLOWED_CHAIN = 42161;  //ToDo softcode chain
+
 
     const btnClasses = '';
     const hasBank = bankAccounts && bankAccounts.length > 0
 
-
-    if (!account || !activeChain || activeChain.id !== chain?.id)
+    if (!account || !chain || chain.id != ALLOWED_CHAIN)
         return (
             <div className={btnClasses}>
                 <ConnectionRequired>
@@ -123,7 +124,7 @@ const OffRampButtons = ({ bankAccounts }: { bankAccounts: IRampBankAccount[] }) 
             </div>
         );
 
-    //console.log("Max Cap", id, data.maxCap);
+    console.log("hasBank", hasBank);
 
     return (<>
         {hasBank && <div className={`${btnClasses} flex gap-5`}>
