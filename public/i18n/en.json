@@ -200,6 +200,7 @@
 		"Enter IBAN": "Enter IBAN",
 		"Enter account name": "Enter account name/alias",
 		"Main account": "Default account",
-		"Click to set as main account": "Set as default account"
+		"Click to set as main account": "Set as default account",
+		"Edit user profile": "Edit user profile"
 	}
 }

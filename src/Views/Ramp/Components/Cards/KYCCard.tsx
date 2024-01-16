@@ -44,9 +44,13 @@ export const KYCCard = ({ userDetails }: { userDetails?: IRampUserDetails }) => 
             {userDetails.canCreateKYC && <BlueBtn
                 isDisabled={state.txnLoading > 1}
                 isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "KYC" }) }}>{t("ramp.Start KYC")}</BlueBtn>}
-            {toFinishKYC && <BlueBtn
-                isDisabled={state.txnLoading > 1}
-                isLoading={state.txnLoading === 1} onClick={() => { setGetToken(true); }}>{t("ramp.Finish KYC")}</BlueBtn>}
+            {toFinishKYC && <>
+                <BlueBtn
+                    isDisabled={state.txnLoading > 1}
+                    isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "KYC" }) }}>{t("ramp.Edit user profile")}</BlueBtn>
+                &nbsp;<BlueBtn
+                    isDisabled={state.txnLoading > 1}
+                    isLoading={state.txnLoading === 1} onClick={() => { setGetToken(true); }}>{t("ramp.Finish KYC")}</BlueBtn></>}
         </>}
     />;
 }

@@ -200,6 +200,7 @@
 		"Enter IBAN": "Introduce tu IBAN",
 		"Enter account name": "Introduce un nombre o alias para tu cuenta",
 		"Main account": "Cuenta por defecto",
-		"Click to set as main account": "Establecer como cuenta por defecto"
+		"Click to set as main account": "Establecer como cuenta por defecto",
+		"Edit user profile": "Editar datos"
 	}
 }
