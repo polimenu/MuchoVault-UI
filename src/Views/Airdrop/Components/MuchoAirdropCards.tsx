@@ -49,12 +49,12 @@ export const getMuchoAirdropCards = (data: IMuchoAirdropManagerData) => {
   }
 
 
-  const farmsInfo = [<MuchoAirdropCard data={data} />, data.oldTokens.map(t => <OldMuchoAirdropCard data={t} />)];
+  const farmsInfo = [<MuchoAirdropCard data={data} />, <OldMuchoAirdropCard data={data.oldTokens} />];
 
   return farmsInfo;
 };
 
-const OldMuchoAirdropCard = ({ data }: { data: IOldAirdropData }) => {
+const OldMuchoAirdropCard = ({ data }: { data: IOldAirdropData[] }) => {
   if (!data) {
     return <Skeleton
       key={0}
@@ -67,56 +67,35 @@ const OldMuchoAirdropCard = ({ data }: { data: IOldAirdropData }) => {
     <Card
       top={
         <>
-          <span className={underLineClass}>mAirdrop Token (v{data.version}) ({t("airdrop.FINISHED")})</span>
-          <div className="text-f12 text-3  mt-2">
-            {t("airdrop.Available")}:&nbsp;&nbsp;&nbsp;&nbsp;
-            <Display
-              data={data.maxSupply - data.totalSupply}
-              className="inline"
-              disable
-              precision={0}
-            />
-            &nbsp;
-            / &nbsp;
-            <Display
-              data={data.maxSupply}
-              unit={"mAirdrop"}
-              className="inline"
-              disable
-              precision={0}
-            />
-          </div>
-          <div className="max-w-[300px]">
-            <BufferProgressBar
-              fontSize={12}
-              progressPercent={100 - Number(100 * data.totalSupply / data.maxSupply)}
-            />
-          </div>
+          <span className={underLineClass}>{t("airdrop.Finished mAirdrop Token Sales")}</span>
         </>
       }
       middle={<>
         <TableAligner
-          keysName={[t('airdrop.Your mAirdrop in wallet')]}
-          values={[
+
+          keysName={data.map(tk => `mAirdrop ${tk.version}`)}
+          values={data.map(tk =>
             <div className={`${wrapperClasses}`}>
 
-              <Display
+              {t("airdrop.You have")}&nbsp;<Display
                 className="!justify-end"
-                data={data.userBalance}
-                unit={"mAirdrop"}
-                precision={4}
+                data={tk.userBalance}
+                unit={""}
+                precision={2}
               />
+              &nbsp;({t("airdrop.out of")}&nbsp;<Display
+                className="!justify-end"
+                data={tk.totalSupply}
+                unit={""}
+                precision={0}
+              />)
             </div>
-          ]
+          )
           }
           keyStyle={keyClasses}
           valueStyle={valueClasses}
         />
       </>}
-      bottom={
-        <div className="mt-5 !text-right">
-        </div>
-      }
     />
   );
 }
@@ -130,42 +109,47 @@ const MuchoAirdropCard = ({ data }: { data: IMuchoAirdropManagerData }) => {
     />
   }
 
+
+
   return (
     <Card
       top={
         <>
-          <span className={underLineClass}>mAirdrop Token (v{data.mAirdropVersion})</span>
-          <div className="text-f12 text-3  mt-2">
-            {t("airdrop.Available")}:&nbsp;&nbsp;&nbsp;&nbsp;
-            <Display
-              data={data.mAirdropMaxSupply - data.mAirdropCurrentSupply}
-              className="inline"
-              disable
-              precision={0}
-            />
-            &nbsp;
-            / &nbsp;
-            <Display
-              data={data.mAirdropMaxSupply}
-              unit={"mAirdrop"}
-              className="inline"
-              disable
-              precision={0}
-            />
-          </div>
-          <div className="max-w-[300px]">
-            <BufferProgressBar
-              fontSize={12}
-              progressPercent={100 - Number(100 * data.mAirdropCurrentSupply / data.mAirdropMaxSupply)}
-            />
-          </div>
+          <span className={underLineClass}>{t("airdrop.Current mAirdrop Token Sale")} {data.mAirdropVersion ? `(v${data.mAirdropVersion})` : ''}</span>
+          {data.mAirdropMaxSupply > 0 && <>
+            <div className="text-f12 text-3  mt-2">
+              {t("airdrop.Available")}:&nbsp;&nbsp;&nbsp;&nbsp;
+              <Display
+                data={data.mAirdropMaxSupply - data.mAirdropCurrentSupply}
+                className="inline"
+                disable
+                precision={0}
+              />
+              &nbsp;
+              / &nbsp;
+              <Display
+                data={data.mAirdropMaxSupply}
+                unit={"mAirdrop"}
+                className="inline"
+                disable
+                precision={0}
+              />
+            </div>
+            <div className="max-w-[300px]">
+              <BufferProgressBar
+                fontSize={12}
+                progressPercent={100 - Number(100 * data.mAirdropCurrentSupply / data.mAirdropMaxSupply)}
+              />
+            </div>
+          </>}
         </>
       }
       middle={<>
-        <MuchoAirdropInfo data={data} />
+        {data.mAirdropMaxSupply > 0 && <MuchoAirdropInfo data={data} />}
+        {data.mAirdropMaxSupply == 0 && <div className='!text-2'> - {t("airdrop.There is no mAirdrop token currently for sale")} - </div>}
       </>}
       bottom={
-        <div className="mt-5 !text-right">
+        data.mAirdropMaxSupply > 0 && <div className="mt-5 !text-right">
           <AirdropButtons data={data} />
         </div>
       }

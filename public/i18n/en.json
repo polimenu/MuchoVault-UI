@@ -82,7 +82,12 @@
 		"BuymAirdropsWith": "Buy with {{token}}",
 		"Start date": "Start date",
 		"Will start in": "Will start in",
-		"FINISHED": "FINISHED"
+		"FINISHED": "FINISHED",
+		"Finished mAirdrop Token Sales": "Finished mAirdrop Token Sales",
+		"You have": "You have",
+		"out of": "out of",
+		"Current mAirdrop Token Sale": "Current mAirdrop Token Sale",
+		"There is no mAirdrop token currently for sale": "There is no mAirdrop token currently for sale"
 	},
 	"ramp": {
 		"On & Off Ramp": "On & Off Ramp",

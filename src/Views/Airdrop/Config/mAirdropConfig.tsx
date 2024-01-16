@@ -1,8 +1,8 @@
 export const MAIDROP_CONFIG = {
   42161: {
     ManagerContract: "0xfAb74DA5AbaAb95A5dE6bF2a364FA2e6143bd7E5",
-    TokenContract: "0xb9aEdEb1F2470F5e1e6f33BC745eAd3E41A55267",
-    TokenContractVersion: "1.1",
+    //TokenContract: "0xb9aEdEb1F2470F5e1e6f33BC745eAd3E41A55267",
+    //TokenContractVersion: "1.1",
     PaymentTokens: [
       {
         TokenPayment: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
@@ -19,6 +19,10 @@ export const MAIDROP_CONFIG = {
       {
         contract: "0x7AFdD87FbA836c7862aD7b90bCF50440bF878A3c",
         version: "1.0"
+      },
+      {
+        contract: "0xb9aEdEb1F2470F5e1e6f33BC745eAd3E41A55267",
+        version: "1.1",
       }
     ]
   },

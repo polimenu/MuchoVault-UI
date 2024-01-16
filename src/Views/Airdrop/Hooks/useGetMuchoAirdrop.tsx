@@ -61,8 +61,10 @@ export const useGetMuchoAirdrop = () => {
       args: [],
       chainId: activeChain?.id,
     },
+  ];
 
-    {
+  if (config.TokenContract) {
+    calls = calls.concat([{
       address: config.TokenContract,
       abi: TokenAbi,
       functionName: '_maxSupply',
@@ -76,8 +78,9 @@ export const useGetMuchoAirdrop = () => {
       functionName: 'totalSupply',
       args: [],
       chainId: activeChain?.id,
-    },
-  ];
+    },]
+    )
+  }
 
   //OldTokenContracts
   calls = calls.concat(config.OldTokenContracts.map(c => {
@@ -108,29 +111,33 @@ export const useGetMuchoAirdrop = () => {
 
 
   //add prices calls
-  calls = calls.concat(config.PaymentTokens.map(p => {
-    return {
-      address: config.ManagerContract,
-      abi: ManagerAbi,
-      functionName: 'mAirdropTokenPrice',
-      args: [p.TokenPayment],
-      chainId: activeChain?.id,
-    };
-  }));
+  if (config.TokenContract) {
+    calls = calls.concat(config.PaymentTokens.map(p => {
+      return {
+        address: config.ManagerContract,
+        abi: ManagerAbi,
+        functionName: 'mAirdropTokenPrice',
+        args: [p.TokenPayment],
+        chainId: activeChain?.id,
+      };
+    }));
+  }
 
 
   const { address: account } = useUserAccount();
 
   if (account) {
-    calls = calls.concat([
-      {
-        address: config.TokenContract,
-        abi: TokenAbi,
-        functionName: 'balanceOf',
-        args: [account],
-        chainId: activeChain?.id,
-      },
-    ])
+    if (config.TokenContract) {
+      calls = calls.concat([
+        {
+          address: config.TokenContract,
+          abi: TokenAbi,
+          functionName: 'balanceOf',
+          args: [account],
+          chainId: activeChain?.id,
+        },
+      ])
+    }
 
     /*calls = calls.concat(config.PaymentTokens.map(p => {
       return {
@@ -205,21 +212,23 @@ export const useGetMuchoAirdrop = () => {
     data.indexes = indexes;
 
     let endDate = new Date(0);
-    endDate.setUTCSeconds(getDataNumber(data, 'dateEnd'));
+    if (config.TokenContract)
+      endDate.setUTCSeconds(getDataNumber(data, 'dateEnd'));
 
     let iniDate = new Date(0);
-    iniDate.setUTCSeconds(getDataNumber(data, 'dateIni'));
+    if (config.TokenContract)
+      iniDate.setUTCSeconds(getDataNumber(data, 'dateIni'));
 
     res = {
       contract: config.ManagerContract,
 
-      mAirdropContract: getDataString(data, 'mAirdrop'),
-      mAirdropVersion: config.TokenContractVersion,
-      mAirdropMaxSupply: Math.round(getDataNumber(data, '_maxSupply') / (10 ** getDataNumber(data, 'mAirdropDecimals'))),
-      mAirdropCurrentSupply: getDataNumber(data, 'totalSupply') / (10 ** getDataNumber(data, 'mAirdropDecimals')),
-      mAirdropDecimals: getDataNumber(data, 'mAirdropDecimals'),
-      mAirdropInWallet: getDataNumber(data, 'mAirdropUser') / (10 ** getDataNumber(data, 'mAirdropDecimals')),
-      userBalance: getDataNumber(data, `balanceOf_${account}`) / (10 ** getDataNumber(data, 'mAirdropDecimals')),
+      mAirdropContract: config.TokenContract ? getDataString(data, 'mAirdrop') : "",
+      mAirdropVersion: config.TokenContractVersion ?? "",
+      mAirdropMaxSupply: config.TokenContract ? Math.round(getDataNumber(data, '_maxSupply') / (10 ** getDataNumber(data, 'mAirdropDecimals'))) : 0,
+      mAirdropCurrentSupply: config.TokenContract ? getDataNumber(data, 'totalSupply') / (10 ** getDataNumber(data, 'mAirdropDecimals')) : 0,
+      mAirdropDecimals: config.TokenContract ? getDataNumber(data, 'mAirdropDecimals') : 0,
+      mAirdropInWallet: config.TokenContract ? getDataNumber(data, 'mAirdropUser') / (10 ** getDataNumber(data, 'mAirdropDecimals')) : 0,
+      userBalance: config.TokenContract ? getDataNumber(data, `balanceOf_${account}`) / (10 ** getDataNumber(data, 'mAirdropDecimals')) : 0,
 
       dateIni: iniDate,
       dateEnd: endDate,
@@ -247,7 +256,7 @@ export const useGetMuchoAirdrop = () => {
 
   }
 
-  console.log("Response RPC", res);
+  //console.log("Response RPC", res);
 
   return res ? res : null;
 };

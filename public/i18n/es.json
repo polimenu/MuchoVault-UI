@@ -82,7 +82,12 @@
 		"BuymAirdropsWith": "Comprar con {{token}}",
 		"Start date": "Fecha de inicio",
 		"Will start in": "Empezará en",
-		"FINISHED": "FINALIZADO"
+		"FINISHED": "FINALIZADO",
+		"Finished mAirdrop Token Sales": "Lanzamientos de mAirdrop finalizados",
+		"You have": "Tienes",
+		"out of": "de",
+		"Current mAirdrop Token Sale": "Lanzamiento actual de mAirdrop",
+		"There is no mAirdrop token currently for sale": "Actualmente, no hay ningún lanzamiento activo de mAirdrop"
 	},
 	"ramp": {
 		"On & Off Ramp": "On & Off Ramp",
