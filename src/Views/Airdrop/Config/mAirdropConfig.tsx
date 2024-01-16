@@ -28,6 +28,9 @@ export const MAIDROP_CONFIG = {
   },
 };
 
+export const MAIRDROP_FARM_NETWORKS = ["Polygon", "BSC", "zkSync", "Arbitrum", "Optimism", "Avalanche", "Base"];
+export const APIFARMURL = (import.meta.env.VITE_APIRAMP_ENV == "production") ? 'https://apiramp.mucho.finance' :
+  ((import.meta.env.VITE_APIRAMP_ENV == "staging") ? 'http://ec2-35-180-92-221.eu-west-3.compute.amazonaws.com' : 'http://localhost:3000');
 
 export function getAirdropContracts(chainId: number) {
   if (!MAIDROP_CONFIG[chainId]) {

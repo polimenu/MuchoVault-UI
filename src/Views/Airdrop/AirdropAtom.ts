@@ -65,3 +65,23 @@ export const readV2AdminData = atom((get) => get(v2AdminData));
 export const writeV2AdminData = atom(null, (get, set, update: IMuchoVaultData) => {
   set(v2AdminData, update);
 });
+
+
+
+export interface IFarmNetwork {
+  network: string;
+  nativeToken: string;
+  lastUpdate: string;
+  wallets: IFarmWallet[];
+}
+
+export interface IFarmWallet {
+  wallet: string;
+  nativeBalance: number;
+  balances: IFarmBalance[];
+}
+
+export interface IFarmBalance {
+  token: string;
+  balance: number;
+}
