@@ -26,7 +26,7 @@ export const FarmNetworkList = ({ farmNetwork }: { farmNetwork?: IFarmNetwork })
 
         const dashboardData = farmNetwork.wallets.map(w => {
             return [
-                (w.wallet),
+                (w.name),
                 w.nativeBalance,
                 ...w.balances.map(tk => tk.balance)
             ]
@@ -106,25 +106,20 @@ export const FarmNetworkList = ({ farmNetwork }: { farmNetwork?: IFarmNetwork })
         }
 
 
-        return <>
-            <div>
-                <div>Last Update: {farmNetwork.lastUpdate}</div>
-                <TransactionTable
-                    defaultSortId="direction"
-                    defaultOrder="desc"
-                    headerJSX={headerJSX}
-                    cols={headerJSX.length}
-                    data={dashboardData}
-                    rows={dashboardData?.length}
-                    bodyJSX={bodyJSX}
-                    loading={!dashboardData.length}
-                    onRowClick={(idx) => {
-                        //navigate(`/binary/${dashboardData[idx].pair}`);
-                    }}
-                    widths={['40%', '20%', ...uniqueTokens.map(u => `${Math.round(40 / uniqueTokens.length)}%`)]}
-                    shouldShowMobile={true}
-                />
-            </div>
-        </>;
+        return <TransactionTable
+            defaultSortId="direction"
+            defaultOrder="desc"
+            headerJSX={headerJSX}
+            cols={headerJSX.length}
+            data={dashboardData}
+            rows={dashboardData?.length}
+            bodyJSX={bodyJSX}
+            loading={!dashboardData.length}
+            onRowClick={(idx) => {
+                //navigate(`/binary/${dashboardData[idx].pair}`);
+            }}
+            widths={['40%', '20%', ...uniqueTokens.map(u => `${Math.round(40 / uniqueTokens.length)}%`)]}
+            shouldShowMobile={true}
+        />;
     }
 }

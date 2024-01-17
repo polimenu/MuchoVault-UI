@@ -12,6 +12,7 @@ import { FarmNetworkList } from './Components/FarmNetworkList';
 import { useGetFarmNetwork } from './Hooks/useGetFarmNetworks';
 import { MAIRDROP_FARM_NETWORKS } from './Config/mAirdropConfig';
 import { NetworksDropDown } from './Components/NetworksDropDown';
+import { Section } from '@Views/Common/Card/Section';
 
 const Styles = styled.div`
   width: min(1200px, 100%);
@@ -46,13 +47,27 @@ export const AdminFarmAirdropPage = () => {
       <div className="root w-[100vw]">
         <ArbitrumOnly>
           <ViewContextProvider value={{ activeChain }}>
-            <div className='mb-10'>
-              <NetworksDropDown chain={network} setChain={setNetwork} defaultChain={defNetwork} />
-            </div>
             <main className="content-drawer mt-5">
-              <div className='mt-5'>
-                <FarmNetworkList farmNetwork={netData} />
-              </div>
+
+              <Section
+                Heading={<div className={topStyles}>Farm wallets</div>}
+                subHeading={
+                  <div className={descStyles}></div>
+                }
+                other={
+                  <div>
+                    <div className='mb-10'>
+                      <NetworksDropDown chain={network} setChain={setNetwork} defaultChain={defNetwork} />
+                      {netData && <div>
+                        Last Update: {netData.lastUpdate}
+                      </div>}
+                    </div>
+                    <FarmNetworkList farmNetwork={netData} />
+                  </div>}
+              />
+
+
+
             </main>
             <Drawer open={false}>
               <></>

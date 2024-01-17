@@ -77,6 +77,7 @@ export interface IFarmNetwork {
 
 export interface IFarmWallet {
   wallet: string;
+  name: string;
   nativeBalance: number;
   balances: IFarmBalance[];
 }
