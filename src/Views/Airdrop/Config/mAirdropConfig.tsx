@@ -28,7 +28,14 @@ export const MAIDROP_CONFIG = {
   },
 };
 
-export const MAIRDROP_FARM_NETWORKS = ["Polygon", "BSC", "zkSync", "Arbitrum", "Optimism", "Avalanche", "Base"];
+export const MAIRDROP_FARM_NETWORKS = ["Polygon", "BSC", "zkSync", "Arbitrum", "Optimism", "Avalanche", "Base", "Ethereum"];
+export const ORACLES = {
+  "MATIC": "0x52099d4523531f678dfc568a7b1e5038aadce1d6",
+  "BNB": "0x6970460aabf80c5be983c6b74e5d06dedca95d4a",
+  "ETH": "0x639fe6ab55c921f74e7fac1ee960c0b6293ba612",
+  "AVAX": "0x8bf61728eedce2f32c456454d87b5d6ed6150208",
+}
+
 export const APIFARMURL = (import.meta.env.VITE_APIRAMP_ENV == "production") ? 'https://apiramp.mucho.finance' :
   ((import.meta.env.VITE_APIRAMP_ENV == "staging") ? 'http://ec2-35-180-92-221.eu-west-3.compute.amazonaws.com' : 'http://localhost:3000');
 

@@ -9,10 +9,13 @@ import {
 import Background from 'src/AppStyles';
 import { Navbar } from '@Views/Common/Navbar';
 import { FarmNetworkList } from './Components/FarmNetworkList';
-import { useGetFarmNetwork } from './Hooks/useGetFarmNetworks';
+import { useGetFarmNetwork, useGetFarmNetworksBriefing, useGetPrices } from './Hooks/useGetFarmNetworks';
 import { MAIRDROP_FARM_NETWORKS } from './Config/mAirdropConfig';
 import { NetworksDropDown } from './Components/NetworksDropDown';
 import { Section } from '@Views/Common/Card/Section';
+import { FarmNetworksBriefing } from './Components/FarmNetworksBriefing';
+import { IFarmNetworkBriefing } from './AirdropAtom';
+import { Display } from '@Views/Common/Tooltips/Display';
 
 const Styles = styled.div`
   width: min(1200px, 100%);
@@ -30,12 +33,30 @@ export const ViewContext = React.createContext<{ activeChain: Chain } | null>(
 );
 const ViewContextProvider = ViewContext.Provider;
 
+const getTotalUSD = (farmNetworkBriefings: IFarmNetworkBriefing[], prices: any) => {
+  let tot = 0;
+  for (let inet in farmNetworkBriefings) {
+    for (let it in farmNetworkBriefings[inet].balances) {
+      const bal = farmNetworkBriefings[inet].balances[it];
+      if (it.startsWith("USD")) {
+        tot += bal;
+      }
+      else {
+        tot += prices[it] * bal;
+      }
+    }
+  }
+  return tot;
+}
 
 export const AdminFarmAirdropPage = () => {
   const { activeChain } = useActiveChain();
   const defNetwork = "Arbitrum";
   const [network, setNetwork] = useState(defNetwork);
   const [netData] = useGetFarmNetwork(network);
+  const [brief] = useGetFarmNetworksBriefing();
+  const prices = useGetPrices();
+  const total = getTotalUSD(brief, prices);
   console.log("netData", netData);
   useEffect(() => {
     document.title = "(mucho) finance | airdrop admin";
@@ -48,26 +69,40 @@ export const AdminFarmAirdropPage = () => {
         <ArbitrumOnly>
           <ViewContextProvider value={{ activeChain }}>
             <main className="content-drawer mt-5">
-
-              <Section
-                Heading={<div className={topStyles}>Farm wallets</div>}
-                subHeading={
-                  <div className={descStyles}></div>
-                }
-                other={
-                  <div>
-                    <div className='mb-10'>
-                      <NetworksDropDown chain={network} setChain={setNetwork} defaultChain={defNetwork} />
-                      {netData && <div>
-                        Last Update: {netData.lastUpdate}
+              <Styles>
+                <div className='mb-5'>
+                  <Section
+                    Heading={<div className={topStyles}>Farming networks summary ($ <Display data={total} precision={2} />)</div>}
+                    subHeading={
+                      <div className={descStyles}></div>
+                    }
+                    other={
+                      <div>
+                        <div className='mb-10'>
+                          <FarmNetworksBriefing farmNetworkBriefings={brief} prices={prices} setNetwork={setNetwork} />
+                        </div>
                       </div>}
-                    </div>
-                    <FarmNetworkList farmNetwork={netData} />
-                  </div>}
-              />
+                  />
+                </div>
+                <div className='mt-5'>
+                  <Section
+                    Heading={<div className={topStyles}>{network} wallets (click above to change network)</div>}
+                    subHeading={
+                      <div className={descStyles}></div>
+                    }
+                    other={
+                      <div>
+                        <div className='mb-10'>
+                          {netData && <div>
+                            Last Update: {netData.lastUpdate}
+                          </div>}
+                        </div>
+                        <FarmNetworkList farmNetwork={netData} prices={prices} />
+                      </div>}
+                  />
 
-
-
+                </div>
+              </Styles>
             </main>
             <Drawer open={false}>
               <></>

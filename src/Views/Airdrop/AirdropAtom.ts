@@ -67,6 +67,12 @@ export const writeV2AdminData = atom(null, (get, set, update: IMuchoVaultData) =
 });
 
 
+export interface IFarmNetworkBriefing {
+  network: string;
+  nativeToken: string;
+  lastUpdate: string;
+  balances: any;
+}
 
 export interface IFarmNetwork {
   network: string;

@@ -2,12 +2,11 @@ import { Display } from "@Views/Common/Tooltips/Display";
 import { addressSummary } from "@Views/Common/Utils";
 import { Skeleton } from "@mui/material";
 import { ReactNode } from "react";
-import { IFarmNetwork, IFarmNetworkBriefing } from "../AirdropAtom";
+import { IFarmBalance, IFarmNetwork, IFarmNetworkBriefing } from "../AirdropAtom";
 import TransactionTable from "@Views/Ramp/Components/TransactionTable";
 
-
-export const FarmNetworkList = ({ farmNetwork, prices }: { farmNetwork?: IFarmNetwork, prices: any }) => {
-    if (!farmNetwork) {
+export const FarmNetworksBriefing = ({ farmNetworkBriefings, prices, setNetwork }: { farmNetworkBriefings?: IFarmNetworkBriefing[], prices: any, setNetwork: any }) => {
+    if (!farmNetworkBriefings) {
         return <Skeleton
             key="FarmNetwork"
             variant="rectangular"
@@ -18,9 +17,21 @@ export const FarmNetworkList = ({ farmNetwork, prices }: { farmNetwork?: IFarmNe
 
         //console.log("PRICES", prices);
 
-        const uniqueTokens = farmNetwork.wallets[0].balances.map(b => b.token);
-
-        farmNetwork.wallets.sort((a, b) => a.nativeBalance - b.nativeBalance);
+        const uniqueTokens: string[] = [];
+        console.log("BRIEFINGS", farmNetworkBriefings);
+        for (let inet in farmNetworkBriefings) {
+            for (let it in farmNetworkBriefings[inet].balances) {
+                const bal = farmNetworkBriefings[inet].balances[it];
+                if (uniqueTokens.indexOf(it) < 0)
+                    uniqueTokens.push(it);
+            }
+        }
+        uniqueTokens.sort((a, b) => {
+            const va = a.startsWith("USD") ? 1 : -1;
+            const vb = b.startsWith("USD") ? 1 : -1;
+            return va - vb;
+        })
+        console.log("uniqueTokens", uniqueTokens);
 
         const displayValue = (token: string, balance: number, useColors: boolean = false, addClass: string = "") => {
             let classColors = "";
@@ -30,48 +41,59 @@ export const FarmNetworkList = ({ farmNetwork, prices }: { farmNetwork?: IFarmNe
             //console.log("Test prices", token, prices[token], prices)
             if (prices[token]) {
                 //return `${roundTo(balance, 6)} ($ ${roundTo(prices[token] * balance, 2)})`;
-                return <><Display className={`!justify-start inline ${classColors} ${addClass}`} data={balance} precision={6} />
+                return <><Display className={`!justify-start inline ${classColors} ${addClass}`} data={balance} precision={balance > 1000 ? 0 : 3} />
                     &nbsp;
-                    ($ <Display className={`!justify-start inline ${addClass}`} data={prices[token] * balance} precision={2} />)
+                    ($ <Display className={`!justify-start inline ${addClass}`} data={prices[token] * balance} precision={0} />)
                 </>
             }
 
-            return <Display className={`!justify-start inline ${classColors} ${addClass}`} data={balance} precision={2} />;
+            return <Display className={`!justify-start inline ${classColors} ${addClass}`} data={balance} precision={0} />;
         }
 
         const headerJSX = [
-            { id: "w", label: "Wallet" },
-            { id: "n", label: farmNetwork.nativeToken },
+            { id: "w", label: "Network" },
             ...uniqueTokens.map(tk => { return { id: `tk_${tk}`, label: tk } })
         ];
 
         let dashboardData = [];
 
-        const totals = farmNetwork.wallets.reduce((p, c) => {
-            return {
-                wallet: <b>TOTAL</b>,
-                nativeBalance: p.nativeBalance + c.nativeBalance,
-                balances: uniqueTokens.map((tk, i) => {
-                    return {
-                        token: tk,
-                        balance: p.balances[i].balance + c.balances[i].balance,
+        const totals = [];
+        for (let it in uniqueTokens) {
+            const token = uniqueTokens[it];
+            let total = 0;
+            for (let inet in farmNetworkBriefings) {
+                for (let it in farmNetworkBriefings[inet].balances) {
+                    const bal = farmNetworkBriefings[inet].balances[it];
+                    if (it == token) {
+                        total += bal;
                     }
-                })
-            };
-        })
+                }
+            }
+
+            totals.push({ token: token, total: total });
+        }
+
         dashboardData.push([
-            (totals.wallet),
-            displayValue(farmNetwork.nativeToken, totals.nativeBalance, true, "bold"),
-            ...totals.balances.map(tk => displayValue(tk.token, tk.balance, false, "bold"))
+            <b>TOTAL</b>,
+            ...totals.map(tk => displayValue(tk.token, tk.total, false, "bold"))
         ]);
 
-        dashboardData = dashboardData.concat(farmNetwork.wallets.map(w => {
-            return [
-                (w.name),
-                displayValue(farmNetwork.nativeToken, w.nativeBalance, true),
-                ...w.balances.map(tk => displayValue(tk.token, tk.balance))
-            ]
-        }));
+
+        for (let inet in farmNetworkBriefings) {
+            const netValues: any[] = [farmNetworkBriefings[inet].network]
+            for (let it in uniqueTokens) {
+                const token = uniqueTokens[it];
+                let val = 0;
+                for (let it in farmNetworkBriefings[inet].balances) {
+                    const bal = farmNetworkBriefings[inet].balances[it];
+                    if (it == token) {
+                        val += bal;
+                    }
+                }
+                netValues.push(displayValue(token, val, false, ""));
+            }
+            dashboardData.push(netValues);
+        }
 
         //console.log("dashboardData", dashboardData);
 
@@ -127,9 +149,10 @@ export const FarmNetworkList = ({ farmNetwork, prices }: { farmNetwork?: IFarmNe
             bodyJSX={bodyJSX}
             loading={!dashboardData.length}
             onRowClick={(idx) => {
-                //navigate(`/binary/${dashboardData[idx].pair}`);
+                if (idx > 0)
+                    setNetwork(dashboardData[idx][0]);
             }}
-            widths={['40%', '20%', ...uniqueTokens.map(u => `${Math.round(40 / uniqueTokens.length)}%`)]}
+            widths={['15%', ...uniqueTokens.map(u => `${Math.round(85 / uniqueTokens.length)}%`)]}
             shouldShowMobile={true}
         />;
     }
