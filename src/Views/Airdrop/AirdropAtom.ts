@@ -24,6 +24,19 @@ export interface IMuchoAirdropManagerData {
   active: boolean;
   prices: IMuchoAirdropDataPrice[];
   oldTokens: IOldAirdropData[];
+  distributions: IMuchoAirdropDistribution[];
+}
+
+export interface IMuchoAirdropDistribution {
+  id: number;
+  name: string;
+  token: string;
+  totalTokens: number;
+  userTokensByMAirdrop: number;
+  userTokensByNFT: number;
+  expirationDate: Date;
+  precision: number;
+  claimed: boolean;
 }
 
 export interface IOldAirdropData {

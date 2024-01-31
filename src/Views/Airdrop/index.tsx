@@ -18,6 +18,7 @@ import Background from 'src/AppStyles';
 import { Navbar } from '@Views/Common/Navbar';
 import { useGetMuchoAirdrop } from './Hooks/useGetMuchoAirdrop';
 import { t } from 'i18next';
+import { MuchoAirdropRewards, getMuchoAirdropRewards } from './Components/MuchoAirdropRewards';
 
 const Styles = styled.div`
   width: min(1200px, 100%);
@@ -81,6 +82,13 @@ export const AirdropUserPage = () => {
         Cards={getMuchoAirdropCards(data ? data : null)}
         subHeading={<><div className={descStyles}>{t("airdrop.hero")}</div></>}
       />
+      {data.distributions && data.distributions.length > 0 &&
+        <Section
+          Heading={<div className={topStyles}>Claim your airdrops</div>}
+          subHeading={<><div className={descStyles}>Claim here your obtained airdrops. Note once your airdrop is expired, we cannot guarantee you will be able to claim it!</div></>}
+          Cards={getMuchoAirdropRewards(data.distributions)}
+        />
+      }
     </Styles>
   );
 };

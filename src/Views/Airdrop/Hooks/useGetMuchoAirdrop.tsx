@@ -251,7 +251,55 @@ export const useGetMuchoAirdrop = () => {
           userBalance: getDataNumber(data, `tokenInWallet_${c.contract}`) / (10 ** getDataNumber(data, 'mAirdropDecimals')),
           version: c.version,
         }
-      })
+      }),
+
+      //MOCK:
+      distributions: [
+        /*{
+          id: 1,
+          token: "mUSDC",
+          name: "mUSDC bienvenida",
+          totalTokens: 4000,
+          userTokensByMAirdrop: 15,
+          userTokensByNFT: 5,
+          expirationDate: (new Date((new Date()).getTime() + 21339444)),
+          precision: 2,
+          claimed: false
+        },
+        {
+          id: 2,
+          token: "ETH",
+          name: "ETH zkSync",
+          totalTokens: 2.64984,
+          userTokensByMAirdrop: 0.314,
+          userTokensByNFT: 0.01653,
+          expirationDate: (new Date((new Date()).getTime() + 21339444)),
+          precision: 6,
+          claimed: true
+        },
+        {
+          id: 3,
+          token: "JUP",
+          name: "Primer airdrop JUP",
+          totalTokens: 45467,
+          userTokensByMAirdrop: 0,
+          userTokensByNFT: 345,
+          expirationDate: (new Date((new Date()).getTime() + 21339444)),
+          precision: 0,
+          claimed: false
+        },
+        {
+          id: 4,
+          token: "ZKF",
+          name: "Airdrop ZKFair",
+          totalTokens: 246,
+          userTokensByMAirdrop: 0,
+          userTokensByNFT: 0,
+          expirationDate: (new Date((new Date()).getTime() + 21339444)),
+          precision: 0,
+          claimed: false
+        }*/
+      ]
     };
 
   }
