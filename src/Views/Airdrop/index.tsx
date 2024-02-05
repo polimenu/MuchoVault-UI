@@ -72,6 +72,7 @@ export const AirdropUserPage = () => {
   const [, setV2AdminData] = useAtom(writeV2AdminData);
   const data: IMuchoAirdropManagerData = useGetMuchoAirdrop();
   setV2AdminData(data);
+  const rewCards = getMuchoAirdropRewards(data);
 
   return (
     <Styles>
@@ -82,11 +83,11 @@ export const AirdropUserPage = () => {
         Cards={getMuchoAirdropCards(data ? data : null)}
         subHeading={<><div className={descStyles}>{t("airdrop.hero")}</div></>}
       />
-      {data.distributions && data.distributions.length > 0 &&
+      {data && data.distributions && data.distributions.length > 0 &&
         <Section
-          Heading={<div className={topStyles}>Claim your airdrops</div>}
-          subHeading={<><div className={descStyles}>Claim here your obtained airdrops. Note once your airdrop is expired, we cannot guarantee you will be able to claim it!</div></>}
-          Cards={getMuchoAirdropRewards(data.distributions)}
+          Heading={<div className={topStyles}>{t("airdrop.Claim your airdrops")}</div>}
+          subHeading={<><div className={descStyles}>{t("airdrop.Claim here your obtained airdrops. Note once your airdrop is expired, we cannot guarantee you will be able to claim it!")}</div></>}
+          Cards={rewCards}
         />
       }
     </Styles>

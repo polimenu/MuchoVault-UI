@@ -12,6 +12,8 @@ import { Chain } from 'wagmi';
 import { t } from 'i18next';
 import { MAIDROP_CONFIG } from '../Config/mAirdropConfig';
 import { BlueBtn } from '@Views/Common/V2-Button';
+import { useWriteCall } from '@Hooks/useWriteCall';
+import MuchoRewardRouterAbi from '../Config/Abis/mAirdropRewardRouter.json';
 
 export const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 export const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
@@ -26,12 +28,14 @@ export const wrapperClasses = 'flex justify-end flex-wrap';
 
 
 
-export const getMuchoAirdropRewards = (data: IMuchoAirdropDistribution[]) => {
+export const getMuchoAirdropRewards = (data: IMuchoAirdropManagerData) => {
   const viewContextValue = useContext(ViewContext);
+  const config: (typeof MAIDROP_CONFIG)[42161] = MAIDROP_CONFIG[viewContextValue.activeChain.id];
+  const { writeCall } = useWriteCall(config.RewardRouterContract, MuchoRewardRouterAbi);
   //console.log("getBadgeCards 0");
   //console.log("getV2AdminCards data", data);
 
-  if (!data || data.length == 0) {
+  if (!data || !data.distributions || data.distributions.length == 0) {
     //console.log("getBadgeCards 1");
     return [0, 1].map((index) => (
       <Skeleton
@@ -50,10 +54,11 @@ export const getMuchoAirdropRewards = (data: IMuchoAirdropDistribution[]) => {
   }
 
 
-  return data.map(d => <MuchoAirdropRewardsCard data={d} />);
+  return data.distributions.map(d => <MuchoAirdropRewardsCard data={d} writeCall={writeCall} />);
 };
 
-const MuchoAirdropRewardsCard = ({ data }: { data: IMuchoAirdropDistribution }) => {
+
+const MuchoAirdropRewardsCard = ({ data, writeCall }: { data: IMuchoAirdropDistribution, writeCall: any }) => {
   if (!data) {
     return <Skeleton
       key={0}
@@ -62,21 +67,24 @@ const MuchoAirdropRewardsCard = ({ data }: { data: IMuchoAirdropDistribution }) 
     />
   }
 
+  const claimReward = (airdropId: number) => {
+    //getContractCall(writeCall, "harvest", [airdropId]);
+    writeCall(() => { }, "harvest", [airdropId]);
+  }
+
   return (
     <Card
       top={
         <>
-          <span className={underLineClass}>Airdrop distribution #{data.id}: {data.name}</span>
+          <span className={underLineClass}>{t("airdrop.Airdrop distribution #")}{data.id}: {data.name}</span>
         </>
       }
       middle={<>
         <TableAligner
           keysName={
             ["Token",
-              "Total distributed tokens",
-              "Total distributed to you",
-              "Claim expiration date",
-              "Status",
+              t("airdrop.Total distributed to you"),
+              t("airdrop.Claim expiration date"),
             ]
           }
           values={[
@@ -88,17 +96,8 @@ const MuchoAirdropRewardsCard = ({ data }: { data: IMuchoAirdropDistribution }) 
 
               <Display
                 className="!justify-end"
-                data={data.totalTokens}
-                unit={"mUSDC"}
-                precision={2}
-              />
-            </div>,
-            <div className={`${wrapperClasses}`}>
-
-              <Display
-                className="!justify-end"
                 data={data.userTokensByMAirdrop + data.userTokensByNFT}
-                unit={"mUSDC"}
+                unit={data.token}
                 precision={2}
               />
             </div>,
@@ -106,13 +105,8 @@ const MuchoAirdropRewardsCard = ({ data }: { data: IMuchoAirdropDistribution }) 
 
               <Display
                 className="!justify-end"
-                data={data.expirationDate.toDateString()}
+                data={data.expirationDate.toUTCString()}
               />
-            </div>,
-            <div className={`${wrapperClasses}`}>
-              {data.userTokensByMAirdrop == 0 && data.userTokensByNFT == 0 && "NOT ELIGIBLE"}
-              {data.userTokensByMAirdrop + data.userTokensByNFT > 0 && data.claimed && "CLAIMED"}
-              {data.userTokensByMAirdrop + data.userTokensByNFT > 0 && !data.claimed && "NOT CLAIMED"}
             </div>,
           ]
           }
@@ -122,9 +116,8 @@ const MuchoAirdropRewardsCard = ({ data }: { data: IMuchoAirdropDistribution }) 
       </>}
       bottom={
         <>
-          {data.userTokensByMAirdrop + data.userTokensByNFT > 0 && !data.claimed && <BlueBtn>Claim</BlueBtn>}
-          {data.userTokensByMAirdrop + data.userTokensByNFT > 0 && data.claimed && <BlueBtn isDisabled={true}>Already claimed</BlueBtn>}
-          {data.userTokensByMAirdrop == 0 && data.userTokensByNFT == 0 && <BlueBtn isDisabled={true}>Not Eligible</BlueBtn>}
+          {data.userTokensByMAirdrop + data.userTokensByNFT > 0 && <BlueBtn onClick={() => { claimReward(data.id) }}>{t("airdrop.Claim")}</BlueBtn>}
+          {data.userTokensByMAirdrop == 0 && data.userTokensByNFT == 0 && <BlueBtn onClick={() => { }} isDisabled={true}>{t("airdrop.No pending assignation")}</BlueBtn>}
         </>
       }
     />

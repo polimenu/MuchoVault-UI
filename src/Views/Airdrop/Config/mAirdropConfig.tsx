@@ -1,6 +1,8 @@
 export const MAIDROP_CONFIG = {
   42161: {
     ManagerContract: "0xfAb74DA5AbaAb95A5dE6bF2a364FA2e6143bd7E5",
+    RewardRouterContract: "0xcF3aCfEc02C23885B2E7Ba156d38dF18616135EF",
+    RewardBlacklist: ["0"],
     //TokenContract: "0xb9aEdEb1F2470F5e1e6f33BC745eAd3E41A55267",
     //TokenContractVersion: "1.1",
     PaymentTokens: [

@@ -36,7 +36,6 @@ export interface IMuchoAirdropDistribution {
   userTokensByNFT: number;
   expirationDate: Date;
   precision: number;
-  claimed: boolean;
 }
 
 export interface IOldAirdropData {

@@ -87,7 +87,15 @@
 		"You have": "Tienes",
 		"out of": "de",
 		"Current mAirdrop Token Sale": "Lanzamiento actual de mAirdrop",
-		"There is no mAirdrop token currently for sale": "Actualmente, no hay ningún lanzamiento activo de mAirdrop"
+		"There is no mAirdrop token currently for sale": "Actualmente, no hay ningún lanzamiento activo de mAirdrop",
+		"Claim your airdrops": "Reclama tus airdrops",
+		"Claim here your obtained airdrops. Note once your airdrop is expired, we cannot guarantee you will be able to claim it!": "Reclama aquí los airdrops obtenidos. Presta atención: una vez alcanzada la fecha de expiración, no te podemos garantizar que los puedas reclamar.",
+		"Total distributed tokens": "Tokens distribuidos",
+		"Total distributed to you": "Tu asignación pendiente de reclamar",
+		"Claim expiration date": "Fecha de expiración",
+		"Claim": "Reclamar",
+		"No pending assignation": "No tienes asignación pendiente de reclamar",
+		"Airdrop distribution #": "Airdrop distribuido #"
 	},
 	"ramp": {
 		"On & Off Ramp": "On & Off Ramp",

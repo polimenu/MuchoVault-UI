@@ -87,7 +87,15 @@
 		"You have": "You have",
 		"out of": "out of",
 		"Current mAirdrop Token Sale": "Current mAirdrop Token Sale",
-		"There is no mAirdrop token currently for sale": "There is no mAirdrop token currently for sale"
+		"There is no mAirdrop token currently for sale": "There is no mAirdrop token currently for sale",
+		"Claim your airdrops": "Claim your airdrops",
+		"Claim here your obtained airdrops. Note once your airdrop is expired, we cannot guarantee you will be able to claim it!": "Claim here your obtained airdrops. Note once your airdrop is expired, we cannot guarantee you will be able to claim it!",
+		"Total distributed tokens": "Total distributed tokens",
+		"Total distributed to you": "Total distributed to you",
+		"Claim expiration date": "Claim expiration date",
+		"Claim": "Claim",
+		"No pending assignation": "No pending assignation",
+		"Airdrop distribution #": "Airdrop distribution #"
 	},
 	"ramp": {
 		"On & Off Ramp": "On & Off Ramp",

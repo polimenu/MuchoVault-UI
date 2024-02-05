@@ -1,5 +1,6 @@
 import TokenAbi from '../Config/Abis/mAirdrop.json';
 import ManagerAbi from '../Config/Abis/mAirdropManager.json';
+import RewardRouterAbi from '../Config/Abis/mAirdropRewardRouter.json';
 import { MAIDROP_CONFIG } from '../Config/mAirdropConfig';
 import { getBNtoStringCopy } from '@Utils/useReadCall';
 import { Chain, useContractReads } from 'wagmi';
@@ -172,6 +173,17 @@ export const useGetMuchoAirdrop = () => {
       };
     }));
 
+
+    //Own airdrop rewards
+    calls.push({
+      address: config.RewardRouterContract,
+      abi: RewardRouterAbi,
+      functionName: 'userAllAirdropRewards',
+      args: [account],
+      chainId: activeChain?.id,
+      map: `userAllAirdropRewards`
+    });
+
   }
 
   //console.log("Calls before index", calls);
@@ -210,6 +222,7 @@ export const useGetMuchoAirdrop = () => {
   if (data && data[0]) {
     //console.log("DATA!!", data);
     data.indexes = indexes;
+    //console.log("Distributions", getDataString(data, 'userAllAirdropRewards'));
 
     let endDate = new Date(0);
     if (config.TokenContract)
@@ -218,6 +231,8 @@ export const useGetMuchoAirdrop = () => {
     let iniDate = new Date(0);
     if (config.TokenContract)
       iniDate.setUTCSeconds(getDataNumber(data, 'dateIni'));
+
+    const dist = getDataString(data, 'userAllAirdropRewards');
 
     res = {
       contract: config.ManagerContract,
@@ -253,53 +268,20 @@ export const useGetMuchoAirdrop = () => {
         }
       }),
 
-      //MOCK:
-      distributions: [
-        /*{
-          id: 1,
-          token: "mUSDC",
-          name: "mUSDC bienvenida",
-          totalTokens: 4000,
-          userTokensByMAirdrop: 15,
-          userTokensByNFT: 5,
-          expirationDate: (new Date((new Date()).getTime() + 21339444)),
+
+      distributions: (dist && dist.length > 0) ? dist.filter(d => config.RewardBlacklist.indexOf(d.airdropId) < 0).map(d => {
+        return {
+          id: d.airdropId,
+          token: d.token,
+          name: d.name,
+          totalTokens: d.normalAmount / 10 ** d.decimals + d.bonusAmount / 10 ** d.decimals,
+          userTokensByMAirdrop: d.normalAmount / 10 ** d.decimals,
+          userTokensByNFT: d.bonusAmount / 10 ** d.decimals,
+          expirationDate: (new Date(d.expirationDate * 1000)),
           precision: 2,
-          claimed: false
-        },
-        {
-          id: 2,
-          token: "ETH",
-          name: "ETH zkSync",
-          totalTokens: 2.64984,
-          userTokensByMAirdrop: 0.314,
-          userTokensByNFT: 0.01653,
-          expirationDate: (new Date((new Date()).getTime() + 21339444)),
-          precision: 6,
-          claimed: true
-        },
-        {
-          id: 3,
-          token: "JUP",
-          name: "Primer airdrop JUP",
-          totalTokens: 45467,
-          userTokensByMAirdrop: 0,
-          userTokensByNFT: 345,
-          expirationDate: (new Date((new Date()).getTime() + 21339444)),
-          precision: 0,
-          claimed: false
-        },
-        {
-          id: 4,
-          token: "ZKF",
-          name: "Airdrop ZKFair",
-          totalTokens: 246,
-          userTokensByMAirdrop: 0,
-          userTokensByNFT: 0,
-          expirationDate: (new Date((new Date()).getTime() + 21339444)),
-          precision: 0,
-          claimed: false
-        }*/
-      ]
+        }
+
+      }) : []
     };
 
   }
