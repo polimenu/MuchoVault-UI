@@ -9,6 +9,15 @@ export interface IRampKYC {
     interactions: IRampKYCInteraction[];
 }
 
+export interface IRampKYB {
+    name: string;
+    user_id: string;
+    last_subtype: string;
+    init: string;
+    last: string;
+    interactions: IRampKYCInteraction[];
+}
+
 export interface IRampKYCInteraction {
     subtype: string;
     date: number;
@@ -47,6 +56,7 @@ export interface IRampData {
 }
 
 export interface IRampAdminData {
+    KYBList: IRampKYB[];
     KYCList: IRampKYC[];
     OnRampList: IRampAdminTransaction[];
     OffRampList: IRampAdminTransaction[];

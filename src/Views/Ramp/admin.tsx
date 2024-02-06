@@ -69,8 +69,8 @@ export const RampAdminPage = () => {
     //console.log("Rampdata set", rampData);
   }, [rampAdminData]);
 
-  console.log("RampAdmindata", rampAdminData);
-  console.log("rampState", rampState);
+  //console.log("RampAdmindata", rampAdminData);
+  //console.log("rampState", rampState);
   //sessionStorage.setItem("ramp_session_id", "");
   //console.log("Loading RampPage");
 

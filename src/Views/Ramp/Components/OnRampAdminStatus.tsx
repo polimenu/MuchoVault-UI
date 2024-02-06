@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { Section } from '@Views/Common/Card/Section';
 import TransactionTable from './TransactionTable';
 import { Display } from '@Views/Common/Tooltips/Display';
@@ -7,6 +7,7 @@ import { useAtom } from 'jotai';
 import { IRampAdminTransaction, IRampKYC, rampAdminDataAtom, rampAtom } from '../rampAtom';
 import { addressSummary } from '@Views/Common/Utils';
 import { formatDate } from '../Utils';
+import BufferInput from '@Views/Common/BufferInput';
 
 
 const topStyles = 'mx-3 text-f22';
@@ -19,9 +20,10 @@ export const underLineClass =
 export const OnRampAdminStatus = () => {
   const [rampData] = useAtom(rampAdminDataAtom);
 
-  console.log("OnRampAdminStatus loading", rampData);
+  //console.log("OnRampAdminStatus loading", rampData);
 
   return <div>
+    <KYBListSection KYBList={rampData.KYBList} />
     <KYCListSection KYCList={rampData.KYCList} />
     <OnRampTransactionsSection trxList={rampData.OnRampList} />
     <OffRampTransactionsSection trxList={rampData.OffRampList} />
@@ -30,10 +32,139 @@ export const OnRampAdminStatus = () => {
 }
 
 
+const KYBListSection = ({ KYBList }: { KYBList?: IRampKYB[] }) => {
+  const [pageState, setPageState] = useAtom(rampAtom);
+  const [from, setFrom] = useState(0);
+  const [to, setTo] = useState(10);
+  if (!KYBList) {
+    return <Skeleton
+      key="OnRampKYCListCard"
+      variant="rectangular"
+      className="w-full !h-full min-h-[370px] !transform-none !bg-1"
+    />
+  }
+  else {
+    console.log("KYBList", KYBList);
+    const headerJSX = [
+      { id: "uid", label: "User ID" },
+      { id: "comnamepany", label: "Company" },
+      { id: "status", label: "Status" },
+      { id: "lastupdate", label: "Last Update" },
+      { id: "initdate", label: "Init Date" },
+    ];
+
+    const counter = {
+      total: KYBList.length,
+      full: KYBList.filter(k => k.last_subtype == "FULL_USER").length,
+      pending: KYBList.filter(k => k.last_subtype.indexOf("PENDING") >= 0).length,
+      failed: KYBList.filter(k => k.last_subtype.indexOf("FAILED") >= 0).length
+    }
+
+    const dashboardData = KYBList.slice(from, to).map(t => {
+      return [
+        addressSummary(t.user_id),
+        t.name,
+        t.last_subtype,
+        formatDate(t.last),
+        formatDate(t.init),
+      ]
+    });
+    //console.log("dashboardData", dashboardData);
+
+    interface ICellContent {
+      content: ReactNode[];
+      className?: string;
+      classNames?: string[];
+      preventDefault?: boolean;
+    }
+
+    const CellContent: React.FC<ICellContent> = ({
+      content,
+      classNames,
+      preventDefault,
+      className,
+    }) => {
+      if (!content.length) return;
+      return (
+        <div className={`${className} flex flex-col`}>
+          {content.map((cellInfo, key) => {
+            return (
+              <span
+                className={`${classNames?.length >= key ? classNames[key] : null} ${key && !preventDefault && " text-4 "
+                  }`}
+                key={key}
+              >
+                {cellInfo}
+              </span>
+            );
+          })}
+        </div>
+      );
+    };
+
+    const bodyJSX = (
+      row: number,
+      col: number,
+      sortedData: typeof dashboardData
+    ) => {
+      const currentData = sortedData[row][col] ?? "";
+      let classNames = "";
+      if (currentData.indexOf("COMPLETED") > 0)
+        classNames += "green";
+      else if (currentData.indexOf("REJECTED") > 0)
+        classNames += "red";
+      //console.log("currentData", currentData);
+      return <CellContent
+        content={[
+          <Display
+            data={currentData}
+            className="!justify-start"
+          />,
+        ]}
+        className={classNames}
+      />;
+    }
+
+
+    return <Section
+      Heading={<div className={topStyles}>KYB Processes ({`${counter.total} total, ${counter.full} done, ${counter.pending} pending, ${counter.failed} failed`})</div>}
+      subHeading={
+        <div className={descStyles + " flex"}>
+          <div className='inline'>
+            From <BufferInput placeholder={"0"} bgClass="!bg-1" ipClass="mt-1" className='w-[5vw]' value={from} onChange={(val) => { setFrom(val); }} />
+          </div>
+          <div className='inline ml-5'>
+            to <BufferInput placeholder={"20"} bgClass="!bg-1" ipClass="mt-1" className='w-[5vw]' value={to} onChange={(val) => { setTo(val); }} />
+          </div>
+        </div>
+      }
+      other={<div>
+        <TransactionTable
+          defaultSortId="direction"
+          defaultOrder="desc"
+          headerJSX={headerJSX}
+          cols={headerJSX.length}
+          data={dashboardData}
+          rows={dashboardData?.length}
+          bodyJSX={bodyJSX}
+          loading={!dashboardData.length}
+          onRowClick={(idx) => {
+            const uid = KYBList[idx].user_id;
+            setPageState({ ...pageState, isModalOpen: true, activeModal: "ADMIN_KYB_DETAIL", auxModalData: { uid } })
+          }}
+          widths={['20%', '20%', '20%', '20%', '20%']}
+          shouldShowMobile={true}
+        />
+      </div>}
+    />
+  }
+}
 
 
 const KYCListSection = ({ KYCList }: { KYCList?: IRampKYC[] }) => {
   const [pageState, setPageState] = useAtom(rampAtom);
+  const [from, setFrom] = useState(0);
+  const [to, setTo] = useState(10);
   if (!KYCList) {
     return <Skeleton
       key="OnRampKYCListCard"
@@ -57,7 +188,7 @@ const KYCListSection = ({ KYCList }: { KYCList?: IRampKYC[] }) => {
       failed: KYCList.filter(k => k.last_subtype.indexOf("FAILED") >= 0).length
     }
 
-    const dashboardData = KYCList.map(t => {
+    const dashboardData = KYCList.slice(from, to).map(t => {
       return [
         addressSummary(t.user_id),
         t.email,
@@ -126,7 +257,13 @@ const KYCListSection = ({ KYCList }: { KYCList?: IRampKYC[] }) => {
     return <Section
       Heading={<div className={topStyles}>KYC Processes ({`${counter.total} total, ${counter.full} done, ${counter.pending} pending, ${counter.failed} failed`})</div>}
       subHeading={
-        <div className={descStyles}>
+        <div className={descStyles + " flex"}>
+          <div className='inline'>
+            From <BufferInput placeholder={"0"} bgClass="!bg-1" ipClass="mt-1" className='w-[5vw]' value={from} onChange={(val) => { setFrom(val); }} />
+          </div>
+          <div className='inline ml-5'>
+            to <BufferInput placeholder={"20"} bgClass="!bg-1" ipClass="mt-1" className='w-[5vw]' value={to} onChange={(val) => { setTo(val); }} />
+          </div>
         </div>
       }
       other={<div>
@@ -158,6 +295,8 @@ const KYCListSection = ({ KYCList }: { KYCList?: IRampKYC[] }) => {
 
 const OnRampTransactionsSection = ({ trxList }: { trxList?: IRampAdminTransaction[] }) => {
   const [pageState, setPageState] = useAtom(rampAtom);
+  const [from, setFrom] = useState(0);
+  const [to, setTo] = useState(10);
   if (!trxList) {
     return <Skeleton
       key="OnRampKYCListCard"
@@ -187,7 +326,7 @@ const OnRampTransactionsSection = ({ trxList }: { trxList?: IRampAdminTransactio
       fees: Math.round(100 * trxList.filter(k => k.last_subtype == "SUCCESS").map(t => t.fees ? parseFloat(t.fees) : 0).reduce((p, c) => c + p, 0)) / 100
     }
 
-    const dashboardData = trxList.map(t => {
+    const dashboardData = trxList.slice(from, to).map(t => {
       /*return {
         tid: t.input.transaction_id,
         direction: t.direction,
@@ -267,7 +406,13 @@ const OnRampTransactionsSection = ({ trxList }: { trxList?: IRampAdminTransactio
     return <Section
       Heading={<div className={topStyles}>On Ramp Transactions ({`${counter.total} transactions, ${counter.full} done, ${counter.amount} EUR, ${counter.fees} EUR fees`})</div>}
       subHeading={
-        <div className={descStyles}>
+        <div className={descStyles + " flex"}>
+          <div className='inline'>
+            From <BufferInput placeholder={"0"} bgClass="!bg-1" ipClass="mt-1" className='w-[5vw]' value={from} onChange={(val) => { setFrom(val); }} />
+          </div>
+          <div className='inline ml-5'>
+            to <BufferInput placeholder={"20"} bgClass="!bg-1" ipClass="mt-1" className='w-[5vw]' value={to} onChange={(val) => { setTo(val); }} />
+          </div>
         </div>
       }
       other={<div>
@@ -298,6 +443,8 @@ const OnRampTransactionsSection = ({ trxList }: { trxList?: IRampAdminTransactio
 
 const OffRampTransactionsSection = ({ trxList }: { trxList?: IRampAdminTransaction[] }) => {
   const [pageState, setPageState] = useAtom(rampAtom);
+  const [from, setFrom] = useState(0);
+  const [to, setTo] = useState(10);
   if (!trxList) {
     return <Skeleton
       key="OnRampKYCListCard"
@@ -326,7 +473,7 @@ const OffRampTransactionsSection = ({ trxList }: { trxList?: IRampAdminTransacti
       fees: Math.round(100 * trxList.filter(k => k.last_subtype == "SUCCESS").map(t => t.fees ? parseFloat(t.fees) : 0).reduce((p, c) => c + p, 0)) / 100
     }
 
-    const dashboardData = trxList.map(t => {
+    const dashboardData = trxList.slice(from, to).map(t => {
       /*return {
         tid: t.input.transaction_id,
         direction: t.direction,
@@ -406,7 +553,13 @@ const OffRampTransactionsSection = ({ trxList }: { trxList?: IRampAdminTransacti
     return <Section
       Heading={<div className={topStyles}>Off Ramp Transactions ({`${counter.total} transactions, ${counter.full} done, ${counter.amount} USD, ${counter.fees} USD fees`})</div>}
       subHeading={
-        <div className={descStyles}>
+        <div className={descStyles + " flex"}>
+          <div className='inline'>
+            From <BufferInput placeholder={"0"} bgClass="!bg-1" ipClass="mt-1" className='w-[5vw]' value={from} onChange={(val) => { setFrom(val); }} />
+          </div>
+          <div className='inline ml-5'>
+            to <BufferInput placeholder={"20"} bgClass="!bg-1" ipClass="mt-1" className='w-[5vw]' value={to} onChange={(val) => { setTo(val); }} />
+          </div>
         </div>
       }
       other={<div>

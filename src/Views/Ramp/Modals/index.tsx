@@ -12,6 +12,7 @@ import { OnRampModal } from './OnRampModal';
 import { OffRampModal } from './OffRampModal';
 import { KycDetailModal } from './KYCDetailModal';
 import { TrxDetailModal } from './TrxDetailModal';
+import { KybDetailModal } from './KYBDetailModal';
 
 export const RampModals = () => {
     const [pageState, setPageState] = useAtom(rampAtom);
@@ -70,6 +71,9 @@ function ModalChild() {
 
     if (activeModal == "ADMIN_KYC_DETAIL")
         return <KycDetailModal />;
+
+    if (activeModal == "ADMIN_KYB_DETAIL")
+        return <KybDetailModal />;
 
     if (activeModal == "ADMIN_TRX_DETAIL")
         return <TrxDetailModal />;
