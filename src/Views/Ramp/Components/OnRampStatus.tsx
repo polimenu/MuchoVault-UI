@@ -6,7 +6,7 @@ import { useGetRampTransactions } from '../Hooks/user';
 import { OnRampCard } from './Cards/OnRampCard';
 import { OffRampCard } from './Cards/OffRampCard';
 import { UserDetailsCard } from './Cards/UserDetailsCard';
-import { KYCCard } from './Cards/KYCCard';
+import { KYCPremiumCard } from './Cards/KYCCard';
 import { RampTransactionListCard } from './Cards/RampTransactionListCard';
 
 
@@ -58,7 +58,7 @@ const UserDetailsSection = ({ userDetails }: { userDetails?: IRampUserDetails })
     Cards={
       [
         <UserDetailsCard userDetails={userDetails} />,
-        <KYCCard userDetails={userDetails} />,
+        <KYCPremiumCard userDetails={userDetails} />,
 
       ]
     }
