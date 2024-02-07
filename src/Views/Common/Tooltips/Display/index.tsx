@@ -34,100 +34,54 @@ export const Display: React.FC<IDisplayProp> = ({
   placement,
   className,
   content,
-  precision = 2,
+  precision = 2
 }) => {
-  try {
-    const prev = useRef<string | number>();
-    if (data == null || data == undefined || data == '') {
-      data = '0';
-    }
-    // 3 4 5 4
-    // d
+  const prev = useRef<string | number>();
+  if (data == null || data == undefined || data == '') {
+    data = '0';
+  }
+  const isNumeric = (typeof data === 'number');
 
-    const [color, setColor] = useState('green');
+  useEffect(() => {
+    return () => {
+      prev.current = data;
+    };
+  }, [data]);
 
-    useEffect(() => {
-      return () => {
-        prev.current = data;
-      };
-    }, [data]);
-    if (typeof data === 'number') data = data.toString();
+  if (isNumeric)
+    data = data.toString();
 
-    const oneBN = new Big('1.0');
-    const zeroBN = new Big('0.0');
-    const tenThousandBN = new Big('1000');
-    const dataBN = new Big('' + data);
-    const isDataSmallerThan1 = dataBN.lt(oneBN);
-    const isDataSmallerThan0 = dataBN.lt(zeroBN);
-    const isDataGreaterThan10000 = dataBN.gt(tenThousandBN);
-    let displayData = '';
-    if (isDataGreaterThan10000) {
-      displayData = numberWithCommas(toFixed(data, precision));
-    }
-    let isDecimal = false;
-    const arr = data.split('.');
-    if (arr.length > 1 && arr[1].length > precision) {
-      isDecimal = true;
-    }
+  className = content ? className + ' ' + underLineClass : className;
+  let tooltipContent: ReactNode | string =
+    (isNumeric ? numberWithCommas(toFixed(data, 6)) : '') +
+    (unit ? ' ' + unit : '');
+  if (content) {
+    tooltipContent = <div className="px-4 py-2">{content}</div>;
+  }
+  if (disable) {
+    tooltipContent = '';
+  }
+  const Unit = unit ? <>{' ' + unit}</> : '';
+  const generatedStyles = `flex mono content-center ${colored ? 'green' : ''} ${className || ''}`;
 
-    className = content ? className + ' ' + underLineClass : className;
-    let tooltipContent: ReactNode | string =
-      (data ? numberWithCommas(toFixed(data, 6)) : '0') +
-      (unit ? ' ' + unit : '');
-    if (content) {
-      tooltipContent = <div className="px-4 py-2">{content}</div>;
-    }
-    if (disable) {
-      tooltipContent = '';
-    }
-    const Unit = unit ? <>{' ' + unit}</> : '';
-    const generatedStyles = `flex mono content-center ${colored ? color : ''} ${className || ''
-      }`;
-    const DefaultExport = (
-      <NumberTooltip content={tooltipContent} placement={placement}>
-        <div className={generatedStyles}>
-          {label}
-          {data && numberWithCommas(toFixed(data, precision))}
-          {Unit}
-        </div>
-      </NumberTooltip>
-    );
-    if (content) {
-      return DefaultExport;
-    }
+  if (!tooltipContent) {
+    return <div className={generatedStyles}>
+      {label}
+      {isNumeric && numberWithCommas(toFixed(data, precision))}
+      {!isNumeric && data}
+      {Unit}
+    </div>
 
-    if (isDataSmallerThan1) {
-      // data is in 0.000something but positive
-      if (isDataSmallerThan0) {
-        // if data is negative
-        // if (data.length > 5) {
-        // -0.0001 + more digits
-        return (
-          <NumberTooltip content={tooltipContent} placement={placement}>
-            <div className={generatedStyles}>
-              {label}
-              {data && numberWithCommas(toFixed(data, precision))}
-              {Unit}
-            </div>
-          </NumberTooltip>
-        );
-        // } else {
-        //   // -0.0001 |
-        //   return (
-        //     <div className={generatedStyles}>
-        //       {label}
-        //       {data}
-        //       &nbsp;
-        //       {unit}
-        //     </div>
-        //   );
-        // }
-      }
-      // 0.00precision11 has length more than 6.
-    }
-    // if (isDecimal) {
-    return DefaultExport;
-  } catch (e) {
-    return <div>{data}</div>;
+  }
+  else {
+    return <NumberTooltip content={tooltipContent} placement={placement}>
+      <div className={generatedStyles}>
+        {label}
+        {isNumeric && numberWithCommas(toFixed(data, precision))}
+        {!isNumeric && data}
+        {Unit}
+      </div>
+    </NumberTooltip>;
+
   }
 };

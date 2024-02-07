@@ -54,6 +54,7 @@ export const KYCPremiumCard = ({ userDetails }: { userDetails?: IRampUserDetails
                             className={"!justify-end " + underLineClass + " " + (userDetails.status == "FULL_USER" ? " green" : " red")}
                             data={t(userDetails.kyc_status.status)}
                             content={<span>{t(userDetails.kyc_status.explanation)}</span>}
+                            debug={true}
                         />
                     </div>]}
                 ></TableAligner>

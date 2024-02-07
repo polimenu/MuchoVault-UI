@@ -12,7 +12,7 @@ const NumberTooltip: React.FC<Itooltip> = ({
   children,
   className,
   followCursor,
-  placement,
+  placement
 }) => {
   const tooltipStyles = {
     tooltip: "tooltip " + className,
@@ -30,7 +30,7 @@ const NumberTooltip: React.FC<Itooltip> = ({
       enterTouchDelay={0}
       leaveTouchDelay={10000}
 
-      // disableHoverListener={window.innerWidth < 600}
+    // disableHoverListener={window.innerWidth < 600}
     >
       {children}
     </Tooltip>
