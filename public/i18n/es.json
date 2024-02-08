@@ -210,5 +210,33 @@
 		"Main account": "Cuenta por defecto",
 		"Click to set as main account": "Establecer como cuenta por defecto",
 		"Edit user profile": "Editar datos"
+	},
+	"index": {
+		"hero": "(mucho) index invertirá automáticamente por ti en distintos protocolos y blockchains. Comprando tokens mIndex, te estarás indexando al resultado de este portfolio.",
+		"note": "NOTA: Sólo disponible temporalmente para alumnos del Campamento DeFi con el NFT",
+		"Available": "Tokens disponibles",
+		"Your mIndex in wallet": "Tus mIndex",
+		"Price": "Precio actual",
+		"Final date to buy": "Fecha límite para comprar",
+		"Time left to buy": "Tiempo restante",
+		"Sales ended!": "¡Venta finalizada!",
+		"Days": "Días",
+		"Hours": "Horas",
+		"Minutes": "Minutos",
+		"Seconds": "Segundos",
+		"Buy my mIndex now": "Comprar mIndex",
+		"NoCoins": "No tienes {{token}}",
+		"BuyModalTitle": "Comprar token mIndex",
+		"ApproveButton": "Autorizar",
+		"BuyButton": "Comprar mIndex",
+		"BuymIndexWith": "Comprar con {{token}}",
+		"Start date": "Fecha de inicio",
+		"Will start in": "Empezará en",
+		"FINISHED": "FINALIZADO",
+		"Finished mIndex Token Sales": "Lanzamientos de mIndex finalizados",
+		"You have": "Tienes",
+		"out of": "de",
+		"Current mIndex Token Sale": "Lanzamiento actual de mIndex",
+		"There is no mIndex token currently for sale": "Actualmente, no hay ningún lanzamiento activo de mIndex"
 	}
 }

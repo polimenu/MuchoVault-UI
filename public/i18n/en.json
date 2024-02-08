@@ -210,5 +210,33 @@
 		"Main account": "Default account",
 		"Click to set as main account": "Set as default account",
 		"Edit user profile": "Edit user profile"
+	},
+	"index": {
+		"hero": "(mucho) Index will automatically invest for you in different protocols. By buying mIndex tokens, you are participating on the results of the portfolio.",
+		"note": "NOTE: Temporarily only available for Campamento DeFi NFT Holders",
+		"Available": "Available",
+		"Your mIndex in wallet": "Your mIndex in wallet",
+		"Price": "Current price",
+		"Final date to buy": "Final date to buy",
+		"Time left to buy": "Time left to buy",
+		"Sales ended!": "Sales ended!",
+		"Days": "Days",
+		"Hours": "Hours",
+		"Minutes": "Minutes",
+		"Seconds": "Seconds",
+		"Buy my mIndex now": "Buy my mIndex now",
+		"NoCoins": "No {{token}} in wallet",
+		"BuyModalTitle": "Buy mIndex",
+		"ApproveButton": "Approve",
+		"BuyButton": "Buy mIndex",
+		"BuymIndexWith": "Buy with {{token}}",
+		"Start date": "Start date",
+		"Will start in": "Will start in",
+		"FINISHED": "FINISHED",
+		"Finished mIndex Token Sales": "Finished mIndex Token Sales",
+		"You have": "You have",
+		"out of": "out of",
+		"Current mIndex Token Sale": "Current mIndex Token Sale",
+		"There is no mIndex token currently for sale": "There is no mIndex token currently for sale"
 	}
 }
