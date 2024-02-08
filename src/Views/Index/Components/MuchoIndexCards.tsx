@@ -49,10 +49,57 @@ export const getMuchoIndexCards = (data: IMuchoTokenLauncherData) => {
   }
 
 
-  const farmsInfo = [<MuchoIndexCard data={data} />];
+  return [<MuchoIndexCard data={data} />, <MuchoIndexComposition data={data} />];
+}
 
-  return farmsInfo;
-};
+
+const MuchoIndexComposition = ({ data }: { data: IMuchoTokenLauncherData }) => {
+  if (!data) {
+    return <Skeleton
+      key={0}
+      variant="rectangular"
+      className="w-full !h-full min-h-[370px] !transform-none !bg-1"
+    />
+  }
+
+  return (
+    <Card
+      top={
+        <>
+          <span className={underLineClass}>{t("index.Expected mIndex composition")}</span>
+        </>
+      }
+      middle={<>
+        {<TableAligner
+          keysName={
+            ["JLP - Jupiter (Solana)",
+              "HLP - Hyperliquid (Arbitrum)",
+              "mUSDC - Mucho (Arbitrum)",
+              "CL Pool WBTC-WETH - Uniswap (Arbitrum)",
+              "CL Pool SOL-USDC - Orca (Solana)",
+            ]
+          }
+          values={[50, 10, 10, 20, 10].map(p => <div className={`${wrapperClasses}`}>
+            <Display
+              className="!justify-end"
+              data={p}
+              unit="%"
+              precision={1}
+            /> &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp; <Display
+              className="!justify-end"
+              data={0}
+              unit="%"
+              precision={1}
+            />
+          </div>)
+          }
+          keyStyle={keyClasses}
+          valueStyle={valueClasses}
+        />}
+      </>}
+    />
+  );
+}
 
 
 const MuchoIndexCard = ({ data }: { data: IMuchoTokenLauncherData }) => {
