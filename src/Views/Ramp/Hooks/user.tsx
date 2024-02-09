@@ -145,7 +145,7 @@ export const useGetRampTransactions = (sessionId?: string): (IRampTransaction[] 
     const { dispatch } = useGlobal();
     const [transactions, setTransactions] = useState<IRampTransaction[]>();
     const save = (obj: { response: IRampTransaction[] }) => {
-        //console.log("setting transactions", obj);
+        console.log("setting transactions", obj);
         setTransactions(obj.response);
     }
 

@@ -1,16 +1,39 @@
 import { useGlobal } from "@Contexts/Global";
+import { useUserAccount } from "@Hooks/useUserAccount";
+import { useWriteCall } from "@Hooks/useWriteCall";
 import { Card } from "@Views/Common/Card/Card";
 import { TableAligner } from "@Views/Common/TableAligner";
 import { Display } from "@Views/Common/Tooltips/Display";
 import { BlueBtn } from "@Views/Common/V2-Button";
+import { RAMP_CONFIG } from "@Views/Ramp/Config/rampConfig";
 import { useRampSumsubToken } from "@Views/Ramp/Hooks/kyc";
-import { IRampUserDetails, rampAtom } from "@Views/Ramp/rampAtom";
+import { IRampPremiumInfo, IRampUserDetails, rampAtom } from "@Views/Ramp/rampAtom";
 import { Skeleton } from "@mui/material";
 import { t } from "i18next";
 import { useAtom } from "jotai";
 import { useState } from "react";
+import { useNetwork } from "wagmi";
+import RampPlanAbi from '../../Config/Abis/mRampPlan.json';
 
-export const KYCPremiumCard = ({ userDetails }: { userDetails?: IRampUserDetails }) => {
+
+const getContractCall = (setPageState: any, writeCall: any, functionName: string, args: any[]) => {
+    function callBack(res) {
+        if (res.payload)
+            setPageState({
+                isModalOpen: false,
+                activeModal: null,
+            });
+    }
+
+    function myCall() {
+        writeCall(callBack, functionName, args);
+    }
+
+    return myCall;
+};
+
+
+export const KYCPremiumCard = ({ userDetails, premiumInfo }: { userDetails?: IRampUserDetails, premiumInfo?: IRampPremiumInfo }) => {
     const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
     const tooltipKeyClasses = '!text-f14 !text-2 !text-left !py-1 !pl-[0px]';
     const tooltipValueClasses =
@@ -18,12 +41,17 @@ export const KYCPremiumCard = ({ userDetails }: { userDetails?: IRampUserDetails
     const underLineClass =
         'underline underline-offset-4 decoration decoration-[#ffffff30]  w-fit ml-auto';
     const wrapperClasses = 'flex justify-end flex-wrap';
+    const noteStyles = 'w-[46rem] text-center m-auto tab:w-full font-weight:bold text-f16 mt-5 white flex';
 
 
     const [rampState, setRampState] = useAtom(rampAtom);
     const [getToken, setGetToken] = useState(false);
-    const [token] = useRampSumsubToken(getToken);
     const { state } = useGlobal();
+    const { address: account } = useUserAccount();
+    const { chain } = useNetwork();
+    const ALLOWED_CHAIN = 42161;  //ToDo softcode chain
+    const { writeCall } = useWriteCall(RAMP_CONFIG.RampPlanContract, RampPlanAbi);
+    const linkPremiumCall = getContractCall(setRampState, writeCall, "assignMe", [userDetails?.uuid]);
 
     if (!userDetails) {
         return <Skeleton
@@ -37,16 +65,14 @@ export const KYCPremiumCard = ({ userDetails }: { userDetails?: IRampUserDetails
 
     return <Card
         top={
-            <>{t("ramp.KYC Status")}: <span
-                className={"!justify-end " + (userDetails.status == "FULL_USER" ? " green" : " red")}
-            >{t(userDetails.kyc_status.status)}</span></>
+            <>{t("ramp.User Status")}</>
         }
 
 
         middle={<>
             <div className={keyClasses}>
                 <TableAligner
-                    keysName={[t("ramp.KYC Status")]}
+                    keysName={[t("ramp.KYC Status"), t("ramp.Plan")]}
                     keyStyle={tooltipKeyClasses}
                     valueStyle={tooltipValueClasses}
                     values={[<div className={wrapperClasses}>
@@ -54,10 +80,26 @@ export const KYCPremiumCard = ({ userDetails }: { userDetails?: IRampUserDetails
                             className={"!justify-end " + underLineClass + " " + (userDetails.status == "FULL_USER" ? " green" : " red")}
                             data={t(userDetails.kyc_status.status)}
                             content={<span>{t(userDetails.kyc_status.explanation)}</span>}
-                            debug={true}
+                        />
+                    </div>,
+                    <div className={wrapperClasses}>
+                        <Display
+                            className={"!justify-end " + underLineClass + " " + (premiumInfo?.isPremium ? " green" : "")}
+                            data={t("ramp." + (premiumInfo?.isPremium ? "Premium" : "Normal"))}
+                            content={<span>{t("ramp." + (premiumInfo?.isPremium ? "PremiumExplanation" : "NormalExplanation"))}</span>}
                         />
                     </div>]}
                 ></TableAligner>
+                {!premiumInfo?.isPremium && account && chain && chain.id == ALLOWED_CHAIN && <div className={noteStyles}>
+                    <div className="mr-5">
+                        {t("ramp.Already have your NFT?")}
+                    </div>
+                    <div>
+                        <BlueBtn
+                            isDisabled={state.txnLoading > 1}
+                            isLoading={state.txnLoading === 1} onClick={linkPremiumCall}>{t("ramp.Enable Your Premium Mode")}</BlueBtn>
+                    </div>
+                </div>}
             </div>
         </>}
 

@@ -1,5 +1,10 @@
 import { atom } from 'jotai';
 
+export interface IRampPremiumInfo {
+    isPremium: boolean;
+    address: string;
+}
+
 export interface IRampKYC {
     email: string;
     user_id: string;

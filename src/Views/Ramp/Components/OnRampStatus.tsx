@@ -1,6 +1,6 @@
 import { Section } from '@Views/Common/Card/Section';
 import { useAtom } from 'jotai';
-import { IRampData, IRampUserDetails, rampAtom, rampDataAtom } from '../rampAtom';
+import { IRampData, IRampPremiumInfo, IRampUserDetails, rampAtom, rampDataAtom } from '../rampAtom';
 import { t } from 'i18next';
 import { useGetRampTransactions } from '../Hooks/user';
 import { OnRampCard } from './Cards/OnRampCard';
@@ -8,6 +8,7 @@ import { OffRampCard } from './Cards/OffRampCard';
 import { UserDetailsCard } from './Cards/UserDetailsCard';
 import { KYCPremiumCard } from './Cards/KYCCard';
 import { RampTransactionListCard } from './Cards/RampTransactionListCard';
+import { useGetPremiumInfo } from '../Hooks/useGetPremiumInfo';
 
 
 const topStyles = 'mx-3 text-f22';
@@ -18,10 +19,11 @@ export const underLineClass =
 
 export const OnRampStatus = () => {
   const [rampData] = useAtom(rampDataAtom);
+  const premiumInfo = useGetPremiumInfo(rampData.userDetails?.uuid);
 
   //console.log("OnRampStatus loading", rampData);
   return <div>
-    <UserDetailsSection userDetails={rampData.userDetails} />
+    <UserDetailsSection userDetails={rampData.userDetails} premiumInfo={premiumInfo} />
     <OnOffRampSection rampData={rampData} />
     <RampTransactions />
   </div>;
@@ -46,7 +48,7 @@ const OnOffRampSection = ({ rampData }: { rampData: IRampData }) => {
   />;
 }
 
-const UserDetailsSection = ({ userDetails }: { userDetails?: IRampUserDetails }) => {
+const UserDetailsSection = ({ userDetails, premiumInfo }: { userDetails?: IRampUserDetails, premiumInfo?: IRampPremiumInfo }) => {
 
   return <Section
     Heading={<div className={topStyles}>{t("ramp.User details and KYC status")}</div>}
@@ -58,7 +60,7 @@ const UserDetailsSection = ({ userDetails }: { userDetails?: IRampUserDetails })
     Cards={
       [
         <UserDetailsCard userDetails={userDetails} />,
-        <KYCPremiumCard userDetails={userDetails} />,
+        <KYCPremiumCard userDetails={userDetails} premiumInfo={premiumInfo} />,
 
       ]
     }
