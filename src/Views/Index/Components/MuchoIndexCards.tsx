@@ -97,6 +97,7 @@ const MuchoIndexComposition = ({ data }: { data: IMuchoTokenLauncherData }) => {
 
 
 const MuchoIndexCard = ({ data }: { data: IMuchoTokenLauncherData }) => {
+  const noteStyles = 'w-[46rem] text-center m-auto tab:w-full font-weight:bold text-f14 mt-5';
   if (!data) {
     return <Skeleton
       key={0}
@@ -109,7 +110,7 @@ const MuchoIndexCard = ({ data }: { data: IMuchoTokenLauncherData }) => {
     <Card
       top={
         <>
-          <span className={underLineClass}>{t("index.Current mIndex Token Sale")} {data.mTokenVersion ? `(v${data.mTokenVersion})` : ''}</span>
+          <span className={underLineClass}>{t("index.Current mIndex Token Sale")}</span>
         </>
       }
       middle={<>
@@ -118,6 +119,7 @@ const MuchoIndexCard = ({ data }: { data: IMuchoTokenLauncherData }) => {
       bottom={
         <div className="mt-5 !text-right">
           <IndexButtons data={data} />
+          <div className={noteStyles}>{t("index.note")}</div>
         </div>
       }
     />
