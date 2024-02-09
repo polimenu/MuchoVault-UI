@@ -238,6 +238,6 @@
 		"out of": "out of",
 		"Current mIndex Token Sale": "Current mIndex Token Sale",
 		"There is no mIndex token currently for sale": "There is no mIndex token currently for sale",
-		"Expected mIndex composition": "Expected and actual mIndex composition"
+		"Expected mIndex composition": "Expected mIndex composition (underlying assets)"
 	}
 }

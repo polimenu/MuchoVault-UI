@@ -72,22 +72,16 @@ const MuchoIndexComposition = ({ data }: { data: IMuchoTokenLauncherData }) => {
       middle={<>
         {<TableAligner
           keysName={
-            ["JLP - Jupiter (Solana)",
-              "HLP - Hyperliquid (Arbitrum)",
-              "mUSDC - Mucho (Arbitrum)",
-              "CL Pool WBTC-WETH - Uniswap (Arbitrum)",
-              "CL Pool SOL-USDC - Orca (Solana)",
+            ["WBTC",
+              "WETH",
+              "SOL",
+              "Stablecoin",
             ]
           }
-          values={[50, 10, 10, 20, 10].map(p => <div className={`${wrapperClasses}`}>
+          values={[12.8, 13.9, 25.2, 48.1].map(p => <div className={`${wrapperClasses}`}>
             <Display
               className="!justify-end"
               data={p}
-              unit="%"
-              precision={1}
-            /> &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp; <Display
-              className="!justify-end"
-              data={0}
               unit="%"
               precision={1}
             />
