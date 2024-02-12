@@ -210,7 +210,14 @@
 		"Enter account name": "Introduce un nombre o alias para tu cuenta",
 		"Main account": "Cuenta por defecto",
 		"Click to set as main account": "Establecer como cuenta por defecto",
-		"Edit user profile": "Editar datos"
+		"Edit user profile": "Editar datos",
+		"Plan": "Modo",
+		"Normal": "Estándar",
+		"Premium": "Premium",
+		"NormalExplanation": "Acceso a todas las funciones, con tasa de cambio estándar",
+		"PremiumExplanation": "Como NFT holder, tienes acceso al mejor tipo de cambio, con fees rebajados para ti",
+		"Already have your NFT?": "¿Ya tienes tu NFT en alguna wallet?",
+		"Enable Your Premium Mode": "Activa tu modo Premium"
 	},
 	"index": {
 		"hero": "(mucho) index invertirá automáticamente por ti en distintos protocolos y blockchains. Comprando tokens mIndex, te estarás indexando al resultado de este portfolio.",

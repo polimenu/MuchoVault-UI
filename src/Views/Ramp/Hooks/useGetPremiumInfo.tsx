@@ -20,7 +20,7 @@ export const useGetPremiumInfo = (user_id: string) => {
   }
   const config = RAMP_CONFIG;
 
-  const calls = [
+  const calls = user_id ? [
     {
       address: config.RampPlanContract,
       abi: mRampPlanAbi,
@@ -37,7 +37,7 @@ export const useGetPremiumInfo = (user_id: string) => {
       chainId: activeChain?.id,
       map: `uuidAddress`
     }
-  ]
+  ] : [];
 
   let indexes: any = {};
   calls.forEach((c, i) => { indexes[c.map] = i; });
@@ -61,8 +61,10 @@ export const useGetPremiumInfo = (user_id: string) => {
       }
     }
 
+    //console.log("planIds", getDataString(data, "planIds"));
+
     return {
-      isPremium: getDataString(data, "planIds").filter(f => { return config.PremiumPlans.indexOf(f) > 0 }).length > 0,
+      isPremium: getDataString(data, "planIds").filter(f => { return config.PremiumPlans.indexOf(f) >= 0 }).length > 0,
       address: getDataString(data, "uuidAddress")
     };
 

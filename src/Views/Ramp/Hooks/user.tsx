@@ -145,7 +145,7 @@ export const useGetRampTransactions = (sessionId?: string): (IRampTransaction[] 
     const { dispatch } = useGlobal();
     const [transactions, setTransactions] = useState<IRampTransaction[]>();
     const save = (obj: { response: IRampTransaction[] }) => {
-        console.log("setting transactions", obj);
+        //console.log("setting transactions", obj);
         setTransactions(obj.response);
     }
 
@@ -221,7 +221,7 @@ export const useCreateUser = (request?: INewUserRequest) => {
         if (request && request.first_name && request.last_name && request.country && request.email) {
             const [isError, message] = validateNewUser(request);
             if (!isError) {
-                console.log("Fetching User creation");
+                //console.log("Fetching User creation");
                 fetchFromRampApi('/user', 'POST', request, save, dispatch, toastify);
             }
             else {
@@ -292,7 +292,7 @@ export const useAddAccount = (session_id: string, account: { name: string, iban:
     const [result, setResult] = useState(false);
 
     const save = (obj: { status: string, errorMessage?: string }) => {
-        console.log("save useAddAccount", obj);
+        //console.log("save useAddAccount", obj);
         if (obj.status === "OK") {
             //console.log("Account added ok", obj);
             setResult(true);

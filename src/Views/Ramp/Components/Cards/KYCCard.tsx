@@ -84,13 +84,13 @@ export const KYCPremiumCard = ({ userDetails, premiumInfo }: { userDetails?: IRa
                     </div>,
                     <div className={wrapperClasses}>
                         <Display
-                            className={"!justify-end " + underLineClass + " " + (premiumInfo?.isPremium ? " green" : "")}
-                            data={t("ramp." + (premiumInfo?.isPremium ? "Premium" : "Normal"))}
-                            content={<span>{t("ramp." + (premiumInfo?.isPremium ? "PremiumExplanation" : "NormalExplanation"))}</span>}
+                            className={"!justify-end " + underLineClass + " " + (premiumInfo && premiumInfo?.isPremium ? " green" : "")}
+                            data={t("ramp." + (premiumInfo && premiumInfo?.isPremium ? "Premium" : "Normal"))}
+                            content={<span>{t("ramp." + (premiumInfo && premiumInfo?.isPremium ? "PremiumExplanation" : "NormalExplanation"))}</span>}
                         />
                     </div>]}
                 ></TableAligner>
-                {!premiumInfo?.isPremium && account && chain && chain.id == ALLOWED_CHAIN && <div className={noteStyles}>
+                {premiumInfo && !premiumInfo?.isPremium && account && chain && chain.id == ALLOWED_CHAIN && <div className={noteStyles}>
                     <div className="mr-5">
                         {t("ramp.Already have your NFT?")}
                     </div>

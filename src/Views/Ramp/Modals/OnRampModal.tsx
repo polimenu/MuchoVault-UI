@@ -10,6 +10,7 @@ import { networkBeautify, tokenBeautify } from "../Utils";
 import { useCreateOnRampAccount, useGetOnRampQuote, useOnRampAccounts } from "../Hooks/onramp";
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useToast } from "@Contexts/Toast";
+import { useGetPremiumInfo } from "../Hooks/useGetPremiumInfo";
 
 
 export const OnRampModal = () => {
@@ -25,6 +26,7 @@ export const OnRampModal = () => {
     const toastify = useToast();
     const { chain, token } = rampData.tokenPreferences ? rampData.tokenPreferences.find(tp => tp.currency == currency) : { chain: "", token: "" };
     const [quote] = useGetOnRampQuote(currency, token, val);
+    const premiumInfo = useGetPremiumInfo(rampData.userDetails?.uuid);
     const messageCopied = () => {
         toastify(t("ramp.Copied to clipboard!"));
     }
