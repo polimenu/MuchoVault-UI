@@ -136,6 +136,12 @@ export const getTabs = () => {
       isExternalLink: false,
     },
     {
+      to: `/index`,
+      name: 'Index',
+      subTabs: [],
+      isExternalLink: false,
+    },
+    {
       to: `/badge`,
       name: 'NFT',
       subTabs: [],
