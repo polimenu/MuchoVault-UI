@@ -4,13 +4,13 @@ import { useEffect, useState } from "react";
 import { IRampOnRampBankAccount } from "../rampAtom";
 
 
-export const useGetOnRampQuote = (sessionId: string, currencyIn: string, currencyOut: string, amount: number): { amountOut?: string, discount?: string }[] => {
+export const useGetOnRampQuote = (sessionId: string, currencyIn: string, currencyOut: string, amount: number): string[] => {
     const { dispatch } = useGlobal();
-    const [quote, setQuote] = useState<{ amountOut?: string, discount?: string }>();
+    const [quote, setQuote] = useState<{ amountOut?: string, discount?: string }>({ amountOut: "", discount: "" });
     const [timer, setTimer] = useState<NodeJS.Timeout>();
 
     const save = (obj: any) => {
-        console.log("Quote", obj);
+        //console.log("Quote", obj);
         if (obj.status !== "KO") {
             setQuote({ amountOut: (Math.round(obj.amountOut * 100) / 100).toString(), discount: (obj.discount ? (Math.round(obj.discount * 100) / 100) : 0) });
         }
@@ -36,7 +36,7 @@ export const useGetOnRampQuote = (sessionId: string, currencyIn: string, currenc
         }
     }, [sessionId, amount, currencyIn, currencyOut]);
 
-    return [quote];
+    return [quote?.amountOut, quote?.discount];
 }
 
 

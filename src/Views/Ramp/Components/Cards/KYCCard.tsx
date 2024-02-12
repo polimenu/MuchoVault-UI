@@ -41,7 +41,7 @@ export const KYCPremiumCard = ({ userDetails, premiumInfo }: { userDetails?: IRa
     const underLineClass =
         'underline underline-offset-4 decoration decoration-[#ffffff30]  w-fit ml-auto';
     const wrapperClasses = 'flex justify-end flex-wrap';
-    const noteStyles = 'w-[46rem] text-center m-auto tab:w-full font-weight:bold text-f16 mt-5 white flex';
+    const noteStyles = 'w-[46rem] text-center m-auto tab:w-full font-weight:bold text-f16 mt-5 text-1';
 
 
     const [rampState, setRampState] = useAtom(rampAtom);
@@ -63,11 +63,19 @@ export const KYCPremiumCard = ({ userDetails, premiumInfo }: { userDetails?: IRa
 
     const toFinishKYC = ["PENDING_KYC_DATA", "SOFT_KYC_FAILED"].indexOf(userDetails?.status) >= 0
 
+
+    let premiumStatus = "Normal";
+    if (premiumInfo && premiumInfo?.isPremium && userDetails.isPremium) {
+        premiumStatus = "Premium";
+    }
+    else if (premiumInfo && premiumInfo?.isPremium) {
+        premiumStatus = "PremiumPending";
+    }
+
     return <Card
         top={
             <>{t("ramp.User Status")}</>
         }
-
 
         middle={<>
             <div className={keyClasses}>
@@ -84,14 +92,14 @@ export const KYCPremiumCard = ({ userDetails, premiumInfo }: { userDetails?: IRa
                     </div>,
                     <div className={wrapperClasses}>
                         <Display
-                            className={"!justify-end " + underLineClass + " " + (premiumInfo && premiumInfo?.isPremium ? " green" : "")}
-                            data={t("ramp." + (premiumInfo && premiumInfo?.isPremium ? "Premium" : "Normal"))}
-                            content={<span>{t("ramp." + (premiumInfo && premiumInfo?.isPremium ? "PremiumExplanation" : "NormalExplanation"))}</span>}
+                            className={"!justify-end " + underLineClass + " " + (premiumStatus == "Premium" ? " green" : "")}
+                            data={t("ramp." + premiumStatus)}
+                            content={<span>{t("ramp." + premiumStatus + "Explanation")}</span>}
                         />
                     </div>]}
                 ></TableAligner>
                 {premiumInfo && !premiumInfo?.isPremium && account && chain && chain.id == ALLOWED_CHAIN && <div className={noteStyles}>
-                    <div className="mr-5">
+                    <div className="mb-5">
                         {t("ramp.Already have your NFT?")}
                     </div>
                     <div>

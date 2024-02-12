@@ -101,6 +101,7 @@ export interface IRampUserDetails {
     first_name: string;
     last_name: string;
     status: string;
+    isPremium: boolean;
     kyc_status: {
         status: string;
         explanation: string;

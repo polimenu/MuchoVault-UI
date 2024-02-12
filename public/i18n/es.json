@@ -216,7 +216,9 @@
 		"Premium": "Premium",
 		"NormalExplanation": "Acceso a todas las funciones, con tasa de cambio estándar",
 		"PremiumExplanation": "Como NFT holder, tienes acceso al mejor tipo de cambio, con fees rebajados para ti",
-		"Already have your NFT?": "¿Ya tienes tu NFT en alguna wallet?",
+		"PremiumPending": "Procesando Premium...",
+		"PremiumPendingExplanation": "Tu cuenta premium ha sido verificada, pero estamos procesando el cambio de fees. Esto puede llevar hasta 10 minutos.",
+		"Already have your NFT?": "¿Ya tienes tu NFT en alguna wallet? Conéctala y ",
 		"Enable Your Premium Mode": "Activa tu modo Premium",
 		"Standard rate": "Cambio estándar",
 		"Premium discount applied": "Descuento Premium aplicado"

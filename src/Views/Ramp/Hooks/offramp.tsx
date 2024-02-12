@@ -15,11 +15,11 @@ import { BigNumber } from "ethers";
 
 export const useGetOffRampQuote = (sessionId: string, currencyIn: string, currencyOut: string, amount: number): string[] => {
     const { dispatch } = useGlobal();
-    const [quote, setQuote] = useState<{ amountOut?: string, discount?: string }>();
+    const [quote, setQuote] = useState<{ amountOut?: string, discount?: string }>({ amountOut: "", discount: "" });
     const [timer, setTimer] = useState<NodeJS.Timeout>();
 
     const save = (obj: any) => {
-        console.log("OFFRAMP RES", obj);
+        //console.log("OFFRAMP RES", obj);
         if (obj.status !== "KO") {
             setQuote({ amountOut: (Math.round(obj.amountOut * 100) / 100).toString(), discount: (obj.discount ? (Math.round(obj.discount * 100) / 100) : 0) });
         }
