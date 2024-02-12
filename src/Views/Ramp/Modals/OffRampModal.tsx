@@ -23,7 +23,7 @@ export const OffRampModal = () => {
     const currency = RAMP_CONFIG.AllowedFiatCurrencies[0];
     const tokenList = RAMP_CONFIG.AllowedOffRampTokens;
     const [token, setToken] = useState(tokenList[0]);
-    const [quote] = useGetOffRampQuote(token.symbol, currency, val);
+    const [quote, discount] = useGetOffRampQuote(rampState.sessionId, token.symbol, currency, val);
     const { activeChain } = useActiveChain();
     const chain = activeChain.network;
     const [destinationWallet] = useOffRampWallet(rampState.sessionId, chain);
@@ -89,6 +89,14 @@ export const OffRampModal = () => {
                         </span>
                     }
                 />
+                {Number(discount) > 0 && <div>
+                    <div className="whitespace-nowrap mt-5 text-right text-f12">
+                        {t("ramp.Standard rate")}: {Math.round(100 * (Number(discount) + Number(quote))) / 100} {currency}
+                    </div>
+                    <div className="whitespace-nowrap text-right text-f12 bold">
+                        {t("ramp.Premium discount applied")}: -{discount} {currency}
+                    </div>
+                </div>}
                 <div className="flex whitespace-nowrap mt-5">
                     <BlueBtn
                         onClick={() => { send() }}
@@ -103,3 +111,5 @@ export const OffRampModal = () => {
         </div >
     );
 }
+//2% -> 912.88
+//1% -> 922.17

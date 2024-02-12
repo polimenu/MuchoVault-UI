@@ -217,7 +217,9 @@
 		"NormalExplanation": "Access to all functionalities, with standard change rates",
 		"PremiumExplanation": "As NFT holder, you have access to the best change rates, with discounted fees",
 		"Already have your NFT?": "Already have your NFT?",
-		"Enable Your Premium Mode": "Enable Your Premium Mode"
+		"Enable Your Premium Mode": "Enable Your Premium Mode",
+		"Standard rate": "Standard rate",
+		"Premium discount applied": "Premium discount applied"
 	},
 	"index": {
 		"hero": "(mucho) Index will automatically invest for you in different protocols. By buying mIndex tokens, you are participating on the results of the portfolio.",

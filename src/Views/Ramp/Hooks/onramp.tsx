@@ -4,18 +4,18 @@ import { useEffect, useState } from "react";
 import { IRampOnRampBankAccount } from "../rampAtom";
 
 
-export const useGetOnRampQuote = (currencyIn: string, currencyOut: string, amount: number): string[] => {
+export const useGetOnRampQuote = (sessionId: string, currencyIn: string, currencyOut: string, amount: number): { amountOut?: string, discount?: string }[] => {
     const { dispatch } = useGlobal();
-    const [quote, setQuote] = useState("");
+    const [quote, setQuote] = useState<{ amountOut?: string, discount?: string }>();
     const [timer, setTimer] = useState<NodeJS.Timeout>();
 
     const save = (obj: any) => {
         console.log("Quote", obj);
         if (obj.status !== "KO") {
-            setQuote(Math.round(obj.amountOut * 100) / 100);
+            setQuote({ amountOut: (Math.round(obj.amountOut * 100) / 100).toString(), discount: (obj.discount ? (Math.round(obj.discount * 100) / 100) : 0) });
         }
         else {
-            setQuote("Error!");
+            setQuote({ amountOut: "Error!" });
         }
     }
 
@@ -30,11 +30,11 @@ export const useGetOnRampQuote = (currencyIn: string, currencyOut: string, amoun
 
             setTimer(setTimeout(() => {
                 //console.log("Setting new timer");
-                fetchFromRampApi(`/onramp/quote`, 'GET', { input_currency: currencyIn.replace(".", "").toUpperCase(), output_currency: currencyOut.replace(".", "").toUpperCase(), direction: "fiatToCrypto", amount: amount }, save, dispatch);
+                fetchFromRampApi(`/onramp/quote`, 'GET', { session_id: sessionId, input_currency: currencyIn.replace(".", "").toUpperCase(), output_currency: currencyOut.replace(".", "").toUpperCase(), direction: "fiatToCrypto", amount: amount }, save, dispatch);
             }, 1000)
             );
         }
-    }, [amount, currencyIn, currencyOut]);
+    }, [sessionId, amount, currencyIn, currencyOut]);
 
     return [quote];
 }

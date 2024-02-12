@@ -25,7 +25,7 @@ export const OnRampModal = () => {
     const [createdAccount] = useCreateOnRampAccount(pageState.sessionId, currency, Boolean(inputAccount) && !inputAccount?.iban);
     const toastify = useToast();
     const { chain, token } = rampData.tokenPreferences ? rampData.tokenPreferences.find(tp => tp.currency == currency) : { chain: "", token: "" };
-    const [quote] = useGetOnRampQuote(currency, token, val);
+    const [quote] = useGetOnRampQuote(pageState.sessionId, currency, token, val);
     const premiumInfo = useGetPremiumInfo(rampData.userDetails?.uuid);
     const messageCopied = () => {
         toastify(t("ramp.Copied to clipboard!"));
@@ -71,7 +71,7 @@ export const OnRampModal = () => {
                     bgClass="!bg-1"
                     ipClass="mt-1"
                     isDisabled={true}
-                    value={quote}
+                    value={quote && (quote.amountOut ?? "")}
                     onChange={() => { }}
                     unit={
                         <span className="text-f16 flex justify-between w-fit">
@@ -79,6 +79,14 @@ export const OnRampModal = () => {
                         </span>
                     }
                 />
+                {quote && quote.discount > 0 && <div>
+                    <div className="whitespace-nowrap mt-5 text-right text-f12">
+                        {t("ramp.Standard rate")}: {Math.round(100 * (Number(quote.discount) + Number(quote.amountOut))) / 100} {tokenBeautify(token)}
+                    </div>
+                    <div className="whitespace-nowrap text-right text-f12 bold">
+                        {t("ramp.Premium discount applied")}: -{quote.discount} {tokenBeautify(token)}
+                    </div>
+                </div>}
                 <div className="flex whitespace-nowrap mt-5">
                     <BlueBtn
                         onClick={() => { setVisibleAccount(true); }}

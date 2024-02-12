@@ -13,17 +13,18 @@ import { ViewContext } from "..";
 import { BigNumber } from "ethers";
 
 
-export const useGetOffRampQuote = (currencyIn: string, currencyOut: string, amount: number): string[] => {
+export const useGetOffRampQuote = (sessionId: string, currencyIn: string, currencyOut: string, amount: number): string[] => {
     const { dispatch } = useGlobal();
-    const [quote, setQuote] = useState("");
+    const [quote, setQuote] = useState<{ amountOut?: string, discount?: string }>();
     const [timer, setTimer] = useState<NodeJS.Timeout>();
 
     const save = (obj: any) => {
+        console.log("OFFRAMP RES", obj);
         if (obj.status !== "KO") {
-            setQuote(Math.round(obj.amountOut * 100) / 100);
+            setQuote({ amountOut: (Math.round(obj.amountOut * 100) / 100).toString(), discount: (obj.discount ? (Math.round(obj.discount * 100) / 100) : 0) });
         }
         else {
-            setQuote("Error!");
+            setQuote({ amountOut: "Error!" });
         }
     }
 
@@ -34,7 +35,7 @@ export const useGetOffRampQuote = (currencyIn: string, currencyOut: string, amou
 
     useEffect(() => {
 
-        if (amount && currencyIn && currencyOut) {
+        if (amount && currencyIn && currencyOut && sessionId) {
             if (timer) {
                 //console.log("Cleaning previous timer");
                 clearTimeout(timer);
@@ -42,13 +43,13 @@ export const useGetOffRampQuote = (currencyIn: string, currencyOut: string, amou
 
             setTimer(setTimeout(() => {
                 //console.log("Setting new timer");
-                fetchFromRampApi(`/onramp/quote`, 'GET', { input_currency: cleanToken(currencyIn), output_currency: currencyOut.toUpperCase(), direction: "cryptoToFiat", amount: amount }, save, dispatch);
+                fetchFromRampApi(`/onramp/quote`, 'GET', { session_id: sessionId, input_currency: cleanToken(currencyIn), output_currency: currencyOut.toUpperCase(), direction: "cryptoToFiat", amount: amount }, save, dispatch);
             }, 1000)
             );
         }
-    }, [amount, currencyIn, currencyOut]);
+    }, [sessionId, amount, currencyIn, currencyOut]);
 
-    return [quote];
+    return [quote?.amountOut, quote?.discount];
 }
 
 

@@ -124,7 +124,7 @@ const OffRampButtons = ({ bankAccounts }: { bankAccounts: IRampBankAccount[] }) 
             </div>
         );
 
-    console.log("hasBank", hasBank);
+    //console.log("hasBank", hasBank);
 
     return (<>
         {hasBank && <div className={`${btnClasses} flex gap-5`}>
