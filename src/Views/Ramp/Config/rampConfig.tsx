@@ -3,6 +3,7 @@
 
 export const RAMP_CONFIG = {
     DelayTransactionsRefreshSeconds: 10,
+    DelayUserDetailsRefreshSeconds: 30,
     AllowedFiatCurrencies: ["EUR"],
     RampPlanContract: "0x237959DDD96140002df62Fa36b9B9e8275A9738e",
     PremiumPlans: ["1"],

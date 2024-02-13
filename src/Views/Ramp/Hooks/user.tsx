@@ -67,7 +67,6 @@ export const useGetUserDetails = (sessionId?: string): (IRampUserDetails | undef
         //console.log("setting user details", obj);
         if (obj.status !== "KO") {
             //parse date
-            //console.log("Parsing user data", obj);
             if (obj.response.date_of_birth)
                 obj.response.date_of_birth = obj.response.date_of_birth && obj.response.date_of_birth.substring(0, 10);
             else
@@ -75,7 +74,6 @@ export const useGetUserDetails = (sessionId?: string): (IRampUserDetails | undef
 
             obj.response.kyc_status = kycStatus(obj.response.status);
             obj.response.canCreateKYC = (["CREATED", "KYC_NEEDED"].indexOf(obj.response.status) >= 0);
-            //console.log("Parsed user data", obj);
             setUserDetails(obj.response);
         }
         else {
@@ -84,9 +82,19 @@ export const useGetUserDetails = (sessionId?: string): (IRampUserDetails | undef
     }
 
     useEffect(() => {
+
         if (sessionId) {
-            fetchFromRampApi(`/user-details`, 'GET', { session_id: sessionId }, save, dispatch);
+            const call = () => {
+                //console.log("CALLING GET TRANSACTIONS");
+                fetchFromRampApi(`/user-details`, 'GET', { session_id: sessionId }, save, () => { });
+            }
+            call();
+            const interval = setInterval(() => call(), RAMP_CONFIG.DelayUserDetailsRefreshSeconds * 1000);
+            return () => {
+                clearInterval(interval);
+            }
         }
+
     }, [sessionId]);
 
     return [userDetails];
