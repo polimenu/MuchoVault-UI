@@ -99,12 +99,12 @@ const Buy = ({ data, call, priceData }: { data: IMuchoTokenLauncherData, call: a
   const { approve } = useGetApprovalAmount(
     tokenContract?.abi,
     tokenContract?.contract,
-    MINDEX_CONFIG[activeChain.id].ManagerContract
+    MINDEX_CONFIG[activeChain.id].LauncherContract
   );
   const toastify = useToast();
   const [approveState, setApprovalState] = useState(false);
   const { state } = useGlobal();
-  const allowance = useGetAllowance(priceData.priceTokenAddress, priceData.priceTokenDecimals, MINDEX_CONFIG[activeChain.id].ManagerContract, activeChain.id);
+  const allowance = useGetAllowance(priceData.priceTokenAddress, priceData.priceTokenDecimals, MINDEX_CONFIG[activeChain.id].LauncherContract, activeChain.id);
 
   const isApproved = gte(Number(allowance), val || '1');
 
@@ -112,9 +112,9 @@ const Buy = ({ data, call, priceData }: { data: IMuchoTokenLauncherData, call: a
     return call(val);
   };
 
-  console.log("priceData", priceData);
-  console.log("supplydeduct", data.mTokenMaxSupply - data.mTokenCurrentSupply);
-  const maxPriceTk = Math.min((data.mTokenMaxSupply - data.mTokenCurrentSupply) * priceData.price, priceData.priceTokenInWallet);
+  //console.log("priceData", priceData);
+  //console.log("supplydeduct", data.mTokenMaxSupply - data.mTokenCurrentSupply);
+  const maxPriceTk = priceData.priceTokenInWallet;
   //const maxPriceTk = maxAirdrop * priceData.price;
 
   return (

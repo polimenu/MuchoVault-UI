@@ -30,7 +30,7 @@ const GetDepositButtons = ({ data, state, setPageState }: { data: IMuchoTokenLau
   return <>
     {
       data.prices.map((p) => {
-        return getModalButton(t("index.BuymIndexsWith", { token: p.priceTokenSymbol }), data, p.priceTokenSymbol, state, setPageState);
+        return getModalButton(t("index.BuymIndexWith", { token: p.priceTokenSymbol }), data, p.priceTokenSymbol, state, setPageState);
       })
     }
   </>;

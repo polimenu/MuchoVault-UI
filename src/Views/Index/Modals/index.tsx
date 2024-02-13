@@ -29,7 +29,7 @@ export const IndexModals = ({ data }: { data: IMuchoTokenLauncherData }) => {
 };
 
 function ModalChild({ data }: { data: IMuchoTokenLauncherData }) {
-  const [pageState] = useAtom(v2ContractDataAtom);
+  const [pageState] = useAtom(indexAtom);
   const activeModal = pageState.activeModal;
 
 

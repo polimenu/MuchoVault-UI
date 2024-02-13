@@ -13,7 +13,7 @@ import { IMuchoIndexDataPrice, indexAtom } from '../IndexAtom';
 
 export const useLauncherInteractionCalls = (data: IMuchoIndexDataPrice) => {
   const { activeChain } = useContext(ViewContext);
-  const { writeCall } = useWriteCall(MINDEX_CONFIG[activeChain?.id].ManagerContract, LauncherAbi);
+  const { writeCall } = useWriteCall(MINDEX_CONFIG[activeChain?.id].LauncherContract, LauncherAbi);
   //console.log("Write contract", V2USER_CONFIG[activeChain?.id].MuchoVault.contract, MuchoVaultABI)
   const toastify = useToast();
   const [, setPageState] = useAtom(indexAtom);

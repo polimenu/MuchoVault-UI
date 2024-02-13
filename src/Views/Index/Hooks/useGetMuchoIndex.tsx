@@ -175,7 +175,7 @@ export const useGetMuchoIndex = () => {
   //return response;
 
   if (data && data[0]) {
-    console.log("DATA!!", data);
+    //console.log("DATA!!", data);
     data.indexes = indexes;
     //console.log("Distributions", getDataString(data, 'userAllAirdropRewards'));
 
@@ -214,7 +214,7 @@ export const useGetMuchoIndex = () => {
 
   }
 
-  console.log("Response RPC", res);
+  //console.log("Response RPC", res);
 
   return res ? res : null;
 };

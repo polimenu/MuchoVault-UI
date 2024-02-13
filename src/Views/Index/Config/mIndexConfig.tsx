@@ -12,8 +12,8 @@ export const MINDEX_CONFIG = {
         TokenPaymentDecimals: 6,
       },
       {
-        TokenPayment: "0x2eE1Fc67bEC816F3DAe2d2c9409483BEf49F181B",
-        TokenPaymentSymbol: "mUSDC",
+        TokenPayment: "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+        TokenPaymentSymbol: "USDT",
         TokenPaymentDecimals: 6,
       },
     ],
@@ -29,3 +29,5 @@ export function getIndexContracts(chainId: number) {
   }
   return MINDEX_CONFIG[chainId];
 }
+
+//dateini 1707934740

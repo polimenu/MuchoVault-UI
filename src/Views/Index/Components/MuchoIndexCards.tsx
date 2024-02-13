@@ -140,7 +140,7 @@ const PricesDisplay = ({ prices }: { prices: IMuchoIndexDataPrice[] }) => {
         className="!justify-end"
         data={prices[i].price}
         unit={prices[i].priceTokenSymbol}
-        precision={6}
+        precision={4}
       />);
     }
     else {
@@ -192,7 +192,7 @@ const MuchoIndexInfo = ({ data }: { data: IMuchoTokenLauncherData }) => {
           <div className={`${wrapperClasses}`}>
             <Display
               className="!justify-end"
-              data={data.dateIni.toISOString().split('T')[0]}
+              data={data.dateIni.toISOString().split('T')[0] + " " + data.dateIni.toLocaleTimeString("es-ES")}
             />
 
           </div>
@@ -200,7 +200,7 @@ const MuchoIndexInfo = ({ data }: { data: IMuchoTokenLauncherData }) => {
           <div className={`${wrapperClasses}`}>
             <Display
               className="!justify-end"
-              data={data.dateEnd.toISOString().split('T')[0]}
+              data={data.dateEnd.toISOString().split('T')[0] + " " + data.dateEnd.toLocaleTimeString("es-ES")}
             />
 
           </div>
