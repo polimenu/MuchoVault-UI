@@ -46,6 +46,7 @@ export const KYCPremiumCard = ({ userDetails, premiumInfo }: { userDetails?: IRa
 
     const [rampState, setRampState] = useAtom(rampAtom);
     const [getToken, setGetToken] = useState(false);
+    const [token] = useRampSumsubToken(getToken);
     const { state } = useGlobal();
     const { address: account } = useUserAccount();
     const { chain } = useNetwork();
