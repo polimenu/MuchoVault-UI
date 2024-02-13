@@ -91,10 +91,10 @@ export const OffRampModal = () => {
                 />
                 {Number(discount) > 0 && <div>
                     <div className="whitespace-nowrap mt-5 text-right text-f12">
-                        {t("ramp.Standard rate")}: {Math.round(100 * (Number(discount) + Number(quote))) / 100} {currency}
+                        {t("ramp.Standard rate")}: {Math.round(100 * (-Number(discount) + Number(quote))) / 100} {currency}
                     </div>
                     <div className="whitespace-nowrap text-right text-f12 bold">
-                        {t("ramp.Premium discount applied")}: -{discount} {currency}
+                        {t("ramp.Premium discount applied")}: {discount} {currency}
                     </div>
                 </div>}
                 <div className="flex whitespace-nowrap mt-5">

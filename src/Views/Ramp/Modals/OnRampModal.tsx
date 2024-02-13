@@ -80,10 +80,10 @@ export const OnRampModal = () => {
                 />
                 {discount && discount > 0 && <div>
                     <div className="whitespace-nowrap mt-5 text-right text-f12">
-                        {t("ramp.Standard rate")}: {Math.round(100 * (Number(discount) + Number(quote))) / 100} {tokenBeautify(token)}
+                        {t("ramp.Standard rate")}: {Math.round(100 * (-Number(discount) + Number(quote))) / 100} {tokenBeautify(token)}
                     </div>
                     <div className="whitespace-nowrap text-right text-f12 bold">
-                        {t("ramp.Premium discount applied")}: -{discount} {tokenBeautify(token)}
+                        {t("ramp.Premium discount applied")}: {discount} {tokenBeautify(token)}
                     </div>
                 </div>}
                 <div className="flex whitespace-nowrap mt-5">
