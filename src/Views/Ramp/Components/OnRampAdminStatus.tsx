@@ -60,7 +60,8 @@ const KYBListSection = ({ KYBList }: { KYBList?: IRampKYB[] }) => {
       failed: KYBList.filter(k => k.last_subtype.indexOf("FAILED") >= 0).length
     }
 
-    const dashboardData = KYBList.slice(from, to).map(t => {
+    const slicedTrx = KYBList.slice(from, to);
+    const dashboardData = slicedTrx.map(t => {
       return [
         addressSummary(t.user_id),
         t.name,
@@ -149,7 +150,7 @@ const KYBListSection = ({ KYBList }: { KYBList?: IRampKYB[] }) => {
           bodyJSX={bodyJSX}
           loading={!dashboardData.length}
           onRowClick={(idx) => {
-            const uid = KYBList[idx].user_id;
+            const uid = slicedTrx[idx].user_id;
             setPageState({ ...pageState, isModalOpen: true, activeModal: "ADMIN_KYB_DETAIL", auxModalData: { uid } })
           }}
           widths={['20%', '20%', '20%', '20%', '20%']}
@@ -188,7 +189,8 @@ const KYCListSection = ({ KYCList }: { KYCList?: IRampKYC[] }) => {
       failed: KYCList.filter(k => k.last_subtype.indexOf("FAILED") >= 0).length
     }
 
-    const dashboardData = KYCList.slice(from, to).map(t => {
+    const slicedTrx = KYCList.slice(from, to);
+    const dashboardData = slicedTrx.map(t => {
       return [
         addressSummary(t.user_id),
         t.email,
@@ -277,7 +279,7 @@ const KYCListSection = ({ KYCList }: { KYCList?: IRampKYC[] }) => {
           bodyJSX={bodyJSX}
           loading={!dashboardData.length}
           onRowClick={(idx) => {
-            const uid = KYCList[idx].user_id;
+            const uid = slicedTrx[idx].user_id;
             setPageState({ ...pageState, isModalOpen: true, activeModal: "ADMIN_KYC_DETAIL", auxModalData: { uid } })
           }}
           widths={['20%', '20%', '20%', '20%', '20%']}
@@ -326,7 +328,8 @@ const OnRampTransactionsSection = ({ trxList }: { trxList?: IRampAdminTransactio
       fees: Math.round(100 * trxList.filter(k => k.last_subtype == "SUCCESS").map(t => t.fees ? parseFloat(t.fees) : 0).reduce((p, c) => c + p, 0)) / 100
     }
 
-    const dashboardData = trxList.slice(from, to).map(t => {
+    const slicedTrx = trxList.slice(from, to);
+    const dashboardData = slicedTrx.map(t => {
       /*return {
         tid: t.input.transaction_id,
         direction: t.direction,
@@ -426,7 +429,7 @@ const OnRampTransactionsSection = ({ trxList }: { trxList?: IRampAdminTransactio
           bodyJSX={bodyJSX}
           loading={!dashboardData.length}
           onRowClick={(idx) => {
-            const tid = trxList[idx].transaction_id;
+            const tid = slicedTrx[idx].transaction_id;
             setPageState({ ...pageState, isModalOpen: true, activeModal: "ADMIN_TRX_DETAIL", auxModalData: { tid } })
           }}
           widths={["10%", "15%", "10%", "10%", "10%", "10%", "10%", "15%", "5%", "5%",]}
@@ -473,7 +476,8 @@ const OffRampTransactionsSection = ({ trxList }: { trxList?: IRampAdminTransacti
       fees: Math.round(100 * trxList.filter(k => k.last_subtype == "SUCCESS").map(t => t.fees ? parseFloat(t.fees) : 0).reduce((p, c) => c + p, 0)) / 100
     }
 
-    const dashboardData = trxList.slice(from, to).map(t => {
+    const slicedTrx = trxList.slice(from, to);
+    const dashboardData = slicedTrx.map(t => {
       /*return {
         tid: t.input.transaction_id,
         direction: t.direction,
@@ -573,7 +577,7 @@ const OffRampTransactionsSection = ({ trxList }: { trxList?: IRampAdminTransacti
           bodyJSX={bodyJSX}
           loading={!dashboardData.length}
           onRowClick={(idx) => {
-            const tid = trxList[idx].transaction_id;
+            const tid = slicedTrx[idx].transaction_id;
             setPageState({ ...pageState, isModalOpen: true, activeModal: "ADMIN_TRX_DETAIL", auxModalData: { tid } })
           }}
           widths={["10%", "15%", "10%", "10%", "10%", "10%", "10%", "15%", "5%", "5%",]}
