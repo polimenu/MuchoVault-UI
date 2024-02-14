@@ -1,9 +1,9 @@
 export const MINDEX_CONFIG = {
   42161: {
-    LauncherContract: "0x4a2F1f57B0151aD2a11fa238491c055bEdD7eAb3",
+    LauncherContract: "0x24bD2eE4A1deD572bC8161ae686065f99Ba062F2",
     RewardRouterContract: "0xcF3aCfEc02C23885B2E7Ba156d38dF18616135EF",
     RewardBlacklist: ["0"],
-    TokenContract: "0x95279C2A8790b66a11f9def12c7A355C0CFfBD7f",
+    TokenContract: "0x3971203DF7e4846B0f8d7e3a452d336bFBd9a0BF",
     //TokenContractVersion: "1.1",
     PaymentTokens: [
       {

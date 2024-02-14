@@ -250,6 +250,7 @@
 		"out of": "de",
 		"Current mIndex Token Sale": "Preventa de mIndex",
 		"There is no mIndex token currently for sale": "Actualmente, no hay ningún lanzamiento activo de mIndex",
-		"Expected mIndex composition": "Composición esperada de mIndex (activos subyacentes)"
+		"Expected mIndex composition": "Composición esperada de mIndex (activos subyacentes)",
+		"Sold tokens": "Tokens vendidos"
 	}
 }

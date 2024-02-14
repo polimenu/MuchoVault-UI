@@ -111,6 +111,15 @@ const MuchoIndexCard = ({ data }: { data: IMuchoTokenLauncherData }) => {
       top={
         <>
           <span className={underLineClass}>{t("index.Current mIndex Token Sale")}</span>
+          <div className="text-f12 text-3  mt-2">
+            {t("index.Sold tokens")}:&nbsp;&nbsp;&nbsp;&nbsp;
+            <Display
+              data={data.mTokenCurrentSupply}
+              className="inline"
+              disable
+              precision={2}
+            />
+          </div>
         </>
       }
       middle={<>
