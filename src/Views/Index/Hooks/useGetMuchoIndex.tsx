@@ -187,9 +187,16 @@ export const useGetMuchoIndex = () => {
     if (config.TokenContract)
       iniDate.setUTCSeconds(getDataNumber(data, 'dateIni'));
 
+    const SECONDS_LIMIT = 1708107540;
+    const isOnlyNft = (new Date()).getTime() <= SECONDS_LIMIT * 1000; //HARDCODED
+    if (isOnlyNft) {
+      endDate = new Date(0);
+      endDate.setUTCSeconds(SECONDS_LIMIT);
+    }
 
     res = {
       contract: config.LauncherContract,
+      isOnlyNft,
 
       mTokenContract: config.TokenContract ? getDataString(data, 'mToken') : "",
       mTokenVersion: config.TokenContractVersion ?? "",

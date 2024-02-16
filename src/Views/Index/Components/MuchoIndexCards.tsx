@@ -98,6 +98,7 @@ const MuchoIndexComposition = ({ data }: { data: IMuchoTokenLauncherData }) => {
 
 const MuchoIndexCard = ({ data }: { data: IMuchoTokenLauncherData }) => {
   const noteStyles = 'w-[46rem] text-center m-auto tab:w-full font-weight:bold text-f14 mt-5';
+
   if (!data) {
     return <Skeleton
       key={0}
@@ -111,7 +112,7 @@ const MuchoIndexCard = ({ data }: { data: IMuchoTokenLauncherData }) => {
       top={
         <>
           <span className={underLineClass}>{t("index.Current mIndex Token Sale")}</span>
-          <div className="text-f12 text-3  mt-2">
+          {data.isOnlyNft && <div className="text-f12 text-3  mt-2">
             ({t("index.Only for NFT Holders, with extra yield")}&nbsp;&nbsp;
             <Display
               data={100 * 12000 / (data.mTokenCurrentSupply)}
@@ -121,6 +122,7 @@ const MuchoIndexCard = ({ data }: { data: IMuchoTokenLauncherData }) => {
               precision={2}
             />)
           </div>
+          }
           <div className="text-f12 text-3  mt-2">
             {t("index.Sold tokens")}:&nbsp;&nbsp;&nbsp;&nbsp;
             <Display
@@ -138,7 +140,7 @@ const MuchoIndexCard = ({ data }: { data: IMuchoTokenLauncherData }) => {
       bottom={
         <div className="mt-5 !text-right">
           <IndexButtons data={data} />
-          <div className={noteStyles}>{t("index.note")}</div>
+          {data.isOnlyNft && <div className={noteStyles}>{t("index.note")}</div>}
         </div>
       }
     />

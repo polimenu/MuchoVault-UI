@@ -19,6 +19,7 @@ export const indexAtom = atom<IIndexAtom>({
 
 export interface IMuchoTokenLauncherData {
   contract: string;
+  isOnlyNft: boolean;
   mTokenContract: string;
   mTokenCurrentSupply: number;
   mTokenDecimals: number;
