@@ -41,6 +41,14 @@ export const useGetMuchoIndex = () => {
     {
       address: config.LauncherContract,
       abi: LauncherAbi,
+      functionName: 'onlyNFTHolders',
+      args: [],
+      chainId: activeChain?.id,
+    },
+
+    {
+      address: config.LauncherContract,
+      abi: LauncherAbi,
       functionName: 'dateIni',
       args: [],
       chainId: activeChain?.id,
@@ -177,6 +185,7 @@ export const useGetMuchoIndex = () => {
   if (data && data[0]) {
     //console.log("DATA!!", data);
     data.indexes = indexes;
+    //console.log("DATA!!", data);
     //console.log("Distributions", getDataString(data, 'userAllAirdropRewards'));
 
     let endDate = new Date(0);
@@ -187,16 +196,17 @@ export const useGetMuchoIndex = () => {
     if (config.TokenContract)
       iniDate.setUTCSeconds(getDataNumber(data, 'dateIni'));
 
+    /* HARDCODE A LIMIT TIME FOR NFT -> No-NFT
     const SECONDS_LIMIT = 1708107540;
     const isOnlyNft = (new Date()).getTime() <= SECONDS_LIMIT * 1000; //HARDCODED
     if (isOnlyNft) {
       endDate = new Date(0);
       endDate.setUTCSeconds(SECONDS_LIMIT);
-    }
+    }*/
 
     res = {
       contract: config.LauncherContract,
-      isOnlyNft,
+      isOnlyNft: Boolean(getDataString(data, 'onlyNFTHolders')),
 
       mTokenContract: config.TokenContract ? getDataString(data, 'mToken') : "",
       mTokenVersion: config.TokenContractVersion ?? "",
