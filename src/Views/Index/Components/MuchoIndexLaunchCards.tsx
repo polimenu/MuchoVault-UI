@@ -1,12 +1,12 @@
 import { Skeleton } from '@mui/material';
 import { Display } from '@Views/Common/Tooltips/Display';
 import { TableAligner } from '@Views/Common/TableAligner';
-import { IMuchoIndexDataPrice, IMuchoTokenLauncherData, IOldLaunchesData } from '../IndexAtom';
+import { IMuchoIndexDataPrice, IMuchoIndexMarketComposition, IMuchoTokenLauncherData, IMuchoTokenMarketData, IOldLaunchesData } from '../IndexAtom';
 import { Card } from '../../Common/Card/Card';
 //import { BADGE_CONFIG } from '../Config/Plans';
 import { ViewContext } from '..';
 import { useContext, useEffect, useState } from 'react';
-import { IndexButtons } from './MuchoIndexButtons';
+import { IndexButtons } from './MuchoIndexLaunchButtons';
 import { BufferProgressBar } from '@Views/Common/BufferProgressBar.tsx';
 import { Chain } from 'wagmi';
 import { t } from 'i18next';
@@ -25,7 +25,7 @@ export const wrapperClasses = 'flex justify-end flex-wrap';
 
 
 
-export const getMuchoIndexCards = (data: IMuchoTokenLauncherData) => {
+export const getMuchoIndexLaunchCards = (data: IMuchoTokenLauncherData) => {
   const viewContextValue = useContext(ViewContext);
   //console.log("getBadgeCards 0");
   //console.log("getV2AdminCards data", data);
@@ -49,11 +49,15 @@ export const getMuchoIndexCards = (data: IMuchoTokenLauncherData) => {
   }
 
 
-  return [<MuchoIndexCard data={data} />, <MuchoIndexComposition data={data} />];
+  return [<MuchoIndexLaunchCard data={data} />, <MuchoIndexComposition data={[{ asset: "WBTC", percentage: 12.8 },
+  { asset: "WETH", percentage: 13.9 },
+  { asset: "SOL", percentage: 25.2 },
+  { asset: "Stablecoin", percentage: 48.1 }]} />];
 }
 
 
-const MuchoIndexComposition = ({ data }: { data: IMuchoTokenLauncherData }) => {
+
+const MuchoIndexComposition = ({ data }: { data: IMuchoIndexMarketComposition[] }) => {
   if (!data) {
     return <Skeleton
       key={0}
@@ -66,22 +70,18 @@ const MuchoIndexComposition = ({ data }: { data: IMuchoTokenLauncherData }) => {
     <Card
       top={
         <>
-          <span className={underLineClass}>{t("index.Expected mIndex composition")}</span>
+          <span className={underLineClass}>{t("index.mIndex composition")}</span>
         </>
       }
       middle={<>
         {<TableAligner
           keysName={
-            ["WBTC",
-              "WETH",
-              "SOL",
-              "Stablecoin",
-            ]
+            data.map(a => a.asset)
           }
-          values={[12.8, 13.9, 25.2, 48.1].map(p => <div className={`${wrapperClasses}`}>
+          values={data.map(a => <div className={`${wrapperClasses}`}>
             <Display
               className="!justify-end"
-              data={p}
+              data={a.percentage}
               unit="%"
               precision={1}
             />
@@ -95,8 +95,7 @@ const MuchoIndexComposition = ({ data }: { data: IMuchoTokenLauncherData }) => {
   );
 }
 
-
-const MuchoIndexCard = ({ data }: { data: IMuchoTokenLauncherData }) => {
+const MuchoIndexLaunchCard = ({ data }: { data: IMuchoTokenLauncherData }) => {
   const noteStyles = 'w-[46rem] text-center m-auto tab:w-full font-weight:bold text-f14 mt-5';
 
   if (!data) {
@@ -135,7 +134,7 @@ const MuchoIndexCard = ({ data }: { data: IMuchoTokenLauncherData }) => {
         </>
       }
       middle={<>
-        {<MuchoIndexInfo data={data} />}
+        {<MuchoIndexLaunchInfo data={data} />}
       </>}
       bottom={
         <div className="mt-5 !text-right">
@@ -184,7 +183,7 @@ const PricesDisplay = ({ prices }: { prices: IMuchoIndexDataPrice[] }) => {
     </>)};*/
 }
 
-const MuchoIndexInfo = ({ data }: { data: IMuchoTokenLauncherData }) => {
+const MuchoIndexLaunchInfo = ({ data }: { data: IMuchoTokenLauncherData }) => {
   const started = data.dateIni <= new Date();
 
   return (

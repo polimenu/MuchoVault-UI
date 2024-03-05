@@ -18,7 +18,7 @@ import { getBNtoStringCopy } from '@Utils/useReadCall';
 import { BigNumber } from 'ethers';
 import { t } from 'i18next';
 
-export const IndexBuyModal = ({ }: {}) => {
+export const IndexBuyLaunchModal = ({ }: {}) => {
 
   const [pageState] = useAtom(indexAtom);
   const { activeChain } = useContext(ViewContext);

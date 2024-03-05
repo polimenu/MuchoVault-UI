@@ -11,7 +11,7 @@ import { getDataNumber, getDataString } from './useCommonUtils';
 
 
 
-export const useGetMuchoIndex = () => {
+export const useGetMuchoIndexLaunch = () => {
   //console.log("useGetPlans");
   let activeChain: Chain | null = null;
   const contextValue = useContext(ViewContext);

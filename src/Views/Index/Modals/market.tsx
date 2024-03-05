@@ -1,10 +1,10 @@
 import { CloseOutlined } from '@mui/icons-material';
 import { Dialog, IconButton } from '@mui/material';
 import { useAtom } from 'jotai';
-import { IMuchoTokenLauncherData, indexAtom } from '../IndexAtom';
+import { IMuchoTokenLauncherData, IMuchoTokenMarketData, indexAtom } from '../IndexAtom';
 import { IndexBuyLaunchModal } from './buyLaunch';
 
-export const IndexModals = ({ data }: { data: IMuchoTokenLauncherData }) => {
+export const IndexMarketModals = ({ data }: { data: IMuchoTokenMarketData }) => {
   const [pageState, setPageState] = useAtom(indexAtom);
 
   const closeModal = () =>
@@ -28,7 +28,7 @@ export const IndexModals = ({ data }: { data: IMuchoTokenLauncherData }) => {
   );
 };
 
-function ModalChild({ data }: { data: IMuchoTokenLauncherData }) {
+function ModalChild({ data }: { data: IMuchoTokenMarketData }) {
   const [pageState] = useAtom(indexAtom);
   const activeModal = pageState.activeModal;
 

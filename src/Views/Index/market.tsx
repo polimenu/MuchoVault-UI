@@ -20,6 +20,7 @@ import { useGetMuchoIndexLaunch } from './Hooks/useGetMuchoIndexLaunch';
 import { t } from 'i18next';
 import { useGetMuchoIndexMarket } from './Hooks/useGetMuchoIndexMarket';
 import { getMuchoIndexMarketCards } from './Components/MuchoIndexMarketCards';
+import { IndexMarketModals } from './Modals/market';
 
 const Styles = styled.div`
   width: min(1200px, 100%);
@@ -38,10 +39,10 @@ export const ViewContext = React.createContext<{ activeChain: Chain } | null>(
 const ViewContextProvider = ViewContext.Provider;
 
 
-export const IndexPage = () => {
+export const IndexMarketPage = () => {
   const { activeChain } = useActiveChain();
   useEffect(() => {
-    document.title = "(mucho) finance | index";
+    document.title = "(mucho) finance | Index";
   }, []);
   return (
     <Background>
@@ -51,7 +52,7 @@ export const IndexPage = () => {
         <ArbitrumOnly>
           <ViewContextProvider value={{ activeChain }}>
             <main className="content-drawer">
-              <IndexUserPage />
+              <IndexMarketUserPage />
             </main>
             <Drawer open={false}>
               <></>
@@ -64,19 +65,19 @@ export const IndexPage = () => {
   );
 };
 
-export const IndexUserPage = () => {
-  const [, setLauncherData] = useAtom(writeLauncherData);
-  const data: IMuchoTokenLauncherData = useGetMuchoIndexLaunch();
-  setLauncherData(data);
+export const IndexMarketUserPage = () => {
+  const [, setMarketData] = useAtom(writeMarketData);
+  const data: IMuchoTokenMarketData = useGetMuchoIndexMarket();
+  setMarketData(data);
 
   return (
     <Styles>
-      <IndexModals data={data} />
+      <IndexMarketModals data={data} />
       <Section
         Heading={<div className={topStyles}><EarnIcon className="mr-3" /><MuchoWhite width={120} />
           &nbsp;Index</div>}
         //Cards={getMuchoIndexLaunchCards(data ? data : null)}
-        Cards={getMuchoIndexLaunchCards(data ? data : null)}
+        Cards={getMuchoIndexMarketCards(data ? data : null)}
         subHeading={<><div className={descStyles}>{t("index.hero")}</div></>}
       />
     </Styles>

@@ -17,6 +17,26 @@ export const indexAtom = atom<IIndexAtom>({
   data: null,
 });
 
+export interface IMuchoTokenMarketData {
+  contract: string;
+  mTokenContract: string;
+  mTokenCurrentSupply: number;
+  mTokenDecimals: number;
+  userBalance: number;
+  active: boolean;
+  price: IMuchoIndexMarketPrice;
+  initTs: number;
+  initPriceUSD: number;
+  withdrawFeeUser: number;
+  depositFeeUser: number;
+  indexComposition: IMuchoIndexMarketComposition[];
+}
+
+export interface IMuchoIndexMarketComposition {
+  asset: string;
+  percentage: number
+}
+
 export interface IMuchoTokenLauncherData {
   contract: string;
   isOnlyNft: boolean;
@@ -29,6 +49,21 @@ export interface IMuchoTokenLauncherData {
   dateEnd: Date;
   active: boolean;
   prices: IMuchoIndexDataPrice[];
+}
+
+export interface IMuchoIndexMarketPrice {
+  priceUSD: number;
+  slippage: number;
+  buyTokenAddress: string;
+  buyTokenSymbol: string;
+  buyTokenDecimals: number;
+  buyTokenInWallet: number;
+  buyTokenPrice: number;
+  sellTokenAddress: string;
+  sellTokenSymbol: string;
+  sellTokenDecimals: number;
+  sellTokenInWallet: number;
+  sellTokenPrice: number;
 }
 
 export interface IMuchoIndexDataPrice {
@@ -59,5 +94,40 @@ const launcherData = atom<IMuchoTokenLauncherData>({
 });
 export const readLauncherData = atom((get) => get(launcherData));
 export const writeLauncherData = atom(null, (get, set, update: IMuchoTokenLauncherData) => {
+  set(launcherData, update);
+});
+
+
+
+const marketData = atom<IMuchoTokenMarketData>({
+  contract: "0x0",
+  mTokenContract: "0x0",
+  mTokenCurrentSupply: 0,
+  mTokenDecimals: 0,
+  userBalance: 0,
+  active: false,
+  price: {
+    priceUSD: 0,
+    slippage: 0,
+    buyTokenAddress: "0x0",
+    buyTokenSymbol: "",
+    buyTokenDecimals: 0,
+    buyTokenInWallet: 0,
+    buyTokenPrice: 0,
+    sellTokenAddress: "0x0",
+    sellTokenSymbol: "",
+    sellTokenDecimals: 0,
+    sellTokenInWallet: 0,
+    sellTokenPrice: 0
+  },
+  initTs: 0,
+  initPriceUSD: 0,
+  withdrawFeeUser: 0,
+  depositFeeUser: 0,
+  indexComposition: [
+  ]
+});
+export const readMarketData = atom((get) => get(launcherData));
+export const writeMarketData = atom(null, (get, set, update: IMuchoTokenLauncherData) => {
   set(launcherData, update);
 });

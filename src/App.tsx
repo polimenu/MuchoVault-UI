@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { RampAdminPage } from '@Views/Ramp/admin';
 import { AdminFarmAirdropPage } from '@Views/Airdrop/farmAdmin';
 import { IndexPage } from '@Views/Index';
+import { IndexMarketPage } from '@Views/Index/market';
 
 if (import.meta.env.VITE_MODE === 'production') {
   //console.log(`import.meta.env.SENTRY_DSN: `, import.meta.env.VITE_SENTRY_DSN);
@@ -59,6 +60,7 @@ function App() {
         <Route path="/ramp" element={<RampPage />} />
         <Route path="/ramp/admin" element={<RampAdminPage />} />
         <Route path="/index" element={<IndexPage />} />
+        <Route path="/index-market" element={<IndexMarketPage />} />
 
 
       </Routes>
