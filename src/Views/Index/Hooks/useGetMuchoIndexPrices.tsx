@@ -12,15 +12,11 @@ export const useGetMuchoIndexLatestPrice = () => {
             //console.log("Setting latest price", obj);
             setLatestPrice({
                 price: obj.price, updated: new Date(obj.timestamp * 1000),
-                composition: [
-                    { asset: "WBTC", percentage: 12.8 },
-                    { asset: "WETH", percentage: 13.9 },
-                    { asset: "SOL", percentage: 25.2 },
-                    { asset: "Stablecoin", percentage: 48.1 }
-                ],
-                initPrice: 1,
-                initTs: 1707318159
+                composition: obj.composition,
+                initPrice: obj.initPrice,
+                initTs: obj.initTs
             });
+            //console.log("Set latest price", latestPrice);
         }
     }
 

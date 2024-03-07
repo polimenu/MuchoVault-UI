@@ -1,4 +1,4 @@
-export const APIINDEXURL = "http://apiindex.mucho.finance";
+export const APIINDEXURL = "http://localhost:3000" //"http://apiindex.mucho.finance";
 
 export const MINDEX_CONFIG = {
   42161: {

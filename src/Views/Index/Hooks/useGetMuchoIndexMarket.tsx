@@ -239,7 +239,7 @@ export const useGetMuchoIndexMarket = () => {
     if (config.TokenContract)
       iniDate.setUTCSeconds(getDataNumber(data, 'dateIni'));
 
-    res = {
+    /*res = {
       contract: config.MarketContract,
       mTokenContract: getDataString(data, "mToken"),
       mTokenCurrentSupply: Math.round(getDataNumber(data, "totalSupply") / (10 ** getDataNumber(data, "mTokenDecimals"))),
@@ -251,9 +251,23 @@ export const useGetMuchoIndexMarket = () => {
       slippage: getDataNumber(data, "SLIPPAGE") / 10000,
       buyTokenInWallet: account ? getDataNumber(data, "balanceBuy") / (10 ** getDataNumber(data, "decimalsBuy")) : 0,
       buyTokenSymbol: getDataString(data, "symbolBuy")
+    };*/
+
+    res = {
+      contract: config.MarketContract,
+      mTokenContract: config.TokenContract,
+      mTokenCurrentSupply: Math.round(getDataNumber(data, "totalSupply") / (10 ** getDataNumber(data, "mTokenDecimals"))),
+      mTokenDecimals: getDataNumber(data, "mTokenDecimals"),
+      userBalance: getDataNumber(data, "balanceOf"),
+      active: Boolean(getDataString(data, "enabled")),
+      withdrawFeeUser: 0.10, //ToDo
+      depositFeeUser: 0.11,
+      slippage: getDataNumber(data, "SLIPPAGE") / 10000,
+      buyTokenInWallet: account ? getDataNumber(data, "balanceBuy") / (10 ** getDataNumber(data, "decimalsBuy")) : 0,
+      buyTokenSymbol: getDataString(data, "symbolBuy")
     };
 
-    console.log("Res obtained", res);
+    //console.log("Res obtained", res);
 
   }
 

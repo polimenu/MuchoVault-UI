@@ -22,6 +22,7 @@ import { useGetMuchoIndexMarket } from './Hooks/useGetMuchoIndexMarket';
 import { getMuchoIndexMarketCards } from './Components/MuchoIndexMarketCards';
 import { IndexMarketModals } from './Modals/market';
 import { useGetMuchoIndexLatestPrice } from './Hooks/useGetMuchoIndexPrices';
+import { MuchoIndexTransactionList } from './Components/MuchoIndexMarketTransactionList';
 
 const Styles = styled.div`
   width: min(1200px, 100%);
@@ -72,6 +73,13 @@ export const IndexMarketUserPage = () => {
   const [price] = useGetMuchoIndexLatestPrice();
   setMarketData(data);
 
+  const transactions = [
+    { orderPosition: 1, orderType: "SELL", orderStatus: "PENDING", remitant: "0x00", amount: 100, fee: 2, date: 1707490959, attempts: 0, lastAttempt: 0 },
+    { orderPosition: 2, orderType: "SELL", orderStatus: "CANCELLED", remitant: "0x00", amount: 100, fee: 2, date: 1707490959, attempts: 0, lastAttempt: 0 },
+    { orderPosition: 4, orderType: "BUY", orderStatus: "PENDING", remitant: "0x00", amount: 100, fee: 2, date: 1707490959, attempts: 0, lastAttempt: 0 },
+    { orderPosition: 9, orderType: "BUY", orderStatus: "CANCELLED", remitant: "0x00", amount: 100, fee: 2, date: 1707490959, attempts: 0, lastAttempt: 0 },
+  ];
+
   return (
     <Styles>
       <IndexMarketModals data={data} />
@@ -81,6 +89,15 @@ export const IndexMarketUserPage = () => {
         //Cards={getMuchoIndexLaunchCards(data ? data : null)}
         Cards={getMuchoIndexMarketCards(data ? data : null, price ? price : null)}
         subHeading={<><div className={descStyles}>{t("index.hero")}</div></>}
+      />
+      <Section
+        Heading={<div className={topStyles}>{t("index.Pending Orders")}</div>}
+        subHeading={
+          <div className={descStyles}>
+            {t("index.List of your sell/buy orders pending to execute. They can take up to 10 minutes to execute.")}
+          </div>
+        }
+        other={<MuchoIndexTransactionList transactions={transactions} />}
       />
     </Styles>
   );
