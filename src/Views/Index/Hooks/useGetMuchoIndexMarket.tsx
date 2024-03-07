@@ -1,13 +1,16 @@
-import TokenAbi from '../Config/Abis/mIndex.json';
-import LauncherAbi from '../Config/Abis/mTokenLauncher.json';
-import { MINDEX_CONFIG } from '../Config/mIndexConfig';
-import { getBNtoStringCopy } from '@Utils/useReadCall';
 import { Chain, useContractReads } from 'wagmi';
-import { ViewContext } from '..';
+import { ViewContext } from '../market';
 import { useContext } from 'react';
+import { IMuchoTokenMarketData } from '../IndexAtom';
+import { useGlobal } from '@Contexts/Global';
+import { MINDEX_CONFIG } from '../Config/mIndexConfig';
+import MarketAbi from '../Config/Abis/mIndexMarket.json';
+import IndexAbi from '../Config/Abis/mIndex.json';
+import ERC20Abi from '../Config/Abis/ERC20Ext.json';
 import { useUserAccount } from '@Hooks/useUserAccount';
-import { IMuchoTokenLauncherData, IMuchoTokenMarketData } from '../IndexAtom';
+import { getBNtoStringCopy } from '@Utils/useReadCall';
 import { getDataNumber, getDataString } from './useCommonUtils';
+
 
 
 
@@ -18,237 +21,241 @@ export const useGetMuchoIndexMarket = () => {
   if (contextValue) {
     activeChain = contextValue.activeChain;
   }
-  // const { state } = useGlobal();
-  //const config: (typeof MINDEX_CONFIG)[42161] = MINDEX_CONFIG[activeChain.id];
 
-  const res: IMuchoTokenMarketData = {
+  const { state } = useGlobal();
+  const config: (typeof MINDEX_CONFIG)[42161] = MINDEX_CONFIG[activeChain.id];
+
+  let calls: { address: string, abi: any[], functionName: string, args: any[], chainId: number | undefined, map: any | null }[] = [
+    {
+      address: config.MarketContract,
+      abi: MarketAbi,
+      functionName: 'enabled',
+      args: [],
+      chainId: activeChain?.id,
+      map: null
+    },
+    {
+      address: config.MarketContract,
+      abi: MarketAbi,
+      functionName: 'SLIPPAGE',
+      args: [],
+      chainId: activeChain?.id,
+      map: null
+    },
+    {
+      address: config.MarketContract,
+      abi: MarketAbi,
+      functionName: 'mToken',
+      args: [],
+      chainId: activeChain?.id,
+      map: null
+    },
+    {
+      address: config.TokenContract,
+      abi: IndexAbi,
+      functionName: 'decimals',
+      args: [],
+      chainId: activeChain?.id,
+      map: 'mTokenDecimals'
+    },
+    {
+      address: config.MarketContract,
+      abi: MarketAbi,
+      functionName: 'buyToken',
+      args: [],
+      chainId: activeChain?.id,
+      map: null
+    },
+    {
+      address: config.MarketContract,
+      abi: MarketAbi,
+      functionName: 'sellToken',
+      args: [],
+      chainId: activeChain?.id,
+      map: null
+    },
+    {
+      address: config.MarketContract,
+      abi: MarketAbi,
+      functionName: 'withdrawFee',
+      args: [],
+      chainId: activeChain?.id,
+      map: null
+    },
+    {
+      address: config.MarketContract,
+      abi: MarketAbi,
+      functionName: 'depositFee',
+      args: [],
+      chainId: activeChain?.id,
+      map: null
+    },
+    {
+      address: config.TokenContract,
+      abi: IndexAbi,
+      functionName: 'totalSupply',
+      args: [],
+      chainId: activeChain?.id,
+      map: null
+    },
+  ];
+
+  const { address: account } = useUserAccount();
+
+  if (account) {
+    calls = calls.concat([
+      {
+        address: config.MarketContract,
+        abi: MarketAbi,
+        functionName: 'withdrawFeeUser',
+        args: [account],
+        chainId: activeChain?.id,
+        map: null
+      },
+      {
+        address: config.MarketContract,
+        abi: MarketAbi,
+        functionName: 'depositFeeUser',
+        args: [account],
+        chainId: activeChain?.id,
+        map: null
+      },
+      {
+        address: config.TokenContract,
+        abi: IndexAbi,
+        functionName: 'balanceOf',
+        args: [account],
+        chainId: activeChain?.id,
+        map: null
+      },
+
+      {
+        address: config.BuyToken,
+        abi: ERC20Abi,
+        functionName: 'balanceOf',
+        args: [account],
+        chainId: activeChain?.id,
+        map: 'balanceBuy'
+      },
+      {
+        address: config.BuyToken,
+        abi: ERC20Abi,
+        functionName: 'decimals',
+        args: [account],
+        chainId: activeChain?.id,
+        map: 'decimalsBuy'
+      },
+      {
+        address: config.BuyToken,
+        abi: ERC20Abi,
+        functionName: 'symbol',
+        args: [account],
+        chainId: activeChain?.id,
+        map: 'symbolBuy'
+      },
+
+      {
+        address: config.SellToken,
+        abi: ERC20Abi,
+        functionName: 'balanceOf',
+        args: [account],
+        chainId: activeChain?.id,
+        map: 'balanceSell'
+      },
+      {
+        address: config.SellToken,
+        abi: ERC20Abi,
+        functionName: 'decimals',
+        args: [account],
+        chainId: activeChain?.id,
+        map: 'decimalsSell'
+      },
+      {
+        address: config.SellToken,
+        abi: ERC20Abi,
+        functionName: 'symbol',
+        args: [account],
+        chainId: activeChain?.id,
+        map: 'symbolSell'
+      },
+    ])
+  }
+
+  //console.log("Calls before index", calls);
+
+  //add map attribute
+  calls = calls.map(c => {
+    if (!c.map) {
+      c.map = c.functionName;
+      for (var i in c.args) {
+        if (c.args[i])
+          c.map += "_" + c.args[i].toString();
+      }
+    }
+    return c;
+  })
+
+  //console.log("Calls after index", calls);
+
+  let indexes: any = {};
+  calls.forEach((c, i) => { indexes[c.map] = i; });
+
+  //console.log("Calls", calls);
+  //console.log("indexes", indexes);
+
+  let { data } = useContractReads({
+    contracts: calls,
+    watch: true,
+  });
+  data = getBNtoStringCopy(data);
+
+  //console.log("Result contracts", data);
+
+  let res: IMuchoTokenMarketData = {
     contract: "0x0",
     mTokenContract: "0x0",
-    mTokenCurrentSupply: 725732.46,
-    mTokenDecimals: 6,
-    userBalance: 1736.1264,
-    active: true,
-    price: {
-      priceUSD: 1.03645,
-      slippage: 0.003,
-      buyTokenAddress: "0x0",
-      buyTokenSymbol: "USDC",
-      buyTokenDecimals: 6,
-      buyTokenInWallet: 1034.455755,
-      buyTokenPrice: 1.03639,
-      sellTokenAddress: "0x0",
-      sellTokenSymbol: "mUSDC",
-      sellTokenDecimals: 6,
-      sellTokenInWallet: 0,
-      sellTokenPrice: 1.02831
-    },
-    initTs: 1707146290,
-    initPriceUSD: 1,
-    withdrawFeeUser: 0.15,
+    mTokenCurrentSupply: 0,
+    mTokenDecimals: 0,
+    userBalance: 0,
+    active: false,
+    withdrawFeeUser: 0,
     depositFeeUser: 0,
-    indexComposition: [
-      { asset: "WBTC", percentage: 12.8 },
-      { asset: "WETH", percentage: 13.9 },
-      { asset: "SOL", percentage: 25.2 },
-      { asset: "Stablecoin", percentage: 48.1 }
-    ]
+    slippage: 0,
+    buyTokenInWallet: 0,
+    buyTokenSymbol: "",
   }
 
-  /*
-    let calls = [
-      {
-        address: config.LauncherContract,
-        abi: LauncherAbi,
-        functionName: 'active',
-        args: [],
-        chainId: activeChain?.id,
-      },
-  
-      {
-        address: config.LauncherContract,
-        abi: LauncherAbi,
-        functionName: 'dateEnd',
-        args: [],
-        chainId: activeChain?.id,
-      },
-  
-      {
-        address: config.LauncherContract,
-        abi: LauncherAbi,
-        functionName: 'onlyNFTHolders',
-        args: [],
-        chainId: activeChain?.id,
-      },
-  
-      {
-        address: config.LauncherContract,
-        abi: LauncherAbi,
-        functionName: 'dateIni',
-        args: [],
-        chainId: activeChain?.id,
-      },
-  
-      {
-        address: config.LauncherContract,
-        abi: LauncherAbi,
-        functionName: 'mToken',
-        args: [],
-        chainId: activeChain?.id,
-      },
-  
-      {
-        address: config.LauncherContract,
-        abi: LauncherAbi,
-        functionName: 'mTokenDecimals',
-        args: [],
-        chainId: activeChain?.id,
-      },
-    ];
-  
-    if (config.TokenContract) {
-      calls = calls.concat([
-        {
-          address: config.TokenContract,
-          abi: TokenAbi,
-          functionName: 'totalSupply',
-          args: [],
-          chainId: activeChain?.id,
-        },]
-      )
-    }
-  
-  
-    //add prices calls
-    if (config.TokenContract) {
-      calls = calls.concat(config.PaymentTokens.map(p => {
-        return {
-          address: config.LauncherContract,
-          abi: LauncherAbi,
-          functionName: 'mTokenPrice',
-          args: [p.TokenPayment],
-          chainId: activeChain?.id,
-        };
-      }));
-    }
-  
-  
-    const { address: account } = useUserAccount();
-  
-    if (account) {
-      if (config.TokenContract) {
-        calls = calls.concat([
-          {
-            address: config.TokenContract,
-            abi: TokenAbi,
-            functionName: 'balanceOf',
-            args: [account],
-            chainId: activeChain?.id,
-          },
-        ])
-      }
-  
+  if (data && data[0]) {
+    //console.log("DATA!!", data);
+    data.indexes = indexes;
+    //console.log("DATA!!", data);
+    //console.log("Distributions", getDataString(data, 'userAllAirdropRewards'));
 
+    let endDate = new Date(0);
+    if (config.TokenContract)
+      endDate.setUTCSeconds(getDataNumber(data, 'dateEnd'));
 
-  calls = calls.concat(config.PaymentTokens.map(p => {
-    return {
-      address: p.TokenPayment,
-      abi: TokenAbi,
-      functionName: 'balanceOf',
-      args: [account],
-      chainId: activeChain?.id,
-      map: `tokenInWallet_${p.TokenPayment}`
+    let iniDate = new Date(0);
+    if (config.TokenContract)
+      iniDate.setUTCSeconds(getDataNumber(data, 'dateIni'));
+
+    res = {
+      contract: config.MarketContract,
+      mTokenContract: getDataString(data, "mToken"),
+      mTokenCurrentSupply: Math.round(getDataNumber(data, "totalSupply") / (10 ** getDataNumber(data, "mTokenDecimals"))),
+      mTokenDecimals: getDataNumber(data, "mTokenDecimals"),
+      userBalance: getDataNumber(data, "balanceOf"),
+      active: Boolean(getDataString(data, "enabled")),
+      withdrawFeeUser: account ? getDataNumber(data, "withdrawFeeUser") : getDataNumber(data, "withdrawFee"),
+      depositFeeUser: account ? getDataNumber(data, "depositFeeUser") : getDataNumber(data, "depositFee"),
+      slippage: getDataNumber(data, "SLIPPAGE") / 10000,
+      buyTokenInWallet: account ? getDataNumber(data, "balanceBuy") / (10 ** getDataNumber(data, "decimalsBuy")) : 0,
+      buyTokenSymbol: getDataString(data, "symbolBuy")
     };
-  }));
 
-  //OldTokenContracts
-  calls = calls.concat(config.OldTokenContracts.map(c => {
-    return {
-      address: c.contract,
-      abi: TokenAbi,
-      functionName: 'balanceOf',
-      args: [account],
-      chainId: activeChain?.id,
-      map: `tokenInWallet_${c.contract}`
-    };
-  }));
+    console.log("Res obtained", res);
 
-
-}
-
-//console.log("Calls before index", calls);
-
-//add map attribute
-calls = calls.map(c => {
-  if (!c.map) {
-    c.map = c.functionName;
-    for (var i in c.args) {
-      if (c.args[i])
-        c.map += "_" + c.args[i].toString();
-    }
   }
-  return c;
-})
-
-//console.log("Calls after index", calls);
-
-let indexes: any = {};
-calls.forEach((c, i) => { indexes[c.map] = i; });
-
-//console.log("Calls", calls);
-//console.log("indexes", indexes);
-
-let { data } = useContractReads({
-  contracts: calls,
-  watch: true,
-});
-data = getBNtoStringCopy(data);
-
-//console.log("Result contracts", data);
-
-let res: IMuchoTokenLauncherData;
-//return response;
-
-if (data && data[0]) {
-  //console.log("DATA!!", data);
-  data.indexes = indexes;
-  //console.log("DATA!!", data);
-  //console.log("Distributions", getDataString(data, 'userAllAirdropRewards'));
-
-  let endDate = new Date(0);
-  if (config.TokenContract)
-    endDate.setUTCSeconds(getDataNumber(data, 'dateEnd'));
-
-  let iniDate = new Date(0);
-  if (config.TokenContract)
-    iniDate.setUTCSeconds(getDataNumber(data, 'dateIni'));
-
-
-
-  res = {
-    contract: config.LauncherContract,
-    isOnlyNft: Boolean(getDataString(data, 'onlyNFTHolders')),
-
-    mTokenContract: config.TokenContract ? getDataString(data, 'mToken') : "",
-    mTokenVersion: config.TokenContractVersion ?? "",
-    mTokenCurrentSupply: config.TokenContract ? getDataNumber(data, 'totalSupply') / (10 ** getDataNumber(data, 'mTokenDecimals')) : 0,
-    mTokenDecimals: config.TokenContract ? getDataNumber(data, 'mTokenDecimals') : 0,
-    userBalance: config.TokenContract ? getDataNumber(data, `balanceOf_${account}`) / (10 ** getDataNumber(data, 'mTokenDecimals')) : 0,
-
-    dateIni: iniDate,
-    dateEnd: endDate,
-    active: getDataNumber(data, 'active'),
-
-    prices: config.PaymentTokens.map(p => {
-      return {
-        price: getDataNumber(data, `mTokenPrice_${p.TokenPayment}`) / (10 ** p.TokenPaymentDecimals),
-        priceTokenAddress: p.TokenPayment,
-        priceTokenSymbol: p.TokenPaymentSymbol,
-        priceTokenDecimals: p.TokenPaymentDecimals,
-        priceTokenInWallet: getDataNumber(data, `tokenInWallet_${p.TokenPayment}`) / (10 ** p.TokenPaymentDecimals),
-      }
-    }),
-  };
-*/
 
   return res ? res : null;
 }

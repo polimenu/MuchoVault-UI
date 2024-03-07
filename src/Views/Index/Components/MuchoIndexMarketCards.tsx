@@ -1,7 +1,7 @@
 import { Skeleton } from '@mui/material';
 import { Display } from '@Views/Common/Tooltips/Display';
 import { TableAligner } from '@Views/Common/TableAligner';
-import { IMuchoIndexMarketComposition, IMuchoTokenMarketData } from '../IndexAtom';
+import { IIndexPrice, IMuchoIndexMarketComposition, IMuchoTokenMarketData } from '../IndexAtom';
 import { Card } from '../../Common/Card/Card';
 //import { BADGE_CONFIG } from '../Config/Plans';
 import { ViewContext } from '..';
@@ -9,6 +9,8 @@ import { useContext } from 'react';
 import { Chain } from 'wagmi';
 import { t } from 'i18next';
 import { IndexMarketButtons } from './MuchoIndexMarketButtons';
+import { formatDate } from '@Views/Ramp/Utils';
+import { dateFormat } from '@Views/Common/Utils';
 
 export const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 export const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
@@ -22,7 +24,7 @@ export const underLineClass =
 export const wrapperClasses = 'flex justify-end flex-wrap';
 
 
-export const getMuchoIndexMarketCards = (data: IMuchoTokenMarketData) => {
+export const getMuchoIndexMarketCards = (data: IMuchoTokenMarketData, price: IIndexPrice) => {
   const viewContextValue = useContext(ViewContext);
   //console.log("getBadgeCards 0");
   //console.log("getV2AdminCards data", data);
@@ -46,8 +48,9 @@ export const getMuchoIndexMarketCards = (data: IMuchoTokenMarketData) => {
   }
 
 
-  return [<MuchoIndexMarketCard data={data} />, <MuchoIndexComposition data={data.indexComposition} />];
+  return [<MuchoIndexMarketCard data={data} price={price} />, <MuchoIndexComposition data={price ? price.composition : []} />];
 }
+
 
 const MuchoIndexComposition = ({ data }: { data: IMuchoIndexMarketComposition[] }) => {
   if (!data) {
@@ -88,7 +91,7 @@ const MuchoIndexComposition = ({ data }: { data: IMuchoIndexMarketComposition[] 
 }
 
 
-const MuchoIndexMarketCard = ({ data }: { data: IMuchoTokenMarketData }) => {
+const MuchoIndexMarketCard = ({ data, price }: { data: IMuchoTokenMarketData, price: IIndexPrice }) => {
 
   if (!data) {
     return <Skeleton
@@ -115,7 +118,7 @@ const MuchoIndexMarketCard = ({ data }: { data: IMuchoTokenMarketData }) => {
         </>
       }
       middle={<>
-        {<MuchoIndexMarketInfo data={data} />}
+        {<MuchoIndexMarketInfo data={data} price={price} />}
       </>}
       bottom={
         <div className="mt-5 !text-right">
@@ -127,7 +130,7 @@ const MuchoIndexMarketCard = ({ data }: { data: IMuchoTokenMarketData }) => {
 }
 
 
-const MuchoIndexMarketInfo = ({ data }: { data: IMuchoTokenMarketData }) => {
+const MuchoIndexMarketInfo = ({ data, price }: { data: IMuchoTokenMarketData, price: IIndexPrice }) => {
   return (
     <>
       <TableAligner
@@ -135,10 +138,7 @@ const MuchoIndexMarketInfo = ({ data }: { data: IMuchoTokenMarketData }) => {
           [
             t('index.Your mIndex in wallet'),
             t('index.Price'),
-            t('index.Initial Price'),
             t('index.APR'),
-            t('index.Buy Price'),
-            t('index.Sell Price'),
             t('index.Deposit fee'),
             t('index.Withdraw fee'),
             t('index.Slippage'),
@@ -154,7 +154,7 @@ const MuchoIndexMarketInfo = ({ data }: { data: IMuchoTokenMarketData }) => {
               precision={2}
             />&nbsp;&nbsp;&nbsp;&nbsp;(<Display
               className="!justify-end"
-              data={data.userBalance * data.price.priceUSD}
+              data={data.userBalance * (price ? price.price : 0)}
               unit={"$"}
               precision={2}
             />)
@@ -163,7 +163,8 @@ const MuchoIndexMarketInfo = ({ data }: { data: IMuchoTokenMarketData }) => {
 
             <Display
               className="!justify-end"
-              data={data.price.priceUSD}
+              data={price ? price.price : 0}
+              content={price ? <span>{`${t("index.Last Updated")} ${dateFormat(price.updated)}`}</span> : <></>}
               unit={"$"}
               precision={4}
             />
@@ -172,38 +173,15 @@ const MuchoIndexMarketInfo = ({ data }: { data: IMuchoTokenMarketData }) => {
 
             <Display
               className="!justify-end"
-              data={data.initPriceUSD}
-              unit={"$"}
-              precision={4}
-            />
-          </div>,
-          <div className={`${wrapperClasses}`}>
-
-            <Display
-              className="!justify-end"
-              data={100 * (data.price.priceUSD - data.initPriceUSD) * 31536000 / ((new Date()).getTime() / 1000 - data.initTs)}
+              data={price ? 100 * (price.price - price.initPrice) * 31536000 / ((new Date()).getTime() / 1000 - price.initTs) : 0}
               unit={"%"}
               precision={2}
-            />
-          </div>
-          ,
-          <div className={`${wrapperClasses}`}>
-
-            <Display
-              className="!justify-end"
-              data={data.price.buyTokenPrice}
-              unit={data.price.buyTokenSymbol}
-              precision={4}
-            />
-          </div>
-          ,
-          <div className={`${wrapperClasses}`}>
-
-            <Display
-              className="!justify-end"
-              data={data.price.sellTokenPrice}
-              unit={data.price.sellTokenSymbol}
-              precision={4}
+              content={<span>{t("index.Calculated against initial price")}:<br /> <Display
+                className="inline"
+                data={price ? price.initPrice : 0}
+                unit={"$"}
+                precision={4}
+              /> &nbsp;&nbsp;&nbsp;({price ? formatDate(price.initTs * 1000) : ""})</span>}
             />
           </div>
           ,
@@ -231,7 +209,7 @@ const MuchoIndexMarketInfo = ({ data }: { data: IMuchoTokenMarketData }) => {
 
             <Display
               className="!justify-end"
-              data={100 * data.price.slippage}
+              data={100 * data.slippage}
               unit={"%"}
               precision={2}
             />

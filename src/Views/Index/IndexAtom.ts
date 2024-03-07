@@ -24,12 +24,11 @@ export interface IMuchoTokenMarketData {
   mTokenDecimals: number;
   userBalance: number;
   active: boolean;
-  price: IMuchoIndexMarketPrice;
-  initTs: number;
-  initPriceUSD: number;
   withdrawFeeUser: number;
   depositFeeUser: number;
-  indexComposition: IMuchoIndexMarketComposition[];
+  slippage: number;
+  buyTokenInWallet: number;
+  buyTokenSymbol: string;
 }
 
 export interface IMuchoIndexMarketComposition {
@@ -52,7 +51,6 @@ export interface IMuchoTokenLauncherData {
 }
 
 export interface IMuchoIndexMarketPrice {
-  priceUSD: number;
   slippage: number;
   buyTokenAddress: string;
   buyTokenSymbol: string;
@@ -85,6 +83,14 @@ export interface IToken {
   decimals: number;
   supply: number;
   userBalance: number;
+}
+
+export interface IIndexPrice {
+  price: number;
+  updated: Date;
+  composition: IMuchoIndexMarketComposition[];
+  initPrice: number;
+  initTs: number;
 }
 
 

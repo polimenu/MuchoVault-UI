@@ -30,8 +30,8 @@ const GetBuyAndSellButtons = ({ data, state, setPageState }: { data: IMuchoToken
   return <>
     {
       [
-        data.price.buyTokenInWallet > 0 ? getModalButton(t("index.Buy mIndex"), "BUY", data, state, setPageState) : <BlueBtn className={btnClasses} onClick={() => { }} isDisabled={true}>{t("index.NoTokenInWallet", { token: data.price.buyTokenSymbol })}</BlueBtn>,
-        data.userBalance > 0 ? getModalButton(t("index.Sell mIndex"), "SELL", data, state, setPageState) : <BlueBtn className={btnClasses} onClick={() => { }} isDisabled={true}>{t("index.NoTokenInWallet", { token: "mIndex" })}</BlueBtn>,
+        data.buyTokenInWallet > 0 ? getModalButton(t("index.Buy mIndex"), "BUY", data, state, setPageState) : <BlueBtn key="buyButton" className={btnClasses} onClick={() => { }} isDisabled={true}>{t("index.NoTokenInWallet", { token: data.buyTokenSymbol })}</BlueBtn>,
+        data.userBalance > 0 ? getModalButton(t("index.Sell mIndex"), "SELL", data, state, setPageState) : <BlueBtn key="sellButton" className={btnClasses} onClick={() => { }} isDisabled={true}>{t("index.NoTokenInWallet", { token: "mIndex" })}</BlueBtn>,
       ]
     }
   </>;

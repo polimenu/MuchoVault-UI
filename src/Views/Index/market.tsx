@@ -21,6 +21,7 @@ import { t } from 'i18next';
 import { useGetMuchoIndexMarket } from './Hooks/useGetMuchoIndexMarket';
 import { getMuchoIndexMarketCards } from './Components/MuchoIndexMarketCards';
 import { IndexMarketModals } from './Modals/market';
+import { useGetMuchoIndexLatestPrice } from './Hooks/useGetMuchoIndexPrices';
 
 const Styles = styled.div`
   width: min(1200px, 100%);
@@ -68,6 +69,7 @@ export const IndexMarketPage = () => {
 export const IndexMarketUserPage = () => {
   const [, setMarketData] = useAtom(writeMarketData);
   const data: IMuchoTokenMarketData = useGetMuchoIndexMarket();
+  const [price] = useGetMuchoIndexLatestPrice();
   setMarketData(data);
 
   return (
@@ -77,7 +79,7 @@ export const IndexMarketUserPage = () => {
         Heading={<div className={topStyles}><EarnIcon className="mr-3" /><MuchoWhite width={120} />
           &nbsp;Index</div>}
         //Cards={getMuchoIndexLaunchCards(data ? data : null)}
-        Cards={getMuchoIndexMarketCards(data ? data : null)}
+        Cards={getMuchoIndexMarketCards(data ? data : null, price ? price : null)}
         subHeading={<><div className={descStyles}>{t("index.hero")}</div></>}
       />
     </Styles>
