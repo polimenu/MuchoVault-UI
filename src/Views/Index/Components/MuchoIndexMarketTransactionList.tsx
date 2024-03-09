@@ -28,18 +28,18 @@ export const MuchoIndexTransactionList = ({ data, transactions }: { data: IMucho
             { id: "action", label: t("index.Action") },
         ];
 
-        const dashboardData = transactions.map(t => {
+        const dashboardData = transactions.map(trx => {
             return [
-                t.orderPosition,
-                t.orderType,
-                t.orderStatus,
-                t.amount,
-                formatDate(t.date * 1000),
-                t.orderStatus == "PENDING" ? <><BlueBtn className='!w-fit px-4 rounded-sm !h-7 m-auto' onClick={() => {
-                    if (t.orderType == "BUY")
-                        cancelBuyCall(t.orderPosition)
+                trx.orderPosition,
+                trx.orderType,
+                trx.orderStatus,
+                trx.amount,
+                formatDate(trx.date * 1000),
+                trx.orderStatus == "PENDING" ? <><BlueBtn className='!w-fit px-4 rounded-sm !h-7 m-auto' onClick={() => {
+                    if (trx.orderType == "BUY")
+                        cancelBuyCall(trx.orderPosition)
                     else
-                        cancelSellCall(t.orderPosition);
+                        cancelSellCall(trx.orderPosition);
                 }} >{t("index.Cancel Order")}</BlueBtn></> : <span></span>
             ]
         });
