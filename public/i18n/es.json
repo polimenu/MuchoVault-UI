@@ -98,6 +98,11 @@
 		"Airdrop distribution #": "Airdrop distribuido #"
 	},
 	"ramp": {
+		"ScamWarning": "¡CUIDADO CON LAS ESTAFAS!",
+		"ScamWarning2": "   -No continues el proceso de KYC si no eres tú quien ha creado el usuario y la única persona con acceso al e-mail del mismo.",
+		"ScamWarning3": "   -No hagas caso a terceras personas que te indiquen que debas seguir este proceso.",
+		"IMPORTANT": "IMPORTANTE",
+		"Be aware of scams! Do not use any code provided by a third party. You must have access to the e-mail you provided, and get an e-mail with the one-time code.": "¡Cuidado con las estafas! No uses nunca un código de acceso proporcionado por otra persona. Debes tener acceso al e-mail que has introducido, y recibir un correo electrónico con el código tú mismo.",
 		"On & Off Ramp": "On & Off Ramp",
 		"Move from FIAT to Crypto, or counterwise": "Transfiere de FIAT a Cripto, o viceversa",
 		"- or -": "- o -",

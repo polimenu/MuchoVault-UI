@@ -5,9 +5,11 @@ import { ReactNode } from "react";
 import TransactionTable from "./TransactionTable";
 import { formatDate } from "@Views/Ramp/Utils";
 import { BlueBtn } from "@Views/Common/V2-Button";
+import { useIndexMarketInteractionCalls } from "../Hooks/useIndexMarketInteractionCalls";
+import { IMuchoTokenMarketData } from "../IndexAtom";
 
-export const MuchoIndexTransactionList = ({ transactions }: { transactions: any[] }) => {
-    if (!transactions) {
+export const MuchoIndexTransactionList = ({ data, transactions }: { data: IMuchoTokenMarketData, transactions: any[] }) => {
+    if (!data || !transactions) {
         return <Skeleton
             key="OnRampTransactionsCard"
             variant="rectangular"
@@ -15,6 +17,7 @@ export const MuchoIndexTransactionList = ({ transactions }: { transactions: any[
         />
     }
     else {
+        const { cancelBuyCall, cancelSellCall } = useIndexMarketInteractionCalls(data);
         const headerJSX = [
             //  { orderPosition: 1, orderType: "SELL", orderStatus: "PENDING", remitant: "0x00", amount: 100, fee: 2, date: 1707490959, attempts: 0, lastAttempt: 0 },
             { id: "tid", label: t("index.Transaction ID") },
@@ -32,7 +35,7 @@ export const MuchoIndexTransactionList = ({ transactions }: { transactions: any[
                 t.orderStatus,
                 t.amount,
                 formatDate(t.date * 1000),
-                t.orderStatus == "PENDING" ? <><a href="#">Cancel Order</a></> : <span></span>
+                t.orderStatus == "PENDING" ? <><BlueBtn className='!w-fit px-4 rounded-sm !h-7 m-auto' onClick={() => { t.orderType == "BUY" ? cancelBuyCall(t.orderPosition) : cancelSellCall(t.orderPosition) }} >Cancel Order</BlueBtn></> : <span></span>
             ]
         });
         //console.log("dashboardData", dashboardData);

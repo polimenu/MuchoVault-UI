@@ -11,7 +11,10 @@ export const useGetMuchoIndexLatestPrice = () => {
         if (obj.price) {
             //console.log("Setting latest price", obj);
             setLatestPrice({
-                price: obj.price, updated: new Date(obj.timestamp * 1000),
+                price: obj.price,
+                buyPrice: obj.buyPrice,
+                sellPrice: obj.sellPrice,
+                updated: new Date(obj.timestamp * 1000),
                 composition: obj.composition,
                 initPrice: obj.initPrice,
                 initTs: obj.initTs
@@ -21,8 +24,44 @@ export const useGetMuchoIndexLatestPrice = () => {
     }
 
     useEffect(() => {
-        fetchFromIndexApi(`/latestPrice`, 'GET', {}, save, dispatch);
+        const call = () => {
+            //console.log("CALLING GET TRANSACTIONS");
+            fetchFromIndexApi(`/latestPrice`, 'GET', {}, save, dispatch);
+        }
+        call();
+        const interval = setInterval(() => call(), 60 * 1000);
+        return () => {
+            clearInterval(interval);
+        }
     }, []);
 
     return [latestPrice];
+}
+
+
+export const useGetRampTransactions = (sessionId?: string): (IRampTransaction[] | undefined)[] => {
+    const { dispatch } = useGlobal();
+    const [transactions, setTransactions] = useState<IRampTransaction[]>();
+    const save = (obj: { response: IRampTransaction[] }) => {
+        //console.log("setting transactions", obj);
+        setTransactions(obj.response);
+    }
+
+    useEffect(() => {
+        if (!sessionId)
+            save([]);
+        else {
+            const call = () => {
+                //console.log("CALLING GET TRANSACTIONS");
+                fetchFromRampApi(`/transactions`, 'GET', { session_id: sessionId }, save, () => { });
+            }
+            call();
+            const interval = setInterval(() => call(), RAMP_CONFIG.DelayTransactionsRefreshSeconds * 1000);
+            return () => {
+                clearInterval(interval);
+            }
+        }
+    }, [sessionId]);
+
+    return [transactions];
 }

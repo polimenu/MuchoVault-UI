@@ -1,8 +1,12 @@
-export const APIINDEXURL = "http://localhost:3000" //"http://apiindex.mucho.finance";
+export const APIINDEXURL = "https://apiindex.mucho.finance";
 
 export const MINDEX_CONFIG = {
   42161: {
-    MarketContract: "0x62f042E8A2eBFF42F19f553794cF87A87342A247",
+    MarketContract: "0x756ac0aC095de968956632cc12709d09DACF158E",
+    BuyQueueContract: "0xF7b02BA8ce3E40DA9dcecCC635161254c74924d4",
+    DecimalsBuyToken: 6,
+    DecimalsIndexToken: 6,
+    SellQueueContract: "0x6d2C6F6AA05d8c88d8Df1f6544DAa523425f9A05",
     BuyToken: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     SellToken: "0x2eE1Fc67bEC816F3DAe2d2c9409483BEf49F181B",
     LauncherContract: "0x24bD2eE4A1deD572bC8161ae686065f99Ba062F2",

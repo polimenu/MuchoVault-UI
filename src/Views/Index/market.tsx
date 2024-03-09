@@ -23,6 +23,7 @@ import { getMuchoIndexMarketCards } from './Components/MuchoIndexMarketCards';
 import { IndexMarketModals } from './Modals/market';
 import { useGetMuchoIndexLatestPrice } from './Hooks/useGetMuchoIndexPrices';
 import { MuchoIndexTransactionList } from './Components/MuchoIndexMarketTransactionList';
+import { useGetMuchoIndexMarketOrders } from './Hooks/useGetMuchoIndexMarketOrders';
 
 const Styles = styled.div`
   width: min(1200px, 100%);
@@ -71,18 +72,19 @@ export const IndexMarketUserPage = () => {
   const [, setMarketData] = useAtom(writeMarketData);
   const data: IMuchoTokenMarketData = useGetMuchoIndexMarket();
   const [price] = useGetMuchoIndexLatestPrice();
+  const transactions = useGetMuchoIndexMarketOrders();
   setMarketData(data);
 
-  const transactions = [
+  /*const transactions = [
     { orderPosition: 1, orderType: "SELL", orderStatus: "PENDING", remitant: "0x00", amount: 100, fee: 2, date: 1707490959, attempts: 0, lastAttempt: 0 },
     { orderPosition: 2, orderType: "SELL", orderStatus: "CANCELLED", remitant: "0x00", amount: 100, fee: 2, date: 1707490959, attempts: 0, lastAttempt: 0 },
     { orderPosition: 4, orderType: "BUY", orderStatus: "PENDING", remitant: "0x00", amount: 100, fee: 2, date: 1707490959, attempts: 0, lastAttempt: 0 },
     { orderPosition: 9, orderType: "BUY", orderStatus: "CANCELLED", remitant: "0x00", amount: 100, fee: 2, date: 1707490959, attempts: 0, lastAttempt: 0 },
-  ];
+  ];*/
 
   return (
     <Styles>
-      <IndexMarketModals data={data} />
+      <IndexMarketModals data={data} price={price} />
       <Section
         Heading={<div className={topStyles}><EarnIcon className="mr-3" /><MuchoWhite width={120} />
           &nbsp;Index</div>}
@@ -90,15 +92,17 @@ export const IndexMarketUserPage = () => {
         Cards={getMuchoIndexMarketCards(data ? data : null, price ? price : null)}
         subHeading={<><div className={descStyles}>{t("index.hero")}</div></>}
       />
-      <Section
-        Heading={<div className={topStyles}>{t("index.Pending Orders")}</div>}
-        subHeading={
-          <div className={descStyles}>
-            {t("index.List of your sell/buy orders pending to execute. They can take up to 10 minutes to execute.")}
-          </div>
-        }
-        other={<MuchoIndexTransactionList transactions={transactions} />}
-      />
+      <div hidden={!transactions || transactions.length == 0}>
+        <Section
+          Heading={<div className={topStyles}>{t("index.Pending Orders")}</div>}
+          subHeading={
+            <div className={descStyles}>
+              {t("index.List of your sell/buy orders pending to execute. They can take up to 10 minutes to execute.")}
+            </div>
+          }
+          other={<MuchoIndexTransactionList transactions={transactions} data={data} />}
+        />
+      </div>
     </Styles>
   );
 };

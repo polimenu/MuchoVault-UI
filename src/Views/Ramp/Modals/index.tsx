@@ -27,7 +27,7 @@ export const RampModals = () => {
     }
     return (
         <Dialog open={pageState.isModalOpen} onClose={closeModal} className='w-full'>
-            <div className="text-1 bg-2 p-6 rounded-md relative w-full">
+            <div className="text-1 bg-2 p-6 rounded-md relative w-full oauto">
                 <IconButton
                     className="!absolute text-1 top-[20px] right-[20px]"
                     onClick={closeModal}

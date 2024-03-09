@@ -98,6 +98,38 @@ export const useGetMuchoIndexMarket = () => {
       chainId: activeChain?.id,
       map: null
     },
+    {
+      address: config.SellToken,
+      abi: ERC20Abi,
+      functionName: 'decimals',
+      args: [],
+      chainId: activeChain?.id,
+      map: 'decimalsSell'
+    },
+    {
+      address: config.SellToken,
+      abi: ERC20Abi,
+      functionName: 'symbol',
+      args: [],
+      chainId: activeChain?.id,
+      map: 'symbolSell'
+    },
+    {
+      address: config.BuyToken,
+      abi: ERC20Abi,
+      functionName: 'decimals',
+      args: [],
+      chainId: activeChain?.id,
+      map: 'decimalsBuy'
+    },
+    {
+      address: config.BuyToken,
+      abi: ERC20Abi,
+      functionName: 'symbol',
+      args: [],
+      chainId: activeChain?.id,
+      map: 'symbolBuy'
+    },
   ];
 
   const { address: account } = useUserAccount();
@@ -110,7 +142,7 @@ export const useGetMuchoIndexMarket = () => {
         functionName: 'withdrawFeeUser',
         args: [account],
         chainId: activeChain?.id,
-        map: null
+        map: 'withdrawFeeUser',
       },
       {
         address: config.MarketContract,
@@ -118,7 +150,7 @@ export const useGetMuchoIndexMarket = () => {
         functionName: 'depositFeeUser',
         args: [account],
         chainId: activeChain?.id,
-        map: null
+        map: 'depositFeeUser',
       },
       {
         address: config.TokenContract,
@@ -126,7 +158,7 @@ export const useGetMuchoIndexMarket = () => {
         functionName: 'balanceOf',
         args: [account],
         chainId: activeChain?.id,
-        map: null
+        map: 'balanceIndex'
       },
 
       {
@@ -137,22 +169,6 @@ export const useGetMuchoIndexMarket = () => {
         chainId: activeChain?.id,
         map: 'balanceBuy'
       },
-      {
-        address: config.BuyToken,
-        abi: ERC20Abi,
-        functionName: 'decimals',
-        args: [account],
-        chainId: activeChain?.id,
-        map: 'decimalsBuy'
-      },
-      {
-        address: config.BuyToken,
-        abi: ERC20Abi,
-        functionName: 'symbol',
-        args: [account],
-        chainId: activeChain?.id,
-        map: 'symbolBuy'
-      },
 
       {
         address: config.SellToken,
@@ -161,22 +177,6 @@ export const useGetMuchoIndexMarket = () => {
         args: [account],
         chainId: activeChain?.id,
         map: 'balanceSell'
-      },
-      {
-        address: config.SellToken,
-        abi: ERC20Abi,
-        functionName: 'decimals',
-        args: [account],
-        chainId: activeChain?.id,
-        map: 'decimalsSell'
-      },
-      {
-        address: config.SellToken,
-        abi: ERC20Abi,
-        functionName: 'symbol',
-        args: [account],
-        chainId: activeChain?.id,
-        map: 'symbolSell'
       },
     ])
   }
@@ -223,48 +223,40 @@ export const useGetMuchoIndexMarket = () => {
     slippage: 0,
     buyTokenInWallet: 0,
     buyTokenSymbol: "",
+    buyTokenDecimals: 0,
+    buyTokenContract: "",
+    sellTokenDecimals: 0,
+    sellTokenSymbol: "",
+    sellTokenContract: "",
+    withdrawFee: 0,
+    depositFee: 0,
   }
 
   if (data && data[0]) {
     //console.log("DATA!!", data);
     data.indexes = indexes;
-    //console.log("DATA!!", data);
+    // console.log("DATA!!", data);
     //console.log("Distributions", getDataString(data, 'userAllAirdropRewards'));
-
-    let endDate = new Date(0);
-    if (config.TokenContract)
-      endDate.setUTCSeconds(getDataNumber(data, 'dateEnd'));
-
-    let iniDate = new Date(0);
-    if (config.TokenContract)
-      iniDate.setUTCSeconds(getDataNumber(data, 'dateIni'));
-
-    /*res = {
-      contract: config.MarketContract,
-      mTokenContract: getDataString(data, "mToken"),
-      mTokenCurrentSupply: Math.round(getDataNumber(data, "totalSupply") / (10 ** getDataNumber(data, "mTokenDecimals"))),
-      mTokenDecimals: getDataNumber(data, "mTokenDecimals"),
-      userBalance: getDataNumber(data, "balanceOf"),
-      active: Boolean(getDataString(data, "enabled")),
-      withdrawFeeUser: account ? getDataNumber(data, "withdrawFeeUser") : getDataNumber(data, "withdrawFee"),
-      depositFeeUser: account ? getDataNumber(data, "depositFeeUser") : getDataNumber(data, "depositFee"),
-      slippage: getDataNumber(data, "SLIPPAGE") / 10000,
-      buyTokenInWallet: account ? getDataNumber(data, "balanceBuy") / (10 ** getDataNumber(data, "decimalsBuy")) : 0,
-      buyTokenSymbol: getDataString(data, "symbolBuy")
-    };*/
 
     res = {
       contract: config.MarketContract,
       mTokenContract: config.TokenContract,
       mTokenCurrentSupply: Math.round(getDataNumber(data, "totalSupply") / (10 ** getDataNumber(data, "mTokenDecimals"))),
       mTokenDecimals: getDataNumber(data, "mTokenDecimals"),
-      userBalance: getDataNumber(data, "balanceOf"),
+      userBalance: getDataNumber(data, "balanceIndex") / (10 ** getDataNumber(data, "mTokenDecimals")),
       active: Boolean(getDataString(data, "enabled")),
-      withdrawFeeUser: 0.10, //ToDo
-      depositFeeUser: 0.11,
+      withdrawFeeUser: (account ? getDataNumber(data, "withdrawFeeUser") : getDataNumber(data, "withdrawFee")) / 10000,
+      depositFeeUser: (account ? getDataNumber(data, "depositFeeUser") : getDataNumber(data, "depositFee")) / 10000,
+      withdrawFee: getDataNumber(data, "withdrawFee") / 10000,
+      depositFee: getDataNumber(data, "depositFee") / 10000,
       slippage: getDataNumber(data, "SLIPPAGE") / 10000,
       buyTokenInWallet: account ? getDataNumber(data, "balanceBuy") / (10 ** getDataNumber(data, "decimalsBuy")) : 0,
-      buyTokenSymbol: getDataString(data, "symbolBuy")
+      buyTokenSymbol: getDataString(data, "symbolBuy"),
+      buyTokenDecimals: getDataNumber(data, "decimalsBuy"),
+      buyTokenContract: getDataString(data, "buyToken"),
+      sellTokenDecimals: getDataNumber(data, "decimalsSell"),
+      sellTokenSymbol: getDataString(data, "symbolSell"),
+      sellTokenContract: getDataString(data, "buyToken"),
     };
 
     //console.log("Res obtained", res);

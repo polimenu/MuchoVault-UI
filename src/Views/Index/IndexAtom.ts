@@ -27,8 +27,27 @@ export interface IMuchoTokenMarketData {
   withdrawFeeUser: number;
   depositFeeUser: number;
   slippage: number;
+  buyTokenContract: string;
   buyTokenInWallet: number;
   buyTokenSymbol: string;
+  buyTokenDecimals: number;
+  sellTokenSymbol: string;
+  sellTokenDecimals: number;
+  sellTokenContract: string;
+  withdrawFee: number;
+  depositFee: number;
+}
+
+export interface IMuchoIndexOrder {
+  orderPosition: number;
+  orderType: string;
+  orderStatus: string;
+  remitant: string;
+  amount: number;
+  fee: number;
+  date: number;
+  attempts: number;
+  lastAttempt: number;
 }
 
 export interface IMuchoIndexMarketComposition {
@@ -87,6 +106,8 @@ export interface IToken {
 
 export interface IIndexPrice {
   price: number;
+  buyPrice: number;
+  sellPrice: number;
   updated: Date;
   composition: IMuchoIndexMarketComposition[];
   initPrice: number;

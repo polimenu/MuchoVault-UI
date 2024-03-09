@@ -46,6 +46,7 @@ export const OnRampLoginOtp = () => {
       >
         {t("ramp.Login")}
       </BlueBtn>
+      <div className="text-f15 mb-5 mt-5"><b className='red'>{t("ramp.IMPORTANT")}:</b> <b>{t("ramp.Be aware of scams! Do not use any code provided by a third party. You must have access to the e-mail you provided, and get an e-mail with the one-time code.")}</b></div>
     </div></div>;
   }
 
