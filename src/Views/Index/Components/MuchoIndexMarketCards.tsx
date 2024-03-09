@@ -105,7 +105,7 @@ const MuchoIndexMarketCard = ({ data, price }: { data: IMuchoTokenMarketData, pr
     <Card
       top={
         <>
-          <span className={underLineClass}>{t("index.(mucho) Index")}</span>
+          <span className={underLineClass}>(mucho) Index</span>
           <div className="text-f12 text-3  mt-2">
             {t("index.Total supply")}:&nbsp;&nbsp;&nbsp;&nbsp;
             <Display
