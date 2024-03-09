@@ -9,7 +9,7 @@ import { useIndexMarketInteractionCalls } from "../Hooks/useIndexMarketInteracti
 import { IMuchoTokenMarketData } from "../IndexAtom";
 
 export const MuchoIndexTransactionList = ({ data, transactions }: { data: IMuchoTokenMarketData, transactions: any[] }) => {
-    if (!data || !transactions) {
+    if (!data || !transactions || !data.contract) {
         return <Skeleton
             key="OnRampTransactionsCard"
             variant="rectangular"
@@ -35,7 +35,12 @@ export const MuchoIndexTransactionList = ({ data, transactions }: { data: IMucho
                 t.orderStatus,
                 t.amount,
                 formatDate(t.date * 1000),
-                t.orderStatus == "PENDING" ? <><BlueBtn className='!w-fit px-4 rounded-sm !h-7 m-auto' onClick={() => { t.orderType == "BUY" ? cancelBuyCall(t.orderPosition) : cancelSellCall(t.orderPosition) }} >Cancel Order</BlueBtn></> : <span></span>
+                t.orderStatus == "PENDING" ? <><BlueBtn className='!w-fit px-4 rounded-sm !h-7 m-auto' onClick={() => {
+                    if (t.orderType == "BUY")
+                        cancelBuyCall(t.orderPosition)
+                    else
+                        cancelSellCall(t.orderPosition);
+                }} >{t("index.Cancel Order")}</BlueBtn></> : <span></span>
             ]
         });
         //console.log("dashboardData", dashboardData);

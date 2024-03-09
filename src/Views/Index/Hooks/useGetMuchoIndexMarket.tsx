@@ -212,8 +212,8 @@ export const useGetMuchoIndexMarket = () => {
   //console.log("Result contracts", data);
 
   let res: IMuchoTokenMarketData = {
-    contract: "0x0",
-    mTokenContract: "0x0",
+    contract: "",
+    mTokenContract: "",
     mTokenCurrentSupply: 0,
     mTokenDecimals: 0,
     userBalance: 0,

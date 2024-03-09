@@ -12,6 +12,7 @@ import { multiply } from "@Utils/NumString/stringArithmatics";
 
 
 export const useIndexMarketInteractionCalls = (data: IMuchoTokenMarketData) => {
+  //console.log("useIndexMarketInteractionCalls", data);
   const { activeChain } = useContext(ViewContext);
   const { writeCall } = useWriteCall(data.contract, MuchoIndexMarketABI);
   //console.log("Write contract", V2USER_CONFIG[activeChain?.id].MuchoVault.contract, MuchoVaultABI)
