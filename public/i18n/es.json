@@ -284,6 +284,15 @@
 		"Estimated return amount": "Valor de retorno estimado",
 		"Approve": "Aprobar",
 		"Buy": "Comprar",
-		"Sell": "Vender"
+		"Sell": "Vender",
+		"Buy Price": "Precio de Compra",
+		"Sell Price": "Precio de Venta",
+		"DepositFeeReason": "El fee de depósito sirve para proteger a los usuarios que participaron en el lanzamiento, y será reducido una vez el precio llegue a $1.10.",
+		"FeeDistribution": "50% de los fees se distribuirán periódicamente entre los NFT holders",
+		"PremiumFee": "¡Enhorabuena! Como NFT Holder, tu fee es inferior al {{standardFee}}% estándar",
+		"Note": "Nota",
+		"this return amount is an estimation": "este valor de retorno es estimado.",
+		"Real returned amount will be calculated when order executes with real time price": "El valor real se obtendrá cuando la orden se ejecute, con el precio real del momento.",
+		"A buy or sell order can take approximately 10 minutes to be executed.": "Una orden de compra o venta puede tardar aproximadamente 10 minutos en ejecutarse."
 	}
 }

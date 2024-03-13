@@ -284,6 +284,15 @@
 		"Estimated return amount": "Estimated return amount",
 		"Approve": "Approve",
 		"Buy": "Buy",
-		"Sell": "Sell"
+		"Sell": "Sell",
+		"Buy Price": "Buy Price",
+		"Sell Price": "Buy Price",
+		"DepositFeeReason": "Deposit fee is used to protect users that participated in the mIndex launch, and will be reduced once price arrives $1.10.",
+		"FeeDistribution": "50% of fees will be distributed among NFT holders",
+		"PremiumFee": "Congratulations! As NFT Holder, your fee is lower than standard {{standardFee}}%",
+		"Note": "Note",
+		"this return amount is an estimation": "this return amount is an estimation",
+		"Real returned amount will be calculated when order executes with real time price": "Real returned amount will be calculated when order executes with real time price",
+		"A buy or sell order can take approximately 10 minutes to be executed.": "A buy or sell order can take approximately 10 minutes to be executed."
 	}
 }

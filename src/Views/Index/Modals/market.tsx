@@ -61,7 +61,17 @@ const useGetQuote = (input: string, depositFee: number, price: number, slippage:
   //console.log("Calc price", input, depositFee, price, slippage)
 
   if (!isNaN(+input))
-    return [Math.round(10000 * Number(input) * (1 - depositFee) * (price * (1 + slippage))) / 10000];
+    return [Math.round(10000 * Number(input) * (1 - depositFee) / (price * (1 + slippage))) / 10000];
+
+
+  return [0];
+}
+
+const useGetQuoteSell = (input: string, withdrawFee: number, price: number, slippage: number): number[] => {
+  //console.log("Calc price", input, depositFee, price, slippage)
+
+  if (!isNaN(+input))
+    return [Math.round(10000 * Number(input) * (1 - withdrawFee) * (price * (1 - slippage))) / 10000];
 
 
   return [0];
@@ -73,7 +83,7 @@ function IndexBuyModal({ data, price }: { data: IMuchoTokenMarketData, price: II
   const { activeChain } = useContext(ViewContext);
   const { state } = useGlobal();
   const toastify = useToast();
-  const [quote] = useGetQuote(val, data ? data.depositFeeUser : 0, data ? price.buyPrice : 0, data ? data.slippage : 0);
+  const [quote] = useGetQuote(val, data ? data.depositFeeUser : 0, price ? price.buyPrice : 0, data ? data.slippage : 0);
   const allowance = useGetAllowance(data ? data.buyTokenContract : "", data ? data.buyTokenDecimals : 0, data ? data.contract : "", activeChain.id);
   const { approve } = useGetApprovalAmount(
     erc20ABI,
@@ -179,6 +189,16 @@ function IndexBuyModal({ data, price }: { data: IMuchoTokenMarketData, price: II
           </BlueBtn>
           }
         </div>
+
+        <div className="flex mt-5 text-f14">
+          <b>{t("index.Note")}:</b>&nbsp; {t("index.this return amount is an estimation")}
+        </div>
+        <div className="flex text-f14">
+          {t("index.Real returned amount will be calculated when order executes with real time price")}
+        </div>
+        <div className="flex text-f14">
+          {t("index.A buy or sell order can take approximately 10 minutes to be executed.")}
+        </div>
       </div>
     </div >
   );
@@ -193,7 +213,7 @@ function IndexSellModal({ data, price }: { data: IMuchoTokenMarketData, price: I
   const { activeChain } = useContext(ViewContext);
   const { state } = useGlobal();
   const toastify = useToast();
-  const [quote] = useGetQuote(val, data ? data.withdrawFeeUser : 0, data ? price.sellPrice : 0, data ? data.slippage : 0);
+  const [quote] = useGetQuoteSell(val, data ? data.withdrawFeeUser : 0, price ? price.sellPrice : 0, data ? data.slippage : 0);
   const allowance = useGetAllowance(data ? data.mTokenContract : "", data ? data.mTokenDecimals : 0, data ? data.contract : "", activeChain.id);
   const { approve } = useGetApprovalAmount(
     erc20ABI,
@@ -298,6 +318,15 @@ function IndexSellModal({ data, price }: { data: IMuchoTokenMarketData, price: I
             {t("index.Sell")}
           </BlueBtn>
           }
+        </div>
+        <div className="flex mt-5 text-f14">
+          <b>{t("index.Note")}:</b>&nbsp; {t("index.this return amount is an estimation")}
+        </div>
+        <div className="flex text-f14">
+          {t("index.Real returned amount will be calculated when order executes with real time price")}
+        </div>
+        <div className="flex text-f14">
+          {t("index.A buy or sell order can take approximately 10 minutes to be executed.")}
         </div>
       </div>
     </div >

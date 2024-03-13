@@ -259,7 +259,7 @@ export const useGetMuchoIndexMarket = () => {
       sellTokenContract: getDataString(data, "buyToken"),
     };
 
-    //console.log("Res obtained", res);
+    console.log("Res obtained", res);
 
   }
 
