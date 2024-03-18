@@ -59,8 +59,8 @@ function App() {
         <Route path="/airdrop/admin" element={<AdminFarmAirdropPage />} />
         <Route path="/ramp" element={<RampPage />} />
         <Route path="/ramp/admin" element={<RampAdminPage />} />
-        <Route path="/index" element={<IndexPage />} />
-        <Route path="/index-market" element={<IndexMarketPage />} />
+        <Route path="/index-launch" element={<IndexPage />} />
+        <Route path="/index" element={<IndexMarketPage />} />
 
 
       </Routes>
