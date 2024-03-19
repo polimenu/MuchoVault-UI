@@ -1,12 +1,15 @@
 import { Card } from "@Views/Common/Card/Card";
 import { TableAligner } from "@Views/Common/TableAligner";
 import { Display } from "@Views/Common/Tooltips/Display";
+import { BlueBtn } from "@Views/Common/V2-Button";
 import { useLogout } from "@Views/Ramp/Hooks/login";
-import { IRampUserDetails } from "@Views/Ramp/rampAtom";
+import { IRampUserDetails, rampAtom } from "@Views/Ramp/rampAtom";
 import { Skeleton } from "@mui/material";
 import { t } from "i18next";
+import { useAtom } from "jotai";
 
 export const UserDetailsCard = ({ userDetails }: { userDetails: IRampUserDetails }) => {
+    const [rampState, setRampState] = useAtom(rampAtom);
     const wrapperClasses = 'flex justify-end flex-wrap';
     const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
     const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
@@ -43,7 +46,7 @@ export const UserDetailsCard = ({ userDetails }: { userDetails: IRampUserDetails
             <TableAligner
                 keysName={
                     // ["Name", "Last name", "E-mail", "Date of birth", "Address", "Postal Code", "City", "Country"]
-                    [t("ramp.Name"), t("ramp.E-mail"), t("ramp.Date of birth"), t("ramp.Address")]
+                    [t("ramp.Name"), t("ramp.E-mail"), t("ramp.Date of birth"), t("ramp.Address"), t("ramp.Corporations"), ""]
                 }
                 values={[
                     <div className={`${wrapperClasses}`}>
@@ -77,6 +80,18 @@ export const UserDetailsCard = ({ userDetails }: { userDetails: IRampUserDetails
                     </div>
                     ,
 
+                    <div className={`${wrapperClasses}`}>
+                        <Display
+                            className="!justify-end"
+                            data={userDetails.linked_corporates_uuid.length > 0 ? "Corporation list" : t("ramp.No Corporations")}
+                        />
+                    </div>
+                    ,
+
+                    <div className={`${wrapperClasses}`}>
+                        <BlueBtn onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "NEWCORP", auxModalData: {} }) }}>{t("ramp.Add Corporation")}</BlueBtn>
+                    </div>
+                    ,
 
                 ]
                 }

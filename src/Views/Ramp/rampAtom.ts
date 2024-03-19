@@ -107,6 +107,7 @@ export interface IRampUserDetails {
         explanation: string;
         canTransact: boolean;
     }
+    linked_corporates_uuid: string[];
     uuid: string;
     bvn: string;
     canCreateKYC: boolean;

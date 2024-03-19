@@ -13,6 +13,7 @@ import { OffRampModal } from './OffRampModal';
 import { KycDetailModal } from './KYCDetailModal';
 import { TrxDetailModal } from './TrxDetailModal';
 import { KybDetailModal } from './KYBDetailModal';
+import { NewCorpModal } from './NewCorpModal';
 
 export const RampModals = () => {
     const [pageState, setPageState] = useAtom(rampAtom);
@@ -59,6 +60,9 @@ function ModalChild() {
 
     if (activeModal == "NEWUSER")
         return <NewUserModal />;
+
+    if (activeModal == "NEWCORP")
+        return <NewCorpModal />;
 
     if (activeModal == "BANK_ADD")
         return <BankAddModal />;
