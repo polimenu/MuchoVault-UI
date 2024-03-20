@@ -1,7 +1,7 @@
 import { Skeleton } from '@mui/material';
 import { Display } from '@Views/Common/Tooltips/Display';
 import { TableAligner } from '@Views/Common/TableAligner';
-import { IMuchoVaultData, IMuchoVaultParametersInfo, IVaultInfo } from '../v2AdminAtom';
+import { IBackingInfo, IMuchoVaultData, IMuchoVaultParametersInfo, IVaultInfo } from '../v2AdminAtom';
 import { Card } from '../../Common/Card/Card';
 //import { BADGE_CONFIG } from '../Config/Plans';
 import { ViewContext } from '..';
@@ -97,7 +97,7 @@ const MuchoVaultInfoCard = ({ vaultId, vaultInfo, precision, data }: { vaultId: 
         </>
       }
       middle={<>
-        <MuchoVaultInfo vaultInfo={vaultInfo} precision={precision} nftApr={nftData.nftApr} />
+        <MuchoVaultInfo vaultInfo={vaultInfo} precision={precision} nftApr={nftData.nftApr} backingInfo={data.backingInfo} />
       </>}
       bottom={
         <div className="mt-5">
@@ -108,7 +108,7 @@ const MuchoVaultInfoCard = ({ vaultId, vaultInfo, precision, data }: { vaultId: 
   );
 }
 
-const MuchoVaultInfo = ({ vaultInfo, precision, nftApr }: { vaultInfo: IVaultInfo, precision: number, nftApr: number }) => {
+const MuchoVaultInfo = ({ vaultInfo, precision, nftApr, backingInfo }: { vaultInfo: IVaultInfo, precision: number, nftApr: number, backingInfo: IBackingInfo }) => {
   //console.log("Plan:"); console.log(plan);
   //console.log("Enabled:"); console.log(enabledStr);
   const muchoToDepositExchange = Number(vaultInfo.muchoToken.supply) > 0 ? Number(vaultInfo.totalStaked / vaultInfo.muchoToken.supply) : 1;
@@ -257,7 +257,7 @@ const MuchoVaultInfo = ({ vaultInfo, precision, nftApr }: { vaultInfo: IVaultInf
 
       <TableAligner
         keysName={
-          [t('v2.Deposit Fee')/*, 'Withdraw Fee', 'Max Deposit per user'*/]
+          [t('v2.Deposit Fee'), t('v2.Withdraw Fee')]
         }
         values={[
           <div className={`${wrapperClasses}`}>
@@ -267,15 +267,23 @@ const MuchoVaultInfo = ({ vaultInfo, precision, nftApr }: { vaultInfo: IVaultInf
               unit={"%"}
               precision={2}
             />
-          </div>/*,
+          </div>,
           <div className={`${wrapperClasses}`}>
             <Display
               className="!justify-end"
-              data={vaultInfo.withdrawFee}
+              data={/*vaultInfo.withdrawFee*/ 100 - 100 * backingInfo.backedUSD / backingInfo.totalUSD}
               unit={"%"}
               precision={2}
+              content={
+                <span>
+                  <div className="text-left mt-3 text-f14">
+                    {t("v2.Wfee Note1")} <br /><br />
+                    {t("v2.Wfee Note2")}
+                  </div>
+                </span>
+              }
             />
-          </div>,
+          </div>/*,
           <div className={`${wrapperClasses}`}>
             <Display
               className="!justify-end"

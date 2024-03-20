@@ -43,7 +43,10 @@
 		"Enter a poistive value": "Inserta un valor positivo",
 		"Approve": "Aprobar",
 		"Amount exceeds max withdrawable value.": "La cantidad es superior al máximo retirable.",
-		"No tokens in your wallet": "No tienes {{token}} para depositar"
+		"No tokens in your wallet": "No tienes {{token}} para depositar",
+		"Withdraw Fee": "Futuro fee de retirada (estimado)",
+		"Wfee Note1": "A partir del 1 de Abril de 2024, el protocolo podrá aplicar un fee de retirada para asegurar su sostenibilidad.",
+		"Wfee Note2": "Este fee dependerá fundamentalmente de las reservas en USD y la cantidad soportada en la bóvedas. Aunque a largo plazo debería ser cercano a 0, a corto plazo podría ser mayor debido a pérdidas temporales (ej. beneficios por parte de los traders de GMX)"
 	},
 	"badge": {
 		"HeroText": "Subscríbete a tu plan, y recibirás un token NFT que te permitirá disfrutar de beneficios en nuestros protocolos",

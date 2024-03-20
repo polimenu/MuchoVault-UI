@@ -43,7 +43,10 @@
 		"Enter a poistive value": "Enter a poistive value",
 		"Approve": "Approve",
 		"Amount exceeds max withdrawable value.": "Amount exceeds max withdrawable value.",
-		"No tokens in your wallet": "No {{token}} in your wallet"
+		"No tokens in your wallet": "No {{token}} in your wallet",
+		"Withdraw Fee": "Upcoming withdraw fee (estimation)",
+		"Wfee Note1": "From April 1st 2024, protocol will be able to apply a Withdraw Fee to ensure sustainability.",
+		"Wfee Note2": "This fee will depend on the relation between the USD reserves and the staked amount in protocol. Long term should be near to 0, but short term could be more due to temporary losses (e.g. GMX traders being profitable)"
 	},
 	"badge": {
 		"HeroText": "Subscribe to your plan, and you will receive a NFT token that will identify you with benefits in our protocols!",

@@ -19,6 +19,12 @@ export interface IMuchoVaultData {
   parametersInfo: IMuchoVaultParametersInfo;
   contractsInfo: IMuchoVaultContractsInfo;
   badgeInfo: IBadgeInfo;
+  backingInfo: IBackingInfo;
+}
+
+export interface IBackingInfo {
+  totalUSD: number;
+  backedUSD: number;
 }
 
 export interface IBadgeInfo {

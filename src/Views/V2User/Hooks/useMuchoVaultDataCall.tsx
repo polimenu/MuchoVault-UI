@@ -82,6 +82,22 @@ export const useGetMuchoVaultV2Data = () => {
       map: "glpApr"
     },
     {
+      address: v2UserConfig.MuchoProtocolGmx.contract,
+      abi: MuchoProtocolGmxAbi,
+      functionName: "getTotalUSD",
+      args: [],
+      chainId: activeChain?.id,
+      map: "getTotalUSD"
+    },
+    {
+      address: v2UserConfig.MuchoProtocolGmx.contract,
+      abi: MuchoProtocolGmxAbi,
+      functionName: "getTotalUSDBacked",
+      args: [],
+      chainId: activeChain?.id,
+      map: "getTotalUSDBacked"
+    },
+    {
       address: v2UserConfig.MuchoVault.configDataContract,
       abi: MuchoVaultConfigDataAbi,
       functionName: "weeklyUsdNftRewards",
@@ -299,6 +315,10 @@ export const useGetMuchoVaultV2Data = () => {
         annualEarningExpected: (getDataNumber(data, "realGlpApr") / getDataNumber(data, "glpApr")) * getDataNumber(data, 'getExpectedNFTAnnualYield') / 10 ** 18 + getDataNumber(data, 'weeklyUsdNftRewards') * 52,
         totalPonderatedInvestment: getDataNumber(data, 'getTotalPonderatedInvestment') / 10 ** 18,
         userBadgeData: getUserBadgeData(data, account),
+      },
+      backingInfo: {
+        totalUSD: getDataNumber(data, 'getTotalUSD'),
+        backedUSD: getDataNumber(data, 'getTotalUSDBacked')
       }
     };
 
