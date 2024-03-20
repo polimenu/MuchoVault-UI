@@ -271,7 +271,7 @@ const MuchoVaultInfo = ({ vaultInfo, precision, nftApr, backingInfo }: { vaultIn
           <div className={`${wrapperClasses}`}>
             <Display
               className="!justify-end"
-              data={/*vaultInfo.withdrawFee*/ 100 - 100 * backingInfo.backedUSD / backingInfo.totalUSD}
+              data={/*vaultInfo.withdrawFee*/ Math.max(0, 100 - 100 * backingInfo.backedUSD / backingInfo.totalUSD)}
               unit={"%"}
               precision={2}
               content={
