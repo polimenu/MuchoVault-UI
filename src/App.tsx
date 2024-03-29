@@ -50,6 +50,7 @@ function App() {
         <Route path="/v1" element={<Earn />} />
         <Route path="/badgeAdmin" element={<Badge admin={true} />} />
         <Route path="/badge" element={<Badge admin={false} />} />
+        <Route path="/nft" element={<Badge admin={false} />} />
         <Route path="/v2" element={<V2UserPage />} />
         <Route path="/v2/admin/muchovault" element={<V2AdminPage pageType={V2AdminContract.MuchoVault} />} />
         <Route path="/v2/admin/muchohub" element={<V2AdminPage pageType={V2AdminContract.MuchoHub} />} />

@@ -140,13 +140,13 @@ export const getTabs = () => {
       name: 'Index',
       subTabs: [],
       isExternalLink: false,
-    },
+    },/*
     {
       to: `/badge`,
       name: 'NFT',
       subTabs: [],
       isExternalLink: false,
-    },/*
+    },*//*
     {
       to: `/swap`,
       name: 'Swap',
