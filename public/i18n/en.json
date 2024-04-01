@@ -44,7 +44,7 @@
 		"Approve": "Approve",
 		"Amount exceeds max withdrawable value.": "Amount exceeds max withdrawable value.",
 		"No tokens in your wallet": "No {{token}} in your wallet",
-		"Withdraw Fee": "Upcoming withdraw fee (estimation)",
+		"Withdraw Fee": "Withdraw fee",
 		"Wfee Note1": "From April 1st 2024, protocol will be able to apply a Withdraw Fee to ensure sustainability.",
 		"Wfee Note2": "This fee will depend on the relation between the USD reserves and the staked amount in protocol. Long term should be near to 0, but short term could be more due to temporary losses (e.g. GMX traders being profitable)"
 	},
