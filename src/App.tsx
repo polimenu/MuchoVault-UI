@@ -20,6 +20,7 @@ import { RampAdminPage } from '@Views/Ramp/admin';
 import { AdminFarmAirdropPage } from '@Views/Airdrop/farmAdmin';
 import { IndexPage } from '@Views/Index';
 import { IndexMarketPage } from '@Views/Index/market';
+import { RampPageB2B } from '@Views/Ramp/b2b';
 
 if (import.meta.env.VITE_MODE === 'production') {
   //console.log(`import.meta.env.SENTRY_DSN: `, import.meta.env.VITE_SENTRY_DSN);
@@ -58,6 +59,7 @@ function App() {
         <Route path="/airdrop" element={<AirdropPage />} />
         <Route path="/airdrop/admin" element={<AdminFarmAirdropPage />} />
         <Route path="/ramp" element={<RampPage />} />
+        <Route path="/rampb2b" element={<RampPageB2B />} />
         <Route path="/ramp/admin" element={<RampAdminPage />} />
         <Route path="/index-launch" element={<IndexPage />} />
         <Route path="/index" element={<IndexMarketPage />} />

@@ -46,7 +46,7 @@ export const UserDetailsCard = ({ userDetails }: { userDetails: IRampUserDetails
             <TableAligner
                 keysName={
                     // ["Name", "Last name", "E-mail", "Date of birth", "Address", "Postal Code", "City", "Country"]
-                    [t("ramp.Name"), t("ramp.E-mail"), t("ramp.Date of birth"), t("ramp.Address"), t("ramp.Corporations"), ""]
+                    [t("ramp.Name"), t("ramp.E-mail"), t("ramp.Date of birth"), t("ramp.Address")]
                 }
                 values={[
                     <div className={`${wrapperClasses}`}>
@@ -77,19 +77,6 @@ export const UserDetailsCard = ({ userDetails }: { userDetails: IRampUserDetails
                             className="!justify-end"
                             data={parsedAddress}
                         />
-                    </div>
-                    ,
-
-                    <div className={`${wrapperClasses}`}>
-                        <Display
-                            className="!justify-end"
-                            data={userDetails.linked_corporates_uuid.length > 0 ? "Corporation list" : t("ramp.No Corporations")}
-                        />
-                    </div>
-                    ,
-
-                    <div className={`${wrapperClasses}`}>
-                        <BlueBtn onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "NEWCORP", auxModalData: {} }) }}>{t("ramp.Add Corporation")}</BlueBtn>
                     </div>
                     ,
 
