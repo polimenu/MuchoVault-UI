@@ -23,7 +23,7 @@ export const fromWei = (value: string, decimals: number = 18) => {
   // return Math.floor((value * 1e6) / 1e18) / 1e6;
 };
 
-export const useGetMuchoProtocolGmxData = () => {
+export const useGetMuchoProtocolGmxData = (version = 1) => {
   let activeChain: Chain | null = null;
   const v2AdminContextValue = useContext(ViewContext);
   if (v2AdminContextValue) {
@@ -31,14 +31,16 @@ export const useGetMuchoProtocolGmxData = () => {
   }
   // const { state } = useGlobal();
   const v2AdminConfig: (typeof V2ADMIN_CONFIG)[42161] = V2ADMIN_CONFIG[activeChain.id];
+  const protocolConf = version == 2 ? v2AdminConfig.MuchoProtocolGmxV2 : v2AdminConfig.MuchoProtocolGmx
 
+  //console.log("VERSION", version);
 
   const muchoGmxParameterCalls = ['protocolName', 'protocolDescription', 'glpApr', 'glpWethMintFee'
     , 'slippage', 'earningsAddress', 'claimEsGmx', 'minNotInvestedPercentage'
     , 'desiredNotInvestedPercentage', 'minBasisPointsMove', 'maxRefreshWeightLapse'
     , 'manualModeWeights', 'rewardSplit', 'compoundProtocol'].map(f => {
       return {
-        address: v2AdminConfig.MuchoProtocolGmx.contract,
+        address: protocolConf.contract,
         abi: MuchoProtocolGmxAbi,
         functionName: f,
         chainId: activeChain?.id,
@@ -51,10 +53,10 @@ export const useGetMuchoProtocolGmxData = () => {
   v2AdminConfig.TokenDictionary.forEach(t => tokenCalls = tokenCalls.concat(getERC20TokenCalls(t)));
 
   let mainTokenCalls = []
-  v2AdminConfig.MuchoProtocolGmx.tokens.forEach(t => {
+  protocolConf.tokens.forEach(t => {
     mainTokenCalls = mainTokenCalls.concat(['getSecondaryTokens', 'getTokenStaked', 'getTokenInvested', 'getTokenNotInvested', 'getTokenWeight', 'glpWeight'].map(f => {
       return {
-        address: v2AdminConfig.MuchoProtocolGmx.contract,
+        address: protocolConf.contract,
         abi: MuchoProtocolGmxAbi,
         functionName: f,
         args: [t],
@@ -68,7 +70,7 @@ export const useGetMuchoProtocolGmxData = () => {
   const muchoGmxContractCalls = ['EsGMX', 'fsGLP', 'WETH', 'glpRouter', 'glpRewardRouter',
     'poolGLP', 'glpVault', 'muchoRewardRouter', 'priceFeed', 'getTotalUSD', 'getTotalUSDBacked'].map(f => {
       return {
-        address: v2AdminConfig.MuchoProtocolGmx.contract,
+        address: protocolConf.contract,
         abi: MuchoProtocolGmxAbi,
         functionName: f,
         chainId: activeChain?.id,
@@ -77,7 +79,7 @@ export const useGetMuchoProtocolGmxData = () => {
     });
 
   const muchoGmxTokensCall = {
-    address: v2AdminConfig.MuchoProtocolGmx.contract,
+    address: protocolConf.contract,
     abi: MuchoProtocolGmxAbi,
     functionName: 'getTokens',
     chainId: activeChain?.id,
@@ -109,7 +111,7 @@ export const useGetMuchoProtocolGmxData = () => {
     data.indexes = indexes;
 
     responseMP = {
-      contract: v2AdminConfig.MuchoProtocolGmx.contract,
+      contract: protocolConf.contract,
       protocolName: getDataString(data, 'protocolName'),
       protocolDescription: getDataString(data, 'protocolDescription'),
 

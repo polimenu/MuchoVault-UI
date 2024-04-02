@@ -32,7 +32,8 @@ export const V2AdminSetModal = ({
       break;
 
     case V2AdminContract.MuchoProtocolGmx:
-      contract = V2ADMIN_CONFIG[activeChain?.id].MuchoProtocolGmx.contract;
+      const protoConfig = activeModal.version == 2 ? V2ADMIN_CONFIG[activeChain?.id].MuchoProtocolGmxV2 : V2ADMIN_CONFIG[activeChain?.id].MuchoProtocolGmx
+      contract = protoConfig.contract;
       abi = MuchoGmxAbi;
       break;
 

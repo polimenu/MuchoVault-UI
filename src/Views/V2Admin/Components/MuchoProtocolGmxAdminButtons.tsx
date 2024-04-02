@@ -13,12 +13,13 @@ import { ethers } from 'ethers';
 
 export const btnClasses = '!w-fit px-4 rounded-sm !h-7';
 
-export function MuchoGmxGeneralButtons({ data }: { data: IMuchoProtocolGmxData }) {
+export function MuchoGmxGeneralButtons({ data, version }: { data: IMuchoProtocolGmxData, version: number }) {
   const { address: account } = useUserAccount();
   const { activeChain } = useContext(ViewContext);
   const { chain } = useNetwork();
   const [state, setPageState] = useAtom(v2ContractDataAtom);
-  const { writeCall } = useWriteCall(V2ADMIN_CONFIG[activeChain?.id].MuchoProtocolGmx.contract, MuchoGmxAbi);
+  const protConf = version == 2 ? V2ADMIN_CONFIG[activeChain?.id].MuchoProtocolGmxV2 : V2ADMIN_CONFIG[activeChain?.id].MuchoProtocolGmx;
+  const { writeCall } = useWriteCall(protConf.contract, MuchoGmxAbi);
 
   if (!account || activeChain.id !== chain?.id)
     return (
@@ -31,29 +32,29 @@ export function MuchoGmxGeneralButtons({ data }: { data: IMuchoProtocolGmxData }
 
   return (<>
     <div className="flex gap-5">
-      {getModalButton(state, setPageState, "updateGlpApr", "GLP APR", [], data.glpApr, numberValidation(0, 100, 2), "%", false)}
-      {getModalButton(state, setPageState, "updateGlpWethMintFee", "WETH Mint Fee", [], data.glpWethMintFee, numberValidation(0, 100, 2), "%", false)}
-      {getModalButton(state, setPageState, "setSlippage", "Slippage", [], data.slippage, numberValidation(0, 100, 3), "%", false)}
+      {getModalButton(state, setPageState, "updateGlpApr", "GLP APR", [], data.glpApr, numberValidation(0, 100, 2), "%", false, version)}
+      {getModalButton(state, setPageState, "updateGlpWethMintFee", "WETH Mint Fee", [], data.glpWethMintFee, numberValidation(0, 100, 2), "%", false, version)}
+      {getModalButton(state, setPageState, "setSlippage", "Slippage", [], data.slippage, numberValidation(0, 100, 3), "%", false, version)}
       {!data.claimEsGmx && getDirectButton(setPageState, writeCall, "updateClaimEsGMX", "Claim EsGmx", [true])}
       {data.claimEsGmx && getDirectButton(setPageState, writeCall, "updateClaimEsGMX", "Stop Claim EsGmx", [false])}
     </div>
     <br></br>
     <div className="flex gap-5">
-      {getModalButton(state, setPageState, "setMinNotInvestedPercentage", "Min Not Invested", [], data.minNotInvestedPercentage, numberValidation(0, 100, 2), "%", false)}
-      {getModalButton(state, setPageState, "setDesiredNotInvestedPercentage", "Desired Not Invested", [], data.desiredNotInvestedPercentage, numberValidation(0, 100, 2), "%", false)}
-      {getModalButton(state, setPageState, "setMinWeightBasisPointsMove", "Min Move", [], data.minBasisPointsMove, numberValidation(0, 100, 2), "%", false)}
+      {getModalButton(state, setPageState, "setMinNotInvestedPercentage", "Min Not Invested", [], data.minNotInvestedPercentage, numberValidation(0, 100, 2), "%", false, version)}
+      {getModalButton(state, setPageState, "setDesiredNotInvestedPercentage", "Desired Not Invested", [], data.desiredNotInvestedPercentage, numberValidation(0, 100, 2), "%", false, version)}
+      {getModalButton(state, setPageState, "setMinWeightBasisPointsMove", "Min Move", [], data.minBasisPointsMove, numberValidation(0, 100, 2), "%", false, version)}
     </div>
     <br></br>
     <div className="flex gap-5">
-      {getModalButton(state, setPageState, "setMaxRefreshWeightLapse", "Max No Refresh Lapse", [], data.maxRefreshWeightLapse, hourValidation(1, 24 * 7, 0), "h", false)}
+      {getModalButton(state, setPageState, "setMaxRefreshWeightLapse", "Max No Refresh Lapse", [], data.maxRefreshWeightLapse, hourValidation(1, 24 * 7, 0), "h", false, version)}
     </div>
     <br></br>
     <br></br>
     <div className="flex gap-5">
       {!data.manualModeWeights && getDirectButton(setPageState, writeCall, "setManualModeWeights", "Manual Weights", [true])}
       {data.manualModeWeights && getDirectButton(setPageState, writeCall, "setManualModeWeights", "Auto Weights", [false])}
-      {getModalButton(state, setPageState, "setRewardPercentages", "Owner Percentage", [], data.rewardSplit.ownerPercentage, ownerFeeValidation(0, 100, 2, data.rewardSplit.NftPercentage), "%", false)}
-      {getModalButton(state, setPageState, "setRewardPercentages", "NFT Percentage", [], data.rewardSplit.NftPercentage, nftFeeValidation(0, 100, 2, data.rewardSplit.ownerPercentage), "%", false)}
+      {getModalButton(state, setPageState, "setRewardPercentages", "Owner Percentage", [], data.rewardSplit.ownerPercentage, ownerFeeValidation(0, 100, 2, data.rewardSplit.NftPercentage), "%", false, version)}
+      {getModalButton(state, setPageState, "setRewardPercentages", "NFT Percentage", [], data.rewardSplit.NftPercentage, nftFeeValidation(0, 100, 2, data.rewardSplit.ownerPercentage), "%", false, version)}
     </div>
     <br></br>
     <br></br>
@@ -66,7 +67,7 @@ export function MuchoGmxGeneralButtons({ data }: { data: IMuchoProtocolGmxData }
 
 }
 
-export function MuchoGmxTokenButtons({ data, manualWeights }: { data: IGmxTokenInfo, manualWeights: boolean }) {
+export function MuchoGmxTokenButtons({ data, manualWeights, version }: { data: IGmxTokenInfo, manualWeights: boolean, version: number }) {
   const { address: account } = useUserAccount();
   const { activeChain } = useContext(ViewContext);
   const { chain } = useNetwork();
@@ -83,7 +84,7 @@ export function MuchoGmxTokenButtons({ data, manualWeights }: { data: IGmxTokenI
 
   return (<>
     <div className="flex gap-5">
-      {manualWeights && getModalButton(state, setPageState, "setWeight", "Set Token Weight", [data.token.contract], data.desiredWeight, numberValidation(0, 100, 2), "%", false)}
+      {manualWeights && getModalButton(state, setPageState, "setWeight", "Set Token Weight", [data.token.contract], data.desiredWeight, numberValidation(0, 100, 2), "%", false, version)}
     </div>
   </>
   );
@@ -92,14 +93,14 @@ export function MuchoGmxTokenButtons({ data, manualWeights }: { data: IGmxTokenI
 
 
 
-const getModalButton = (state: any, setPageState: any, functionName: string, caption: string, args: any[], currentValue: any, validations: Function, unit: string, disabled: boolean) => {
+const getModalButton = (state: any, setPageState: any, functionName: string, caption: string, args: any[], currentValue: any, validations: Function, unit: string, disabled: boolean, version: number) => {
   //const [state, setPageState] = useAtom(v2ContractDataAtom);
   const key: string = caption.replaceAll(" ", "") + "_" + args.join("_");
   return <BlueBtn
     key={key}
     isDisabled={disabled}
     onClick={() =>
-      setPageState({ ...state, activeModal: { title: caption, functionName: functionName, args: args, currentValue: currentValue, validations: validations, unit: unit, contract: V2AdminContract.MuchoProtocolGmx }, isModalOpen: true })
+      setPageState({ ...state, activeModal: { title: caption, functionName: functionName, args: args, currentValue: currentValue, validations: validations, unit: unit, contract: V2AdminContract.MuchoProtocolGmx, version: version }, isModalOpen: true })
     }
     className={btnClasses}
   >

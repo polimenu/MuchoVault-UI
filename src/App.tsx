@@ -55,6 +55,7 @@ function App() {
         <Route path="/v2/admin/muchovault" element={<V2AdminPage pageType={V2AdminContract.MuchoVault} />} />
         <Route path="/v2/admin/muchohub" element={<V2AdminPage pageType={V2AdminContract.MuchoHub} />} />
         <Route path="/v2/admin/muchoprotocolgmx" element={<V2AdminPage pageType={V2AdminContract.MuchoProtocolGmx} />} />
+        <Route path="/v2/admin/muchoprotocolgmx2" element={<V2AdminPage pageType={V2AdminContract.MuchoProtocolGmx} version={2} />} />
         {/*<Route path="/swap" element={<SwapPage />} />*/}
         <Route path="/airdrop" element={<AirdropPage />} />
         <Route path="/airdrop/admin" element={<AdminFarmAirdropPage />} />

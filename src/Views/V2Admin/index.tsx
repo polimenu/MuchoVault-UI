@@ -42,7 +42,7 @@ export enum V2AdminContract {
   MuchoProtocolGmx,
 }
 
-export const V2AdminPage = ({ pageType }: { pageType: V2AdminContract }) => {
+export const V2AdminPage = ({ pageType, version }: { pageType: V2AdminContract, version: number }) => {
   const { activeChain } = useActiveChain();
   useEffect(() => {
     document.title = "(mucho) finance | V2 Admin";
@@ -57,7 +57,7 @@ export const V2AdminPage = ({ pageType }: { pageType: V2AdminContract }) => {
             <main className="content-drawer">
               {pageType == V2AdminContract.MuchoVault && <MuchoVaultV2AdminPage />}
               {pageType == V2AdminContract.MuchoHub && <MuchoHubV2AdminPage />}
-              {pageType == V2AdminContract.MuchoProtocolGmx && <MuchoProtocolGmxAdminPage />}
+              {pageType == V2AdminContract.MuchoProtocolGmx && <MuchoProtocolGmxAdminPage version={version} />}
             </main>
             <Drawer open={false}>
               <></>
@@ -104,9 +104,11 @@ export const MuchoHubV2AdminPage = () => {
   );
 };
 
-export const MuchoProtocolGmxAdminPage = () => {
+export const MuchoProtocolGmxAdminPage = ({ version }: { version: number }) => {
   const [, setV2AdminData] = useAtom(writeV2AdminData);
-  const data: IMuchoProtocolGmxData = useGetMuchoProtocolGmxData();
+  //console.log("_VERSION", version);
+  const data: IMuchoProtocolGmxData = useGetMuchoProtocolGmxData(version);
+  //console.log("DATA", data);
   setV2AdminData(data);
 
   return (
@@ -114,7 +116,7 @@ export const MuchoProtocolGmxAdminPage = () => {
       <V2AdminModals />
       <Section
         Heading={<div className={topStyles}><MuchoWhite width={120} /> &nbsp;MuchoVault V2 Admin</div>}
-        Cards={getMuchoProtocolGmxAdminCards(data ? data : null)}
+        Cards={getMuchoProtocolGmxAdminCards(data ? data : null, version)}
         subHeading={<><div className={topStyles}>MuchoProtocolGmx: {data ? data.protocolName : ""}</div>
           <div className={descStyles}>{data ? data.protocolDescription : ""}</div>
         </>}

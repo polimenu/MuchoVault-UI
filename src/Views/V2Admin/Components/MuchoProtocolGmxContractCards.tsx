@@ -25,7 +25,7 @@ export const wrapperClasses = 'flex justify-end flex-wrap';
 
 
 
-export const getMuchoProtocolGmxAdminCards = (data: IMuchoProtocolGmxData) => {
+export const getMuchoProtocolGmxAdminCards = (data: IMuchoProtocolGmxData, version: number) => {
   //console.log("getBadgeCards 0");
   //console.log("getV2AdminCards data", data);
   if (!data) {
@@ -47,8 +47,8 @@ export const getMuchoProtocolGmxAdminCards = (data: IMuchoProtocolGmxData) => {
     activeChain = viewContextValue.activeChain;
   }
 
-  const tokensInfo = data.tokenInfo ? data.tokenInfo.map((v, i) => <MuchoGmxTokenInfoCard tokenInfo={v} manualWeights={data.manualModeWeights} precision={7} />) : [];
-  const generalCard = <MuchoGmxGeneralCard muchoGmxData={data} />;
+  const tokensInfo = data.tokenInfo ? data.tokenInfo.map((v, i) => <MuchoGmxTokenInfoCard tokenInfo={v} manualWeights={data.manualModeWeights} precision={7} version={version} />) : [];
+  const generalCard = <MuchoGmxGeneralCard muchoGmxData={data} version={version} />;
   const contractsCard = <MuchoGmxContractsCard muchoGmxData={data} />;
 
   return [generalCard, contractsCard, ...tokensInfo];
@@ -76,7 +76,7 @@ const MuchoGmxContractsCard = ({ muchoGmxData }: { muchoGmxData: IMuchoProtocolG
   );
 }
 
-const MuchoGmxGeneralCard = ({ muchoGmxData }: { muchoGmxData: IMuchoProtocolGmxData }) => {
+const MuchoGmxGeneralCard = ({ muchoGmxData, version }: { muchoGmxData: IMuchoProtocolGmxData, version: number }) => {
   //console.log("PlanCard");
   return (
     <Card
@@ -90,14 +90,14 @@ const MuchoGmxGeneralCard = ({ muchoGmxData }: { muchoGmxData: IMuchoProtocolGmx
       </>}
       bottom={
         <div className="mt-5">
-          <MuchoGmxGeneralButtons data={muchoGmxData} />
+          <MuchoGmxGeneralButtons data={muchoGmxData} version={version} />
         </div>
       }
     />
   );
 }
 
-const MuchoGmxTokenInfoCard = ({ tokenInfo, manualWeights, precision }: { tokenInfo: IGmxTokenInfo, manualWeights: boolean, precision: number }) => {
+const MuchoGmxTokenInfoCard = ({ tokenInfo, manualWeights, precision, version }: { tokenInfo: IGmxTokenInfo, manualWeights: boolean, precision: number, version: number }) => {
   if (!tokenInfo) {
     return <Skeleton
       key=""
@@ -117,7 +117,7 @@ const MuchoGmxTokenInfoCard = ({ tokenInfo, manualWeights, precision }: { tokenI
       </>}
       bottom={
         <div className="mt-5">
-          {<MuchoGmxTokenButtons data={tokenInfo} manualWeights={manualWeights} precision={precision} />}
+          {<MuchoGmxTokenButtons data={tokenInfo} manualWeights={manualWeights} precision={precision} version={version} />}
         </div>
       }
     />
@@ -192,6 +192,7 @@ const MuchoGmxTokenInfo = ({ tokenInfo, precision }: { tokenInfo: IGmxTokenInfo,
 const MuchoGmxParametersInfo = ({ info }: { info: IMuchoProtocolGmxData }) => {
   //console.log("Plan:"); console.log(plan);
   //console.log("Enabled:"); console.log(enabledStr);
+  const backing: number = info.totalUSDStaked > 0 ? 100 * info.totalUSDBacked / info.totalUSDStaked : 0;
   return (
     <>
       <TableAligner
@@ -199,7 +200,7 @@ const MuchoGmxParametersInfo = ({ info }: { info: IMuchoProtocolGmxData }) => {
         values={[
           <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.totalUSDStaked} unit="$" precision={2} /></div>,
           <div className={`${wrapperClasses}`}><Display className="!justify-end" data={info.totalUSDBacked} unit="$" precision={2} /></div>,
-          <div className={`${wrapperClasses}`}><Display className="!justify-end" data={100 * info.totalUSDBacked / info.totalUSDStaked} unit="%" precision={2} /></div>,
+          <div className={`${wrapperClasses}`}><Display className="!justify-end" data={backing} unit="%" precision={2} /></div>,
         ]}
         keyStyle={keyClasses}
         valueStyle={valueClasses}
