@@ -3,9 +3,10 @@ import { ICorporate, INewCorporateRequest } from "./user";
 import { useToast } from "@Contexts/Toast";
 import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
-import { rampAtom } from "../rampAtom";
+import { IRampTransaction, rampAtom } from "../rampAtom";
 import { t } from "i18next";
 import { fetchFromRampApi } from "./fetch";
+import { RAMP_CONFIG } from "../Config/rampConfig";
 
 
 
@@ -20,13 +21,13 @@ export const useGetCorpDetails = (sessionId: string, corporationUuids: string[])
     }
 
     useEffect(() => {
+        console.log("CALLING GET CORPORATES", sessionId, corporationUuids);
 
         if (sessionId && corporationUuids && corporationUuids.length > 0) {
-            console.log("CALLING GET CORPORATES");
             fetchFromRampApi(`/corporates`, 'GET', { uuids: corporationUuids.join(","), session_id: sessionId }, save, () => { });
         }
 
-    }, [sessionId, corporationUuids]);
+    }, [sessionId, corporationUuids ? corporationUuids.join(",") : ""]);
 
     return [corpsDetails];
 }
@@ -45,7 +46,6 @@ export const useCreateCorp = (request?: INewCorporateRequest) => {
             setResult(true);
             //window.location.reload();
             toastify(t("ramp.Corporation successfully created"));
-            setRampState({ ...rampState, isModalOpen: false });
         }
         else {
             toastify({ type: "error", msg: (obj.errorMessage ? obj.errorMessage : t("ramp.Could not create Corporation")) });
@@ -62,4 +62,64 @@ export const useCreateCorp = (request?: INewCorporateRequest) => {
     }, [request]);
 
     return [result];
+}
+
+export const useEditCorp = (uuid: string, session_id: string, request?: INewCorporateRequest) => {
+    ///user/target-address
+    const { dispatch } = useGlobal();
+    const toastify = useToast();
+    const [result, setResult] = useState(false);
+    const [rampState, setRampState] = useAtom(rampAtom);
+
+    const save = (obj: { status: string, errorMessage: string }) => {
+        //console.log("Obj res create user", obj);
+        if (obj.status === "OK") {
+            //console.log("User created ok", obj);
+            setResult(true);
+            //window.location.reload();
+            toastify(t("ramp.Corporation successfully saved"));
+        }
+        else {
+            toastify({ type: "error", msg: (obj.errorMessage ? obj.errorMessage : t("ramp.Could not save Corporation")) });
+        }
+    }
+
+    useEffect(() => {
+        if (uuid && request && request.legal_name && request.type && request.contact_details && request.registered_address && request.target_address) {
+
+            //console.log("Fetching Corp creation");
+            fetchFromRampApi('/corporate', 'PATCH', { corporate: request, uuid, session_id }, save, dispatch, toastify);
+
+        }
+    }, [request, uuid, session_id]);
+
+    return [result];
+}
+
+
+
+export const useGetRampTransactionsB2B = (sessionId: string, uuids: string[]): ({ uuid: string, transactions: IRampTransaction[] }[] | undefined)[] => {
+    const [transactions, setTransactions] = useState<{ uuid: string, transactions: IRampTransaction[] }[]>();
+    const save = (obj: { status: string, corps: { uuid: string, transactions: IRampTransaction[] }[] }) => {
+        //console.log("setting transactions", obj);
+        setTransactions(obj.corps);
+    }
+
+    useEffect(() => {
+        if (!sessionId || !uuids || uuids.length == 0)
+            save([]);
+        else {
+            const call = () => {
+                //console.log("CALLING GET TRANSACTIONS");
+                fetchFromRampApi(`/corporate/transactions`, 'GET', { session_id: sessionId, uuids: uuids.join(",") }, save, () => { });
+            }
+            call();
+            const interval = setInterval(() => call(), RAMP_CONFIG.DelayTransactionsRefreshSeconds * 1000);
+            return () => {
+                clearInterval(interval);
+            }
+        }
+    }, [sessionId, uuids ? uuids.join(",") : ""]);
+
+    return [transactions];
 }

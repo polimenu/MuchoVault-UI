@@ -233,7 +233,16 @@
 		"Already have your NFT?": "Already have your NFT in a wallet? Connect and",
 		"Enable Your Premium Mode": "Enable Your Premium Mode",
 		"Standard rate": "Standard rate",
-		"Premium discount applied": "Premium bonus applied"
+		"Premium discount applied": "Premium bonus applied",
+		"Type": "Type",
+		"Registration Number": "Registration Number",
+		"Contact Name": "Contact Name",
+		"Contact E-mail": "Contact E-mail",
+		"Contact Phone": "Contact Phone",
+		"Target Address": "Target Address",
+		"KYB Status": "KYB Status",
+		"On & Off Ramp for Business": "On & Off Ramp for Business",
+		"Add Corporation": "Add Corporation"
 	},
 	"index": {
 		"hero": "(mucho) Index will automatically invest for you in different protocols. By buying mIndex tokens, you are participating on the results of the portfolio.",

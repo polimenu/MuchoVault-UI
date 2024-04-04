@@ -35,9 +35,8 @@ const getContractCall = (setPageState: any, writeCall: any, functionName: string
 };
 
 
-export const KYBCards = ({ userDetails }: { userDetails?: IRampUserDetails }) => {
+export const KYBCards = ({ corpDetails }: { corpDetails?: ICorporate[] }) => {
     const [rampState, setRampState] = useAtom(rampAtom);
-    const [corpDetails] = useGetCorpDetails(rampState.sessionId, userDetails?.linked_corporates_uuid);
 
     if (!corpDetails || corpDetails.length == 0) {
         return [<></>];
@@ -53,7 +52,7 @@ const KYBCard = ({ corpDetails, rampState, setRampState }: { corpDetails: ICorpo
     const tooltipValueClasses =
         '!text-f14 text-1 !text-right !py-1 !pr-[0px]';
 
-    console.log("corpDetails", corpDetails);
+    //console.log("corpDetails", corpDetails);
 
     if (!corpDetails) {
         return <Skeleton
@@ -77,12 +76,6 @@ const KYBCard = ({ corpDetails, rampState, setRampState }: { corpDetails: ICorpo
             parsedAddress = `${corpDetails.registered_address.post_code} ${corpDetails.registered_address.city} (${corpDetails.registered_address.country})`;
     }
 
-    /*
-    <div><BlueBtn onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "NEWCORP", auxModalData: {} }) }}>&nbsp;&nbsp;&nbsp;
-                <span dangerouslySetInnerHTML={
-                    { __html: t("ramp.Add", { interpolation: { escapeValue: false } }) }
-                }></span>&nbsp;&nbsp;&nbsp;</BlueBtn></div>
-    */
 
     return <Card
         top={
@@ -101,8 +94,8 @@ const KYBCard = ({ corpDetails, rampState, setRampState }: { corpDetails: ICorpo
                     keyStyle={tooltipKeyClasses}
                     valueStyle={tooltipValueClasses}
                     values={[
-                        corpDetails.type, corpDetails.registration_number, corpDetails.contact_details.name,
-                        corpDetails.contact_details.name, corpDetails.contact_details.phone,
+                        t("ramp." + corpDetails.type), corpDetails.registration_number, corpDetails.contact_details.name,
+                        corpDetails.contact_details.email, corpDetails.contact_details.phone,
                         parsedAddress, corpDetails.target_address, corpDetails.status
                     ]}
                 ></TableAligner>

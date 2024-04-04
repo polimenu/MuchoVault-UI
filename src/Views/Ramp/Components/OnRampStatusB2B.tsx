@@ -1,11 +1,14 @@
 import { Section } from '@Views/Common/Card/Section';
 import { useAtom } from 'jotai';
-import { IRampUserDetails, rampAtom, rampDataAtom } from '../rampAtom';
+import { IRampData, IRampUserDetails, rampAtom, rampDataAtom } from '../rampAtom';
 import { t } from 'i18next';
-import { useGetRampTransactions } from '../Hooks/user';
+import { ICorporate, useGetRampTransactions } from '../Hooks/user';
 import { UserDetailsCard } from './Cards/UserDetailsCard';
 import { RampTransactionListCard } from './Cards/RampTransactionListCard';
 import { KYBCards } from './Cards/KYBCard';
+import { useGetCorpDetails, useGetRampTransactionsB2B } from '../Hooks/corp';
+import { OnRampCard } from './Cards/OnRampCard';
+import { OffRampCard } from './Cards/OffRampCard';
 
 
 const topStyles = 'mx-3 text-f22';
@@ -16,17 +19,21 @@ export const underLineClass =
 
 export const OnRampStatusB2B = () => {
   const [rampData] = useAtom(rampDataAtom);
+  const [rampState] = useAtom(rampAtom);
+  const [corpDetails] = useGetCorpDetails(rampState.sessionId, rampData.userDetails ? rampData.userDetails.linked_corporates_uuid : []);
   //console.log("premiumInfo", premiumInfo);
 
   //console.log("OnRampStatus loading", rampData);
   return <div>
-    <UserDetailsSection userDetails={rampData.userDetails} />
-    <RampTransactions />
+    <UserDetailsSection userDetails={rampData.userDetails} corpDetails={corpDetails} />
+    <OnOffRampSection rampData={rampData} />
+    <RampTransactions corpDetails={corpDetails} />
   </div>;
 }
 
 
-const UserDetailsSection = ({ userDetails }: { userDetails?: IRampUserDetails }) => {
+const UserDetailsSection = ({ userDetails, corpDetails }: { userDetails?: IRampUserDetails, corpDetails: ICorporate[] }) => {
+  const [rampData] = useAtom(rampDataAtom);
 
   return <Section
     Heading={<div className={topStyles}>{t("ramp.User details and KYC status")}</div>}
@@ -37,35 +44,61 @@ const UserDetailsSection = ({ userDetails }: { userDetails?: IRampUserDetails })
     }
     Cards={
       [
-        <UserDetailsCard userDetails={userDetails} />,
-        ...KYBCards({ userDetails }),
+        <UserDetailsCard userDetails={userDetails} addCorpButton={true} />,
+        ...KYBCards({ corpDetails }),
 
       ]
     }
   />;
 }
 
-const RampTransactions = () => {
+const RampTransactions = ({ corpDetails }: { corpDetails: ICorporate[] }) => {
   //fetchTransactions();
   const [rampState] = useAtom(rampAtom);
-  const [transactions] = useGetRampTransactions(rampState.sessionId);
+  const [rampData] = useAtom(rampDataAtom);
+  const [corpsTransactions] = useGetRampTransactionsB2B(rampState.sessionId, rampData.userDetails?.linked_corporates_uuid);
 
 
-  if (transactions && transactions.length == 0) {
+  if (!corpsTransactions || corpsTransactions.length == 0 || !corpDetails) {
     return <></>
   }
   else {
-    return <Section
-      Heading={<div className={topStyles}>{t("ramp.Last Transactions")}</div>}
-      subHeading={
-        <div className={descStyles}>
-          {t("ramp.List of your last transactions")}
-        </div>
-      }
-      other={<RampTransactionListCard transactions={transactions} />}
-    />
+    return <>
+      {corpsTransactions.map(corp => {
+        const corpDet = corpDetails.find(c => c.uuid == corp.uuid);
+        return <Section
+          key={"transactions_" + corp.uuid}
+          Heading={<div className={topStyles}>{t("ramp.Last Transactions")} - {corpDet?.legal_name}</div>}
+          subHeading={
+            <div className={descStyles}>
+              {t("ramp.List of your last transactions")}
+            </div>
+          }
+          other={<RampTransactionListCard transactions={corp.transactions} />}
+        />
+      })}
+    </>
   }
 
 
 }
 
+
+const OnOffRampSection = ({ rampData }: { rampData: IRampData }) => {
+
+  return <Section
+    Heading={<div className={topStyles}>{t("ramp.On & Off Ramp")}</div>}
+    subHeading={
+      <div className={descStyles}>
+        {t("ramp.Move from FIAT to Crypto, or counterwise")}
+      </div>
+    }
+    Cards={
+      [
+        <OnRampCard tokenPreferences={rampData.tokenPreferences} userDetails={rampData.userDetails} />,
+        <OffRampCard userDetails={rampData.userDetails} />,
+
+      ]
+    }
+  />;
+}

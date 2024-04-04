@@ -8,7 +8,7 @@ import { Skeleton } from "@mui/material";
 import { t } from "i18next";
 import { useAtom } from "jotai";
 
-export const UserDetailsCard = ({ userDetails }: { userDetails: IRampUserDetails }) => {
+export const UserDetailsCard = ({ userDetails, addCorpButton = false }: { userDetails: IRampUserDetails, addCorpButton: boolean }) => {
     const [rampState, setRampState] = useAtom(rampAtom);
     const wrapperClasses = 'flex justify-end flex-wrap';
     const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
@@ -87,7 +87,12 @@ export const UserDetailsCard = ({ userDetails }: { userDetails: IRampUserDetails
             />}
 
 
+
         </>}
 
+        bottom={addCorpButton && <div><BlueBtn onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "NEWCORP", auxModalData: {} }) }}>&nbsp;&nbsp;&nbsp;
+            <span dangerouslySetInnerHTML={
+                { __html: t("ramp.Add Corporation", { interpolation: { escapeValue: false } }) }
+            }></span>&nbsp;&nbsp;&nbsp;</BlueBtn></div>}
     />;
 }

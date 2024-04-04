@@ -14,6 +14,7 @@ import { KycDetailModal } from './KYCDetailModal';
 import { TrxDetailModal } from './TrxDetailModal';
 import { KybDetailModal } from './KYBDetailModal';
 import { NewCorpModal } from './NewCorpModal';
+import { EditCorpModal } from './EditCorpModal';
 
 export const RampModals = () => {
     const [pageState, setPageState] = useAtom(rampAtom);
@@ -85,6 +86,9 @@ function ModalChild() {
     if (activeModal == "INTERACTION_DETAIL")
         return <pre className='json-container !text-f14 h-[30vw] oauto' dangerouslySetInnerHTML={{ __html: prettyPrintJson.toHtml(pageState.auxModalData.interaction) }}>
         </pre>
+
+    if (activeModal == "EDITCORP")
+        return <EditCorpModal uuid={pageState.auxModalData.uuid} />;
 
     console.log("auxModalData", pageState.auxModalData);
     return <div>{activeModal}</div>;
