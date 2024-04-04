@@ -1,12 +1,11 @@
 import { Section } from '@Views/Common/Card/Section';
 import { useAtom } from 'jotai';
-import { IRampPremiumInfo, IRampUserDetails, rampAtom, rampDataAtom } from '../rampAtom';
+import { IRampUserDetails, rampAtom, rampDataAtom } from '../rampAtom';
 import { t } from 'i18next';
 import { useGetRampTransactions } from '../Hooks/user';
 import { UserDetailsCard } from './Cards/UserDetailsCard';
 import { RampTransactionListCard } from './Cards/RampTransactionListCard';
-import { useGetPremiumInfo } from '../Hooks/useGetPremiumInfo';
-import { KYBCard } from './Cards/KYBCard';
+import { KYBCards } from './Cards/KYBCard';
 
 
 const topStyles = 'mx-3 text-f22';
@@ -17,18 +16,17 @@ export const underLineClass =
 
 export const OnRampStatusB2B = () => {
   const [rampData] = useAtom(rampDataAtom);
-  const premiumInfo = useGetPremiumInfo(rampData.userDetails?.uuid);
   //console.log("premiumInfo", premiumInfo);
 
   //console.log("OnRampStatus loading", rampData);
   return <div>
-    <UserDetailsSection userDetails={rampData.userDetails} premiumInfo={premiumInfo} />
+    <UserDetailsSection userDetails={rampData.userDetails} />
     <RampTransactions />
   </div>;
 }
 
 
-const UserDetailsSection = ({ userDetails, premiumInfo }: { userDetails?: IRampUserDetails, premiumInfo?: IRampPremiumInfo }) => {
+const UserDetailsSection = ({ userDetails }: { userDetails?: IRampUserDetails }) => {
 
   return <Section
     Heading={<div className={topStyles}>{t("ramp.User details and KYC status")}</div>}
@@ -40,7 +38,7 @@ const UserDetailsSection = ({ userDetails, premiumInfo }: { userDetails?: IRampU
     Cards={
       [
         <UserDetailsCard userDetails={userDetails} />,
-        <KYBCard userDetails={userDetails} premiumInfo={premiumInfo} />,
+        ...KYBCards({ userDetails }),
 
       ]
     }

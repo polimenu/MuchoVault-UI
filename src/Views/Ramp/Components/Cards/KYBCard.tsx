@@ -7,13 +7,15 @@ import { Display } from "@Views/Common/Tooltips/Display";
 import { BlueBtn } from "@Views/Common/V2-Button";
 import { RAMP_CONFIG } from "@Views/Ramp/Config/rampConfig";
 import { useRampSumsubToken } from "@Views/Ramp/Hooks/kyc";
-import { IRampPremiumInfo, IRampUserDetails, rampAtom } from "@Views/Ramp/rampAtom";
+import { IRampAtom, IRampPremiumInfo, IRampUserDetails, rampAtom } from "@Views/Ramp/rampAtom";
 import { Skeleton } from "@mui/material";
 import { t } from "i18next";
 import { useAtom } from "jotai";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import { useNetwork } from "wagmi";
 import RampPlanAbi from '../../Config/Abis/mRampPlan.json';
+import { useGetCorpDetails } from "@Views/Ramp/Hooks/corp";
+import { ICorporate } from "@Views/Ramp/Hooks/user";
 
 
 const getContractCall = (setPageState: any, writeCall: any, functionName: string, args: any[]) => {
@@ -33,28 +35,27 @@ const getContractCall = (setPageState: any, writeCall: any, functionName: string
 };
 
 
-export const KYBCard = ({ userDetails, premiumInfo }: { userDetails?: IRampUserDetails, premiumInfo?: IRampPremiumInfo }) => {
+export const KYBCards = ({ userDetails }: { userDetails?: IRampUserDetails }) => {
+    const [rampState, setRampState] = useAtom(rampAtom);
+    const [corpDetails] = useGetCorpDetails(rampState.sessionId, userDetails?.linked_corporates_uuid);
+
+    if (!corpDetails || corpDetails.length == 0) {
+        return [<></>];
+    }
+
+    return corpDetails.map(c => <KYBCard corpDetails={c} rampState={rampState} setRampState={setRampState} />);
+}
+
+
+const KYBCard = ({ corpDetails, rampState, setRampState }: { corpDetails: ICorporate, rampState: IRampAtom, setRampState: (update: SetStateAction<IRampAtom>) => void }) => {
     const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
     const tooltipKeyClasses = '!text-f14 !text-2 !text-left !py-1 !pl-[0px]';
     const tooltipValueClasses =
         '!text-f14 text-1 !text-right !py-1 !pr-[0px]';
-    const underLineClass =
-        'underline underline-offset-4 decoration decoration-[#ffffff30]  w-fit ml-auto';
-    const wrapperClasses = 'flex justify-end flex-wrap';
-    const noteStyles = 'w-[46rem] text-center m-auto tab:w-full font-weight:bold text-f16 mt-5 text-1';
 
+    console.log("corpDetails", corpDetails);
 
-    const [rampState, setRampState] = useAtom(rampAtom);
-    const [getToken, setGetToken] = useState(false);
-    const [token] = useRampSumsubToken(getToken);
-    const { state } = useGlobal();
-    const { address: account } = useUserAccount();
-    const { chain } = useNetwork();
-    const ALLOWED_CHAIN = 42161;  //ToDo softcode chain
-    const { writeCall } = useWriteCall(RAMP_CONFIG.RampPlanContract, RampPlanAbi);
-    const linkPremiumCall = getContractCall(setRampState, writeCall, "assignMe", [userDetails?.uuid]);
-
-    if (!userDetails) {
+    if (!corpDetails) {
         return <Skeleton
             key="userDetailsCard"
             variant="rectangular"
@@ -62,53 +63,57 @@ export const KYBCard = ({ userDetails, premiumInfo }: { userDetails?: IRampUserD
         />
     }
 
-    const toFinishKYC = ["PENDING_KYC_DATA", "SOFT_KYC_FAILED"].indexOf(userDetails?.status) >= 0
+    //console.log("uuids", userDetails.linked_corporates_uuid);
+    //console.log("userDetails", userDetails);
+    /*
 
+    */
 
-    let premiumStatus = "Normal";
-    if (premiumInfo && premiumInfo?.isPremium && userDetails.isPremium) {
-        premiumStatus = "Premium";
+    let parsedAddress = "";
+    if (corpDetails.registered_address) {
+        if (corpDetails.registered_address.address_line_1)
+            parsedAddress = `${corpDetails.registered_address.address_line_1} ${corpDetails.registered_address.address_line_2}. ${corpDetails.registered_address.post_code} ${corpDetails.registered_address.city} (${corpDetails.registered_address.country})`;
+        else if (corpDetails.registered_address.post_code || corpDetails.registered_address)
+            parsedAddress = `${corpDetails.registered_address.post_code} ${corpDetails.registered_address.city} (${corpDetails.registered_address.country})`;
     }
-    else if (premiumInfo && premiumInfo?.isPremium) {
-        premiumStatus = "PremiumPending";
-    }
+
+    /*
+    <div><BlueBtn onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "NEWCORP", auxModalData: {} }) }}>&nbsp;&nbsp;&nbsp;
+                <span dangerouslySetInnerHTML={
+                    { __html: t("ramp.Add", { interpolation: { escapeValue: false } }) }
+                }></span>&nbsp;&nbsp;&nbsp;</BlueBtn></div>
+    */
 
     return <Card
         top={
-            <>{t("ramp.Corporation Data")}</>
+
+            <div className='flex'>
+                <div className='w-full'>{corpDetails.legal_name}</div>
+            </div>
         }
 
         middle={<>
             <div className={keyClasses}>
                 <TableAligner
-                    keysName={[t("ramp.Corporation"), ...userDetails.linked_corporates_uuid]}
+                    keysName={[t("ramp.Type"), t("ramp.Registration Number"), t("ramp.Contact Name")
+                        , t("ramp.Contact E-mail"), t("ramp.Contact Phone")
+                        , t("ramp.Address"), t("ramp.Target Address"), t("ramp.KYB Status")]}
                     keyStyle={tooltipKeyClasses}
                     valueStyle={tooltipValueClasses}
                     values={[
-                        <div className="!text-2">{t("ramp.KYB Status")}</div>,
-                        {
-                            ...userDetails.linked_corporates_uuid.map(u => <div className={wrapperClasses}>
-                                <Display
-                                    className={"!justify-end " + underLineClass}
-                                    data={"Status"}
-                                />
-                            </div>)
-                        }]}
+                        corpDetails.type, corpDetails.registration_number, corpDetails.contact_details.name,
+                        corpDetails.contact_details.name, corpDetails.contact_details.phone,
+                        parsedAddress, corpDetails.target_address, corpDetails.status
+                    ]}
                 ></TableAligner>
             </div>
         </>}
 
-        bottom={(userDetails.canCreateKYC || toFinishKYC) && <>
-            {userDetails.canCreateKYC && <BlueBtn
-                isDisabled={state.txnLoading > 1}
-                isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "KYC" }) }}>{t("ramp.Start KYC")}</BlueBtn>}
-            {toFinishKYC && <>
-                <BlueBtn
-                    isDisabled={state.txnLoading > 1}
-                    isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "KYC" }) }}>{t("ramp.Edit user profile")}</BlueBtn>
-                &nbsp;<BlueBtn
-                    isDisabled={state.txnLoading > 1}
-                    isLoading={state.txnLoading === 1} onClick={() => { if (confirm(t("ramp.ScamWarning") + '\n' + t("ramp.ScamWarning2") + '\n' + t("ramp.ScamWarning3"))) { setGetToken(true); } }}>{t("ramp.Finish KYC")}</BlueBtn></>}
-        </>}
+        bottom={
+            <div className="flex">
+                <BlueBtn onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "EDITCORP", auxModalData: { uuid: corpDetails.uuid } }) }}>Edit details</BlueBtn> &nbsp;&nbsp;&nbsp;&nbsp;
+                {corpDetails.kybUrl && <BlueBtn onClick={() => { window.open(corpDetails.kybUrl) }}>Fill KYB Form</BlueBtn>}
+            </div>
+        }
     />;
 }

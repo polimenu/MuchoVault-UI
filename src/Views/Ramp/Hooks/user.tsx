@@ -22,6 +22,43 @@ export interface INewUserRequest {
     country: string;
 }
 
+
+export interface INewCorporateRequest {
+    legal_name: string;
+    type: string;
+    registration_number: string;
+    contact_details: IContactDetails;
+    registered_address: IAddress;
+    target_address: string;
+    user_uuid: string;
+}
+
+export interface ICorporate {
+    uuid: string;
+    legal_name: string;
+    type: string;
+    registration_number: string;
+    contact_details: IContactDetails;
+    registered_address: IAddress;
+    target_address: string;
+    status: string;
+    kybUrl: string;
+}
+
+export interface IContactDetails {
+    name: string;
+    email: string;
+    phone: string;
+}
+
+export interface IAddress {
+    address_line_1: string;
+    address_line_2: string;
+    post_code: string;
+    city: string;
+    country: string;
+}
+
 const validateNewUser = (request: INewUserRequest): [boolean, string] => {
     if (request.first_name.length < 3)
         return [true, t("ramp.First name is required")];

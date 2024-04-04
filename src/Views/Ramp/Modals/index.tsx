@@ -86,6 +86,7 @@ function ModalChild() {
         return <pre className='json-container !text-f14 h-[30vw] oauto' dangerouslySetInnerHTML={{ __html: prettyPrintJson.toHtml(pageState.auxModalData.interaction) }}>
         </pre>
 
+    console.log("auxModalData", pageState.auxModalData);
     return <div>{activeModal}</div>;
 }
 
