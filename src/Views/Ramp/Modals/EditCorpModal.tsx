@@ -9,12 +9,12 @@ import { INewCorporateRequest } from "../Hooks/user";
 import { CorpTypeDropDown } from "../Components/CorpTypeDropDown";
 import { useAtom } from "jotai";
 import { rampAtom, rampDataAtom } from "../rampAtom";
-import { useEditCorp, useGetCorpDetails } from "../Hooks/corp";
+import { useEditCorp } from "../Hooks/corp";
 
 export const EditCorpModal = ({ uuid }: { uuid: string }) => {
     const [rampData] = useAtom(rampDataAtom);
     const [rampState] = useAtom(rampAtom);
-    const [[corpDetails]] = useGetCorpDetails(rampState.sessionId, [uuid]);
+    const corpDetails = rampData.corpDetails;
 
 
     const [legalName, setLegalName] = useState("");

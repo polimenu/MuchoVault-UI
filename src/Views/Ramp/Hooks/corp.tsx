@@ -3,7 +3,7 @@ import { ICorporate, INewCorporateRequest } from "./user";
 import { useToast } from "@Contexts/Toast";
 import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
-import { IRampTransaction, rampAtom } from "../rampAtom";
+import { IRampTokenPreferencesB2B, IRampTransaction, rampAtom } from "../rampAtom";
 import { t } from "i18next";
 import { fetchFromRampApi } from "./fetch";
 import { RAMP_CONFIG } from "../Config/rampConfig";
@@ -14,14 +14,14 @@ export const useGetCorpDetails = (sessionId: string, corporationUuids: string[])
     const [corpsDetails, setCorpsDetails] = useState<ICorporate[]>([]);
 
     const save = (obj: any) => {
-        console.log("****************setting GET CORPORATES", obj);
+        //console.log("****************setting GET CORPORATES", obj);
         if (obj.status !== "KO") {
             setCorpsDetails(obj.response);
         }
     }
 
     useEffect(() => {
-        console.log("CALLING GET CORPORATES", sessionId, corporationUuids);
+        //console.log("CALLING GET CORPORATES", sessionId, corporationUuids);
 
         if (sessionId && corporationUuids && corporationUuids.length > 0) {
             fetchFromRampApi(`/corporates`, 'GET', { uuids: corporationUuids.join(","), session_id: sessionId }, save, () => { });
@@ -122,4 +122,30 @@ export const useGetRampTransactionsB2B = (sessionId: string, uuids: string[]): (
     }, [sessionId, uuids ? uuids.join(",") : ""]);
 
     return [transactions];
+}
+
+
+export const useGetTokenPreferencesB2B = (sessionId?: string): (IRampTokenPreferencesB2B[] | undefined)[] => {
+    const { dispatch } = useGlobal();
+    const [userTPs, setUserTPs] = useState<IRampTokenPreferencesB2B[]>();
+    const save = (obj: { response: IRampTokenPreferencesB2B[] }) => {
+        //console.log("setting user token preferences b2b", obj);
+        const res = obj.map(corp => {
+            return {
+                ...corp,
+                tokenPreferences: corp.tokenPreferences.filter(t => RAMP_CONFIG.AllowedFiatCurrencies.indexOf(t.currency) >= 0)
+            }
+        })
+        //console.log("setting user token preferences b2b FILTERED", res);
+        setUserTPs(res);
+    }
+
+    useEffect(() => {
+        if (sessionId) {
+            console.log("FETCHING user token preferences b2b");
+            fetchFromRampApi(`/corporate/token-preferences`, 'GET', { session_id: sessionId }, save, dispatch);
+        }
+    }, [sessionId]);
+
+    return [userTPs];
 }

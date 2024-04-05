@@ -6,7 +6,7 @@ import { ICorporate, useGetRampTransactions } from '../Hooks/user';
 import { UserDetailsCard } from './Cards/UserDetailsCard';
 import { RampTransactionListCard } from './Cards/RampTransactionListCard';
 import { KYBCards } from './Cards/KYBCard';
-import { useGetCorpDetails, useGetRampTransactionsB2B } from '../Hooks/corp';
+import { useGetRampTransactionsB2B } from '../Hooks/corp';
 import { OnRampCard } from './Cards/OnRampCard';
 import { OffRampCard } from './Cards/OffRampCard';
 
@@ -20,14 +20,13 @@ export const underLineClass =
 export const OnRampStatusB2B = () => {
   const [rampData] = useAtom(rampDataAtom);
   const [rampState] = useAtom(rampAtom);
-  const [corpDetails] = useGetCorpDetails(rampState.sessionId, rampData.userDetails ? rampData.userDetails.linked_corporates_uuid : []);
   //console.log("premiumInfo", premiumInfo);
 
   //console.log("OnRampStatus loading", rampData);
   return <div>
-    <UserDetailsSection userDetails={rampData.userDetails} corpDetails={corpDetails} />
+    <UserDetailsSection userDetails={rampData.userDetails} corpDetails={rampData.corpDetails} />
     <OnOffRampSection rampData={rampData} />
-    <RampTransactions corpDetails={corpDetails} />
+    <RampTransactions corpDetails={rampData.corpDetails} />
   </div>;
 }
 
@@ -36,7 +35,10 @@ const UserDetailsSection = ({ userDetails, corpDetails }: { userDetails?: IRampU
   const [rampData] = useAtom(rampDataAtom);
 
   return <Section
-    Heading={<div className={topStyles}>{t("ramp.User details and KYC status")}</div>}
+    Heading={<div className={topStyles}>
+      {t("ramp.User details and KYC status")}
+
+    </div>}
     subHeading={
       <div className={descStyles}>
 
@@ -86,6 +88,17 @@ const RampTransactions = ({ corpDetails }: { corpDetails: ICorporate[] }) => {
 
 const OnOffRampSection = ({ rampData }: { rampData: IRampData }) => {
 
+  let cards: JSX.Element[] = [];
+  if (rampData.corpDetails && rampData.corpDetails.length > 0 && rampData.tokenPreferencesB2B) {
+    cards = rampData.corpDetails.map(corp => {
+      return [
+        <OnRampCard tokenPreferences={rampData.tokenPreferencesB2B?.find(c => c.corporateUuid == corp.uuid)?.tokenPreferences} userDetails={rampData.userDetails} corpDetails={corp} />,
+        <OffRampCard userDetails={rampData.userDetails} />
+      ]
+    }
+    ).reduce((p, c) => p.concat(c));
+  }
+
   return <Section
     Heading={<div className={topStyles}>{t("ramp.On & Off Ramp")}</div>}
     subHeading={
@@ -93,12 +106,6 @@ const OnOffRampSection = ({ rampData }: { rampData: IRampData }) => {
         {t("ramp.Move from FIAT to Crypto, or counterwise")}
       </div>
     }
-    Cards={
-      [
-        <OnRampCard tokenPreferences={rampData.tokenPreferences} userDetails={rampData.userDetails} />,
-        <OffRampCard userDetails={rampData.userDetails} />,
-
-      ]
-    }
+    Cards={cards}
   />;
 }

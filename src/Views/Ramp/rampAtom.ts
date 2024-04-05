@@ -1,4 +1,5 @@
 import { atom } from 'jotai';
+import { ICorporate } from './Hooks/user';
 
 export interface IRampPremiumInfo {
     isPremium: boolean;
@@ -56,8 +57,15 @@ export const rampAtom = atom<IRampAtom>({
 export interface IRampData {
     userDetails?: IRampUserDetails;
     tokenPreferences?: IRampTokenPreference[];
+    tokenPreferencesB2B?: IRampTokenPreferencesB2B[];
     allowedCurrencies?: IRampCurrency[];
     allowedCountries?: IRampCountry[];
+    corpDetails?: ICorporate[];
+}
+
+export interface IRampTokenPreferencesB2B {
+    corporateUuid: string;
+    tokenPreferences?: IRampTokenPreference[];
 }
 
 export interface IRampAdminData {

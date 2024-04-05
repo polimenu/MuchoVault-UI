@@ -1,38 +1,13 @@
-import { useGlobal } from "@Contexts/Global";
-import { useUserAccount } from "@Hooks/useUserAccount";
-import { useWriteCall } from "@Hooks/useWriteCall";
 import { Card } from "@Views/Common/Card/Card";
 import { TableAligner } from "@Views/Common/TableAligner";
-import { Display } from "@Views/Common/Tooltips/Display";
 import { BlueBtn } from "@Views/Common/V2-Button";
-import { RAMP_CONFIG } from "@Views/Ramp/Config/rampConfig";
-import { useRampSumsubToken } from "@Views/Ramp/Hooks/kyc";
-import { IRampAtom, IRampPremiumInfo, IRampUserDetails, rampAtom } from "@Views/Ramp/rampAtom";
+import { IRampAtom, rampAtom } from "@Views/Ramp/rampAtom";
 import { Skeleton } from "@mui/material";
 import { t } from "i18next";
 import { useAtom } from "jotai";
-import { SetStateAction, useState } from "react";
-import { useNetwork } from "wagmi";
-import RampPlanAbi from '../../Config/Abis/mRampPlan.json';
-import { useGetCorpDetails } from "@Views/Ramp/Hooks/corp";
+import { SetStateAction } from "react";
 import { ICorporate } from "@Views/Ramp/Hooks/user";
 
-
-const getContractCall = (setPageState: any, writeCall: any, functionName: string, args: any[]) => {
-    function callBack(res) {
-        if (res.payload)
-            setPageState({
-                isModalOpen: false,
-                activeModal: null,
-            });
-    }
-
-    function myCall() {
-        writeCall(callBack, functionName, args);
-    }
-
-    return myCall;
-};
 
 
 export const KYBCards = ({ corpDetails }: { corpDetails?: ICorporate[] }) => {
@@ -64,9 +39,6 @@ const KYBCard = ({ corpDetails, rampState, setRampState }: { corpDetails: ICorpo
 
     //console.log("uuids", userDetails.linked_corporates_uuid);
     //console.log("userDetails", userDetails);
-    /*
-
-    */
 
     let parsedAddress = "";
     if (corpDetails.registered_address) {

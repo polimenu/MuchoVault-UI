@@ -5,20 +5,23 @@ import { TableAligner } from "@Views/Common/TableAligner";
 import { Display } from "@Views/Common/Tooltips/Display";
 import { addressSummary } from "@Views/Common/Utils";
 import { BlueBtn } from "@Views/Common/V2-Button";
+import { ICorporate } from "@Views/Ramp/Hooks/user";
 import { networkBeautify, tokenBeautify } from "@Views/Ramp/Utils";
-import { IRampTokenPreference, IRampUserDetails, rampAtom } from "@Views/Ramp/rampAtom";
+import { IRampTokenPreference, IRampUserDetails, rampAtom, rampDataAtom } from "@Views/Ramp/rampAtom";
 import { Skeleton } from "@mui/material";
 import { t } from "i18next";
 import { useAtom } from "jotai";
 
-export const OnRampCard = ({ tokenPreferences, userDetails }: { tokenPreferences?: IRampTokenPreference[], userDetails?: IRampUserDetails }) => {
+export const OnRampCard = ({ tokenPreferences, userDetails, corpDetails }: { tokenPreferences?: IRampTokenPreference[], userDetails?: IRampUserDetails, corpDetails?: ICorporate }) => {
     const wrapperClasses = 'flex justify-end flex-wrap';
     const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
     const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
 
     const [rampState, setRampState] = useAtom(rampAtom);
+    const [rampData, setRampData] = useAtom(rampDataAtom);
     const { state } = useGlobal();
     const editIconClass = 'w-[1vw] h-[1vw] inline ml-5';
+    const headTitle = corpDetails ? corpDetails.legal_name : "";
     if (!tokenPreferences || !userDetails) {
         return <Skeleton
             key="TokenPreferencesCard"
@@ -27,7 +30,7 @@ export const OnRampCard = ({ tokenPreferences, userDetails }: { tokenPreferences
         />
     }
     return <Card
-        top={t("ramp.From EUR to Crypto")}
+        top={(headTitle ? headTitle + " - " : "") + t("ramp.From EUR to Crypto")}
         middle={<TableAligner
             keysName={
                 [t("ramp.Target address"), ...tokenPreferences.map(z => t("ramp.Convert currency to", { currency: z.currency }))]
