@@ -45,6 +45,8 @@ const kybStatus = (corpStatus: string): { status: string, explanation: string, c
             return { status: ("ramp.Failed"), explanation: ("ramp.No transactions allowed. You can retry your KYB application."), canTransact: false }
         case "HARD_KYB_FAILED":
             return { status: ("ramp.Failed"), explanation: ("ramp.No transactions allowed. Please contact us at info@mucho.finance"), canTransact: false }
+        case "ACTIVE":
+            return { status: ("ramp.Passed"), explanation: ("ramp.Congratulations! You are allowed to transact without limits"), canTransact: true }
         case "FULL_CORPORATE":
             return { status: ("ramp.Passed"), explanation: ("ramp.Congratulations! You are allowed to transact without limits"), canTransact: true }
         case "SUSPENDED":
@@ -341,7 +343,7 @@ export const useOffRampWalletB2B = (sessionId: string, uuid: string, chain: stri
     const [wallet, setWallet] = useState("");
 
     const save = (obj: any) => {
-        console.log("$$$$$$$$$$$$$$$$$$$$  Got corp wallet", obj, sessionId, chain);
+        //console.log("$$$$$$$$$$$$$$$$$$$$  Got corp wallet", obj, sessionId, chain);
         if (obj.status !== "KO") {
             setWallet(obj.response[0].address);
         }
@@ -349,7 +351,7 @@ export const useOffRampWalletB2B = (sessionId: string, uuid: string, chain: stri
 
     useEffect(() => {
         if (sessionId && chain && uuid) {
-            console.log("FETCHING OFFRAMP CORP WALLET");
+            //console.log("FETCHING OFFRAMP CORP WALLET");
             fetchFromRampApi(`/offramp/corporate/wallet`, 'GET', { session_id: sessionId, chain, uuid }, save, dispatch);
         }
     }, [sessionId, chain, uuid]);
