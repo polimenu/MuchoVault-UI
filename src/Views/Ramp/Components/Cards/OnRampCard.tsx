@@ -23,7 +23,7 @@ export const OnRampCard = ({ tokenPreferences, userDetails, corpDetails }: { tok
     const editIconClass = 'w-[1vw] h-[1vw] inline ml-5';
     const headTitle = corpDetails ? corpDetails.legal_name : "";
     const target_address = corpDetails ? corpDetails.target_address : userDetails?.target_address;
-    const canTransact = corpDetails ? corpDetails.canTransact : userDetails?.kyc_status.canTransact;
+    const canTransact = corpDetails ? corpDetails.kybStatus.canTransact : userDetails?.kyc_status.canTransact;
     const targetAddressModalData = corpDetails ? { currentAddress: target_address, uuid: corpDetails.uuid } : { currentAddress: target_address };
     const onRampModalData = corpDetails ? { currency: "EUR", uuid: corpDetails.uuid } : { currency: "EUR" };
 

@@ -72,7 +72,7 @@ const KYBCard = ({ corpDetails, rampState, setRampState }: { corpDetails: ICorpo
                         t("ramp." + corpDetails.type), corpDetails.registration_number, corpDetails.contact_details.name,
                         corpDetails.contact_details.email, corpDetails.contact_details.phone,
                         parsedAddress, corpDetails.target_address, <Display
-                            className={"!justify-end " + underLineClass + " " + (corpDetails.status == "FULL_CORPORATE" ? " green" : " red")}
+                            className={"!justify-end " + underLineClass + " " + (corpDetails.status == "FULL_CORPORATE" || corpDetails.status == "ACTIVE" ? " green" : " red")}
                             data={t(corpDetails.kybStatus.status)}
                             content={<span>{t(corpDetails.kybStatus.explanation)}</span>}
                         />
