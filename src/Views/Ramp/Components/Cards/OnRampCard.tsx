@@ -5,7 +5,7 @@ import { TableAligner } from "@Views/Common/TableAligner";
 import { Display } from "@Views/Common/Tooltips/Display";
 import { addressSummary } from "@Views/Common/Utils";
 import { BlueBtn } from "@Views/Common/V2-Button";
-import { ICorporate } from "@Views/Ramp/Hooks/user";
+import { ICorporate } from "@Views/Ramp/Hooks/corp";
 import { networkBeautify, tokenBeautify } from "@Views/Ramp/Utils";
 import { IRampTokenPreference, IRampUserDetails, rampAtom, rampDataAtom } from "@Views/Ramp/rampAtom";
 import { Skeleton } from "@mui/material";
@@ -22,6 +22,11 @@ export const OnRampCard = ({ tokenPreferences, userDetails, corpDetails }: { tok
     const { state } = useGlobal();
     const editIconClass = 'w-[1vw] h-[1vw] inline ml-5';
     const headTitle = corpDetails ? corpDetails.legal_name : "";
+    const target_address = corpDetails ? corpDetails.target_address : userDetails?.target_address;
+    const canTransact = corpDetails ? corpDetails.canTransact : userDetails?.kyc_status.canTransact;
+    const targetAddressModalData = corpDetails ? { currentAddress: target_address, uuid: corpDetails.uuid } : { currentAddress: target_address };
+    const onRampModalData = corpDetails ? { currency: "EUR", uuid: corpDetails.uuid } : { currency: "EUR" };
+
     if (!tokenPreferences || !userDetails) {
         return <Skeleton
             key="TokenPreferencesCard"
@@ -36,12 +41,13 @@ export const OnRampCard = ({ tokenPreferences, userDetails, corpDetails }: { tok
                 [t("ramp.Target address"), ...tokenPreferences.map(z => t("ramp.Convert currency to", { currency: z.currency }))]
             }
             values={[
-                <span className='pointer' onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "TARGET_ADDRESS", auxModalData: { currentAddress: userDetails.target_address } }) }}>{userDetails.target_address ? addressSummary(userDetails.target_address) : t("ramp.Not set!")}
+                <span className='pointer' onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "TARGET_ADDRESS", auxModalData: targetAddressModalData }) }}>{target_address ? addressSummary(target_address) : t("ramp.Not set!")}
                     <img src='edit_wh.png' className={editIconClass} />
                 </span>
                 , ...tokenPreferences.map(t => {
+                    const auxData = corpDetails ? { ...t, uuid: corpDetails.uuid } : t;
                     return <span className={`${wrapperClasses} pointer`}
-                        onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "ONRAMP_PREF", auxModalData: t }) }}>
+                        onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "ONRAMP_PREF", auxModalData: auxData }) }}>
                         <Display
                             className="!justify-end"
                             data={tokenBeautify(t.token)}
@@ -58,13 +64,13 @@ export const OnRampCard = ({ tokenPreferences, userDetails, corpDetails }: { tok
             valueStyle={valueClasses}
 
         />}
-        bottom={userDetails.kyc_status.canTransact && <>
-            {userDetails.target_address && <div className="flex gap-5">
+        bottom={canTransact && <>
+            {target_address && <div className="flex gap-5">
                 <BlueBtn
                     isDisabled={state.txnLoading > 1}
-                    isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "ONRAMP", auxModalData: { currency: "EUR" } }) }}>{t("ramp.OnRamp (from EUR to Crypto)")}</BlueBtn>
+                    isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "ONRAMP", auxModalData: onRampModalData }) }}>{t("ramp.OnRamp (from EUR to Crypto)")}</BlueBtn>
             </div>}
-            {!userDetails.target_address && <div className="flex gap-5">
+            {!target_address && <div className="flex gap-5">
                 <BlueBtn
                     isDisabled={true} onClick={() => { }}>{t("ramp.Please set a target address")}</BlueBtn>
             </div>}

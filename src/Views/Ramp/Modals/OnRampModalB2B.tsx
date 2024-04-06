@@ -7,24 +7,25 @@ import BufferInput from "@Views/Common/BufferInput";
 import { t } from "i18next";
 import { BlueBtn } from "@Views/Common/V2-Button";
 import { networkBeautify, tokenBeautify } from "../Utils";
-import { useCreateOnRampAccount, useGetOnRampQuote, useOnRampAccounts } from "../Hooks/onramp";
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useToast } from "@Contexts/Toast";
+import { useCreateOnRampAccountB2B, useGetOnRampQuoteB2B, useOnRampAccountsB2B } from "../Hooks/onrampb2b";
 
 
-export const OnRampModal = () => {
+export const OnRampModalB2B = () => {
     const [val, setVal] = useState("");
     const [pageState] = useAtom(rampAtom);
     const [rampData] = useAtom(rampDataAtom);
     const { state } = useGlobal();
-    const { currency } = pageState.auxModalData;
+    const { currency, uuid } = pageState.auxModalData;
     const [trigger, setTrigger] = useState(true);
-    const [inputAccount] = useOnRampAccounts(pageState.sessionId, currency, trigger);
+    const [inputAccount] = useOnRampAccountsB2B(pageState.sessionId, uuid, currency, trigger);
     const [visibleAccount, setVisibleAccount] = useState(false);
-    const [createdAccount] = useCreateOnRampAccount(pageState.sessionId, currency, Boolean(inputAccount) && !inputAccount?.iban);
+    const [createdAccount] = useCreateOnRampAccountB2B(pageState.sessionId, uuid, currency, Boolean(inputAccount) && !inputAccount?.iban);
     const toastify = useToast();
     const { chain, token } = rampData.tokenPreferences ? rampData.tokenPreferences.find(tp => tp.currency == currency) : { chain: "", token: "" };
-    const [quote, discount] = useGetOnRampQuote(pageState.sessionId, currency, token, val);
+    const [quote, discount] = useGetOnRampQuoteB2B(pageState.sessionId, uuid, currency, token, val);
+    const corpDetails = rampData.corpDetails?.find(c => c.uuid == uuid);
     const messageCopied = () => {
         toastify(t("ramp.Copied to clipboard!"));
     }
@@ -77,14 +78,14 @@ export const OnRampModal = () => {
                         </span>
                     }
                 />
-                {discount && discount > 0 && <div>
+                {(discount && Number(discount) > 0) ? <div>
                     <div className="whitespace-nowrap mt-5 text-right text-f12">
                         {t("ramp.Standard rate")}: {Math.round(100 * (-Number(discount) + Number(quote))) / 100} {tokenBeautify(token)}
                     </div>
                     <div className="whitespace-nowrap text-right text-f12 bold">
                         {t("ramp.Premium discount applied")}: {discount} {tokenBeautify(token)}
                     </div>
-                </div>}
+                </div> : <></>}
                 <div className="flex whitespace-nowrap mt-5">
                     <BlueBtn
                         onClick={() => { setVisibleAccount(true); }}
@@ -101,10 +102,10 @@ export const OnRampModal = () => {
                 {inputAccount && inputAccount.iban && <>
                     <div className="flex whitespace-nowrap mt-5 text-f18 strong">{t("ramp.Next step")}:</div>
                     <div className="flex mt-5 text-f16">{t("ramp.Transfer to the next account and your transaction will be processed shortly.", { amount: val, currency: currency })} </div>
-                    <div className="flex mt-5 text-f16">{t("ramp.Note this bank account is a virtual IBAN generated with your name, so the receptor will be yourself, the funds will never be shared with other users.")} </div>
+                    <div className="flex mt-5 text-f16">{t("ramp.Note this bank account is a virtual IBAN generated with your corporate legal name, so the receptor will be your corporate, the funds will never be shared with other users.")} </div>
                     <div className="mt-5 ml-5 text-f16">
                         <ul>
-                            <OnRampBankField label="Name" value={`${rampData.userDetails?.first_name} ${rampData.userDetails?.last_name}`} messageCopied={messageCopied} />
+                            <OnRampBankField label="Name" value={corpDetails ? corpDetails.legal_name : ""} messageCopied={messageCopied} />
                             <OnRampBankField label="IBAN" value={inputAccount.iban} messageCopied={messageCopied} />
                             <OnRampBankField label="BIC" value={inputAccount.bic} messageCopied={messageCopied} />
                             <OnRampBankField label={t("ramp.Country")} value={inputAccount.bank_country} messageCopied={messageCopied} />

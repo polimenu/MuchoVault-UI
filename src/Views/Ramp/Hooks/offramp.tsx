@@ -76,7 +76,7 @@ export const useOffRampWallet = (sessionId: string, chain: string) => {
 }
 
 export const useSendToken = (address: string, destination: string, value: number, decimals: number) => {
-    const { activeChain } = useContext(ViewContext);
+
     //console.log("Active Chain", activeChain);
     const { writeCall } = useWriteCall(address, ERC20AbiExt);
     const [pageState, setPageState] = useAtom(rampAtom);

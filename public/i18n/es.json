@@ -242,7 +242,14 @@
 		"Target Address": "Dirección de onramp",
 		"KYB Status": "Estado del KYB",
 		"On & Off Ramp for Business": "On & Off Ramp for Business",
-		"Add Corporation": "Añadir Empresa"
+		"Add Corporation": "Añadir Empresa",
+		"Pending to receive KYB data": "Pendiente de recibir KYB",
+		"Corporate suspended": "Suspendido",
+		"No transactions allowed. You need to finish your KYB.": "No se permiten transacciones. Necesitas finalizar el KYB.",
+		"No transactions allowed. Please finish your KYB.": "No se permiten transacciones. Por favor, finaliza el KYB.",
+		"No transactions allowed. Please wait until KYB revision is ended.": "No se permiten transacciones. Por favor, espera a que se revise el KYB.",
+		"No transactions allowed. You can retry your KYB application.": "No se permiten transacciones. Puedes reintentar el KYB.",
+		"Note this bank account is a virtual IBAN generated with your corporate legal name, so the receptor will be your corporate, the funds will never be shared with other users.": "Ten en cuenta que esta cuenta bancaria es un IBAN virtual generado a nombre de la compañía, así que el receptor es la propia compañía. Los fondos nunca se comparten con otros usuarios."
 	},
 	"index": {
 		"hero": "(mucho) index invertirá automáticamente por ti en distintos protocolos y blockchains. Comprando tokens mIndex, te estarás indexando al resultado de este portfolio.",

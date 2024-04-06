@@ -242,7 +242,14 @@
 		"Target Address": "Target Address",
 		"KYB Status": "KYB Status",
 		"On & Off Ramp for Business": "On & Off Ramp for Business",
-		"Add Corporation": "Add Corporation"
+		"Add Corporation": "Add Corporation",
+		"Pending to receive KYB data": "Pending to receive KYB data",
+		"Corporate suspended": "Corporate suspended",
+		"No transactions allowed. You need to finish your KYB.": "No transactions allowed. You need to finish your KYB.",
+		"No transactions allowed. Please finish your KYB.": "No transactions allowed. Please finish your KYB.",
+		"No transactions allowed. Please wait until KYB revision is ended.": "No transactions allowed. Please wait until KYB revision is ended.",
+		"No transactions allowed. You can retry your KYB application.": "No transactions allowed. You can retry your KYB application.",
+		"Note this bank account is a virtual IBAN generated with your corporate legal name, so the receptor will be your corporate, the funds will never be shared with other users.": "Note this bank account is a virtual IBAN generated with your corporate legal name, so the receptor will be your corporate, the funds will never be shared with other users."
 	},
 	"index": {
 		"hero": "(mucho) Index will automatically invest for you in different protocols. By buying mIndex tokens, you are participating on the results of the portfolio.",

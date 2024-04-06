@@ -6,7 +6,8 @@ import { Skeleton } from "@mui/material";
 import { t } from "i18next";
 import { useAtom } from "jotai";
 import { SetStateAction } from "react";
-import { ICorporate } from "@Views/Ramp/Hooks/user";
+import { Display } from "@Views/Common/Tooltips/Display";
+import { ICorporate } from "@Views/Ramp/Hooks/corp";
 
 
 
@@ -26,6 +27,8 @@ const KYBCard = ({ corpDetails, rampState, setRampState }: { corpDetails: ICorpo
     const tooltipKeyClasses = '!text-f14 !text-2 !text-left !py-1 !pl-[0px]';
     const tooltipValueClasses =
         '!text-f14 text-1 !text-right !py-1 !pr-[0px]';
+    const underLineClass =
+        'underline underline-offset-4 decoration decoration-[#ffffff30]  w-fit ml-auto';
 
     //console.log("corpDetails", corpDetails);
 
@@ -68,7 +71,11 @@ const KYBCard = ({ corpDetails, rampState, setRampState }: { corpDetails: ICorpo
                     values={[
                         t("ramp." + corpDetails.type), corpDetails.registration_number, corpDetails.contact_details.name,
                         corpDetails.contact_details.email, corpDetails.contact_details.phone,
-                        parsedAddress, corpDetails.target_address, corpDetails.status
+                        parsedAddress, corpDetails.target_address, <Display
+                            className={"!justify-end " + underLineClass + " " + (corpDetails.status == "FULL_CORPORATE" ? " green" : " red")}
+                            data={t(corpDetails.kybStatus.status)}
+                            content={<span>{t(corpDetails.kybStatus.explanation)}</span>}
+                        />
                     ]}
                 ></TableAligner>
             </div>

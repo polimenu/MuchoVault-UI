@@ -2,13 +2,14 @@ import { Section } from '@Views/Common/Card/Section';
 import { useAtom } from 'jotai';
 import { IRampData, IRampPremiumInfo, IRampUserDetails, rampAtom, rampDataAtom } from '../rampAtom';
 import { t } from 'i18next';
-import { useGetRampTransactions } from '../Hooks/user';
+import { useGetBankAccounts, useGetRampTransactions, useSetMainBankAccount } from '../Hooks/user';
 import { OnRampCard } from './Cards/OnRampCard';
 import { OffRampCard } from './Cards/OffRampCard';
 import { UserDetailsCard } from './Cards/UserDetailsCard';
 import { KYCPremiumCard } from './Cards/KYCCard';
 import { RampTransactionListCard } from './Cards/RampTransactionListCard';
 import { useGetPremiumInfo } from '../Hooks/useGetPremiumInfo';
+import { useState } from 'react';
 
 
 const topStyles = 'mx-3 text-f22';
@@ -31,6 +32,9 @@ export const OnRampStatus = () => {
 }
 
 const OnOffRampSection = ({ rampData }: { rampData: IRampData }) => {
+  const [rampState] = useAtom(rampAtom);
+  const [reload, setReload] = useState(0);
+  const [bankAccounts] = useGetBankAccounts(rampState.sessionId, reload);
 
   return <Section
     Heading={<div className={topStyles}>{t("ramp.On & Off Ramp")}</div>}
@@ -42,7 +46,13 @@ const OnOffRampSection = ({ rampData }: { rampData: IRampData }) => {
     Cards={
       [
         <OnRampCard tokenPreferences={rampData.tokenPreferences} userDetails={rampData.userDetails} />,
-        <OffRampCard userDetails={rampData.userDetails} />,
+        <OffRampCard bankAccounts={bankAccounts}
+          canTransact={rampData.userDetails ? rampData.userDetails.kyc_status.canTransact : false}
+          setMainBankAccount={(account) => { return useSetMainBankAccount(rampState.sessionId, account); }}
+          reloadAccount={reload}
+          setReloadAccount={setReload}
+          addAccountModalData={{ currency: "EUR" }}
+          offRampModalData={{}} />
 
       ]
     }

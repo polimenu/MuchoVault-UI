@@ -23,27 +23,6 @@ export interface INewUserRequest {
 }
 
 
-export interface INewCorporateRequest {
-    legal_name: string;
-    type: string;
-    registration_number: string;
-    contact_details: IContactDetails;
-    registered_address: IAddress;
-    target_address: string;
-    user_uuid: string;
-}
-
-export interface ICorporate {
-    uuid: string;
-    legal_name: string;
-    type: string;
-    registration_number: string;
-    contact_details: IContactDetails;
-    registered_address: IAddress;
-    target_address: string;
-    status: string;
-    kybUrl: string;
-}
 
 export interface IContactDetails {
     name: string;
@@ -95,6 +74,8 @@ const kycStatus = (userStatus: string): { status: string, explanation: string, c
             return { status: ("ramp.Unknown status"), explanation: ("ramp.No transactions allowed. For further information, contact us at info@mucho.finance"), canTransact: false }
     }
 }
+
+
 
 export const useGetUserDetails = (sessionId?: string): (IRampUserDetails | undefined)[] => {
     const { dispatch } = useGlobal();

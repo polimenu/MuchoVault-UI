@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { ICorporate } from './Hooks/user';
+import { ICorporate } from './Hooks/corp';
 
 export interface IRampPremiumInfo {
     isPremium: boolean;

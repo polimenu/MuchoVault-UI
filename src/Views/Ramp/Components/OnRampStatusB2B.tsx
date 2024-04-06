@@ -2,13 +2,13 @@ import { Section } from '@Views/Common/Card/Section';
 import { useAtom } from 'jotai';
 import { IRampData, IRampUserDetails, rampAtom, rampDataAtom } from '../rampAtom';
 import { t } from 'i18next';
-import { ICorporate, useGetRampTransactions } from '../Hooks/user';
 import { UserDetailsCard } from './Cards/UserDetailsCard';
 import { RampTransactionListCard } from './Cards/RampTransactionListCard';
 import { KYBCards } from './Cards/KYBCard';
-import { useGetRampTransactionsB2B } from '../Hooks/corp';
+import { ICorporate, useGetBankAccountsB2B, useGetRampTransactionsB2B, useSetMainBankAccountB2B } from '../Hooks/corp';
 import { OnRampCard } from './Cards/OnRampCard';
 import { OffRampCard } from './Cards/OffRampCard';
+import { useState } from 'react';
 
 
 const topStyles = 'mx-3 text-f22';
@@ -67,6 +67,10 @@ const RampTransactions = ({ corpDetails }: { corpDetails: ICorporate[] }) => {
   else {
     return <>
       {corpsTransactions.map(corp => {
+        if (!corp.transactions || corp.transactions.length == 0) {
+          return <span key={"transactions_" + corp.uuid}></span>;
+        }
+
         const corpDet = corpDetails.find(c => c.uuid == corp.uuid);
         return <Section
           key={"transactions_" + corp.uuid}
@@ -85,15 +89,30 @@ const RampTransactions = ({ corpDetails }: { corpDetails: ICorporate[] }) => {
 
 }
 
+const OffRampCardWrapper = ({ sessionId, uuid, canTransact }: { sessionId: string, uuid: string, canTransact: boolean }) => {
+  const [reload, setReload] = useState(0);
+  const [bankAccounts] = useGetBankAccountsB2B(sessionId, uuid, reload);
+  return <OffRampCard bankAccounts={bankAccounts}
+    canTransact={canTransact}
+    setMainBankAccount={(account) => { return useSetMainBankAccountB2B(sessionId, uuid, account); }}
+    reloadAccount={reload}
+    setReloadAccount={setReload}
+    addAccountModalData={{ currency: "EUR", uuid }}
+    offRampModalData={{ uuid }} />
+
+}
+
 
 const OnOffRampSection = ({ rampData }: { rampData: IRampData }) => {
+
+  const [rampState] = useAtom(rampAtom);
 
   let cards: JSX.Element[] = [];
   if (rampData.corpDetails && rampData.corpDetails.length > 0 && rampData.tokenPreferencesB2B) {
     cards = rampData.corpDetails.map(corp => {
       return [
         <OnRampCard tokenPreferences={rampData.tokenPreferencesB2B?.find(c => c.corporateUuid == corp.uuid)?.tokenPreferences} userDetails={rampData.userDetails} corpDetails={corp} />,
-        <OffRampCard userDetails={rampData.userDetails} />
+        <OffRampCardWrapper sessionId={rampState.sessionId} uuid={corp.uuid} canTransact={corp.kybStatus.canTransact} />
       ]
     }
     ).reduce((p, c) => p.concat(c));
