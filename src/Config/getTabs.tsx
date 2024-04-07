@@ -160,8 +160,8 @@ export const getTabs = () => {
       isExternalLink: true,
     },
     {
-      to: `/v1`,
-      name: 'Vaults(v1)',
+      to: `/rampb2b`,
+      name: 'OnRamp Business',
       subTabs: [],
       isExternalLink: false,
     },
