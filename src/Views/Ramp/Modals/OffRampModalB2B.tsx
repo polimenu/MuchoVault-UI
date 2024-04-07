@@ -13,20 +13,22 @@ import { useActiveChain } from "@Hooks/useActiveChain";
 import { toFixed } from "@Utils/NumString";
 import { gt } from "@Utils/NumString/stringArithmatics";
 import { OfframpTokensDropDown } from "../Components/OffRampTokensDropDown";
+import { useOffRampWalletB2B } from "../Hooks/corp";
 
 
 //ToDo softcode chain
-export const OffRampModal = () => {
+export const OffRampModalB2B = () => {
     const [rampState] = useAtom(rampAtom);
     const [val, setVal] = useState("");
     const { state } = useGlobal();
     const currency = RAMP_CONFIG.AllowedFiatCurrencies[0];
     const tokenList = RAMP_CONFIG.AllowedOffRampTokens;
+    const uuid = rampState.auxModalData.uuid;
     const [token, setToken] = useState(tokenList[0]);
     const [quote, discount] = useGetOffRampQuote(rampState.sessionId, token.symbol, currency, val);
     const { activeChain } = useActiveChain();
     const chain = activeChain.network;
-    const [destinationWallet] = useOffRampWallet(rampState.sessionId, chain);
+    const [destinationWallet] = useOffRampWalletB2B(rampState.sessionId, uuid, chain);
     const [max] = useGetAmountInWallet(token.address, token.decimals);
     const [send] = useSendToken(token.address, destinationWallet, val, token.decimals);
 

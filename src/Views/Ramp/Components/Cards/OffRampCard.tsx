@@ -6,33 +6,46 @@ import { ConnectionRequired } from "@Views/Common/Navbar/AccountDropdown";
 import { TableAligner } from "@Views/Common/TableAligner";
 import { Display } from "@Views/Common/Tooltips/Display";
 import { BlueBtn } from "@Views/Common/V2-Button";
-import { useGetBankAccounts, useSetMainBankAccount } from "@Views/Ramp/Hooks/user";
-import { IRampBankAccount, IRampUserDetails, rampAtom } from "@Views/Ramp/rampAtom";
-import { ViewContext } from "@Views/V2Admin";
+import { IRampBankAccount, rampAtom } from "@Views/Ramp/rampAtom";
 import { Skeleton } from "@mui/material";
 import { t } from "i18next";
 import { useAtom } from "jotai";
-import { useContext, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useNetwork } from "wagmi";
 
-export const OffRampCard = ({ userDetails }: { userDetails?: IRampUserDetails }) => {
+export const OffRampCard = (
+    { bankAccounts,
+        canTransact,
+        setMainBankAccount,
+        reloadAccount,
+        addAccountModalData,
+        offRampModalData,
+        setReloadAccount }
+        :
+        {
+            bankAccounts?: IRampBankAccount[],
+            canTransact: boolean,
+            setMainBankAccount: (account: string) => { done: boolean, status: boolean, errorMessage: string }[],
+            reloadAccount: number,
+            addAccountModalData: any,
+            offRampModalData: any,
+            setReloadAccount: Dispatch<SetStateAction<number>>
+
+        }) => {
     const wrapperClasses = 'flex justify-end flex-wrap';
     const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
     const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
 
     const [rampState, setRampState] = useAtom(rampAtom);
-    const [reload, setReload] = useState(0);
-    const [bankAccounts] = useGetBankAccounts(rampState.sessionId, reload);
-    const { state } = useGlobal();
     const [bankMainUid, setBankMainUid] = useState("");
     const toastify = useToast();
-    const [resultSetMainAccount] = useSetMainBankAccount(rampState.sessionId, bankMainUid);
+    const [resultSetMainAccount] = setMainBankAccount(bankMainUid);
 
 
     useEffect(() => {
         if (resultSetMainAccount.done && resultSetMainAccount.status) {
             toastify(t("ramp.Main bank account updated successfully"));
-            setReload(reload + 1);
+            setReloadAccount(reloadAccount + 1);
         }
         else if (resultSetMainAccount.done) {
             toastify({ type: "error", message: resultSetMainAccount.errorMessage })
@@ -40,7 +53,7 @@ export const OffRampCard = ({ userDetails }: { userDetails?: IRampUserDetails })
     }, [resultSetMainAccount]);
 
 
-    if (!bankAccounts || !userDetails) {
+    if (!bankAccounts) {
         return <Skeleton
             key="OffRampCard"
             variant="rectangular"
@@ -62,7 +75,7 @@ export const OffRampCard = ({ userDetails }: { userDetails?: IRampUserDetails })
     return <Card
         top={<div className='flex'>
             <div className='w-full'>{t("ramp.From Crypto to EUR")}</div>
-            <div><BlueBtn onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "BANK_ADD", auxModalData: { currency: "EUR" } }) }}>&nbsp;&nbsp;&nbsp;
+            <div><BlueBtn onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "BANK_ADD", auxModalData: addAccountModalData }) }}>&nbsp;&nbsp;&nbsp;
                 <span dangerouslySetInnerHTML={
                     { __html: t("ramp.Add&nbsp;Account", { interpolation: { escapeValue: false } }) }
                 }></span>&nbsp;&nbsp;&nbsp;</BlueBtn></div>
@@ -97,13 +110,13 @@ export const OffRampCard = ({ userDetails }: { userDetails?: IRampUserDetails })
         />
         }
         bottom={
-            userDetails.kyc_status.canTransact && <>
-                <OffRampButtons bankAccounts={bankAccounts} />
+            canTransact && <>
+                <OffRampButtons bankAccounts={bankAccounts} auxOffRampData={offRampModalData} />
             </>
         } />;
 }
 
-const OffRampButtons = ({ bankAccounts }: { bankAccounts: IRampBankAccount[] }) => {
+const OffRampButtons = ({ bankAccounts, auxOffRampData }: { bankAccounts: IRampBankAccount[], auxOffRampData: any }) => {
     const [rampState, setRampState] = useAtom(rampAtom);
     const { state } = useGlobal();
     const { address: account } = useUserAccount();
@@ -130,7 +143,7 @@ const OffRampButtons = ({ bankAccounts }: { bankAccounts: IRampBankAccount[] }) 
         {hasBank && <div className={`${btnClasses} flex gap-5`}>
             <BlueBtn
                 isDisabled={state.txnLoading > 1}
-                isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "OFFRAMP" }) }}>{t("ramp.OffRamp (Crypto to EUR)")}</BlueBtn>
+                isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "OFFRAMP", auxModalData: { ...rampState.auxModalData, ...auxOffRampData } }) }}>{t("ramp.OffRamp (Crypto to EUR)")}</BlueBtn>
         </div>}
         {!hasBank && <div className={`${btnClasses} flex gap-5`}>
             <BlueBtn

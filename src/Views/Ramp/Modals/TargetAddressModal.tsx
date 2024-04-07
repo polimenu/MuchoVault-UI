@@ -6,6 +6,7 @@ import { usePatchAddress } from "../Hooks/user";
 import BufferInput from "@Views/Common/BufferInput";
 import { BlueBtn } from "@Views/Common/V2-Button";
 import { t } from "i18next";
+import { usePatchAddressB2B } from "../Hooks/corp";
 
 export const TargetAddressModal = () => {
     const [pageState] = useAtom(rampAtom);
@@ -13,7 +14,7 @@ export const TargetAddressModal = () => {
     const [val, setVal] = useState(currentAddress);
     const [addr, setAddr] = useState('');
     const { state } = useGlobal();
-    const [isPatched] = usePatchAddress(pageState.sessionId, addr);
+    const [isPatched] = pageState.auxModalData.uuid ? usePatchAddressB2B(pageState.sessionId, pageState.auxModalData.uuid, addr) : usePatchAddress(pageState.sessionId, addr);
     if (isPatched) {
         window.location.reload();
     }

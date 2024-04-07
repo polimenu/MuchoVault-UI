@@ -4,7 +4,7 @@ import { useAtom } from 'jotai';
 import { rampAtom } from '../rampAtom';
 import { prettyPrintJson } from 'pretty-print-json';
 import { TargetAddressModal } from './TargetAddressModal';
-import { TargetTokenModal } from './TargetTokenModal';
+import { TargetTokenModal, TargetTokenModalB2B } from './TargetTokenModal';
 import { CompleteKYCModal } from './CompleteKYCModal';
 import { NewUserModal } from './NewUserModal';
 import { BankAddModal } from './BankAddModal';
@@ -13,6 +13,11 @@ import { OffRampModal } from './OffRampModal';
 import { KycDetailModal } from './KYCDetailModal';
 import { TrxDetailModal } from './TrxDetailModal';
 import { KybDetailModal } from './KYBDetailModal';
+import { NewCorpModal } from './NewCorpModal';
+import { EditCorpModal } from './EditCorpModal';
+import { OnRampModalB2B } from './OnRampModalB2B';
+import { BankAddModalB2B } from './BankAddModalB2B';
+import { OffRampModalB2B } from './OffRampModalB2B';
 
 export const RampModals = () => {
     const [pageState, setPageState] = useAtom(rampAtom);
@@ -51,6 +56,9 @@ function ModalChild() {
     if (activeModal == "TARGET_ADDRESS")
         return <TargetAddressModal />;
 
+    if (activeModal == "ONRAMP_PREF" && pageState.auxModalData.uuid)
+        return <TargetTokenModalB2B corpId={pageState.auxModalData.uuid} />;
+
     if (activeModal == "ONRAMP_PREF")
         return <TargetTokenModal />;
 
@@ -60,11 +68,23 @@ function ModalChild() {
     if (activeModal == "NEWUSER")
         return <NewUserModal />;
 
+    if (activeModal == "NEWCORP")
+        return <NewCorpModal />;
+
+    if (activeModal == "BANK_ADD" && pageState.auxModalData.uuid)
+        return <BankAddModalB2B />;
+
     if (activeModal == "BANK_ADD")
         return <BankAddModal />;
 
+    if (activeModal == "ONRAMP" && pageState.auxModalData.uuid)
+        return <OnRampModalB2B />;
+
     if (activeModal == "ONRAMP")
         return <OnRampModal />;
+
+    if (activeModal == "OFFRAMP" && pageState.auxModalData.uuid)
+        return <OffRampModalB2B />;
 
     if (activeModal == "OFFRAMP")
         return <OffRampModal />;
@@ -82,6 +102,10 @@ function ModalChild() {
         return <pre className='json-container !text-f14 h-[30vw] oauto' dangerouslySetInnerHTML={{ __html: prettyPrintJson.toHtml(pageState.auxModalData.interaction) }}>
         </pre>
 
+    if (activeModal == "EDITCORP")
+        return <EditCorpModal uuid={pageState.auxModalData.uuid} />;
+
+    console.log("auxModalData", pageState.auxModalData);
     return <div>{activeModal}</div>;
 }
 

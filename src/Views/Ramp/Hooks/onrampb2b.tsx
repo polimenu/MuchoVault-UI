@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { IRampOnRampBankAccount } from "../rampAtom";
 
 
-export const useGetOnRampQuote = (sessionId: string, currencyIn: string, currencyOut: string, amount: number, avoidDiscount: boolean = false): string[] => {
+export const useGetOnRampQuoteB2B = (sessionId: string, uuid: string, currencyIn: string, currencyOut: string, amount: number): string[] => {
     const { dispatch } = useGlobal();
     const [quote, setQuote] = useState<{ amountOut?: string, discount?: string }>({ amountOut: "", discount: "" });
     const [timer, setTimer] = useState<NodeJS.Timeout>();
@@ -22,7 +22,7 @@ export const useGetOnRampQuote = (sessionId: string, currencyIn: string, currenc
 
     useEffect(() => {
 
-        if (amount && currencyIn && currencyOut) {
+        if (amount && currencyIn && currencyOut && uuid) {
             if (timer) {
                 //console.log("Cleaning previous timer");
                 clearTimeout(timer);
@@ -30,17 +30,17 @@ export const useGetOnRampQuote = (sessionId: string, currencyIn: string, currenc
 
             setTimer(setTimeout(() => {
                 //console.log("Setting new timer");
-                fetchFromRampApi(`/onramp/quote`, 'GET', { session_id: sessionId, input_currency: currencyIn.replace(".", "").toUpperCase(), output_currency: currencyOut.replace(".", "").toUpperCase(), direction: "fiatToCrypto", amount: amount, avoid_discount: avoidDiscount }, save, dispatch);
+                console.log("Quoting B2B onramp");
+                fetchFromRampApi(`/onramp/corporate/quote`, 'GET', { session_id: sessionId, uuid, input_currency: currencyIn.replace(".", "").toUpperCase(), output_currency: currencyOut.replace(".", "").toUpperCase(), direction: "fiatToCrypto", amount: amount }, save, dispatch);
             }, 1000)
             );
         }
-    }, [sessionId, amount, currencyIn, currencyOut]);
+    }, [sessionId, uuid, amount, currencyIn, currencyOut]);
 
     return [quote?.amountOut, quote?.discount];
 }
 
-
-export const useOnRampAccounts = (sessionId: string, currency: string, trigger: boolean) => {
+export const useOnRampAccountsB2B = (sessionId: string, uuid: string, currency: string, trigger: boolean) => {
     const { dispatch } = useGlobal();
     const [account, setAccount] = useState<IRampOnRampBankAccount | undefined>(undefined);
 
@@ -53,9 +53,9 @@ export const useOnRampAccounts = (sessionId: string, currency: string, trigger: 
     }
 
     useEffect(() => {
-        if (sessionId && currency) {
+        if (sessionId && uuid && currency) {
             //console.log("FETCHING ONRAMP BANK ACCOUNT");
-            fetchFromRampApi(`/onramp/bank-account`, 'GET', { session_id: sessionId }, save, dispatch);
+            fetchFromRampApi(`/onramp/corporate/bank-account`, 'GET', { session_id: sessionId, uuid }, save, dispatch);
         }
     }, [sessionId, currency, trigger]);
 
@@ -63,7 +63,7 @@ export const useOnRampAccounts = (sessionId: string, currency: string, trigger: 
 }
 
 
-export const useCreateOnRampAccount = (sessionId: string, currency: string, send: boolean) => {
+export const useCreateOnRampAccountB2B = (sessionId: string, uuid: string, currency: string, send: boolean) => {
     const { dispatch } = useGlobal();
     const [account, setAccount] = useState(false);
 
@@ -75,9 +75,9 @@ export const useCreateOnRampAccount = (sessionId: string, currency: string, send
     }
 
     useEffect(() => {
-        if (sessionId && currency && send) {
+        if (sessionId && uuid && currency && send) {
             //console.log("CREATING ONRAMP BANK ACCOUNT");
-            fetchFromRampApi(`/onramp/bank-account`, 'POST', { session_id: sessionId, currency: currency }, save, dispatch);
+            fetchFromRampApi(`/onramp/corporate/bank-account`, 'POST', { session_id: sessionId, uuid, currency: currency }, save, dispatch);
         }
     }, [sessionId, currency, send]);
 

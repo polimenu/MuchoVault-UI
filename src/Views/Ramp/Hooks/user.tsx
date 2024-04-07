@@ -22,6 +22,22 @@ export interface INewUserRequest {
     country: string;
 }
 
+
+
+export interface IContactDetails {
+    name: string;
+    email: string;
+    phone: string;
+}
+
+export interface IAddress {
+    address_line_1: string;
+    address_line_2: string;
+    post_code: string;
+    city: string;
+    country: string;
+}
+
 const validateNewUser = (request: INewUserRequest): [boolean, string] => {
     if (request.first_name.length < 3)
         return [true, t("ramp.First name is required")];
@@ -58,6 +74,8 @@ const kycStatus = (userStatus: string): { status: string, explanation: string, c
             return { status: ("ramp.Unknown status"), explanation: ("ramp.No transactions allowed. For further information, contact us at info@mucho.finance"), canTransact: false }
     }
 }
+
+
 
 export const useGetUserDetails = (sessionId?: string): (IRampUserDetails | undefined)[] => {
     const { dispatch } = useGlobal();
