@@ -142,6 +142,18 @@ export const useGetMuchoVaultV2Data = () => {
     }
   });
 
+  const vaultWdwfee = v2UserConfig.MuchoVault.vaults.map((v, i) => {
+    const amount = 10 ** v2UserConfig.MuchoVault.amountsForAprSimulation[i].decimals;
+    return {
+      address: v2UserConfig.MuchoVault.contract,
+      abi: MuchoVaultAbi,
+      functionName: 'getWithdrawalFee',
+      args: [v, amount.toString()],
+      chainId: activeChain?.id,
+      map: `getWithdrawalFee_${v}`
+    }
+  });
+
   const muchoVaultParameterCalls = [
     /*{
       address: v2UserConfig.MuchoVault.contract,
@@ -250,7 +262,7 @@ export const useGetMuchoVaultV2Data = () => {
   }
 
 
-  const calls = [...tokenCalls, ...vaultInfoCalls, ...vaultUSDCalls, ...vaultAPRCalls, ...muchoVaultParameterCalls, ...planCalls, ...badgeDataCalls, ...vaultDepfee];
+  const calls = [...tokenCalls, ...vaultInfoCalls, ...vaultUSDCalls, ...vaultAPRCalls, ...muchoVaultParameterCalls, ...planCalls, ...badgeDataCalls, ...vaultDepfee, ...vaultWdwfee];
   let indexes: any = {};
   calls.forEach((c, i) => { indexes[c.map] = i; });
 
@@ -280,6 +292,7 @@ export const useGetMuchoVaultV2Data = () => {
         const vInfo = getDataString(data, `getVaultInfo_${v}`);
         //console.log("vault info", vInfo);
         const depFee = getDataNumber(data, `getDepositFee_${v}`) / (10 ** v2UserConfig.MuchoVault.amountsForAprSimulation[i].decimals);
+        const wdwFee = getDataNumber(data, `getWithdrawalFee_${v}`) / (10 ** v2UserConfig.MuchoVault.amountsForAprSimulation[i].decimals);
         //console.log("Dep fee", depFee);
         const dToken: IToken = getERC20Token(data, vInfo.depositToken);
         const mToken: IToken = getERC20Token(data, vInfo.muchoToken);
@@ -296,7 +309,7 @@ export const useGetMuchoVaultV2Data = () => {
             lastUpdate: new Date(vInfo.lastUpdate),
             stakable: vInfo.stakable,
             depositFee: depFee * 100,
-            withdrawFee: vInfo.withdrawFee / 100,
+            withdrawFee: wdwFee * 100,
             maxCap: vInfo.maxCap / (10 ** dToken.decimals),
             maxDepositUser: vInfo.maxDepositUser / (10 ** dToken.decimals),
             maxDepositPlans: v2UserConfig.Plans.map(p => { return { planId: p, maxDeposit: getDataNumber(data, `getMaxDepositUserForPlan_${v}_${p}`) / (10 ** dToken.decimals) } }),

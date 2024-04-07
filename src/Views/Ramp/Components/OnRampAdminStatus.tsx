@@ -4,7 +4,7 @@ import TransactionTable from './TransactionTable';
 import { Display } from '@Views/Common/Tooltips/Display';
 import { Skeleton } from '@mui/material';
 import { useAtom } from 'jotai';
-import { IRampAdminTransaction, IRampKYC, rampAdminDataAtom, rampAtom } from '../rampAtom';
+import { IRampAdminTransaction, IRampKYB, IRampKYC, rampAdminDataAtom, rampAtom } from '../rampAtom';
 import { addressSummary } from '@Views/Common/Utils';
 import { formatDate } from '../Utils';
 import BufferInput from '@Views/Common/BufferInput';
@@ -239,9 +239,9 @@ const KYCListSection = ({ KYCList }: { KYCList?: IRampKYC[] }) => {
     ) => {
       const currentData = sortedData[row][col] ?? "";
       let classNames = "";
-      if (currentData.indexOf("COMPLETED") > 0)
+      if (currentData && currentData.indexOf("COMPLETED") > 0)
         classNames += "green";
-      else if (currentData.indexOf("REJECTED") > 0)
+      else if (currentData && currentData.indexOf("REJECTED") > 0)
         classNames += "red";
       //console.log("currentData", currentData);
       return <CellContent
@@ -389,9 +389,9 @@ const OnRampTransactionsSection = ({ trxList }: { trxList?: IRampAdminTransactio
     ) => {
       const currentData = sortedData[row][col] ?? "";
       let classNames = "";
-      if (currentData.indexOf("COMPLETED") > 0)
+      if (currentData && currentData.indexOf("COMPLETED") > 0)
         classNames += "green";
-      else if (currentData.indexOf("REJECTED") > 0)
+      else if (currentData && currentData.indexOf("REJECTED") > 0)
         classNames += "red";
       //console.log("currentData", currentData);
       return <CellContent
@@ -537,9 +537,9 @@ const OffRampTransactionsSection = ({ trxList }: { trxList?: IRampAdminTransacti
     ) => {
       const currentData = sortedData[row][col];
       let classNames = "";
-      if (currentData.indexOf("COMPLETED") > 0)
+      if (currentData && currentData.indexOf("COMPLETED") > 0)
         classNames += "green";
-      else if (currentData.indexOf("REJECTED") > 0)
+      else if (currentData && currentData.indexOf("REJECTED") > 0)
         classNames += "red";
       //console.log("currentData", currentData);
       return <CellContent

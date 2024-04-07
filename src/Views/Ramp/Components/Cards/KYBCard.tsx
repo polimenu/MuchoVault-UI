@@ -82,7 +82,7 @@ const KYBCard = ({ corpDetails, rampState, setRampState }: { corpDetails: ICorpo
         </>}
 
         bottom={
-            <div className="flex">
+            (corpDetails.status !== "FULL_CORPORATE" && corpDetails.status !== "ACTIVE") && <div className="flex">
                 <BlueBtn onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "EDITCORP", auxModalData: { uuid: corpDetails.uuid } }) }}>Edit details</BlueBtn> &nbsp;&nbsp;&nbsp;&nbsp;
                 {corpDetails.kybUrl && <BlueBtn onClick={() => { window.open(corpDetails.kybUrl) }}>Fill KYB Form</BlueBtn>}
             </div>
