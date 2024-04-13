@@ -140,6 +140,12 @@ export const getTabs = () => {
       name: 'Index',
       subTabs: [],
       isExternalLink: false,
+    },
+    {
+      to: `/pools`,
+      name: 'Pools',
+      subTabs: [],
+      isExternalLink: false,
     },/*
     {
       to: `/badge`,

@@ -19,7 +19,7 @@ export const Navbar: React.FC<INavbar> = ({ hideAccount }: { hideAccount: boolea
   const tabs = getTabs();
   const { t, i18n } = useTranslation();
   const [pageState, setPageState] = useAtom(LanguageDataAtom);
-  const VISIBLETABS = 4;
+  const VISIBLETABS = 5;
   return (
     <header className="bg-primary flex justify-between w-full h-[45px] pr-[8px] header top-0 border-b-2 border-solid border-1 relative z-[102]">
       <div className=" flex items-center gap-[24px] tab:hidden b1200:!hidden">
