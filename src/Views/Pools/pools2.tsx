@@ -7,6 +7,11 @@ import { useGetUserHasNFT } from './Hooks/useNFTCall';
 import { ArbitrumOnly } from '@Views/Common/ChainNotSupported';
 import { Chain } from 'wagmi';
 import { useActiveChain } from '@Hooks/useActiveChain';
+import { useAtom } from 'jotai';
+import { poolsAtom, poolsDataAtom } from './poolsAtom';
+import { useGetPoolsData } from './Hooks/useGetPoolsData';
+import { PoolsTable } from './Components/PoolsTable';
+import { PoolsContext } from '.';
 
 const Styles = styled.div`
   width: 100%;
@@ -18,22 +23,16 @@ const Styles = styled.div`
 const topStyles = 'flex flex-row items-center justify-center mb-2 text-f22';
 const descStyles = 'w-[46rem] text-center m-auto tab:w-full';
 
-export const PoolsContext = React.createContext<{ activeChain: Chain } | null>(
-  null
-);
 const PoolContextProvider = PoolsContext.Provider;
 
-export const PoolsPage = () => {
+
+export const PoolsPage2 = () => {
   useEffect(() => {
     document.title = "(mucho) finance | Liquidity pools";
   }, []);
 
   const { activeChain } = useActiveChain();
 
-
-  /*
-  <script defer type='text/javascript'
-    src='https://changenow.io/embeds/exchange-widget/v2/stepper-connector.js'></script>*/
   return (
     <>
       <Background>
@@ -44,7 +43,7 @@ export const PoolsPage = () => {
             <PoolContextProvider value={{ activeChain }}>
               <main className="content-drawer">
                 <Styles>
-                  <PoolsComponent />
+                  <PoolsComponent2 />
                 </Styles>
               </main>
             </PoolContextProvider>
@@ -55,18 +54,21 @@ export const PoolsPage = () => {
   );
 };
 
-const PoolsComponent = () => {
-  const hasNFT = useGetUserHasNFT([/*1,*/ 5]);
-  const iframeLink = 'https://mango-moss-045ef401e.4.azurestaticapps.net/#';
+const PoolsComponent2 = () => {
+  const hasNFT = useGetUserHasNFT([1, 5]);
+  const [poolsState,] = useAtom(poolsAtom);
+  const [, setPoolsData] = useAtom(poolsDataAtom);
+  const poolsData = useGetPoolsData();
+  //console.log("poolsData", poolsData);
+  setPoolsData(poolsData);
 
   return (<>
     <Section
       Heading={<div className={topStyles}>(mucho) Pools</div>}
       Cards={[]}
       subHeading={<div className={descStyles}>Top Liquidity Pools</div>}
-      other={hasNFT ? undefined : <div className={`${descStyles} text-f16 m-auto`}>This content is only available for NFT subscribers</div>}
+      other={hasNFT ? <PoolsTable data={poolsData} /> : <div className={`${descStyles} text-f16 m-auto`}>This content is only available for NFT subscribers</div>}
     />
-    {hasNFT && <iframe id='iframe-widget' src={iframeLink} style={{ height: '80656px', width: '100%', border: 'none' }}></iframe>}
   </>
   );
 }

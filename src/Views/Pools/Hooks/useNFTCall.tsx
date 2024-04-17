@@ -37,7 +37,7 @@ export const useGetUserHasNFT = (plans: number[]) => {
 
   const { data } = useContractRead(call);
 
-  //console.log("Data", data);
+  //console.log("Data", data, call);
 
   if (data && data[0]) {
     for (const p of data) {
