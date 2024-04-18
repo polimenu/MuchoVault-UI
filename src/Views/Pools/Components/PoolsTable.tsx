@@ -1,5 +1,5 @@
 import { Display } from "@Views/Common/Tooltips/Display";
-import { IPoolsData } from "../poolsAtom";
+import { IPoolsData, poolsAtom } from "../poolsAtom";
 
 import styled from '@emotion/styled';
 
@@ -182,6 +182,9 @@ import { ReactNode, useMemo, useState } from 'react';
 import Background from 'src/AppStyles';
 import { Section } from "@Views/Common/Card/Section";
 import { BlueBtn } from "@Views/Common/V2-Button";
+import BufferInput from "@Views/Common/BufferInput";
+import { BorderAll } from "@mui/icons-material";
+import { useAtom } from "jotai";
 
 const createArray: (n: number) => number[] = (n) => Array.apply(0, new Array(n)).map((i, idx) => idx)
 
@@ -250,10 +253,17 @@ export default function PoolListTable({
     defaultOrder?: Order;
     shouldShowMobile?: boolean;
 }) {
+    const [poolsState, setPoolsState] = useAtom(poolsAtom);
     const [order, setOrder] = useState<Order>(defaultOrder);
     const [orderBy, setOrderBy] = useState<string>(defaultSortId);
     const [page, setPage] = useState(1);
     const [numPages, setNumPages] = useState(Math.ceil(data.length / rows))
+    const [filterStatus, setFilter] = useState({ tokenA: "", tokenB: "", aprMin: 0, network: "", protocol: "", tvlMin: 0, volumeMin: 0, feesMin: 0 })
+    /*if (poolsState.auxModalData && poolsState.auxModalData.filter) {
+        setFilter(poolsState.auxModalData.filter);
+    }*/
+
+
     const handleRequestSort = (property: string) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -262,27 +272,114 @@ export default function PoolListTable({
     };
     const sortedData = useMemo(
         () => {
-            const sorted = data.sort(getComparator(order, orderBy));
+            const filtered = data.filter(p => {
+                //console.log("FILTER", filterStatus.tokenA, p.Pool);
+                return (filterStatus.tokenA == "" || p.TokenA.indexOf(filterStatus.tokenA) >= 0) &&
+                    (filterStatus.tokenB == "" || p.TokenB.indexOf(filterStatus.tokenB) >= 0) &&
+                    (filterStatus.aprMin == 0 || p.APR >= filterStatus.aprMin) &&
+                    (filterStatus.network == "" || p.Chain.indexOf(filterStatus.network) >= 0) &&
+                    (filterStatus.protocol == "" || p.Protocol.indexOf(filterStatus.protocol) >= 0) &&
+                    (filterStatus.tvlMin == 0 || p.TVL >= filterStatus.tvlMin) &&
+                    (filterStatus.volumeMin == 0 || p.Volume >= filterStatus.volumeMin) &&
+                    (filterStatus.feesMin == 0 || p.Fees >= filterStatus.feesMin)
+            })
+            setNumPages(Math.ceil(filtered.length / rows));
+            const sorted = filtered.sort(getComparator(order, orderBy));
             return sorted.slice((page - 1) * rows);
         },
-        [data, order, orderBy, page]
+        [data, order, orderBy, page, filterStatus]
     );
-    console.log("sortedData", order, orderBy, sortedData);
+    //console.log("sortedData", order, orderBy, sortedData);
+    if (sortedData.length < rows)
+        rows = sortedData.length;
 
     let rowClass = '';
     let tableCellCls = 'table-cell';
-    const classPagers = "w-[3vw] h-[1.5vw]";
+    const classPagers = "w-[40px] min-w-[40px] h-[25px]";
 
     return (
         <TableBackground shouldShowMobile={shouldShowMobile && window.innerWidth < 1200}>
-            <div className="text-f16 !justify-end flex mr8 mb8">
-                Page &nbsp;&nbsp;{page > 1 && <BlueBtn className={classPagers} onClick={() => { setPage(page - 1) }}>&lt;&lt;</BlueBtn>}
-                &nbsp;&nbsp;
-                {page}
-                &nbsp;&nbsp;
-                {page < numPages && <BlueBtn className={classPagers} onClick={() => { setPage(page + 1) }}>&gt;&gt;</BlueBtn>}
-                &nbsp;&nbsp;&nbsp;
-                of {numPages}
+            <div className="a1200:!hidden flex text-f16">
+                <BlueBtn onClick={() => { setPoolsState({ ...poolsState, isModalOpen: true, activeModal: "FILTER", auxModalData: { filter: filterStatus, setFilter: setFilter } }) }} className="w-[65px] mb-5">Filter</BlueBtn>
+            </div>
+            <div className="text-f16 m-auto mb-5 flex w-[60vw] mt-5 b1200:!hidden">
+                <div className="h-[100%] pt-[20px] ">Filter: &nbsp;&nbsp;</div>
+                <BufferInput
+                    placeholder={"Token A"}
+                    className="w-[100px] min-w-[100px] h-[60px] ml-[20px]"
+                    bgClass="!bg-2"
+                    ipClass="mt-1"
+                    value={filterStatus.tokenA}
+                    onChange={(val) => {
+                        setFilter({ ...filterStatus, tokenA: val });
+                    }}
+                />
+                <BufferInput
+                    placeholder={"Token B"}
+                    className="w-[100px] min-w-[100px] h-[60px] ml-[20px]"
+                    bgClass="!bg-2"
+                    ipClass="mt-1"
+                    value={filterStatus.tokenB}
+                    onChange={(val) => {
+                        setFilter({ ...filterStatus, tokenB: val });
+                    }}
+                />
+                <BufferInput
+                    placeholder={"Network"}
+                    className="w-[100px] min-w-[100px] h-[60px] ml-[20px]"
+                    bgClass="!bg-2"
+                    ipClass="mt-1"
+                    value={filterStatus.network}
+                    onChange={(val) => {
+                        setFilter({ ...filterStatus, network: val });
+                    }}
+                />
+                <BufferInput
+                    placeholder={"Protocol"}
+                    className="w-[100px] min-w-[100px] h-[60px] ml-[20px]"
+                    bgClass="!bg-2"
+                    ipClass="mt-1"
+                    value={filterStatus.protocol}
+                    onChange={(val) => {
+                        setFilter({ ...filterStatus, protocol: val });
+                    }}
+                />
+
+                <BufferInput
+                    placeholder={"Min. TVL"}
+                    className="w-[120px] min-w-[100px]  h-[60px] ml-[20px]"
+                    bgClass="!bg-2"
+                    ipClass="mt-1"
+                    value={filterStatus.tvlMin ? filterStatus.tvlMin.toString() : ""}
+                    onChange={(val) => {
+                        if (!isNaN(val))
+                            setFilter({ ...filterStatus, tvlMin: Number(val) });
+                    }}
+                />
+                <BufferInput
+                    placeholder={"Min. Vol"}
+                    className="w-[120px] min-w-[100px]  h-[60px] ml-[20px]"
+                    bgClass="!bg-2"
+                    ipClass="mt-1"
+                    value={filterStatus.volumeMin ? filterStatus.volumeMin.toString() : ""}
+                    onChange={(val) => {
+                        if (!isNaN(val))
+                            setFilter({ ...filterStatus, volumeMin: Number(val) });
+                    }}
+                />
+                <BufferInput
+                    placeholder={"Min. Fees"}
+                    className="w-[120px] min-w-[100px]  h-[60px] ml-[20px]"
+                    bgClass="!bg-2"
+                    ipClass="mt-1"
+                    value={filterStatus.feesMin ? filterStatus.feesMin.toString() : ""}
+                    onChange={(val) => {
+                        if (!isNaN(val))
+                            setFilter({ ...filterStatus, feesMin: Number(val) });
+                    }}
+                />
+
+
             </div>
             <TableContainer>
                 <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
@@ -366,7 +463,39 @@ export default function PoolListTable({
                     </TableBody>
                 </Table>
             </TableContainer>
-        </TableBackground>
+
+            <div className="m-auto w-[300px] justify-center h-[40px] flex text-f16 mt-5">
+                <div className="mt-[7px] mr-5">
+                    Page
+                </div>
+                {page > 1 && <BlueBtn className={classPagers} onClick={() => { setPage(page - 1) }}>&lt;&lt;</BlueBtn>}
+                <BufferInput
+                    className="w-[60px] min-w-[60px] ml-5"
+                    numericValidations={{
+                        decimals: { val: 0 },
+                        max: { val: numPages.toString(), error: "" },
+                        min: { val: "1", error: "" },
+                    }}
+                    placeholder={page.toString()}
+                    bgClass="!bg-1"
+                    ipClass="mt-1"
+                    value={page.toString()}
+                    onChange={(val) => {
+                        if (!isNaN(val)) {
+                            const numVal = Number(val);
+                            if (numVal >= 1 && numVal <= numPages)
+                                setPage(numVal);
+                        }
+                    }}
+                />
+
+                {page < numPages && <BlueBtn className={classPagers + " ml-5"} onClick={() => { setPage(page + 1) }}>&gt;&gt;</BlueBtn>}
+
+                <div className="mt-[7px] ml-5">
+                    of {numPages}
+                </div>
+            </div>
+        </TableBackground >
     );
 }
 
@@ -400,7 +529,9 @@ export const PoolsTable = ({ data }: { data: IPoolsData }) => {
                 TVL: p.Liquidity,
                 Volume: p.Volume,
                 Fees: p.fees,
-                VolTVL: p.Volume / p.Liquidity
+                VolTVL: p.Volume / p.Liquidity,
+                TokenA: p.BaseToken,
+                TokenB: p.QuoteToken
             }
         });
         //console.log("dashboardData", dashboardData);
@@ -462,7 +593,7 @@ export const PoolsTable = ({ data }: { data: IPoolsData }) => {
                     headerJSX={headerJSX}
                     cols={headerJSX.length}
                     data={dashboardData}
-                    rows={Math.min(dashboardData?.length, 20)}
+                    rows={Math.min(dashboardData?.length, 10)}
                     bodyJSX={bodyJSX}
                     loading={!dashboardData.length}
                     onRowClick={(idx) => {

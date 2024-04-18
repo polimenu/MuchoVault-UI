@@ -12,6 +12,7 @@ import { poolsAtom, poolsDataAtom } from './poolsAtom';
 import { useGetPoolsData } from './Hooks/useGetPoolsData';
 import { PoolsTable } from './Components/PoolsTable';
 import { PoolsContext } from '.';
+import { PoolsModals } from './Modals';
 
 const Styles = styled.div`
   width: 100%;
@@ -43,6 +44,7 @@ export const PoolsPage2 = () => {
             <PoolContextProvider value={{ activeChain }}>
               <main className="content-drawer">
                 <Styles>
+                  <PoolsModals />
                   <PoolsComponent2 />
                 </Styles>
               </main>
@@ -55,7 +57,7 @@ export const PoolsPage2 = () => {
 };
 
 const PoolsComponent2 = () => {
-  const hasNFT = useGetUserHasNFT([1, 5]);
+  const hasNFT = import.meta.env.VITE_APIRAMP_ENV == "development" || useGetUserHasNFT([1, 5]);
   const [poolsState,] = useAtom(poolsAtom);
   const [, setPoolsData] = useAtom(poolsDataAtom);
   const poolsData = useGetPoolsData();

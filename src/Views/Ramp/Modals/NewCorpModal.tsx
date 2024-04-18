@@ -5,7 +5,7 @@ import BufferInput from "@Views/Common/BufferInput";
 import { t } from "i18next";
 import { BlueBtn } from "@Views/Common/V2-Button";
 import { CountriesDropDown } from "../Components/CountriesDropDown";
-import { INewCorporateRequest } from "../Hooks/user";
+import { INewCorporateRequest } from "../Hooks/corp";
 import { useCreateCorp } from "../Hooks/corp";
 import { CorpTypeDropDown } from "../Components/CorpTypeDropDown";
 import { useAtom } from "jotai";
