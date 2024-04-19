@@ -295,7 +295,7 @@ export default function PoolListTable({
 
     let rowClass = '';
     let tableCellCls = 'table-cell';
-    const classPagers = "w-[40px] min-w-[40px] h-[25px]";
+    const classPagers = "!w-[40px] min-w-[40px] h-[25px]";
 
     return (
         <TableBackground shouldShowMobile={shouldShowMobile && window.innerWidth < 1200}>
@@ -433,7 +433,7 @@ export default function PoolListTable({
                                         key={row}
                                         className={`table-row ${rowClass} ${isBodyTransparent ? 'transparent transparent-hover' : ''
                                             }`}
-                                        onClick={() => onRowClick(row)}
+                                        onClick={() => onRowClick(sortedData[row])}
                                     >
                                         {createArray(cols).map((col, colIdx) => (
                                             <TableCell
@@ -464,7 +464,8 @@ export default function PoolListTable({
                 </Table>
             </TableContainer>
 
-            <div className="m-auto w-[300px] justify-center h-[40px] flex text-f16 mt-5">
+            <div className="m-auto w-[400px] justify-center h-[40px] flex text-f16 mt-5">
+                <div>&nbsp;</div>
                 <div className="mt-[7px] mr-5">
                     Page
                 </div>
@@ -491,15 +492,17 @@ export default function PoolListTable({
 
                 {page < numPages && <BlueBtn className={classPagers + " ml-5"} onClick={() => { setPage(page + 1) }}>&gt;&gt;</BlueBtn>}
 
-                <div className="mt-[7px] ml-5">
+                <div className="mt-[7px] w-[250px] ml-5">
                     of {numPages}
                 </div>
+                <div>&nbsp;</div>
             </div>
         </TableBackground >
     );
 }
 
 export const PoolsTable = ({ data }: { data: IPoolsData }) => {
+    const [poolsState, setPoolsState] = useAtom(poolsAtom);
     //console.log("PoolsTable data", data);
     if (!data || !data.pools || data.pools.length == 0) {
         return <Skeleton
@@ -531,7 +534,8 @@ export const PoolsTable = ({ data }: { data: IPoolsData }) => {
                 Fees: p.fees,
                 VolTVL: p.Volume / p.Liquidity,
                 TokenA: p.BaseToken,
-                TokenB: p.QuoteToken
+                TokenB: p.QuoteToken,
+                pairAddress: p.pairAddress
             }
         });
         //console.log("dashboardData", dashboardData);
@@ -596,9 +600,11 @@ export const PoolsTable = ({ data }: { data: IPoolsData }) => {
                     rows={Math.min(dashboardData?.length, 10)}
                     bodyJSX={bodyJSX}
                     loading={!dashboardData.length}
-                    onRowClick={(idx) => {
-                        //navigate(`/binary/${dashboardData[idx].pair}`);
-                    }}
+                    onRowClick={(row: any) => {
+                        console.log("pairDetail", row)
+                        setPoolsState({ ...poolsState, pairAddress: row.pairAddress });
+                    }
+                    }
                     widths={['12%', '12%', '12%', '12%', '14%', '14%', '12%', '12%']}
                     shouldShowMobile={true}
                 />

@@ -29,6 +29,7 @@
     "pretty-print-json": "^2.1.0",
     "querystring": "^0.2.1",
     "react": "^18.2.0",
+    "react-charts": "^3.0.0-beta.57",
     "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^13.3.1",
