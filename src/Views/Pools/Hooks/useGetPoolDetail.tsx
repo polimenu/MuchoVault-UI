@@ -9,6 +9,11 @@ export const useGetPoolDetail = () => {
     const [poolsState,] = useAtom(poolsAtom);
     const [pool, setPool] = useState<IPoolDetail>();
 
+    const parsePool = (poolRes: any) => {
+        poolRes.history.forEach(h => h.date = new Date(`${h.date.substring(0, 4)}-${h.date.substring(4, 6)}-${h.date.substring(6, 8)}T00:00:00.000Z`));
+        return poolRes;
+    }
+
     useEffect(() => {
         //console.log("Fetching pool detail", url);
         if (poolsState.pairAddress) {
@@ -26,7 +31,8 @@ export const useGetPoolDetail = () => {
                 response.json().then(json => {
                     dispatch({ type: 'SET_TXN_LOADING', payload: 0 });
                     //console.log("Pool detail Txn finished", json);
-                    setPool(json.pool);
+                    setPool(parsePool(json.pool));
+                    //console.log("Pool detail Txn finished", pool);
                 })
             }).catch(e => {
                 console.log("Error API", e);

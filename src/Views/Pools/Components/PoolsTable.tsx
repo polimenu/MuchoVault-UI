@@ -185,6 +185,7 @@ import { BlueBtn } from "@Views/Common/V2-Button";
 import BufferInput from "@Views/Common/BufferInput";
 import { BorderAll } from "@mui/icons-material";
 import { useAtom } from "jotai";
+import { TextDropDown } from "./TextDropDown";
 
 const createArray: (n: number) => number[] = (n) => Array.apply(0, new Array(n)).map((i, idx) => idx)
 
@@ -311,7 +312,7 @@ export default function PoolListTable({
                     ipClass="mt-1"
                     value={filterStatus.tokenA}
                     onChange={(val) => {
-                        setFilter({ ...filterStatus, tokenA: val });
+                        setFilter({ ...filterStatus, tokenA: val.toUpperCase() });
                     }}
                 />
                 <BufferInput
@@ -321,28 +322,30 @@ export default function PoolListTable({
                     ipClass="mt-1"
                     value={filterStatus.tokenB}
                     onChange={(val) => {
-                        setFilter({ ...filterStatus, tokenB: val });
+                        setFilter({ ...filterStatus, tokenB: val.toUpperCase() });
                     }}
                 />
-                <BufferInput
-                    placeholder={"Network"}
-                    className="w-[100px] min-w-[100px] h-[60px] ml-[20px]"
-                    bgClass="!bg-2"
-                    ipClass="mt-1"
-                    value={filterStatus.network}
-                    onChange={(val) => {
-                        setFilter({ ...filterStatus, network: val });
-                    }}
+
+                <TextDropDown
+                    list={data.map(p => p.Chain).filter((v, i, a) => a.indexOf(v) === i)}
+                    placeHolder="Network"
+                    selected={filterStatus.network}
+                    setSelected={(n) => { setFilter({ ...filterStatus, network: n }) }}
+                    name="networkDropDown"
+                    containerClass="w-[120px] min-w-[100px] ml-5"
+                    bgClass="flex items-center justify-between text-f15 font-medium bg-2 pl-5 !pb-[15px] !pt-[20px] pr-[0] py-[6px] rounded-sm text-2"
+                    bufferClass="py-4 px-4 !bg-2 h-[20vw] !y-auto ml-15 w-[50px]"
                 />
-                <BufferInput
-                    placeholder={"Protocol"}
-                    className="w-[100px] min-w-[100px] h-[60px] ml-[20px]"
-                    bgClass="!bg-2"
-                    ipClass="mt-1"
-                    value={filterStatus.protocol}
-                    onChange={(val) => {
-                        setFilter({ ...filterStatus, protocol: val });
-                    }}
+
+                <TextDropDown
+                    list={data.map(p => p.Protocol).filter((v, i, a) => a.indexOf(v) === i)}
+                    placeHolder="Protocol"
+                    selected={filterStatus.protocol}
+                    setSelected={(p) => { setFilter({ ...filterStatus, protocol: p }) }}
+                    name="protocolDropDown"
+                    containerClass="w-[120px] min-w-[100px] ml-5"
+                    bgClass="flex items-center justify-between text-f15 font-medium bg-2 pl-5 !pb-[15px] !pt-[20px] pr-[0] py-[6px] rounded-sm text-2"
+                    bufferClass="py-4 px-4 !bg-2 h-[20vw] !y-auto ml-15 w-[50px]"
                 />
 
                 <BufferInput
@@ -526,7 +529,7 @@ export const PoolsTable = ({ data }: { data: IPoolsData }) => {
         const dashboardData = data.pools.map(p => {
             return {
                 Pool: p.BaseToken + " / " + p.QuoteToken,
-                APR: p.apr,
+                APR: Math.round(p.apr),
                 Chain: p.ChainId,
                 Protocol: p.DexId,
                 TVL: p.Liquidity,
@@ -574,9 +577,12 @@ export const PoolsTable = ({ data }: { data: IPoolsData }) => {
         ) => {
             const rowData = sortedData[row];
             const keys = Object.keys(rowData);
-            const currentData = sortedData[row][keys[col]];
+            let currentData = sortedData[row][keys[col]];
 
-            //console.log("currentData", currentData);
+            if (typeof currentData == "number" && headerJSX[col].unit == "%") {
+                currentData = Math.round(currentData).toString();
+            }
+
             return <CellContent
                 content={[
                     <Display

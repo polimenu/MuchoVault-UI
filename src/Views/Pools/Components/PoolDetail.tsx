@@ -15,6 +15,11 @@ export const PoolDetail = ({ data }: { data: IPoolDetail }) => {
     const topStyles = 'flex flex-row items-center justify-center mb-2 text-f22';
     //console.log("PoolsTable data", data);
     const [poolsState, setPoolsState] = useAtom(poolsAtom);
+    const dateButtons = [
+        { label: "1W", days: 7 }, { label: "2W", days: 14 }, { label: "3W", days: 21 },
+        { label: "1M", days: 30 }, { label: "2M", days: 60 }, { label: "3M", days: 90 }, { label: "6M", days: 180 }
+    ]
+
     if (!data) {
         return <Skeleton
             key="PoolsDetail"
@@ -23,26 +28,36 @@ export const PoolDetail = ({ data }: { data: IPoolDetail }) => {
         />
     }
     else {
-
+        //console.log("poolDetail data", data);
         return <Section
             Heading={<></>}
             subHeading={<>
-                <div className="flex text-f16 w-full">
-                    <div className="ml-5 w-[87%]">
-                        <BufferInput
-                            className="w-[150px]"
-                            bgClass="!bg-2"
-                            header={"Num days:"}
-                            ipClass="mt-1 !bg-1 mt-3 mb-5"
-                            value={numDays.toString()}
-                            onChange={(val) => {
-                                if (!isNaN(val))
-                                    setNumDays(Number(val));
-                            }}
-                        />
+                <div className="flex text-f16 w-full flex-wrap">
+                    <div id="dateButtons" className="flex w-[49%] mb-5">
+                        <div id="customDays" className="">
+                            <BufferInput
+                                className=""
+                                bgClass="!bg-grey flex w-[120px] text-white !pb-[6px] ml-5"
+                                header={"Days:"}
+                                ipClass="mt-1 ml-5 !bg-3 !w-[40px] text-center !p-[2px]"
+                                value={numDays.toString()}
+                                onChange={(val) => {
+                                    if (!isNaN(val))
+                                        setNumDays(Number(val));
+                                }}
+                            />
+                        </div>
+                        <div id="discreteButtons" className="flex">
+                            {
+                                dateButtons.map(b => <BlueBtn className={"w-[40px] ml-[8px] " + (b.days == numDays ? "bg-green" : "")} onClick={() => { setNumDays(b.days) }}>{b.label}</BlueBtn>
+                                )
+                            }
+                        </div>
                     </div>
-                    <div className="w-[10%] mb-5 ml-5 pt-[40px]">
-                        <BlueBtn onClick={() => { setPoolsState({ ...poolsState, pairAddress: undefined }) }}>Back to Pools List</BlueBtn>
+                    <div id="otherButtons" className="mb-5 ml-5 flex justify-end w-[49%] mb-5">
+                        <BlueBtn className="!w-[100px]" onClick={() => { }}>APR</BlueBtn>
+                        <BlueBtn className="ml-5 !w-[140px]" onClick={() => { window.open(`https://dexscreener.com/${data.ChainId}/${data.pairAddress}`) }}>DexScreener</BlueBtn>
+                        <BlueBtn className="ml-5 !w-[140px]" onClick={() => { setPoolsState({ ...poolsState, pairAddress: undefined }) }}>Back to List</BlueBtn>
                     </div>
                 </div></>}
             Cards={[
@@ -52,7 +67,7 @@ export const PoolDetail = ({ data }: { data: IPoolDetail }) => {
 
                 <PoolPriceChart data={data} numDays={numDays} reverse={true} />,
             ]}
-            other={<PoolHistoryTable data={data} />}
+            other={<PoolHistoryTable data={data} numDays={numDays} />}
         />;
     }
 }

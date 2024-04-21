@@ -65,7 +65,7 @@ export interface IPoolHistory {
     fees: number;//430221.6544,
     buyTransactions: number;//28798,
     sellTransactions: number;//26715,
-    date: number;//"20240417"
+    date: Date;//"20240417"
 }
 
 
