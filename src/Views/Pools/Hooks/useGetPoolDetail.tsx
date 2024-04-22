@@ -10,7 +10,11 @@ export const useGetPoolDetail = () => {
     const [pool, setPool] = useState<IPoolDetail>();
 
     const parsePool = (poolRes: any) => {
-        poolRes.history.forEach(h => h.date = new Date(`${h.date.substring(0, 4)}-${h.date.substring(4, 6)}-${h.date.substring(6, 8)}T00:00:00.000Z`));
+        poolRes.history.forEach(h => {
+            const dt = new Date(`${h.date.substring(0, 4)}-${h.date.substring(4, 6)}-${h.date.substring(6, 8)}T${h.date.substring(8, 10)}:${h.date.substring(10, 12)}:${h.date.substring(12, 14)}.000Z`);
+            h.date = dt;
+            h.epoch = dt.getTime();
+        });
         return poolRes;
     }
 

@@ -3,7 +3,7 @@ import { IPoolDetail } from "../poolsAtom";
 import { Chart } from "react-charts";
 import { Card } from "@Views/Common/Card/Card";
 
-export const PoolPriceChart = ({ data, numDays, reverse }: { data: IPoolDetail, numDays: number, reverse: boolean }) => {
+export const PoolPriceChart = ({ data, reverse }: { data: IPoolDetail, reverse: boolean }) => {
     type PriceSerie = {
         primary: number;
         price: number;
@@ -17,14 +17,12 @@ export const PoolPriceChart = ({ data, numDays, reverse }: { data: IPoolDetail, 
     const series: PriceSeries[] = [
         {
             label: 'APR',
-            data: data.history.sort((a, b) => a.date - b.date)
-                .slice(data.history.length - numDays)
-                .map(h => {
-                    return {
-                        primary: h.date,
-                        price: reverse ? 1 / h.priceNative : h.priceNative
-                    }
-                })
+            data: data.history.map(h => {
+                return {
+                    primary: h.date,
+                    price: reverse ? 1 / h.priceNative : h.priceNative
+                }
+            })
         },
     ]
 
@@ -46,7 +44,7 @@ export const PoolPriceChart = ({ data, numDays, reverse }: { data: IPoolDetail, 
 
     return (
         <Card
-            top={<>Price ({reverse ? `${data.BaseToken} / ${data.QuoteToken}` : `${data.QuoteToken} / ${data.BaseToken}`})</>}
+            top={<>Price ({reverse ? `${data.QuoteToken} / ${data.BaseToken}` : `${data.BaseToken} / ${data.QuoteToken}`})</>}
             middle={
                 <div className="w-full h-[20vw]">
                     <Chart<PriceSerie>

@@ -3,7 +3,7 @@ import { IPoolDetail } from "../poolsAtom";
 import { Chart } from "react-charts";
 import { Card } from "@Views/Common/Card/Card";
 
-export const PoolAPRChart = ({ data, numDays }: { data: IPoolDetail, numDays: number }) => {
+export const PoolAPRChart = ({ data }: { data: IPoolDetail }) => {
     type AprSerie = {
         primary: number;
         apr: number;
@@ -17,14 +17,12 @@ export const PoolAPRChart = ({ data, numDays }: { data: IPoolDetail, numDays: nu
     const series: AprSeries[] = [
         {
             label: 'APR',
-            data: data.history.sort((a, b) => a.date - b.date)
-                .slice(data.history.length - numDays)
-                .map(h => {
-                    return {
-                        primary: h.date,
-                        apr: h.apr
-                    }
-                })
+            data: data.history.map(h => {
+                return {
+                    primary: h.date,
+                    apr: h.apr
+                }
+            })
         },
     ]
 

@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import { Display } from "@Views/Common/Tooltips/Display";
 import PoolHistoryTableDraw from "./PoolHistoryTableDraw";
 
-export const PoolHistoryTable = ({ data, numDays }: { data: IPoolDetail, numDays: number }) => {
+export const PoolHistoryTable = ({ data }: { data: IPoolDetail }) => {
     //console.log("PoolsTable data", data);
     if (!data) {
         return <Skeleton
@@ -23,9 +23,12 @@ export const PoolHistoryTable = ({ data, numDays }: { data: IPoolDetail, numDays
             { id: "VolTVL", label: "Vol / TVL", unit: "", align: "center", precision: 2 },
         ];
 
-        const dashboardData = data.history.sort((a, b) => b.date.getTime() - a.date.getTime()).slice(0, numDays).map(h => {
+        //const sortedData = data.history.sort((a, b) => b.date.getTime() - a.date.getTime());
+        //const minTime = sortedData[0].date.getTime() - numDays * 24 * 60 * 60 * 1000;
+        //console.log("sortedData", sortedData.map(s => s.date.getTime()), minTime);
+        const dashboardData = data.history.map(h => {
             return {
-                Date: h.date.toISOString().split('T')[0],
+                Date: h.date.toISOString().split('T')[0] + " " + h.date.toISOString().split('T')[1].substring(0, 8),
                 APR: h.apr,
                 TVL: h.Liquidity,
                 Volume: h.Volume,

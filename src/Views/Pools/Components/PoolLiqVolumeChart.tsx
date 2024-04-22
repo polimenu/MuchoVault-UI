@@ -3,7 +3,7 @@ import { IPoolDetail } from "../poolsAtom";
 import { Chart } from "react-charts";
 import { Card } from "@Views/Common/Card/Card";
 
-export const PoolLiqVolumeChart = ({ data, numDays }: { data: IPoolDetail, numDays: number }) => {
+export const PoolLiqVolumeChart = ({ data }: { data: IPoolDetail }) => {
     type NumSerie = {
         primary: Date;
         value: number;
@@ -15,41 +15,33 @@ export const PoolLiqVolumeChart = ({ data, numDays }: { data: IPoolDetail, numDa
         secondaryAxisId?: string
     }
 
-    const abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
     const series: LiqVolumeSerie[] = [
         {
             label: 'TVL',
-            data: data.history.sort((a, b) => Number(a.date) - Number(b.date))
-                .slice(data.history.length - numDays)
-                .map((h, i) => {
-                    return {
-                        primary: h.date,
-                        value: h.Liquidity
-                    }
-                })
+            data: data.history.map((h, i) => {
+                return {
+                    primary: h.date,
+                    value: h.Liquidity
+                }
+            })
         },
         {
             label: 'Volume',
-            data: data.history.sort((a, b) => Number(a.date) - Number(b.date))
-                .slice(data.history.length - numDays)
-                .map((h, i) => {
-                    return {
-                        primary: h.date,
-                        value: h.Volume
-                    }
-                }),
+            data: data.history.map((h, i) => {
+                return {
+                    primary: h.date,
+                    value: h.Volume
+                }
+            }),
         },
         {
             label: 'Vol / TVL',
-            data: data.history.sort((a, b) => a.date - b.date)
-                .slice(data.history.length - numDays)
-                .map(h => {
-                    return {
-                        primary: h.date,
-                        value: h.Volume / h.Liquidity
-                    }
-                }),
+            data: data.history.map(h => {
+                return {
+                    primary: h.date,
+                    value: h.Volume / h.Liquidity
+                }
+            }),
             secondaryAxisId: "2"
         },
     ]
