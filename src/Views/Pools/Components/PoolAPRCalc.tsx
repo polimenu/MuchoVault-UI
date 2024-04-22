@@ -168,7 +168,7 @@ export const PoolAPRCalc = ({ data, reverse }: { data: IPoolDetail, reverse: boo
     )
 }
 
-
+/*
 const calculateApr = () => {
 
     let totalPeriods = 0;
@@ -191,7 +191,7 @@ const calculateApr = () => {
         ((feeParams.y2 - feeParams.y1) / (feeParams.x2 - feeParams.x1)) * stdDevs + (feeParams.y1 - ((feeParams.y2 - feeParams.y1) / (feeParams.x2 - feeParams.x1)) * feeParams.x1)
         : 1;
 
-    /* Moving averages for volume */
+    // Moving averages for volume 
     const period = 7;
     const averages = [];
 
@@ -238,4 +238,4 @@ const calculateApr = () => {
     console.log(`The estimated APR is ${this.estimatedAPR}`);
 
 
-}
+}*/

@@ -56,7 +56,7 @@ export const PoolsPage = () => {
 };
 
 const PoolsComponent = () => {
-  const hasNFT = useGetUserHasNFT([/*1,*/ 5]);
+  const hasNFT = useGetUserHasNFT([1, 5]);
   const iframeLink = 'https://mango-moss-045ef401e.4.azurestaticapps.net/#';
 
   return (<>
