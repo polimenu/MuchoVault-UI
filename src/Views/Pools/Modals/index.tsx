@@ -6,7 +6,7 @@ import { poolsAtom, poolsDataAtom } from '../poolsAtom';
 import BufferInput from '@Views/Common/BufferInput';
 import { useState } from 'react';
 import { BlueBtn } from '@Views/Common/V2-Button';
-import { TextDropDown } from '../Components/TextDropDown';
+import { TextMultipleDropDown } from '../Components/TextDropDown';
 
 export const PoolsModals = () => {
     const [pageState, setPageState] = useAtom(poolsAtom);
@@ -82,22 +82,22 @@ const FilterModal = () => {
                 }}
             />
 
-            <TextDropDown
-                list={poolsData.pools.map(p => p.ChainId).filter((v, i, a) => a.indexOf(v) === i)}
+            <TextMultipleDropDown
+                list={poolsData.pools.map(p => p.ChainId).filter((v, i, a) => a.indexOf(v) === i).sort()}
                 placeHolder="Network"
-                selected={filter.network}
-                setSelected={(n) => { setFilter({ ...filter, network: n }); setFilterParent({ ...filter, network: n }); }}
+                selected={filter.networks}
+                toggleSelected={(n) => { setFilter({ ...filter, networks: n }); setFilterParent({ ...filter, networks: n }); }}
                 name="networkDropDown"
                 containerClass="w-full p-2"
                 bgClass="flex items-center justify-between text-f15 font-medium bg-1 pl-5 ml-4 mr-4 !pb-[10px] !pt-[10px] pr-[0] py-[6px] rounded-sm text-2"
                 bufferClass="py-4 px-4 !bg-2 h-[40vw] !y-auto ml-15 w-[50px]"
             />
 
-            <TextDropDown
-                list={poolsData.pools.map(p => p.DexId).filter((v, i, a) => a.indexOf(v) === i)}
+            <TextMultipleDropDown
+                list={poolsData.pools.map(p => p.DexId).filter((v, i, a) => a.indexOf(v) === i).sort()}
                 placeHolder="Protocol"
-                selected={filter.protocol}
-                setSelected={(p) => { setFilter({ ...filter, protocol: p }); setFilterParent({ ...filter, protocol: p }) }}
+                selected={filter.protocols}
+                toggleSelected={(p) => { setFilter({ ...filter, protocols: p }); setFilterParent({ ...filter, protocols: p }) }}
                 name="protocolDropDown"
                 containerClass="w-full p-2"
                 bgClass="flex items-center justify-between text-f15 font-medium bg-1 pl-5 ml-4 mr-4 !pb-[10px] !pt-[10px] pr-[0] py-[6px] rounded-sm text-2"

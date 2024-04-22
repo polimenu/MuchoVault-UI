@@ -185,7 +185,7 @@ import { BlueBtn } from "@Views/Common/V2-Button";
 import BufferInput from "@Views/Common/BufferInput";
 import { BorderAll } from "@mui/icons-material";
 import { useAtom } from "jotai";
-import { TextDropDown } from "./TextDropDown";
+import { TextMultipleDropDown } from "./TextDropDown";
 
 const createArray: (n: number) => number[] = (n) => Array.apply(0, new Array(n)).map((i, idx) => idx)
 
@@ -259,7 +259,7 @@ export default function PoolListTable({
     const [orderBy, setOrderBy] = useState<string>(defaultSortId);
     const [page, setPage] = useState(1);
     const [numPages, setNumPages] = useState(Math.ceil(data.length / rows))
-    const [filterStatus, setFilter] = useState({ tokenA: "", tokenB: "", aprMin: 0, network: "", protocol: "", tvlMin: 0, volumeMin: 0, feesMin: 0 })
+    const [filterStatus, setFilter] = useState({ tokenA: "", tokenB: "", aprMin: 0, networks: [], protocols: [], tvlMin: 0, volumeMin: 0, feesMin: 0 })
     /*if (poolsState.auxModalData && poolsState.auxModalData.filter) {
         setFilter(poolsState.auxModalData.filter);
     }*/
@@ -274,12 +274,12 @@ export default function PoolListTable({
     const sortedData = useMemo(
         () => {
             const filtered = data.filter(p => {
-                //console.log("FILTER", filterStatus.tokenA, p.Pool);
+                //console.log("FILTER", filterStatus);
                 return (filterStatus.tokenA == "" || p.TokenA.indexOf(filterStatus.tokenA) >= 0) &&
                     (filterStatus.tokenB == "" || p.TokenB.indexOf(filterStatus.tokenB) >= 0) &&
                     (filterStatus.aprMin == 0 || p.APR >= filterStatus.aprMin) &&
-                    (filterStatus.network == "" || p.Chain.indexOf(filterStatus.network) >= 0) &&
-                    (filterStatus.protocol == "" || p.Protocol.indexOf(filterStatus.protocol) >= 0) &&
+                    (!filterStatus.networks || filterStatus.networks.length == 0 || filterStatus.networks.indexOf(p.Chain) >= 0) &&
+                    (!filterStatus.protocols || filterStatus.protocols.length == 0 || filterStatus.protocols.indexOf(p.Protocol) >= 0) &&
                     (filterStatus.tvlMin == 0 || p.TVL >= filterStatus.tvlMin) &&
                     (filterStatus.volumeMin == 0 || p.Volume >= filterStatus.volumeMin) &&
                     (filterStatus.feesMin == 0 || p.Fees >= filterStatus.feesMin)
@@ -326,24 +326,26 @@ export default function PoolListTable({
                     }}
                 />
 
-                <TextDropDown
-                    list={data.map(p => p.Chain).filter((v, i, a) => a.indexOf(v) === i)}
+                <TextMultipleDropDown
+                    list={data.map(p => p.Chain).filter((v, i, a) => a.indexOf(v) === i).sort()}
                     placeHolder="Network"
-                    selected={filterStatus.network}
-                    setSelected={(n) => { setFilter({ ...filterStatus, network: n }) }}
+                    selected={filterStatus.networks}
+                    toggleSelected={(n) => { setFilter({ ...filterStatus, networks: n }) }}
                     name="networkDropDown"
-                    containerClass="w-[120px] min-w-[100px] ml-5"
+                    containerClass="w-[140px] min-w-[140px] ml-5"
                     bgClass="flex items-center justify-between text-f15 font-medium bg-2 pl-5 !pb-[15px] !pt-[20px] pr-[0] py-[6px] rounded-sm text-2"
                     bufferClass="py-4 px-4 !bg-2 h-[20vw] !y-auto ml-15 w-[50px]"
                 />
 
-                <TextDropDown
-                    list={data.map(p => p.Protocol).filter((v, i, a) => a.indexOf(v) === i)}
+                <TextMultipleDropDown
+                    list={data.map(p => p.Protocol).filter((v, i, a) => a.indexOf(v) === i).sort()}
                     placeHolder="Protocol"
-                    selected={filterStatus.protocol}
-                    setSelected={(p) => { setFilter({ ...filterStatus, protocol: p }) }}
+                    selected={filterStatus.protocols}
+                    toggleSelected={(p) => {
+                        setFilter({ ...filterStatus, protocols: p })
+                    }}
                     name="protocolDropDown"
-                    containerClass="w-[120px] min-w-[100px] ml-5"
+                    containerClass="w-[130px] min-w-[130px] ml-5"
                     bgClass="flex items-center justify-between text-f15 font-medium bg-2 pl-5 !pb-[15px] !pt-[20px] pr-[0] py-[6px] rounded-sm text-2"
                     bufferClass="py-4 px-4 !bg-2 h-[20vw] !y-auto ml-15 w-[50px]"
                 />

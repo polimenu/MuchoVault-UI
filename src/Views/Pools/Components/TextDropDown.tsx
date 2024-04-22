@@ -3,11 +3,11 @@ import { DropdownArrow } from "@SVG/Elements/DropDownArrow";
 import { Dispatch } from "react";
 import { SetStateAction } from "jotai";
 
-export const TextDropDown = ({ name,
+export const TextMultipleDropDown = ({ name,
     placeHolder,
     list,
     selected,
-    setSelected,
+    toggleSelected,
     containerClass = "",
     bgClass = "",
     bufferClass = "",
@@ -16,8 +16,8 @@ export const TextDropDown = ({ name,
         name: string,
         placeHolder: string,
         list: string[],
-        selected: string,
-        setSelected: Dispatch<SetStateAction<string>>,
+        selected: string[],
+        toggleSelected: Dispatch<SetStateAction<string[]>>,
         containerClass: string,
         bgClass: string,
         bufferClass: string
@@ -25,7 +25,7 @@ export const TextDropDown = ({ name,
     if (!list)
         return <></>;
 
-    list = ["all", ...list];
+    list = ["all", ...list.sort((a, b) => selected.indexOf(b) - selected.indexOf(a))];
 
     //console.log("LIST", list);
     //console.log("selected ?? placeHolder", Boolean(selected), placeHolder, selected ?? placeHolder)
@@ -40,7 +40,7 @@ export const TextDropDown = ({ name,
                         className={bgClass}
                     >
                         <div className="flex items-center">
-                            {selected ? selected : placeHolder}
+                            {selected.length > 0 ? (selected.length > 1 ? `${placeHolder} (${selected.length})` : selected[0]) : placeHolder}
                         </div>
                         <DropdownArrow open={open} />
                     </div>
@@ -53,10 +53,24 @@ export const TextDropDown = ({ name,
                             className={`text-f14 whitespace-nowrap ${index === list.length - 1 ? '' : 'pb-[6px]'
                                 } ${index === 0 ? '' : 'pt-[6px]'} ${(selected === tab) ? 'text-1' : 'text-2'
                                 }`}
-                            onClick={() => setSelected(tab === "all" ? "" : tab)}
+                            onClick={() => {
+                                const index = selected.indexOf(tab);
+                                let newList = selected;
+                                if (tab == "all") {
+                                    newList = [];
+                                }
+                                else if (index >= 0) {
+                                    newList = newList.filter((v, i) => i != index);
+                                }
+                                else {
+                                    newList.push(tab);
+                                }
+                                toggleSelected(newList)
+                            }}
                         >
                             <div className="flex">
-                                {tab}
+                                {tab != "all" && <input type="checkbox" readOnly={true} checked={selected.find(s => s == tab)?.length > 0} />}
+                                &nbsp;{tab}
                             </div>
                         </div>
                     );
