@@ -9,6 +9,7 @@ export const PoolAPRCalc = ({ data, reverse }: { data: IPoolDetail, reverse: boo
     const [liq, setLiq] = useState(1000);
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(0);
+    const [anchorPrice, setAnchorPrice] = useState(0);
     const [minInput, setMinInput] = useState(0);
     const [maxInput, setMaxInput] = useState(0);
     const [tokenRatio, setTokenRatio] = useState({ xAmount: 0, yAmount: 0, xPercentage: 0, yPercentage: 0 });
@@ -29,12 +30,22 @@ export const PoolAPRCalc = ({ data, reverse }: { data: IPoolDetail, reverse: boo
         applyMax(range[1]);
     }
 
-    const applyMin = (val: number) => {
+    const applyMin = (val: number, anchor: boolean = false) => {
+        console.log("Setting min");
         setMin(closestTikPrice(val));
+        if (anchor) {
+            console.log("Setting anchor max");
+            setMax(closestTikPrice((anchorPrice ** 2) / val));
+        }
     }
 
-    const applyMax = (val: number) => {
+    const applyMax = (val: number, anchor: boolean = false) => {
+        console.log("Setting max");
         setMax(closestTikPrice(val));
+        if (anchor) {
+            console.log("Setting anchor min");
+            setMin(closestTikPrice((anchorPrice ** 2) / val));
+        }
     }
 
     const closestTik = (price: number) => {
@@ -122,7 +133,8 @@ export const PoolAPRCalc = ({ data, reverse }: { data: IPoolDetail, reverse: boo
     useEffect(() => {
         setMinInput(reverse ? 1 / min : min);
         setMaxInput(reverse ? 1 / max : max);
-    }, [min, max])
+        setAnchorPrice(reverse ? 1 / (Math.round(10000 * ((min * max) ** (1 / 2))) / 10000) : Math.round(10000 * ((min * max) ** (1 / 2))) / 10000);
+    }, [min, max, reverse])
 
     const wideRange = (lastPrice >= avg) ? [avg - stDev * 1.5, lastPrice + stDev * 2.5] : [lastPrice - stDev * 2.5, avg + stDev * 1.5];
     const narrowRange = [lastPrice - stDev * 1.5, lastPrice + stDev * 1.5];
@@ -208,7 +220,7 @@ export const PoolAPRCalc = ({ data, reverse }: { data: IPoolDetail, reverse: boo
                             bgClass="w-[300px] text-white flex justify-end"
                             header={`Anchor price:`}
                             ipClass="ml-5 !w-[100px] text-center rounded"
-                            value={reverse ? 1 / (Math.round(10000 * ((min * max) ** (1 / 2))) / 10000) : Math.round(10000 * ((min * max) ** (1 / 2))) / 10000}
+                            value={anchorPrice}
                             onChange={(val) => { }}
                         />
                         <BufferInput

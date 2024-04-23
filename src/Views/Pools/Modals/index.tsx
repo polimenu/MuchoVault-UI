@@ -55,8 +55,9 @@ const SetMinMaxModal = () => {
     const { num, setNum, title, currentValue, reverse } = pageState.auxModalData;
     const [input, setInput] = useState(currentValue);
 
-    const closeModal = () => {
-        setNum(reverse ? 1 / input : input);
+    const closeModal = (anchor: boolean = false) => {
+        console.log("Closing modal", anchor);
+        setNum(reverse ? 1 / input : input, anchor);
         setPageState({ ...pageState, isModalOpen: false, activeModal: "" });
     }
 
@@ -72,7 +73,8 @@ const SetMinMaxModal = () => {
                     setInput(val);
                 }}
             />
-            <BlueBtn className='mb-5' onClick={closeModal}>Save</BlueBtn>
+            <BlueBtn className='mb-5' onClick={() => closeModal(false)}>Save</BlueBtn>
+            <BlueBtn className='mb-5' onClick={() => closeModal(true)}>Save & Anchor</BlueBtn>
         </div>
 
     </div>
