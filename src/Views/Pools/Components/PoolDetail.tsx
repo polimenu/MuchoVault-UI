@@ -71,7 +71,7 @@ export const PoolDetail = ({ data }: { data: IPoolDetail }) => {
                             </div>
                             <div id="discreteButtons" className="flex">
                                 {
-                                    dateButtons.map(b => <BlueBtn className={"!w-[40px] ml-[4px] " + (b.days == numDays ? "bg-green" : "")} onClick={() => { setDays(b.days) }}>{b.label}</BlueBtn>
+                                    dateButtons.map(b => <BlueBtn key={`btnDays_${b.days.toString()}`} className={"!w-[40px] ml-[4px] " + (b.days == numDays ? "bg-green" : "")} onClick={() => { setDays(b.days) }}>{b.label}</BlueBtn>
                                     )
                                 }
                             </div>

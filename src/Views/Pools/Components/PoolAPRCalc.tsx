@@ -1,8 +1,9 @@
 import BufferInput from "@Views/Common/BufferInput";
-import { IPoolDetail } from "../poolsAtom";
+import { IPoolDetail, poolsAtom } from "../poolsAtom";
 import { Card } from "@Views/Common/Card/Card";
 import { useEffect, useState } from "react";
 import { BlueBtn } from "@Views/Common/V2-Button";
+import { useAtom } from "jotai";
 
 export const PoolAPRCalc = ({ data, reverse }: { data: IPoolDetail, reverse: boolean }) => {
     const [liq, setLiq] = useState(1000);
@@ -12,6 +13,7 @@ export const PoolAPRCalc = ({ data, reverse }: { data: IPoolDetail, reverse: boo
     const [maxInput, setMaxInput] = useState(0);
     const [tokenRatio, setTokenRatio] = useState({ xAmount: 0, yAmount: 0, xPercentage: 0, yPercentage: 0 });
     const [calculation, setCalculation] = useState({ inRangePercentage: 0, estimatedFees: 0, estimatedAPR: 0 });
+    const [pageState, setPageState] = useAtom(poolsAtom);
 
     const lastHist = data.history.sort((a, b) => b.date - a.date)[0];
     const lastPrice = lastHist.priceNative;
@@ -23,8 +25,16 @@ export const PoolAPRCalc = ({ data, reverse }: { data: IPoolDetail, reverse: boo
 
 
     const applyRange = (range: number[]) => {
-        setMin(closestTikPrice(range[0]));
-        setMax(closestTikPrice(range[1]));
+        applyMin(range[0]);
+        applyMax(range[1]);
+    }
+
+    const applyMin = (val: number) => {
+        setMin(closestTikPrice(val));
+    }
+
+    const applyMax = (val: number) => {
+        setMax(closestTikPrice(val));
     }
 
     const closestTik = (price: number) => {
@@ -156,12 +166,15 @@ export const PoolAPRCalc = ({ data, reverse }: { data: IPoolDetail, reverse: boo
                                 className=""
                                 bgClass="w-[300px] text-white flex justify-end"
                                 header={`Min value (${reverse ? data.BaseToken : data.QuoteToken}):`}
-                                ipClass="ml-5 !bg-grey !w-[100px] text-center rounded"
+                                ipClass="ml-5 !bg-grey !w-[100px] text-center rounded pointer"
                                 value={minInput.toString()}
                                 onChange={(val) => {
                                     /*if (!isNaN(val)) {
                                         setMin(closestTikPrice(val));
                                     }*/
+                                }}
+                                onClick={() => {
+                                    setPageState({ ...pageState, isModalOpen: true, activeModal: "setMin", auxModalData: { num: min, setNum: applyMin, title: "Set Min", currentValue: minInput, reverse } });
                                 }}
                             />
                             <div className="!pt-[4px]">
@@ -174,12 +187,15 @@ export const PoolAPRCalc = ({ data, reverse }: { data: IPoolDetail, reverse: boo
                                 className=""
                                 bgClass="w-[300px] text-white flex justify-end"
                                 header={`Max value (${reverse ? data.BaseToken : data.QuoteToken}):`}
-                                ipClass="ml-5 !bg-grey !w-[100px] text-center rounded"
+                                ipClass="ml-5 !bg-grey !w-[100px] text-center rounded pointer"
                                 value={maxInput.toString()}
                                 onChange={(val) => {
                                     /*if (!isNaN(val)) {
                                         setMax(closestTikPrice(val));
                                     }*/
+                                }}
+                                onClick={() => {
+                                    setPageState({ ...pageState, isModalOpen: true, activeModal: "setMax", auxModalData: { num: max, setNum: applyMax, title: "Set Max", currentValue: maxInput, reverse } });
                                 }}
                             />
                             <div className="!pt-[4px]">
