@@ -8,7 +8,10 @@ export const PoolAPRCalc = ({ data, reverse }: { data: IPoolDetail, reverse: boo
     const [liq, setLiq] = useState(1000);
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(0);
+    const [minInput, setMinInput] = useState(0);
+    const [maxInput, setMaxInput] = useState(0);
     const [tokenRatio, setTokenRatio] = useState({ xAmount: 0, yAmount: 0, xPercentage: 0, yPercentage: 0 });
+    const [calculation, setCalculation] = useState({ inRangePercentage: 0, estimatedFees: 0, estimatedAPR: 0 });
 
     const lastHist = data.history.sort((a, b) => b.date - a.date)[0];
     const lastPrice = lastHist.priceNative;
@@ -62,9 +65,54 @@ export const PoolAPRCalc = ({ data, reverse }: { data: IPoolDetail, reverse: boo
         }
     }
 
+
+    const calculateApr = () => {
+        // How many std devs are we from the mean
+        let stdDevs = (max - min) / stDev;
+
+        const feeParams = [
+            { min: 2, max: 3, x1: 2, y1: 1, x2: 3, y2: 0.81 },
+            { min: 3, max: 4, x1: 3, y1: 0.81, x2: 4, y2: 0.68 },
+            { min: 4, max: 6, x1: 4, y1: 0.68, x2: 6, y2: 0.5 },
+            { min: 6, max: 20, x1: 6, y1: 0.5, x2: 20, y2: 0.1 },
+            { min: 20, max: 20000000000, x1: 20, y1: 0.1, x2: 100, y2: 0.05 },
+        ].find(pars => stdDevs > pars.min && stdDevs <= pars.max);
+
+        const feesWeight = feeParams ?
+            ((feeParams.y2 - feeParams.y1) / (feeParams.x2 - feeParams.x1)) * stdDevs + (feeParams.y1 - ((feeParams.y2 - feeParams.y1) / (feeParams.x2 - feeParams.x1)) * feeParams.x1)
+            : 1;
+
+        // Moving averages for volume 
+        const period = 7;
+        const averages = [];
+
+        for (let i = period - 1; i < data.history.length; i++) {
+            const volumes = data.history.slice(i - period + 1, i + 1).map(element => element.Volume / 3);
+            averages.push(volumes.reduce((acc, volume) => acc + volume, 0) / period);
+        }
+
+        //console.log(`From the total number of periods: ${this.poolDetailedData.length} we have ${averages.length} periods for the moving averages.`);
+        //console.log(`Simple Moving Averages for Volume: ${averages}`);
+        const periodsInRange = data.history.filter(h => h.priceNative >= min && h.priceNative <= max);
+        const totalFees = periodsInRange.length == 0 ? 0 : periodsInRange.map(p => liq * (feesWeight) * (p.Volume / 3) * (data.feeTier / 1000000) * (1 / (p.Liquidity))).reduce((a, b) => a + b);
+
+        return {
+            inRangePercentage: periodsInRange.length * 100 / data.history.length,
+            estimatedFees: totalFees,
+            estimatedAPR: totalFees * 100 * (365 / (data.history.length / 3)) * (1 / liq)
+        }
+    }
+
     useEffect(() => {
         setTokenRatio(calculateTokensRatio());
+        setCalculation(calculateApr());
     }, [liq, min, max])
+
+
+    useEffect(() => {
+        setMinInput(reverse ? 1 / min : min);
+        setMaxInput(reverse ? 1 / max : max);
+    }, [min, max])
 
     const wideRange = (lastPrice >= avg) ? [avg - stDev * 1.5, lastPrice + stDev * 2.5] : [lastPrice - stDev * 2.5, avg + stDev * 1.5];
     const narrowRange = [lastPrice - stDev * 1.5, lastPrice + stDev * 1.5];
@@ -81,161 +129,119 @@ export const PoolAPRCalc = ({ data, reverse }: { data: IPoolDetail, reverse: boo
                 </div>
             </>}
             middle={
-                <div className="w-[40%] mt-5">
-                    <BufferInput
-                        className=""
-                        bgClass="w-[300px] text-white flex justify-end"
-                        header={`Current price:`}
-                        ipClass="ml-5 !w-[100px] text-center rounded"
-                        value={lastHist.priceNative}
-                        onChange={(val) => { }}
-                    />
-                    <BufferInput
-                        className="justify-end"
-                        bgClass="w-[300px] text-white flex justify-end"
-                        header={"Liquidity ($):"}
-                        ipClass="ml-5 !bg-grey !w-[100px] text-center rounded"
-                        value={liq.toString()}
-                        onChange={(val) => {
-                            if (!isNaN(val)) {
-                                setLiq(val);
-                            }
-                        }}
-                    />
-                    <div className="flex">
+                <div className="flex flex-wrap">
+                    <div className="mt-5">
                         <BufferInput
                             className=""
                             bgClass="w-[300px] text-white flex justify-end"
-                            header={`Min value (${reverse ? data.BaseToken : data.QuoteToken}):`}
+                            header={`Current price:`}
+                            ipClass="ml-5 !w-[100px] text-center rounded"
+                            value={reverse ? 1 / lastPrice : lastPrice}
+                            onChange={(val) => { }}
+                        />
+                        <BufferInput
+                            className="justify-end"
+                            bgClass="w-[300px] text-white flex justify-end"
+                            header={"Liquidity ($):"}
                             ipClass="ml-5 !bg-grey !w-[100px] text-center rounded"
-                            value={min.toString()}
+                            value={liq.toString()}
                             onChange={(val) => {
                                 if (!isNaN(val)) {
-                                    setMin(closestTikPrice(val));
+                                    setLiq(val);
                                 }
                             }}
                         />
-                        <div className="!pt-[4px]">
-                            <BlueBtn className="!min-w-[20px] !h-[15px] mb-2" onClick={() => { setMin(shiftTik(min, -1)) }}>-</BlueBtn>
-                            <BlueBtn className="!min-w-[20px] !h-[15px]" onClick={() => { setMin(shiftTik(min, 1)) }}>+</BlueBtn>
+                        <div className="flex">
+                            <BufferInput
+                                className=""
+                                bgClass="w-[300px] text-white flex justify-end"
+                                header={`Min value (${reverse ? data.BaseToken : data.QuoteToken}):`}
+                                ipClass="ml-5 !bg-grey !w-[100px] text-center rounded"
+                                value={minInput.toString()}
+                                onChange={(val) => {
+                                    /*if (!isNaN(val)) {
+                                        setMin(closestTikPrice(val));
+                                    }*/
+                                }}
+                            />
+                            <div className="!pt-[4px]">
+                                <BlueBtn className="!min-w-[20px] !h-[15px] mb-2" onClick={() => { setMin(shiftTik(min, reverse ? 1 : -1)) }}>-</BlueBtn>
+                                <BlueBtn className="!min-w-[20px] !h-[15px]" onClick={() => { setMin(shiftTik(min, reverse ? -1 : 1)) }}>+</BlueBtn>
+                            </div>
                         </div>
-                    </div>
-                    <div className="flex">
+                        <div className="flex">
+                            <BufferInput
+                                className=""
+                                bgClass="w-[300px] text-white flex justify-end"
+                                header={`Max value (${reverse ? data.BaseToken : data.QuoteToken}):`}
+                                ipClass="ml-5 !bg-grey !w-[100px] text-center rounded"
+                                value={maxInput.toString()}
+                                onChange={(val) => {
+                                    /*if (!isNaN(val)) {
+                                        setMax(closestTikPrice(val));
+                                    }*/
+                                }}
+                            />
+                            <div className="!pt-[4px]">
+                                <BlueBtn className="!min-w-[20px] !h-[15px] mb-2" onClick={() => { setMax(shiftTik(max, reverse ? 1 : -1)) }}>-</BlueBtn>
+                                <BlueBtn className="!min-w-[20px] !h-[15px]" onClick={() => { setMax(shiftTik(max, reverse ? -1 : 1)) }}>+</BlueBtn>
+                            </div>
+                        </div>
                         <BufferInput
                             className=""
                             bgClass="w-[300px] text-white flex justify-end"
-                            header={`Max value (${reverse ? data.BaseToken : data.QuoteToken}):`}
-                            ipClass="ml-5 !bg-grey !w-[100px] text-center rounded"
-                            value={max.toString()}
-                            onChange={(val) => {
-                                if (!isNaN(val)) {
-                                    setMax(closestTikPrice(val));
-                                }
-                            }}
+                            header={`Anchor price:`}
+                            ipClass="ml-5 !w-[100px] text-center rounded"
+                            value={reverse ? 1 / (Math.round(10000 * ((min * max) ** (1 / 2))) / 10000) : Math.round(10000 * ((min * max) ** (1 / 2))) / 10000}
+                            onChange={(val) => { }}
                         />
-                        <div className="!pt-[4px]">
-                            <BlueBtn className="!min-w-[20px] !h-[15px] mb-2" onClick={() => { setMax(shiftTik(max, -1)) }}>-</BlueBtn>
-                            <BlueBtn className="!min-w-[20px] !h-[15px]" onClick={() => { setMax(shiftTik(max, 1)) }}>+</BlueBtn>
-                        </div>
+                        <BufferInput
+                            className=""
+                            bgClass="w-[300px] text-white flex justify-end"
+                            header={`${data.BaseToken} tokens:`}
+                            ipClass="ml-5 !text-f12 !w-[100px] text-center rounded"
+                            value={`${tokenRatio.xAmount} (${tokenRatio.xPercentage} %)`}
+                            onChange={(val) => { }}
+                        />
+                        <BufferInput
+                            className=""
+                            bgClass="w-[300px] text-white flex justify-end"
+                            header={`${data.QuoteToken} tokens:`}
+                            ipClass="ml-5 !text-f12 !w-[100px] text-center rounded"
+                            value={`${tokenRatio.yAmount} (${tokenRatio.yPercentage} %)`}
+                            onChange={(val) => { }}
+                        />
                     </div>
-                    <BufferInput
-                        className=""
-                        bgClass="w-[300px] text-white flex justify-end"
-                        header={`Anchor price:`}
-                        ipClass="ml-5 !w-[100px] text-center rounded"
-                        value={Math.round(10000 * ((min * max) ** (1 / 2))) / 10000}
-                        onChange={(val) => { }}
-                    />
-                    <BufferInput
-                        className=""
-                        bgClass="w-[300px] text-white flex justify-end"
-                        header={`${data.BaseToken} tokens:`}
-                        ipClass="ml-5 !text-f12 !w-[100px] text-center rounded"
-                        value={`${tokenRatio.xAmount} (${tokenRatio.xPercentage} %)`}
-                        onChange={(val) => { }}
-                    />
-                    <BufferInput
-                        className=""
-                        bgClass="w-[300px] text-white flex justify-end"
-                        header={`${data.QuoteToken} tokens:`}
-                        ipClass="ml-5 !text-f12 !w-[100px] text-center rounded"
-                        value={`${tokenRatio.yAmount} (${tokenRatio.yPercentage} %)`}
-                        onChange={(val) => { }}
-                    />
+                    <div className="mt-5 ml-5 bold">
+                        <div className="text-f16">Backtest result:</div>
+                        <BufferInput
+                            className=""
+                            bgClass="w-[300px] text-white flex justify-end"
+                            header={`APR:`}
+                            ipClass="ml-5 !w-[100px] text-center rounded"
+                            value={`${Math.round(100 * calculation.estimatedAPR) / 100} %`}
+                            onChange={(val) => { }}
+                        />
+                        <BufferInput
+                            className=""
+                            bgClass="w-[300px] text-white flex justify-end"
+                            header={`Fees:`}
+                            ipClass="ml-5 !w-[100px] text-center rounded"
+                            value={`${Math.round(100 * calculation.estimatedFees) / 100} $`}
+                            onChange={(val) => { }}
+                        />
+                        <BufferInput
+                            className=""
+                            bgClass="w-[300px] text-white flex justify-end"
+                            header={`Time in range:`}
+                            ipClass="ml-5 !w-[100px] text-center rounded"
+                            value={`${calculation.inRangePercentage} %`}
+                            onChange={(val) => { }}
+                        />
+
+                    </div>
                 </div>
             }
         />
     )
 }
-
-/*
-const calculateApr = () => {
-
-    let totalPeriods = 0;
-    let inRangePeriods = 0;
-    let totalFees = 0;
-    let periodFee = 0;
-
-    // How many std devs are we from the mean
-    let stdDevs = (max - min) / stDev;
-
-    const feeParams = [
-        { min: 2, max: 3, x1: 2, y1: 1, x2: 3, y2: 0.81 },
-        { min: 3, max: 4, x1: 3, y1: 0.81, x2: 4, y2: 0.68 },
-        { min: 4, max: 6, x1: 4, y1: 0.68, x2: 6, y2: 0.5 },
-        { min: 6, max: 20, x1: 6, y1: 0.5, x2: 20, y2: 0.1 },
-        { min: 20, max: 20000000000, x1: 20, y1: 0.1, x2: 100, y2: 0.05 },
-    ].find(pars => stdDevs > pars.min && stdDevs <= pars.max);
-
-    const feesWeight = feeParams ?
-        ((feeParams.y2 - feeParams.y1) / (feeParams.x2 - feeParams.x1)) * stdDevs + (feeParams.y1 - ((feeParams.y2 - feeParams.y1) / (feeParams.x2 - feeParams.x1)) * feeParams.x1)
-        : 1;
-
-    // Moving averages for volume 
-    const period = 7;
-    const averages = [];
-
-    for (let i = period - 1; i < this.poolDetailedData.length; i++) {
-        const volumes = this.poolDetailedData.slice(i - period + 1, i + 1).map(element => element.Volume / 3);
-        const sum = volumes.reduce((acc, volume) => acc + volume, 0);
-        const average = sum / period;
-        averages.push(average);
-    }
-
-    console.log(`From the total number of periods: ${this.poolDetailedData.length} we have ${averages.length} periods for the moving averages.`);
-    console.log(`Simple Moving Averages for Volume: ${averages}`);
-
-
-
-
-    this.poolDetailedData.forEach(element => {
-
-        totalPeriods++;
-
-        // If within range we count time in range
-        // and calculate the fees
-        if ((element.priceNative) >= (min) &&
-            (element.priceNative) <= (max)) {
-            inRangePeriods++;
-
-            // TO-DO: apply the number of tiks reduction
-            periodFee = this.myLiquidity * (feesWeight) * (element.Volume / 3) * (this.poolDetailedData[0].feeTier / 1000000) * (1 / (element.Liquidity));
-            console.log(`Adding ${inRangePeriods} periods in range - Fees: ${periodFee}`);
-
-        }
-        else {
-            periodFee = 0;
-        }
-        totalFees += periodFee;
-
-    });
-
-    this.inRangePercentaje = inRangePeriods * 100 / totalPeriods;
-    this.estimatedFees = totalFees;
-    this.estimatedAPR = this.estimatedFees * 100 * (365 / (totalPeriods / 3)) * (1 / this.myLiquidity);
-
-    console.log(`${inRangePeriods} periods in range out of ${totalPeriods}`);
-    console.log(`The estimated APR is ${this.estimatedAPR}`);
-
-
-}*/
