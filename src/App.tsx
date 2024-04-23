@@ -67,8 +67,8 @@ function App() {
         <Route path="/ramp/admin" element={<RampAdminPage />} />
         <Route path="/index-launch" element={<IndexPage />} />
         <Route path="/index" element={<IndexMarketPage />} />
-        <Route path="/pools" element={<PoolsPage />} />
-        <Route path="/pools2" element={<PoolsPage2 />} />
+        <Route path="/poolsf" element={<PoolsPage />} />
+        <Route path="/pools" element={<PoolsPage2 />} />
 
 
       </Routes>
