@@ -35,7 +35,8 @@ export const PoolAPRCalc = ({ data, reverse }: { data: IPoolDetail, reverse: boo
         setMin(closestTikPrice(val));
         if (anchor) {
             console.log("Setting anchor max");
-            setMax(closestTikPrice((anchorPrice ** 2) / val));
+            const anchor = reverse ? (1 / anchorPrice) : anchorPrice;
+            setMax(closestTikPrice((anchor ** 2) / val));
         }
     }
 
@@ -44,7 +45,8 @@ export const PoolAPRCalc = ({ data, reverse }: { data: IPoolDetail, reverse: boo
         setMax(closestTikPrice(val));
         if (anchor) {
             console.log("Setting anchor min");
-            setMin(closestTikPrice((anchorPrice ** 2) / val));
+            const anchor = reverse ? (1 / anchorPrice) : anchorPrice;
+            setMin(closestTikPrice((anchor ** 2) / val));
         }
     }
 
@@ -131,8 +133,8 @@ export const PoolAPRCalc = ({ data, reverse }: { data: IPoolDetail, reverse: boo
 
 
     useEffect(() => {
-        setMinInput(reverse ? 1 / min : min);
-        setMaxInput(reverse ? 1 / max : max);
+        setMinInput(reverse ? 1 / max : min);
+        setMaxInput(reverse ? 1 / min : max);
         setAnchorPrice(reverse ? 1 / (Math.round(10000 * ((min * max) ** (1 / 2))) / 10000) : Math.round(10000 * ((min * max) ** (1 / 2))) / 10000);
     }, [min, max, reverse])
 
@@ -186,7 +188,7 @@ export const PoolAPRCalc = ({ data, reverse }: { data: IPoolDetail, reverse: boo
                                     }*/
                                 }}
                                 onClick={() => {
-                                    setPageState({ ...pageState, isModalOpen: true, activeModal: "setMin", auxModalData: { num: min, setNum: applyMin, title: "Set Min", currentValue: minInput, reverse } });
+                                    setPageState({ ...pageState, isModalOpen: true, activeModal: "setMin", auxModalData: { num: min, setNum: reverse ? applyMax : applyMin, title: "Set Min", currentValue: minInput, reverse } });
                                 }}
                             />
                             <div className="!pt-[4px]">
@@ -207,7 +209,7 @@ export const PoolAPRCalc = ({ data, reverse }: { data: IPoolDetail, reverse: boo
                                     }*/
                                 }}
                                 onClick={() => {
-                                    setPageState({ ...pageState, isModalOpen: true, activeModal: "setMax", auxModalData: { num: max, setNum: applyMax, title: "Set Max", currentValue: maxInput, reverse } });
+                                    setPageState({ ...pageState, isModalOpen: true, activeModal: "setMax", auxModalData: { num: max, setNum: reverse ? applyMin : applyMax, title: "Set Max", currentValue: maxInput, reverse } });
                                 }}
                             />
                             <div className="!pt-[4px]">
