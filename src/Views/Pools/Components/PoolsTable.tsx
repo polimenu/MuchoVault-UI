@@ -530,7 +530,7 @@ export const PoolsTable = ({ data }: { data: IPoolsData }) => {
 
         const dashboardData = data.pools.map(p => {
             return {
-                Pool: p.BaseToken + " / " + p.QuoteToken,
+                Pool: p.BaseToken + " / " + p.QuoteToken + " " + p.feeTier / 10000 + "%",
                 APR: Math.round(p.apr),
                 Chain: p.ChainId,
                 Protocol: p.DexId,

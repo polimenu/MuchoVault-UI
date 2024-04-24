@@ -46,6 +46,8 @@ export interface IRampAtom {
     sessionId?: string;
     email?: string;
     sumsubToken?: string;
+    onRampFilter?: IAdminFilter;
+    offRampFilter?: IAdminFilter;
 }
 
 export const rampAtom = atom<IRampAtom>({
@@ -53,6 +55,15 @@ export const rampAtom = atom<IRampAtom>({
     activeModal: "",
     loginStatus: ERampStatus.NOT_LOGGED,
 });
+
+export interface IAdminFilter {
+    email: string;
+    userId: string;
+    sortField: string;
+    sortDirection: string;
+    from: number;
+    amount: number;
+}
 
 export interface IRampData {
     userDetails?: IRampUserDetails;
