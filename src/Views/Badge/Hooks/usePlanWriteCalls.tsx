@@ -2,6 +2,7 @@ import { useToast } from '@Contexts/Toast';
 import { useWriteCall } from '@Hooks/useWriteCall';
 import { multiply } from '@Utils/NumString/stringArithmatics';
 import MuchoBadgeManagerABI from '../Config/Abis/MuchoBadgeManager.json'
+import MuchoBadgeWrapperABI from '../Config/Abis/MuchoBadgeWrapper.json'
 import MuchoRewardRouterABI from '../Config/Abis/MuchoRewardRouter.json'
 import { useAtom } from 'jotai';
 import { BADGE_CONFIG } from '../Config/BadgeConfig';
@@ -122,13 +123,9 @@ export const usePlanEnableDisableCalls = () => {
 
 
 export const usePlanSubUnsubCalls = () => {
-  const multiCallContract = "0x842eC2c7D803033Edf55E478F461FC547Bc54EB2";
-
-
   const { activeChain } = useContext(BadgeContext);
+  const { writeCall: writeCallWrapper } = useWriteCall(BADGE_CONFIG[activeChain?.id].MuchoBadgeWrapper, MuchoBadgeWrapperABI);
   const { writeCall } = useWriteCall(BADGE_CONFIG[activeChain?.id].MuchoBadgeManager, MuchoBadgeManagerABI);
-  const writeCallRR = useWriteCall(BADGE_CONFIG[activeChain?.id].MuchoRewardRouter, MuchoRewardRouterABI).writeCall;
-  const toastify = useToast();
   const [, setPageState] = useAtom(writeBadgeAtom);
 
   function callBack(res) {
@@ -146,36 +143,19 @@ export const usePlanSubUnsubCalls = () => {
     writeCall(callBack, "cancelSubscription", [id, sub]);
   }
 
-  function addUser(account: string, cBack: any) {
-    writeCallRR(cBack, "addUserIfNotExists", [account]);
-  }
-
   function subCall(id: number, sub: string, cBack: any) {
     //console.log("Sending call");
     const cb = (cBack ? cBack : callBack);
-    writeCall((() => { addUser(sub, cb); }), "subscribe(uint256,address)", [id, sub]);
+    writeCallWrapper(callBack, "subscribe(uint256,address)", [id, sub]);
   }
 
   function renewCall(id: number, sub: string) {
     //console.log("Sending call");
-    writeCall(callBack, "renew(uint256,address)", [id, sub]);
+    writeCallWrapper(callBack, "renew(uint256,address)", [id, sub]);
   }
 
   function subBulkCall(id: number, subs: string[]) {
-
-    //const iface = new ethers.utils.Interface(MuchoBadgeManagerABI);
-    const calls = subs.map((s, i) => {
-      return () => {
-        const cBack = (i == 0) ? callBack : () => { calls[i - 1](); };
-        subCall(id, subs[i], cBack);
-      }
-    });
-
-    console.log("calls", calls);
-
-    calls[calls.length - 1]();
-
-    //writeCallMulti(callBack, 'aggregate', [calls]);
+    writeCallWrapper(callBack, "bulkSubscribe", [id, subs]);
   }
 
   return {
