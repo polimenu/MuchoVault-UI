@@ -348,23 +348,31 @@ const getUserBadgeData = (data: any, account: string) => {
   if (v2AdminContextValue) {
     activeChain = v2AdminContextValue.activeChain;
   }
+  //console.log("******DATA*******", data);
   const usrMulPlan = getDataNumber(data, `getUserMultiplierAndPlan_${account}`);
   const v2UserConfig: (typeof V2USER_CONFIG)[42161] = V2USER_CONFIG[activeChain.id];
+  const resNull = {
+    planId: 0, planName: t("v2.No active subscription"), planMultiplier: 0,
+    currentRewards: {
+      amount: 0,
+      token: "",
+    }
+  }
+
   if (!usrMulPlan) {
-    return {
-      planId: 0, planName: t("v2.No active subscription"), planMultiplier: 0,
-      currentRewards: {
-        amount: 0,
-        token: "",
-      }
-    };
+    return resNull;
   }
 
   const [multiplier, planId] = usrMulPlan;
+  const oPlan = getDataString(data, 'allPlans').find(p => p.id == planId.toString());
+  if (!oPlan)
+    return resNull;
+
+  //console.log("***PLAN***", planId, oPlan, getDataString(data, 'allPlans'));
 
   return {
     planId: planId,
-    planName: getDataString(data, 'allPlans').find(p => p.planId = planId).name,
+    planName: oPlan.name,
     planMultiplier: multiplier,
     currentRewards: {
       amount: getDataNumber(data, `rewards_${account}_${v2UserConfig.MuchoRewardRouter.rewardsToken}`) / 10 ** 18,
