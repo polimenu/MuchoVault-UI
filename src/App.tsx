@@ -23,6 +23,7 @@ import { IndexMarketPage } from '@Views/Index/market';
 import { RampPageB2B } from '@Views/Ramp/b2b';
 import { PoolsPage } from '@Views/Pools';
 import { PoolsPage2 } from '@Views/Pools/pools2';
+import MyLandbot from '@Views/Common/MyLandBot';
 
 if (import.meta.env.VITE_MODE === 'production') {
   //console.log(`import.meta.env.SENTRY_DSN: `, import.meta.env.VITE_SENTRY_DSN);
@@ -72,6 +73,7 @@ function App() {
 
 
       </Routes>
+      <MyLandbot url="https://storage.googleapis.com/landbot.pro/v3/H-2203691-EOCIO7NCFUKIRLTA/index.json" />
     </>
   );
 }

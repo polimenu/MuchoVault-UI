@@ -43,6 +43,7 @@ export const IndexPage = () => {
   useEffect(() => {
     document.title = "(mucho) finance | index";
   }, []);
+
   return (
     <Background>
       <Navbar />
