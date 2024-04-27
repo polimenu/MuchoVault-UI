@@ -6,6 +6,7 @@ export const RAMP_CONFIG = {
     DelayUserDetailsRefreshSeconds: 30,
     AllowedFiatCurrencies: ["EUR"],
     RampPlanContract: "0x237959DDD96140002df62Fa36b9B9e8275A9738e",
+    MuchoBadgeManager: "0xC439d29ee3C7fa237da928AD3A3D6aEcA9aA0717",
     PremiumPlans: ["1"],
     AllowedOffRampTokens: [
         {

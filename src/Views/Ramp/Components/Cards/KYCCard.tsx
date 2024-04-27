@@ -99,7 +99,7 @@ export const KYCPremiumCard = ({ userDetails, premiumInfo }: { userDetails?: IRa
                         />
                     </div>]}
                 ></TableAligner>
-                {premiumInfo && !premiumInfo?.isPremium && account && chain && chain.id == ALLOWED_CHAIN && <div className={noteStyles}>
+                {premiumInfo && !premiumInfo?.isPremium && account && premiumInfo.canHavePremium && chain && chain.id == ALLOWED_CHAIN && <div className={noteStyles}>
                     <div className="mb-5">
                         {t("ramp.Already have your NFT?")}
                     </div>

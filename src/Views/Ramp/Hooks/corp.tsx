@@ -179,19 +179,21 @@ export const useGetTokenPreferencesB2B = (sessionId?: string): (IRampTokenPrefer
     const [userTPs, setUserTPs] = useState<IRampTokenPreferencesB2B[]>();
     const save = (obj: { response: IRampTokenPreferencesB2B[] }) => {
         //console.log("setting user token preferences b2b", obj);
-        const res = obj.map(corp => {
-            return {
-                ...corp,
-                tokenPreferences: corp.tokenPreferences.filter(t => RAMP_CONFIG.AllowedFiatCurrencies.indexOf(t.currency) >= 0)
-            }
-        })
-        //console.log("setting user token preferences b2b FILTERED", res);
-        setUserTPs(res);
+        if (obj && obj.length > 0) {
+            const res = obj.map(corp => {
+                return {
+                    ...corp,
+                    tokenPreferences: corp.tokenPreferences.filter(t => RAMP_CONFIG.AllowedFiatCurrencies.indexOf(t.currency) >= 0)
+                }
+            })
+            //console.log("setting user token preferences b2b FILTERED", res);
+            setUserTPs(res);
+        }
     }
 
     useEffect(() => {
         if (sessionId) {
-            console.log("FETCHING user token preferences b2b");
+            //console.log("FETCHING user token preferences b2b");
             fetchFromRampApi(`/corporate/token-preferences`, 'GET', { session_id: sessionId }, save, dispatch);
         }
     }, [sessionId]);

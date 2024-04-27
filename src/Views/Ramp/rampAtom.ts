@@ -3,6 +3,7 @@ import { ICorporate } from './Hooks/corp';
 
 export interface IRampPremiumInfo {
     isPremium: boolean;
+    canHavePremium: boolean;
     address: string;
 }
 

@@ -1,4 +1,5 @@
 import mRampPlanAbi from '../Config/Abis/mRampPlan.json';
+import MuchoBadgeAbi from '../../V2User/Config/Abis/MuchoBadgeManager.json';
 import { getBNtoStringCopy } from '@Utils/useReadCall';
 
 import { Chain, useContractReads } from 'wagmi';
@@ -15,6 +16,7 @@ import { getDataString } from '@Views/Airdrop/Hooks/useCommonUtils';
 export const useGetPremiumInfo = (user_id: string) => {
   let activeChain: Chain | null = null;
   const contextValue = useContext(ViewContext);
+  const { address: account } = useUserAccount();
   if (contextValue) {
     activeChain = contextValue.activeChain;
   }
@@ -39,6 +41,17 @@ export const useGetPremiumInfo = (user_id: string) => {
     }
   ] : [];
 
+  if (account) {
+    calls.push({
+      address: config.MuchoBadgeManager,
+      abi: MuchoBadgeAbi,
+      functionName: 'activePlansForUser',
+      args: [account],
+      chainId: activeChain?.id,
+      map: `activePlansForUser`
+    })
+  }
+
   let indexes: any = {};
   calls.forEach((c, i) => { indexes[c.map] = i; });
 
@@ -57,7 +70,8 @@ export const useGetPremiumInfo = (user_id: string) => {
     if (getDataString(data, "planIds").length == 0) {
       return {
         isPremium: false,
-        address: ""
+        address: "",
+        canHavePremium: getDataString(data, "activePlansForUser").length > 0 && getDataString(data, "activePlansForUser").find(p => p.id == "1")
       }
     }
 
