@@ -13,99 +13,13 @@ const EarnStyles = styled.div`
 `;
 
 const HeaderStyled = styled.h1`-webkit-text-size-adjust: 100%;
-tab-size: 4;
---bg-1: #000;
---bg-2: #18191d;
---bg-3: #23262f;
---bg-4: #2f3241;
---bg-5: #34384c;
---bg-6: #34384c;
---bg-7: #323642;
---bg-8: #242731;
---bg-9: #101724;
---shadow: var(--bg-9);
---bg-10: #9757d7;
---bg-11: #ef466f;
---bg-12: #45b26b;
---bg-13: #22232b;
---bg-14: #353945;
---bg-15: var(--bg-8);
---bg-16: rgba(14,16,20,0.3);
---text-5: #fcfcfd;
---text-4: #5d6588;
---text-3: #777e90;
---text-2: #a5adcf;
---red: #fa2256;
---green: #11cabe;
---text-6: #808191;
---text-1: #fff;
---primary: #3772ff;
---social-text: var(--text-1);
---social-shadow: #2aaecce7;
---feature-0: var(--bg-6);
---feature-1: var(--bg-6);
---feature-2: var(--bg-6);
---feature-3: var(--bg-6);
---feature-4: var(--bg-6);
---zer0: 0;
---sxxx: 0.4rem;
---sxx: 0.6rem;
---sx: 0.8rem;
---s: 1rem;
---xs: 1.2rem;
---xxs: 1.4rem;
---xxxs: 1.6rem;
---mxx: 1.6rem;
---mx: 1.8rem;
---m: 2rem;
---xm: 2.2rem;
---xxm: 2.4rem;
---xxxm: 2.6rem;
---l: 3rem;
---xl: 3.2rem;
---xxl: 3.4rem;
---xxxl: 3.6rem;
---b: 4rem;
---xb: 4.2rem;
---xxb: 4.4rem;
---xxxb: 4.6rem;
---v: 6rem;
---z: 10rem;
---zoom: 300ms cubic-bezier(0.32,0.6,0.35,0.85);
-line-height: inherit;
-text-align: center;
+line-height: normal;
 border: 0 solid;
---tw-border-spacing-x: 0;
---tw-border-spacing-y: 0;
---tw-translate-x: 0;
---tw-translate-y: 0;
---tw-rotate: 0;
---tw-skew-x: 0;
---tw-skew-y: 0;
---tw-scale-x: 1;
---tw-scale-y: 1;
---tw-pan-x: ;
---tw-pan-y: ;
---tw-pinch-zoom: ;
---tw-scroll-snap-strictness: proximity;
---tw-ordinal: ;
---tw-slashed-zero: ;
---tw-numeric-figure: ;
---tw-numeric-spacing: ;
---tw-numeric-fraction: ;
---tw-ring-inset: ;
---tw-ring-offset-width: 0px;
---tw-ring-offset-color: #fff;
---tw-ring-color: rgb(59 130 246/0.5);
---tw-ring-offset-shadow: 0 0 #0000;
---tw-ring-shadow: 0 0 #0000;
---tw-shadow: 0 0 #0000;
---tw-shadow-colored: 0 0 #0000;
 box-sizing: border-box;
 font-feature-settings: "zero" 1!important;
 font-family: Relative Mono,Relative Pro!important;
 padding-top: 0;
-font-size: 4.5vw;
+font-size: 4vw;
 font-weight: 500;
 margin: 6vw 0 0 0;
 color: var(--text-1);`;
@@ -157,6 +71,81 @@ export const FrontPage = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </EarnStyles >
+      </div >
+    </Background >
+  );
+};
+
+
+const FrontService = ({ title, imageUrl, subtitle, cta, url }: { title: string, imageUrl: string, subtitle: string, cta: string, url: string }) => {
+  return <div className={"service w-[250px] mb-[50px] m-auto"}>
+    <img className='img-fact' src={imageUrl} alt={title} />
+    <div className="content">
+      <h2 className='text-[28px] mt-[10px] bold'>{title}</h2>
+      <div className="subtxt text-f18 text-2 sm:text-f16 min-h-[60px]">{subtitle}</div>
+      <BlueBtn onClick={() => { document.location = url }} className='mt-5 w-[50%]'>{cta}</BlueBtn>
+    </div>
+  </div>;
+}
+
+export const FrontPageNew = () => {
+  const { i18n, t } = useTranslation();
+
+  const styleRotate = {
+    transform: 'rotateX(10deg) rotateY(-6.42149deg)'
+  }
+
+  return (
+    <Background>
+      <Navbar hideAccount={true} />
+
+      <div className="root w-full">
+        <EarnStyles>
+          <div className="container">
+
+            <div className="hero-wrapper max-w-screen-sm flex flex-wrap">
+              <div className='w-[50%]'>
+                <HeaderStyled>
+                  <div dangerouslySetInnerHTML={
+                    { __html: t("frontpage.title") }} />
+                </HeaderStyled>
+                <div className="subtxt text-[24px] text-2 mt-5 sm:text-f16">
+                  {t("frontpage.description")}
+                </div>
+              </div>
+              <div className='w-[50%]'>
+                <img src='hero.webp' alt='mucho finance' />
+              </div>
+            </div>
+
+            <div className='facts-wrapper mt-[100px] flex flex-wrap m-auto w-full'>
+              <FrontService title='OnRamp'
+                subtitle='Mueve tus fondos entre FIAT y Crypto en pocos clicks.'
+                cta='Empezar'
+                url='/#/ramp'
+                imageUrl='rampt.webp' />
+
+              <FrontService title='Vaults'
+                subtitle='Deposita y genera un 8-20% APR a largo plazo'
+                cta='Depositar'
+                url='/#/v2'
+                imageUrl='vaults.webp' />
+
+              <FrontService title='Index'
+                subtitle='Indéxate a las estrategias DeFi más prometedoras.'
+                cta='Indexar'
+                url='/#/index'
+                imageUrl='index.webp' />
+
+              <FrontService title='Pools'
+                subtitle='Las mejores estrategias de Liquidez Concentrada.'
+                cta='Analizar'
+                url='/#/pools'
+                imageUrl='pools.webp' />
+            </div>
+
           </div>
         </EarnStyles >
       </div >

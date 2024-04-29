@@ -11,12 +11,19 @@ import { t } from 'i18next';
 
 export const btnClasses = '!w-fit px-4 rounded-sm !h-7 ml-auto';
 
+const CLOSED_PLANS = [1, 5];
 
 export function PlanButtons({ plan }: { plan: IPlan }) {
   const { address: account } = useUserAccount();
   const [state, setPageState] = useAtom(badgeAtom);
   const { activeChain } = useContext(BadgeContext);
   const { chain } = useNetwork();
+
+  //console.log("*******DRAWING PLAN BUTTONS*****", plan.id, CLOSED_PLANS, CLOSED_PLANS.find(p => p == plan.id));
+
+  if (CLOSED_PLANS.find(pId => pId == plan.id)) {
+    return <BlueBtn isDisabled={true} onClick={() => { }}>{t("badge.Not available")}</BlueBtn>
+  }
 
   if (!account || activeChain.id !== chain?.id)
     return (

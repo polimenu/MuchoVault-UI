@@ -59,7 +59,8 @@
 		"Subscribed": "Subscribed",
 		"Expired": "Expired",
 		"Not subscribed": "Not subscribed",
-		"days": "days"
+		"days": "days",
+		"Not available": "Plan Closed"
 	},
 	"swap": {
 		"hero": "Swap your tokens between different blockchains."

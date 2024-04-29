@@ -2,7 +2,7 @@
 	"Connect Wallet": "Conectar Wallet",
 	"Switch Network": "Cambiar de Red",
 	"frontpage": {
-		"title": "Se puede ganar <span style='color: #3B82F6'>(mucho)</span> dinero en DeFi",
+		"title": "Lo que necesitas para ganar <span style='color: #3B82F6'>(mucho)</span> en DeFi",
 		"description": "Pon tu dinero a trabajar en DeFi, de la manera más sencilla posible.",
 		"Earn USDC, WETH or WBTC with no Impermanent Loss": "Gana USDC, WETH o WBTC en nuestros protocolos",
 		"Start Earning Yield": "Empezar"
@@ -59,7 +59,8 @@
 		"Subscribed": "Suscrito",
 		"Expired": "Expirado",
 		"Not subscribed": "No suscrito",
-		"days": "días"
+		"days": "días",
+		"Not available": "Cerrado"
 	},
 	"swap": {
 		"hero": "Intercambia tus tokens por otros, entre distintas blockchains."
