@@ -116,7 +116,7 @@ export const FrontPageNew = () => {
                 </div>
               </div>
               <div className='w-[40%] m-auto mt-[6vw]'>
-                <img src='hero.jpeg' alt='mucho finance' />
+                <img src='hero-removebg.png' alt='mucho finance' />
               </div>
             </div>
 
@@ -125,19 +125,19 @@ export const FrontPageNew = () => {
                 subtitle='Mueve tus fondos entre FIAT y Crypto en pocos clicks.'
                 cta='Empezar'
                 url='/#/ramp'
-                imageUrl='rampt.webp' />
+                imageUrl='rampt-removebg-preview.png' />
 
               <FrontService title='Vaults'
                 subtitle='Deposita y genera un 8-20% APR a largo plazo'
                 cta='Depositar'
                 url='/#/v2'
-                imageUrl='vaults.webp' />
+                imageUrl='vaults-removebg-preview.png' />
 
               <FrontService title='Index'
                 subtitle='Indéxate a las estrategias DeFi más prometedoras.'
                 cta='Indexar'
                 url='/#/index'
-                imageUrl='index.webp' />
+                imageUrl='index-removebg-preview.png' />
 
               <FrontService title='Pools'
                 subtitle='Las mejores estrategias de Liquidez Concentrada.'
