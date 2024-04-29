@@ -80,7 +80,7 @@ export const FrontPage = () => {
 
 
 const FrontService = ({ title, imageUrl, subtitle, cta, url }: { title: string, imageUrl: string, subtitle: string, cta: string, url: string }) => {
-  return <div className={"service w-[250px] mb-[50px] m-auto"}>
+  return <div className={"service w-[255px] mb-[50px] m-auto"}>
     <img className='img-fact' src={imageUrl} alt={title} />
     <div className="content">
       <h2 className='text-[28px] mt-[10px] bold'>{title}</h2>
