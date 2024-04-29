@@ -20,6 +20,8 @@ export const useGetMuchoIndexMarketOrders = () => {
     activeChain = contextValue.activeChain;
   }
 
+  //console.log("activeChain-------------", activeChain);
+
   const { state } = useGlobal();
   const config: (typeof MINDEX_CONFIG)[42161] = MINDEX_CONFIG[activeChain.id];
 
@@ -141,7 +143,7 @@ export const useGetMuchoIndexMarketOrders = () => {
       }
     }
 
-    console.log("Res obtained", res);
+    //console.log("Res obtained", res);
 
   }
 

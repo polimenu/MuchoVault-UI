@@ -2,10 +2,10 @@ import { useUserAccount } from '@Hooks/useUserAccount';
 import { useAtom } from 'jotai';
 import { useContext } from 'react';
 import { BlueBtn } from '@Views/Common/V2-Button';
-import { useNetwork } from 'wagmi';
+import { Chain, useNetwork } from 'wagmi';
 import { ConnectionRequired } from '@Views/Common/Navbar/AccountDropdown';
 import { IMuchoTokenLauncherData, IMuchoTokenMarketData, indexAtom } from '../IndexAtom';
-import { ViewContext } from '..';
+import { ViewContext } from '../market';
 import { MINDEX_CONFIG } from '../Config/mIndexConfig';
 import { t } from 'i18next';
 
@@ -40,17 +40,24 @@ const GetBuyAndSellButtons = ({ data, state, setPageState }: { data: IMuchoToken
 export function IndexMarketButtons({ data }: { data: IMuchoTokenMarketData }) {
   const { address: account } = useUserAccount();
   const [state, setPageState] = useAtom(indexAtom);
-  //const { activeChain } = useContext(ViewContext);
   const { chain } = useNetwork();
 
-  /*if (!account || activeChain.id !== chain?.id)
+  let activeChain: Chain | null = null;
+  const contextValue = useContext(ViewContext);
+  if (contextValue) {
+    activeChain = contextValue.activeChain;
+  }
+
+  //console.log("------activeChain-------------", activeChain);
+
+  if (!account || !activeChain || activeChain.id !== chain?.id)
     return (
       <div className={btnClasses}>
         <ConnectionRequired>
           <></>
         </ConnectionRequired>
       </div>
-    );*/
+    );
 
   //console.log("Max Cap", id, data.maxCap);
 
