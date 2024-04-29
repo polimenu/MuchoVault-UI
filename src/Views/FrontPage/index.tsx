@@ -85,7 +85,7 @@ const FrontService = ({ title, imageUrl, subtitle, cta, url }: { title: string, 
     <div className="content">
       <h2 className='text-[28px] mt-[10px] bold'>{title}</h2>
       <div className="subtxt text-f18 text-2 sm:text-f16 min-h-[60px]">{subtitle}</div>
-      <BlueBtn onClick={() => { document.location = url }} className='mt-5 w-[50%]'>{cta}</BlueBtn>
+      <BlueBtn onClick={() => { document.location = url }} className='mt-5 !w-[120px]'>{cta}</BlueBtn>
     </div>
   </div>;
 }
