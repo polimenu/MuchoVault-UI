@@ -19,7 +19,7 @@ box-sizing: border-box;
 font-feature-settings: "zero" 1!important;
 font-family: Relative Mono,Relative Pro!important;
 padding-top: 0;
-font-size: 4vw;
+font-size: 80px;
 font-weight: 500;
 margin: 6vw 0 0 0;
 color: var(--text-1);`;
@@ -115,8 +115,8 @@ export const FrontPageNew = () => {
                   {t("frontpage.description")}
                 </div>
               </div>
-              <div className='w-[50%]'>
-                <img src='hero.webp' alt='mucho finance' />
+              <div className='w-[40%] m-auto mt-[6vw]'>
+                <img src='hero.jpeg' alt='mucho finance' />
               </div>
             </div>
 

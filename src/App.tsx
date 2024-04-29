@@ -10,7 +10,7 @@ import { Integrations } from '@sentry/tracing';
 import { V2AdminPage } from '@Views/V2Admin';
 import { V2AdminContract } from '@Views/V2Admin';
 import { V2UserPage } from '@Views/V2User';
-import { FrontPage } from '@Views/FrontPage';
+import { FrontPage, FrontPageNew } from '@Views/FrontPage';
 import { SwapPage } from '@Views/Swap';
 import { RampPage } from '@Views/Ramp';
 import { AirdropPage } from '@Views/Airdrop';
@@ -51,6 +51,7 @@ function App() {
       <LanguageModal />
       <Routes>
         <Route path="/*" element={<FrontPage />} />
+        <Route path="/new" element={<FrontPageNew />} />
         <Route path="/v1" element={<Earn />} />
         <Route path="/badgeAdmin" element={<Badge admin={true} />} />
         <Route path="/badge" element={<Badge admin={false} />} />
