@@ -50,8 +50,8 @@ function App() {
     <>
       <LanguageModal />
       <Routes>
-        <Route path="/*" element={<FrontPage />} />
-        <Route path="/new" element={<FrontPageNew />} />
+        <Route path="/*" element={<FrontPageNew />} />
+        <Route path="/old" element={<FrontPage />} />
         <Route path="/v1" element={<Earn />} />
         <Route path="/badgeAdmin" element={<Badge admin={true} />} />
         <Route path="/badge" element={<Badge admin={false} />} />

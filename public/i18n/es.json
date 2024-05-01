@@ -2,10 +2,18 @@
 	"Connect Wallet": "Conectar Wallet",
 	"Switch Network": "Cambiar de Red",
 	"frontpage": {
-		"title": "Lo que necesitas para ganar <span style='color: #3B82F6'>(mucho)</span> en DeFi",
+		"title": "Todo lo que necesitas para ganar <span style='color: #3B82F6'>(mucho)</span> en DeFi",
 		"description": "Pon tu dinero a trabajar en DeFi, de la manera más sencilla posible.",
 		"Earn USDC, WETH or WBTC with no Impermanent Loss": "Gana USDC, WETH o WBTC en nuestros protocolos",
-		"Start Earning Yield": "Empezar"
+		"Start Earning Yield": "Empezar",
+		"Mueve tus fondos entre FIAT y Crypto en pocos clicks.": "Mueve tus fondos entre FIAT y Crypto en pocos clicks.",
+		"Empezar": "Empezar",
+		"Deposita y genera un 8-20% APR a largo plazo": "Deposita y genera un 8-20% APR a largo plazo",
+		"Depositar": "Depositar",
+		"Indéxate a las estrategias DeFi más prometedoras.": "Indéxate a las estrategias DeFi más prometedoras.",
+		"Indexar": "Indexar",
+		"Las mejores estrategias de Liquidez Concentrada.": "Las mejores estrategias de Liquidez Concentrada.",
+		"Analizar": "Analizar"
 	},
 	"v2": {
 		"HeroText": "(mucho) Vaults V2 invertirá automáticamente tus depósitos en diferentes protocolos, permitiéndote beneficiarte de un interés compuesto. La integración con otros protocolos is programática y descentralizada, sólo tú eres el propietario de tus tokens.",

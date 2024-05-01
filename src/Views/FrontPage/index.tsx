@@ -80,7 +80,7 @@ export const FrontPage = () => {
 
 
 const FrontService = ({ title, imageUrl, subtitle, cta, url }: { title: string, imageUrl: string, subtitle: string, cta: string, url: string }) => {
-  return <div className={"service w-[255px] mb-[50px] m-auto"}>
+  return <div className={"service w-[255px] mb-[100px] m-auto"}>
     <img className='img-fact' src={imageUrl} alt={title} />
     <div className="content">
       <h2 className='text-[28px] mt-[10px] bold'>{title}</h2>
@@ -103,47 +103,47 @@ export const FrontPageNew = () => {
 
       <div className="root w-full">
         <EarnStyles>
-          <div className="container">
+          <div className="container p-[20px]">
 
             <div className="hero-wrapper max-w-screen-sm flex flex-wrap">
-              <div className='w-[50%]'>
+              <div className='w-[50%] b1200:!w-full'>
                 <HeaderStyled>
-                  <div dangerouslySetInnerHTML={
+                  <div className='text-[80px] b1200:!text-[60px] ' dangerouslySetInnerHTML={
                     { __html: t("frontpage.title") }} />
                 </HeaderStyled>
                 <div className="subtxt text-[24px] text-2 mt-5 sm:text-f16">
                   {t("frontpage.description")}
                 </div>
               </div>
-              <div className='w-[40%] m-auto mt-[6vw]'>
+              <div className='w-[40%] m-auto mt-[6vw] b1200:!hidden'>
                 <img src='hero-removebg.png' alt='mucho finance' />
               </div>
             </div>
 
             <div className='facts-wrapper mt-[100px] flex flex-wrap m-auto w-full'>
               <FrontService title='OnRamp'
-                subtitle='Mueve tus fondos entre FIAT y Crypto en pocos clicks.'
-                cta='Empezar'
+                subtitle={t("frontpage.Mueve tus fondos entre FIAT y Crypto en pocos clicks.")}
+                cta={t("frontpage.Empezar")}
                 url='/#/ramp'
                 imageUrl='rampt-removebg-preview.png' />
 
               <FrontService title='Vaults'
-                subtitle='Deposita y genera un 8-20% APR a largo plazo'
-                cta='Depositar'
+                subtitle={t("frontpage.Deposita y genera un 8-20% APR a largo plazo")}
+                cta={t("frontpage.Depositar")}
                 url='/#/v2'
                 imageUrl='vaults-removebg-preview.png' />
 
               <FrontService title='Index'
-                subtitle='Indéxate a las estrategias DeFi más prometedoras.'
-                cta='Indexar'
+                subtitle={t("frontpage.Indéxate a las estrategias DeFi más prometedoras.")}
+                cta={t("frontpage.Indexar")}
                 url='/#/index'
                 imageUrl='index-removebg-preview.png' />
 
               <FrontService title='Pools'
-                subtitle='Las mejores estrategias de Liquidez Concentrada.'
-                cta='Analizar'
+                subtitle={t("frontpage.Las mejores estrategias de Liquidez Concentrada.")}
+                cta={t("frontpage.Analizar")}
                 url='/#/pools'
-                imageUrl='pools.webp' />
+                imageUrl='pools-removebg-preview.png' />
             </div>
 
           </div>

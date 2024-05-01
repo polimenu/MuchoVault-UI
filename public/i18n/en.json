@@ -5,7 +5,15 @@
 		"title": "Your Gateway to earn <span style='color: #3B82F6'>(mucho)</span> Profits",
 		"description": "Our mission is to empower you to grow your wealth through secure and profitable investments. With Mucho Vault, you can deposit your tokens, and we'll take care of the rest, maximizing your earnings.",
 		"Earn USDC, WETH or WBTC with no Impermanent Loss": "Earn USDC, WETH or WBTC with no Impermanent Loss",
-		"Start Earning Yield": "Start Earning Yield"
+		"Start Earning Yield": "Start Earning Yield",
+		"Mueve tus fondos entre FIAT y Crypto en pocos clicks.": "Move your funds between FIAT and Crypto in a few clicks.",
+		"Empezar": "Start",
+		"Deposita y genera un 8-20% APR a largo plazo": "Deposit and earn 8-20% APR long term",
+		"Depositar": "Deposit",
+		"Indéxate a las estrategias DeFi más prometedoras.": "Index to the most promising DeFi strategies.",
+		"Indexar": "Index",
+		"Las mejores estrategias de Liquidez Concentrada.": "Best Concentrated Liquidity Strategies.",
+		"Analizar": "Analyse"
 	},
 	"v2": {
 		"HeroText": "(mucho) Vaults V2 will automatically invest your deposits in different protocols, allowing you to earn interests. Integration with other protocols is programmatic and decentralized, so nobody will own your tokens but you.",
