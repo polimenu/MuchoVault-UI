@@ -65,14 +65,14 @@ export const useGetMuchoVaultV2Data = () => {
   }));
 
   vaultInfoCalls = vaultInfoCalls.concat([
-    {
+    /*{
       address: v2UserConfig.MuchoVault.configDataContract,
       abi: MuchoVaultConfigDataAbi,
       functionName: "realGlpApr",
       args: [],
       chainId: activeChain?.id,
       map: "realGlpApr"
-    },
+    },*/
     {
       address: v2UserConfig.MuchoProtocolGmx.contract,
       abi: MuchoProtocolGmxAbi,
@@ -325,7 +325,7 @@ export const useGetMuchoVaultV2Data = () => {
       },
       contractsInfo: { muchoHub: getDataString(data, 'muchoHub'), priceFeed: getDataString(data, 'priceFeed'), badgeManager: getDataString(data, 'badgeManager') },
       badgeInfo: {
-        annualEarningExpected: (getDataNumber(data, "realGlpApr") / getDataNumber(data, "glpApr")) * getDataNumber(data, 'getExpectedNFTAnnualYield') / 10 ** 18 + getDataNumber(data, 'weeklyUsdNftRewards') * 52,
+        annualEarningExpected: (getDataNumber(data, "glpApr") / getDataNumber(data, "glpApr")) * getDataNumber(data, 'getExpectedNFTAnnualYield') / 10 ** 18 + getDataNumber(data, 'weeklyUsdNftRewards') * 52,
         totalPonderatedInvestment: getDataNumber(data, 'getTotalPonderatedInvestment') / 10 ** 18,
         userBadgeData: getUserBadgeData(data, account),
       },
