@@ -3,7 +3,6 @@ import { Navbar } from '@Views/Common/Navbar';
 import styled from '@emotion/styled';
 import { useEffect } from 'react';
 import Background from 'src/AppStyles';
-import { useGetUserHasNFT } from './Hooks/useNFTCall';
 import { ArbitrumOnly } from '@Views/Common/ChainNotSupported';
 import { useActiveChain } from '@Hooks/useActiveChain';
 import { useAtom } from 'jotai';
@@ -14,6 +13,7 @@ import { PoolsContext } from '.';
 import { PoolsModals } from './Modals';
 import { useGetPoolDetail } from './Hooks/useGetPoolDetail';
 import { PoolDetail } from './Components/PoolDetail';
+import { OnlyNFT } from '@Views/Common/OnlyNFT';
 
 const Styles = styled.div`
   width: 100%;
@@ -45,8 +45,14 @@ export const PoolsPage2 = () => {
             <PoolContextProvider value={{ activeChain }}>
               <main className="content-drawer">
                 <Styles>
-                  <PoolsModals />
-                  <PoolsComponent2 />
+                  <OnlyNFT heading={<div className={topStyles}>(mucho) Pools</div>}
+                    nftAllowed={[1, 5]}
+                    activeChain={activeChain}
+                    child={<>
+                      <PoolsModals />
+                      <PoolsComponent2 />
+                    </>} />
+
                 </Styles>
               </main>
             </PoolContextProvider>
@@ -58,7 +64,6 @@ export const PoolsPage2 = () => {
 };
 
 const PoolsComponent2 = () => {
-  const hasNFT = import.meta.env.VITE_MODE == "developement" || useGetUserHasNFT([1, 5]);
   const [, setPoolsData] = useAtom(poolsDataAtom);
   const poolsData = useGetPoolsData();
   const [poolDetail] = useGetPoolDetail();
@@ -70,13 +75,12 @@ const PoolsComponent2 = () => {
       Heading={<div className={topStyles}>(mucho) Pools</div>}
       Cards={[]}
       subHeading={<div className={descStyles}>{poolDetail ? `${poolDetail.BaseToken} / ${poolDetail.QuoteToken} ${poolDetail.feeTier / 10000}% - ${poolDetail.DexId} (${poolDetail.ChainId})` : "Top Liquidity Pools"}</div>}
-      other={hasNFT ?
+      other={
         <>
           {!poolDetail && <PoolsTable data={poolsData} />}
           {poolDetail && <PoolDetail data={poolDetail} />}
         </>
-        :
-        <div className={`${descStyles} text-f16 m-auto`}>This content is only available for NFT subscribers</div>}
+      }
     />
   </>
   );

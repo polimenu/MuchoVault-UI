@@ -3,7 +3,7 @@ import { Navbar } from '@Views/Common/Navbar';
 import styled from '@emotion/styled';
 import React, { useEffect } from 'react';
 import Background from 'src/AppStyles';
-import { useGetUserHasNFT } from './Hooks/useNFTCall';
+import { useGetUserHasNFT } from '../Common/Hooks/useNFTCall';
 import { ArbitrumOnly } from '@Views/Common/ChainNotSupported';
 import { Chain } from 'wagmi';
 import { useActiveChain } from '@Hooks/useActiveChain';

@@ -1,25 +1,21 @@
 import MuchoBadgeManagerAbi from '../Config/Abis/MuchoBadgeManager.json';
 import { Chain, useContractRead } from 'wagmi';
 import { useUserAccount } from '@Hooks/useUserAccount';
-import { POOLS_BADGE_CONFIG } from '../Config/PoolsBadgeConfig';
+import { BADGE_CONFIG } from '../Config/BadgeConfig';
 import { useContext } from 'react';
-import { PoolsContext } from '..';
 
 export const BASIS_POINTS_DIVISOR = '10000';
 export const SECONDS_PER_YEAR = '31536000';
 
 
 
-export const useGetUserHasNFT = (plans: number[]) => {
+export const useGetUserHasNFT = (plans: number[], activeChain?: Chain) => {
   //console.log("useGetPlans");
   const { address: account } = useUserAccount();
-  let activeChain: Chain | null = null;
-  const poolContextValue = useContext(PoolsContext);
   let call = {};
   //console.log("poolContextValue", poolContextValue);
-  if (poolContextValue) {
-    activeChain = poolContextValue.activeChain;
-    const badge_config: (typeof POOLS_BADGE_CONFIG)[42161] = POOLS_BADGE_CONFIG[activeChain.id];
+  if (activeChain) {
+    const badge_config: (typeof BADGE_CONFIG)[42161] = BADGE_CONFIG[activeChain.id];
 
     if (account) {
       call = {
@@ -37,7 +33,7 @@ export const useGetUserHasNFT = (plans: number[]) => {
 
   const { data } = useContractRead(call);
 
-  //console.log("Data", data, call);
+  //console.log("USER NFT Data", data, call);
 
   if (data && data[0]) {
     for (const p of data) {

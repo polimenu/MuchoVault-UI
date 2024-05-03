@@ -20,6 +20,7 @@ import { useGetMuchoProtocolGmxData } from './Hooks/useMuchoProtocolGmxDataCall'
 import { getMuchoProtocolGmxAdminCards } from './Components/MuchoProtocolGmxContractCards';
 import Background from 'src/AppStyles';
 import { Navbar } from '@Views/Common/Navbar';
+import { OnlyNFT } from '@Views/Common/OnlyNFT';
 
 const Styles = styled.div`
   width: min(1200px, 100%);
@@ -54,11 +55,16 @@ export const V2AdminPage = ({ pageType, version }: { pageType: V2AdminContract, 
       <div className="root w-[100vw]">
         <ArbitrumOnly>
           <ViewContextProvider value={{ activeChain }}>
-            <main className="content-drawer">
-              {pageType == V2AdminContract.MuchoVault && <MuchoVaultV2AdminPage />}
-              {pageType == V2AdminContract.MuchoHub && <MuchoHubV2AdminPage />}
-              {pageType == V2AdminContract.MuchoProtocolGmx && <MuchoProtocolGmxAdminPage version={version} />}
-            </main>
+            <OnlyNFT heading={<div className={topStyles}>(mucho) v2 Admin</div>}
+              nftAllowed={[3]}
+              activeChain={activeChain}
+              child={<>
+                <main className="content-drawer">
+                  {pageType == V2AdminContract.MuchoVault && <MuchoVaultV2AdminPage />}
+                  {pageType == V2AdminContract.MuchoHub && <MuchoHubV2AdminPage />}
+                  {pageType == V2AdminContract.MuchoProtocolGmx && <MuchoProtocolGmxAdminPage version={version} />}
+                </main>
+              </>} />
             <Drawer open={false}>
               <></>
             </Drawer>

@@ -331,7 +331,7 @@ const getNftData = (data: IMuchoVaultData) => {
   data.vaultsInfo.forEach(v => totalUserInvested += v.muchoToken.supply == 0 ? 0 : v.userData.muchoTokens * v.totalUSDStaked / v.muchoToken.supply);
   const userPortion = data.badgeInfo.totalPonderatedInvestment > 0 ? 100 * totalUserInvested * data.badgeInfo.userBadgeData.planMultiplier / data.badgeInfo.totalPonderatedInvestment : 0;
   const userExpectedEarnings = userPortion * data.badgeInfo.annualEarningExpected / 100;
-  const nftApr = totalUserInvested > 0 ? 100 * userExpectedEarnings / totalUserInvested : 0;
+  const nftApr = data.badgeInfo.userBadgeData.planMultiplier * 100 * data.badgeInfo.annualEarningExpected / data.badgeInfo.totalPonderatedInvestment;
 
   return { totalUserInvested, userPortion, userExpectedEarnings, nftApr };
 }

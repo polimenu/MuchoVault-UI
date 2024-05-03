@@ -80,13 +80,14 @@ export const FarmNetworkList = ({ farmNetwork, prices }: { farmNetwork?: IFarmNe
             className?: string;
             classNames?: string[];
             preventDefault?: boolean;
+            mykey?: string;
         }
 
-        const CellContent: React.FC<ICellContent> = ({ content, classNames, preventDefault, className, }) => {
+        const CellContent: React.FC<ICellContent> = ({ mykey, content, classNames, preventDefault, className, }) => {
 
             if (!content.length) return <></>;
             return (
-                <div className={`${className}`}>
+                <div key={mykey} className={`${className}`}>
                     {content.map((cellInfo, key) => {
                         return cellInfo;
                     })}
@@ -108,7 +109,7 @@ export const FarmNetworkList = ({ farmNetwork, prices }: { farmNetwork?: IFarmNe
                     classNames += "red";
             }*/
             //console.log("currentData", currentData);
-            return <CellContent
+            return <CellContent mykey={"cellfwlist_" + row.toString() + "_" + col.toString()}
                 content={[
                     currentData,
                 ]}

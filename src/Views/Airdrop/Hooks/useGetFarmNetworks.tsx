@@ -14,9 +14,9 @@ export const useGetFarmNetwork = (network: string): (IFarmNetwork[]) => {
     const [net, setNet] = useState<IFarmNetwork>();
     const save = (obj: any) => {
         //parse
-        console.log("useGetFarmNetwork res", obj);
+        //console.log("useGetFarmNetwork res", obj);
         if (obj) {
-            console.log("changing net");
+            //console.log("changing net");
             setNet(obj);
         }
     }
@@ -35,7 +35,7 @@ export const useGetFarmNetworksBriefing = (): (IFarmNetworkBriefing[][]) => {
     const [net, setNet] = useState<IFarmNetworkBriefing[]>();
     const save = (obj: any) => {
         //parse
-        console.log("useGetFarmNetworksBriefing res", obj);
+        //console.log("useGetFarmNetworksBriefing res", obj);
         if (obj) {
             console.log("changing net");
             setNet(obj);

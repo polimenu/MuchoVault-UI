@@ -16,6 +16,7 @@ import { Section } from '@Views/Common/Card/Section';
 import { FarmNetworksBriefing } from './Components/FarmNetworksBriefing';
 import { IFarmNetworkBriefing } from './AirdropAtom';
 import { Display } from '@Views/Common/Tooltips/Display';
+import { OnlyNFT } from '@Views/Common/OnlyNFT';
 
 const Styles = styled.div`
   width: min(1200px, 100%);
@@ -42,7 +43,8 @@ const getTotalUSD = (farmNetworkBriefings: IFarmNetworkBriefing[], prices: any) 
         tot += bal;
       }
       else {
-        tot += prices[it] * bal;
+        if (prices[it])
+          tot += prices[it] * bal;
       }
     }
   }
@@ -70,38 +72,45 @@ export const AdminFarmAirdropPage = () => {
           <ViewContextProvider value={{ activeChain }}>
             <main className="content-drawer mt-5">
               <Styles>
-                <div className='mb-5'>
-                  <Section
-                    Heading={<div className={topStyles}>Farming networks summary ($ <Display data={total} precision={2} />)</div>}
-                    subHeading={
-                      <div className={descStyles}></div>
-                    }
-                    other={
-                      <div>
-                        <div className='mb-10'>
-                          <FarmNetworksBriefing farmNetworkBriefings={brief} prices={prices} setNetwork={setNetwork} />
-                        </div>
-                      </div>}
-                  />
-                </div>
-                <div className='mt-5'>
-                  <Section
-                    Heading={<div className={topStyles}>{network} wallets (click above to change network)</div>}
-                    subHeading={
-                      <div className={descStyles}></div>
-                    }
-                    other={
-                      <div>
-                        <div className='mb-10'>
-                          {netData && <div>
-                            Last Update: {netData.lastUpdate}
+                <OnlyNFT heading={<div className={topStyles}>(mucho) Airdrop</div>}
+                  nftAllowed={[3]}
+                  activeChain={activeChain}
+                  child={<>
+                    <div className='mb-5'>
+                      <Section
+                        Heading={<div className={topStyles}>Farming networks summary ($ <Display data={total} precision={2} />)</div>}
+                        subHeading={
+                          <div className={descStyles}></div>
+                        }
+                        other={
+                          <div>
+                            <div className='mb-10'>
+                              <FarmNetworksBriefing farmNetworkBriefings={brief} prices={prices} setNetwork={setNetwork} />
+                            </div>
                           </div>}
-                        </div>
-                        <FarmNetworkList farmNetwork={netData} prices={prices} />
-                      </div>}
-                  />
+                      />
+                    </div>
+                    <div className='mt-5'>
+                      <Section
+                        Heading={<div className={topStyles}>{network} wallets (click above to change network)</div>}
+                        subHeading={
+                          <div className={descStyles}></div>
+                        }
+                        other={
+                          <div>
+                            <div className='mb-10'>
+                              {netData && <div>
+                                Last Update: {netData.lastUpdate}
+                              </div>}
+                            </div>
+                            <FarmNetworkList farmNetwork={netData} prices={prices} />
+                          </div>}
+                      />
 
-                </div>
+                    </div>
+                  </>} />
+
+
               </Styles>
             </main>
             <Drawer open={false}>

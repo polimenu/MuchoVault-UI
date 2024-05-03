@@ -24,6 +24,7 @@ import { RampPageB2B } from '@Views/Ramp/b2b';
 import { PoolsPage } from '@Views/Pools';
 import { PoolsPage2 } from '@Views/Pools/pools2';
 import MyLandbot from '@Views/Common/MyLandBot';
+import { OnlyNFT } from '@Views/Common/OnlyNFT';
 
 if (import.meta.env.VITE_MODE === 'production') {
   //console.log(`import.meta.env.SENTRY_DSN: `, import.meta.env.VITE_SENTRY_DSN);
@@ -46,6 +47,8 @@ export const snackAtom = atom<{
 
 function App() {
   const { i18n, t } = useTranslation();
+  const topStyles = 'flex flex-row items-center justify-center mb-2 text-f22';
+
   return (
     <>
       <LanguageModal />
