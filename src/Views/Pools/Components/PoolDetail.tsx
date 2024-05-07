@@ -15,6 +15,8 @@ export const PoolDetail = ({ data }: { data: IPoolDetail }) => {
     const defEpochMin = (new Date()).getTime() - 7 * 24 * 60 * 60 * 1000;
     const [numDays, setNumDays] = useState(30);
     const [epochMin, setEpochMin] = useState(defEpochMin);
+    const [min, setMin] = useState(0);
+    const [max, setMax] = useState(0);
     const topStyles = 'flex flex-row items-center justify-center mb-2 text-f22';
     //console.log("PoolsTable data", data);
     const [poolsState, setPoolsState] = useAtom(poolsAtom);
@@ -84,8 +86,8 @@ export const PoolDetail = ({ data }: { data: IPoolDetail }) => {
                     </div></>}
                 Heading={<></>}
                 Cards={[
-                    <PoolAPRCalc data={filteredData} reverse={reverse} />,
-                    <PoolPriceChart data={filteredData} reverse={reverse} />,
+                    <PoolAPRCalc data={filteredData} reverse={reverse} minMax={{ min, setMin, max, setMax }} />,
+                    <PoolPriceChart data={filteredData} reverse={reverse} min={min} max={max} />,
                     <PoolAPRChart data={filteredData} />,
                     <PoolLiqVolumeChart data={filteredData} />,
                 ]}

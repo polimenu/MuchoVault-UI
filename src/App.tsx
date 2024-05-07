@@ -21,8 +21,8 @@ import { AdminFarmAirdropPage } from '@Views/Airdrop/farmAdmin';
 import { IndexPage } from '@Views/Index';
 import { IndexMarketPage } from '@Views/Index/market';
 import { RampPageB2B } from '@Views/Ramp/b2b';
-import { PoolsPage } from '@Views/Pools';
-import { PoolsPage2 } from '@Views/Pools/pools2';
+import { PoolsFelix } from '@Views/Pools/felix';
+import { PoolsPage2 } from '@Views/Pools';
 import MyLandbot from '@Views/Common/MyLandBot';
 import { OnlyNFT } from '@Views/Common/OnlyNFT';
 
@@ -72,7 +72,7 @@ function App() {
         <Route path="/ramp/admin" element={<RampAdminPage />} />
         <Route path="/index-launch" element={<IndexPage />} />
         <Route path="/index" element={<IndexMarketPage />} />
-        <Route path="/poolsf" element={<PoolsPage />} />
+        <Route path="/poolsf" element={<PoolsFelix />} />
         <Route path="/pools" element={<PoolsPage2 />} />
 
 

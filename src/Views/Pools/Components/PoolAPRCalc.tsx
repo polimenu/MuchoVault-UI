@@ -5,10 +5,11 @@ import { useEffect, useState } from "react";
 import { BlueBtn } from "@Views/Common/V2-Button";
 import { useAtom } from "jotai";
 
-export const PoolAPRCalc = ({ data, reverse }: { data: IPoolDetail, reverse: boolean }) => {
+export const PoolAPRCalc = ({ data, reverse, minMax }:
+    { data: IPoolDetail, reverse: boolean, minMax: { min: number, setMin: any, max: number, setMax: any } }) => {
+
+    const { min, setMin, max, setMax } = minMax;
     const [liq, setLiq] = useState(1000);
-    const [min, setMin] = useState(0);
-    const [max, setMax] = useState(0);
     const [anchorPrice, setAnchorPrice] = useState(0);
     const [minInput, setMinInput] = useState(0);
     const [maxInput, setMaxInput] = useState(0);
@@ -31,7 +32,7 @@ export const PoolAPRCalc = ({ data, reverse }: { data: IPoolDetail, reverse: boo
     }
 
     const applyMin = (val: number, anchor: boolean = false) => {
-        console.log("Setting min");
+        //console.log("Setting min");
         setMin(closestTikPrice(val));
         if (anchor) {
             console.log("Setting anchor max");
@@ -41,7 +42,7 @@ export const PoolAPRCalc = ({ data, reverse }: { data: IPoolDetail, reverse: boo
     }
 
     const applyMax = (val: number, anchor: boolean = false) => {
-        console.log("Setting max");
+        //console.log("Setting max");
         setMax(closestTikPrice(val));
         if (anchor) {
             console.log("Setting anchor min");
