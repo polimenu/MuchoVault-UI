@@ -30,24 +30,19 @@ const getDirectButton = (call: any, caption: string) => {
   </BlueBtn>;
 }
 
-const getMuchoVaultCall = (functionName: string, args: any[], cBack: any) => {
-  const { activeChain } = useContext(ViewContext);
-  return getContractCall(V2USER_CONFIG[activeChain?.id].MuchoVault.contract, MuchoVaultAbi, functionName, args, cBack);
+/*const getMuchoVaultCall = (contract: string, functionName: string, args: any[], cBack: any) => {
+  return getContractCall(contract, MuchoVaultAbi, functionName, args, cBack);
 };
 
-const getMuchoRewardCall = (functionName: string, args: any[], cBack: any) => {
-  const { activeChain } = useContext(ViewContext);
-  return getContractCall(V2USER_CONFIG[activeChain?.id].MuchoRewardRouter.contract, MuchoRewardRouterAbi, functionName, args, cBack);
-};
+const getMuchoRewardCall = (contract: string, functionName: string, args: any[], cBack: any) => {
+  return getContractCall(contract, MuchoRewardRouterAbi, functionName, args, cBack);
+};*/
 
 
-const getContractCall = (contract: string, abi: any, functionName: string, args: any[], cBack: any) => {
-  const { writeCall } = useWriteCall(contract, abi);
-  const [, setPageState] = useAtom(writeV2AdminData);
+const getContractCall = (writeCall: any, functionName: string, args: any[], cBack: any, setPageState: any) => {
+  //const { writeCall } = useWriteCall(contract, abi);
 
   function callBack(res) {
-    //console.log("updatePlan:");
-    //console.log(res);
     if (res.payload)
       setPageState({
         isModalOpen: false,
@@ -59,7 +54,6 @@ const getContractCall = (contract: string, abi: any, functionName: string, args:
     cBack = callBack;
 
   function myCall() {
-    //console.log("Sending call");
     writeCall(cBack, functionName, args);
   }
 
@@ -70,17 +64,39 @@ const getContractCall = (contract: string, abi: any, functionName: string, args:
 export function NFTButtons({ data }: { data: IMuchoVaultData }) {
   const { address: account } = useUserAccount();
   const { activeChain } = useContext(ViewContext);
-  const { chain } = useNetwork();
   const rewardsToken = V2USER_CONFIG[activeChain.id].MuchoRewardRouter.rewardsToken;
-  const compoundVault = data.vaultsInfo.find(v => v.depositToken.contract == rewardsToken).id;
-  const amount = data.badgeInfo.userBadgeData.currentRewards.amount;
-  const compoundAmount = ethers.BigNumber.from(Math.floor(amount * (10 ** data.vaultsInfo[compoundVault].depositToken.decimals)).toString());
-  //console.log("compoundAmount", compoundAmount);
-  const compoundCall = getMuchoVaultCall("deposit", [compoundVault, compoundAmount], null);
-  const approveAndCompoundCall = getContractCall(rewardsToken, ERC20Abi, "approve", [V2USER_CONFIG[activeChain?.id].MuchoHub.contract, compoundAmount], compoundCall)
-  const withdrawAndCompoundCall = getMuchoRewardCall("withdrawToken", [rewardsToken], approveAndCompoundCall); //ToDo approve first
-  const withdrawCall = getMuchoRewardCall("withdrawToken", [rewardsToken], null);
+  const { chain } = useNetwork();
+  const [, setPageState] = useAtom(writeV2AdminData);
 
+  const { writeCall: writeVaultCall } = useWriteCall(V2USER_CONFIG[activeChain?.id].MuchoVault.contract, MuchoVaultAbi);
+  const { writeCall: writeRewardTokenCall } = useWriteCall(rewardsToken, ERC20Abi);
+  const writeRRCalls = [];
+  for (const c of V2USER_CONFIG[activeChain.id].MuchoRewardRouter.contracts) {
+    writeRRCalls[c] = useWriteCall(c, MuchoRewardRouterAbi).writeCall;
+  }
+
+  let previousWithdrawCall: any = null;
+  let withdrawCall: any = null;
+  for (const c of data.badgeInfo.userBadgeData.currentRewards.rewardContracts) {
+    withdrawCall = getContractCall(writeRRCalls[c], "withdrawToken", [rewardsToken], previousWithdrawCall, setPageState);
+    previousWithdrawCall = withdrawCall;
+  }
+
+  const compoundVault = data.vaultsInfo.find(v => v.depositToken.contract == rewardsToken).id;
+  const compoundAmount = ethers.BigNumber.from(Math.floor(data.badgeInfo.userBadgeData.currentRewards.amount * (10 ** data.vaultsInfo[compoundVault].depositToken.decimals)).toString());
+  //console.log("Compound vault and amount", compoundVault, compoundAmount);
+  //console.log("writeRewardTokenCall", rewardsToken, ERC20Abi);
+
+  const compoundCall = getContractCall(writeVaultCall, "deposit", [compoundVault, compoundAmount], null, setPageState);
+  const approveAndCompoundCall = getContractCall(writeRewardTokenCall, "approve", [V2USER_CONFIG[activeChain?.id].MuchoHub.contract, compoundAmount], compoundCall, setPageState);
+  let previousWithdrawAndCompoundCall: any = approveAndCompoundCall;
+  let withdrawAndCompoundCall: any = null;
+  for (const c of data.badgeInfo.userBadgeData.currentRewards.rewardContracts) {
+    withdrawAndCompoundCall = getContractCall(writeRRCalls[c], "withdrawToken", [rewardsToken], previousWithdrawAndCompoundCall, setPageState);
+    previousWithdrawAndCompoundCall = withdrawAndCompoundCall;
+  }
+
+  //withdrawAndCompoundCall = approveAndCompoundCall;
 
   if (!account || activeChain.id !== chain?.id)
     return (
@@ -96,7 +112,7 @@ export function NFTButtons({ data }: { data: IMuchoVaultData }) {
 
   return (<>
     <div className={`${btnClasses} flex gap-5`}>
-      {data.badgeInfo.userBadgeData.planId == 0 && <BlueBtn key={"subscribe"} onClick={() => window.open("https://mucho.finance/#/badge")} className={btnClasses}>{t("v2.Subscribe and earn rewards")}</BlueBtn>}
+      {!data.badgeInfo.userBadgeData.active && <BlueBtn key={"subscribe"} onClick={() => window.open("https://mucho.finance/#/nft")} className={btnClasses}>{t("v2.Subscribe and earn rewards")}</BlueBtn>}
       {harvestActive && getDirectButton(withdrawCall, t("v2.Harvest"))}
       {harvestActive && getDirectButton(withdrawAndCompoundCall, t("v2.Compound*"))}
       {/*data.userData.muchoTokens > 0 &&

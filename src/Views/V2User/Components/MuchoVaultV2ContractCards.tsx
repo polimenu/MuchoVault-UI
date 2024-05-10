@@ -327,19 +327,21 @@ const NFTInfoCard = ({ data }: { data: IMuchoVaultData }) => {
 }
 
 const getNftData = (data: IMuchoVaultData) => {
-  let totalUserInvested = 0;
-  data.vaultsInfo.forEach(v => totalUserInvested += v.muchoToken.supply == 0 ? 0 : v.userData.muchoTokens * v.totalUSDStaked / v.muchoToken.supply);
-  const userPortion = data.badgeInfo.totalPonderatedInvestment > 0 ? 100 * totalUserInvested * data.badgeInfo.userBadgeData.planMultiplier / data.badgeInfo.totalPonderatedInvestment : 0;
+  const totalUserInvested = data.vaultsInfo.map(v => v.userData.muchoTokens * v.totalUSDStaked / v.muchoToken.supply).reduce((p, c) => p + c);
+  const totalInvestment = data.vaultsInfo.map(v => v.totalUSDStaked).reduce((p, c) => p + c);
+  const totalNftInvested = totalInvestment * data.badgeInfo.badgeUsdPercentage;
+  //console.log("nft invested", data.badgeInfo.badgeUsdPercentage, totalInvestment, totalNftInvested)
+  const userPortion = 100 * totalUserInvested / totalNftInvested;
   const userExpectedEarnings = userPortion * data.badgeInfo.annualEarningExpected / 100;
-  const nftApr = data.badgeInfo.userBadgeData.planMultiplier * 100 * data.badgeInfo.annualEarningExpected / data.badgeInfo.totalPonderatedInvestment;
+  const nftApr = 100 * data.badgeInfo.annualEarningExpected / totalNftInvested;
 
-  return { totalUserInvested, userPortion, userExpectedEarnings, nftApr };
+  return { totalUserInvested, userExpectedEarnings, nftApr };
 }
 
 
 const NFTInfo = ({ data }: { data: IMuchoVaultData }) => {
 
-  const { totalUserInvested, userPortion, userExpectedEarnings, nftApr } = getNftData(data);
+  const { totalUserInvested, userExpectedEarnings, nftApr } = getNftData(data);
   const currentRewardsAmount = data.badgeInfo.userBadgeData.currentRewards.amount;
   const rewardsVault = data.vaultsInfo.find(v => v.depositToken.contract == data.badgeInfo.userBadgeData.currentRewards.token.contract)?.id;
   const rewardsExchange = data.vaultsInfo[rewardsVault] ? data.vaultsInfo[rewardsVault].totalUSDStaked / data.vaultsInfo[rewardsVault].totalStaked : 0;
@@ -350,20 +352,36 @@ const NFTInfo = ({ data }: { data: IMuchoVaultData }) => {
 
       <TableAligner
         keysName={
-          [t('v2.Your Subscription plan'), t('v2.Your Plan Multiplier'), t('v2.Your Total Investment')]
+          [t('v2.Your Subscription status')]
+        }
+        values={[
+
+          <div className={`${wrapperClasses}`}>
+            <Display
+              className="!justify-end"
+              data={data.badgeInfo.userBadgeData.active ? t("v2.Active") : t("v2.Not Active")}
+            />
+          </div>,
+
+        ]
+        }
+        keyStyle={keyClasses}
+        valueStyle={valueClasses}
+      />
+      <Divider />
+
+      <TableAligner
+        keysName={
+          [t('v2.APR Bonus'), t('v2.Your Total Investment'),
+          data.badgeInfo.userBadgeData.active ? t('v2.Your expected annual NFT Bonus Yield') : t("v2.If you had active subscription, you would earn extra")
+            , t('v2.Your Accumulated Rewards')]
         }
         values={[
           <div className={`${wrapperClasses}`}>
             <Display
               className="!justify-end"
-              data={data.badgeInfo.userBadgeData.planName}
-            />
-          </div>,
-          <div className={`${wrapperClasses}`}>
-            <Display
-              className="!justify-end"
-              data={data.badgeInfo.userBadgeData.planMultiplier}
-              unit="x"
+              data={nftApr}
+              unit="%"
             />
           </div>,
           <div className={`${wrapperClasses}`}>
@@ -373,60 +391,12 @@ const NFTInfo = ({ data }: { data: IMuchoVaultData }) => {
               unit="$"
             />
           </div>,
-
-        ]
-        }
-        keyStyle={keyClasses}
-        valueStyle={valueClasses}
-      />
-      <Divider />
-
-      <TableAligner
-        keysName={
-          [t('v2.Annual Expected Yield for NFT Holders'), t('v2.Your current share'), t('v2.Your expected annual NFT Bonus Yield')]
-        }
-        values={[
-          <div className={`${wrapperClasses}`}>
-            <Display
-              className="!justify-end"
-              data={data.badgeInfo.annualEarningExpected}
-              unit="$"
-              precision={2}
-            />
-          </div>,
-          <div className={`${wrapperClasses}`}>
-            <Display
-              className="!justify-end"
-              data={userPortion}
-              unit="%"
-              precision={2}
-            />
-          </div>,
           <div className={`${wrapperClasses}`}>
             <Display
               className="!justify-end"
               data={userExpectedEarnings}
               unit="$"
               precision={2}
-            />
-          </div>,
-        ]
-        }
-        keyStyle={keyClasses}
-        valueStyle={valueClasses}
-      />
-      <Divider />
-
-      <TableAligner
-        keysName={
-          [t('v2.Your NFT Bonus APR'), t('v2.Your Accumulated Rewards')]
-        }
-        values={[
-          <div className={`${wrapperClasses}`}>
-            <Display
-              className="!justify-end"
-              data={nftApr}
-              unit="%"
             />
           </div>,
           <div className={`${wrapperClasses}`}>

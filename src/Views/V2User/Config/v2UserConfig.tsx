@@ -1,15 +1,16 @@
 export const V2USER_CONFIG = {
   42161: {
     Plans: [1, 3],
+    PremiumPlans: [1],
     MuchoVault: {
       contract: "0x4D46CAe2fff3d06E992e49fc7cB61CD24E77Ef43",
-      configDataContract: "0x7adBC714072B5805c586A4483De043fC969E5dF7",
+      configDataContract: "0x9e797255a88089954df74405bd70d052199c799c",
       vaults: [0, 1, 2],
       precision: [2, 5, 6],
       amountsForAprSimulation: [{ amount: 1e-6, decimals: 6 }, { amount: 1e-18, decimals: 18 }, { amount: 1e-8, decimals: 8 }],
     },
     MuchoRewardRouter: {
-      contract: "0x96D395d088C8e053f759F97695Efac4D4b45407A",
+      contracts: ["0x96D395d088C8e053f759F97695Efac4D4b45407A", "0xd67Ba1De34673e17e75Fb4F00D5CC0abCC94Dd53"],
       rewardsToken: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
     },
     MuchoBadgeManager: {

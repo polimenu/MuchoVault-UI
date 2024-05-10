@@ -29,15 +29,14 @@ export interface IBackingInfo {
 
 export interface IBadgeInfo {
   annualEarningExpected: number;
-  totalPonderatedInvestment: number;
+  badgeUsdPercentage: number;
   userBadgeData: {
-    planId: number;
-    planName: string;
-    planMultiplier: number;
+    active: boolean;
     currentRewards: {
-      amount: number,
-      token: IToken,
-    }
+      amount: number;
+      token: IToken;
+      rewardContracts: string[];
+    };
   }
 }
 

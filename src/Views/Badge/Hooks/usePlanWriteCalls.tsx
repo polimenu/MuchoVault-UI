@@ -72,12 +72,8 @@ export const usePlanUserCalls = () => {
       });
   }
 
-  function addUser() {
-    writeCallRR(callBack, "addUserIfNotExists", [account]);
-  }
-
   function subscribeUserCall(id: number) {
-    writeCall(addUser, "subscribe(uint256)", [id]);
+    writeCall(callBack, "subscribe(uint256)", [id]);
   }
 
   function renewUserCall(id: number) {
