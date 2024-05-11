@@ -18,7 +18,8 @@ export const PoolAPRCalc = ({ data, reverse, minMax }:
     const [pageState, setPageState] = useAtom(poolsAtom);
 
     const lastHist = data.history.sort((a, b) => b.date - a.date)[0];
-    const lastPrice = lastHist.priceNative;
+    const [lastPrice, setLastPrice] = useState(lastHist.priceNative);
+
     const prices = data.history.map(h => h.priceNative);
     const avg = prices.reduce((p, c) => p + c) / data.history.length;
     const stDev = Math.sqrt(prices.map(p => (p - avg) ** 2).reduce((p, c) => p + c) / data.history.length);
@@ -160,9 +161,9 @@ export const PoolAPRCalc = ({ data, reverse, minMax }:
                             className=""
                             bgClass="w-[300px] text-white flex justify-end"
                             header={`Current price:`}
-                            ipClass="ml-5 !w-[100px] text-center rounded"
+                            ipClass="ml-5 !bg-grey !w-[100px] text-center rounded"
                             value={reverse ? 1 / lastPrice : lastPrice}
-                            onChange={(val) => { }}
+                            onChange={(val) => { setLastPrice(val) }}
                         />
                         <BufferInput
                             className="justify-end"
