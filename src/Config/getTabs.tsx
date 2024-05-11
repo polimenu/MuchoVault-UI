@@ -118,6 +118,12 @@ export const TabIcon = {
 export const getTabs = () => {
   let tabs = [
     {
+      to: `/nft`,
+      name: 'NFT',
+      subTabs: [],
+      isExternalLink: false,
+    },
+    {
       to: `/v2`,
       name: 'Vaults',
       subTabs: [],
@@ -130,8 +136,8 @@ export const getTabs = () => {
       isExternalLink: false,
     },
     {
-      to: `/airdrop`,
-      name: 'Airdrop',
+      to: `/pools`,
+      name: 'Pools',
       subTabs: [],
       isExternalLink: false,
     },
@@ -142,17 +148,11 @@ export const getTabs = () => {
       isExternalLink: false,
     },
     {
-      to: `/pools`,
-      name: 'Pools',
+      to: `/airdrop`,
+      name: 'Airdrop',
       subTabs: [],
       isExternalLink: false,
     },/*
-    {
-      to: `/badge`,
-      name: 'NFT',
-      subTabs: [],
-      isExternalLink: false,
-    },*//*
     {
       to: `/swap`,
       name: 'Swap',
