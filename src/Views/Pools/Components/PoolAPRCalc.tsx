@@ -62,7 +62,7 @@ export const PoolAPRCalc = ({ data, reverse, minMax }:
     }
 
     const closestTikPrice = (price: number) => {
-        return priceFromTik(closestTik(price));
+        return price; //priceFromTik(closestTik(price)); ToDo
     }
 
     const shiftTik = (price: number, step: number) => {
@@ -70,6 +70,7 @@ export const PoolAPRCalc = ({ data, reverse, minMax }:
     }
 
     const calculateTokensRatio = () => {
+        console.log("Calculating ratio with lastPrice", lastPrice);
         const x = 1;
         const Lx = x * (Math.sqrt(lastPrice) * Math.sqrt(max)) /
             (Math.sqrt(max) - Math.sqrt(lastPrice));
@@ -83,10 +84,10 @@ export const PoolAPRCalc = ({ data, reverse, minMax }:
         const MaxY = (MaxX) * (lastPrice);
 
         return {
-            xAmount: Math.round(10000 * (MaxX) * (xPercentage) / 100.0) / 10000,
-            yAmount: Math.round(10000 * (MaxY) * (yPercentage) / 100.0) / 10000,
-            xPercentage: Math.round(10 * xPercentage) / 10,
-            yPercentage: Math.round(10 * yPercentage) / 10,
+            xAmount: Math.round(1000000 * (MaxX) * (xPercentage) / 100.0) / 1000000,
+            yAmount: Math.round(1000000 * (MaxY) * (yPercentage) / 100.0) / 1000000,
+            xPercentage: Math.round(10000 * xPercentage) / 10000,
+            yPercentage: Math.round(10000 * yPercentage) / 10000,
         }
     }
 
@@ -131,7 +132,7 @@ export const PoolAPRCalc = ({ data, reverse, minMax }:
     useEffect(() => {
         setTokenRatio(calculateTokensRatio());
         setCalculation(calculateApr());
-    }, [liq, min, max])
+    }, [liq, min, max, lastPrice])
 
 
     useEffect(() => {
@@ -163,7 +164,7 @@ export const PoolAPRCalc = ({ data, reverse, minMax }:
                             header={`Current price:`}
                             ipClass="ml-5 !bg-grey !w-[100px] text-center rounded"
                             value={reverse ? 1 / lastPrice : lastPrice}
-                            onChange={(val) => { setLastPrice(val) }}
+                            onChange={(val) => { setLastPrice(Number(val)) }}
                         />
                         <BufferInput
                             className="justify-end"
@@ -272,6 +273,34 @@ export const PoolAPRCalc = ({ data, reverse, minMax }:
                         />
 
                     </div>
+                    {false && <div className="mt-5 ml-5 bold">
+                        <div className="text-f16">Bullish scenario:</div>
+                        <BufferInput
+                            className=""
+                            bgClass="w-[300px] text-white flex justify-end"
+                            header={data.BaseToken}
+                            ipClass="ml-5 !w-[100px] text-center rounded"
+                            value={0}
+                            onChange={(val) => { }}
+                        />
+                        <BufferInput
+                            className=""
+                            bgClass="w-[300px] text-white flex justify-end"
+                            header={data.QuoteToken}
+                            ipClass="ml-5 !w-[100px] text-center rounded"
+                            value={`${tokenRatio.yAmount + tokenRatio.xAmount * (lastPrice + maxInput) / 2}`}
+                            onChange={(val) => { }}
+                        />
+                        <BufferInput
+                            className=""
+                            bgClass="w-[300px] text-white flex justify-end"
+                            header={`HODL ($)`}
+                            ipClass="ml-5 !w-[100px] text-center rounded"
+                            value={`${tokenRatio.xAmount * lastHist.priceUsd + (tokenRatio.yAmount / maxInput) * lastHist.priceUsd}`}
+                            onChange={(val) => { }}
+                        />
+
+                    </div>}
                 </div>
             }
         />
