@@ -2,12 +2,16 @@ import { useEffect, useState } from 'react';
 import { IPoolDetail, poolsAtom } from '../poolsAtom';
 import { useGlobal } from '@Contexts/Global';
 import { useAtom } from 'jotai';
+import { useLoaderData } from 'react-router-dom';
 
 
 export const useGetPoolDetail = () => {
+    const poolId = useLoaderData();
+    //console.log("poolIdz", poolId);
     const { dispatch } = useGlobal();
-    const [poolsState,] = useAtom(poolsAtom);
+    const [poolsState, setPoolsState] = useAtom(poolsAtom);
     const [pool, setPool] = useState<IPoolDetail>();
+
 
     const parsePool = (poolRes: any) => {
         poolRes.history.forEach(h => {
@@ -19,9 +23,10 @@ export const useGetPoolDetail = () => {
     }
 
     useEffect(() => {
+
         //console.log("Fetching pool detail", url);
         if (poolsState.pairAddress) {
-
+            //console.log("getting pool", poolsState.pairAddress)
             const url = "https://apiindex.mucho.finance/pool/history?id=" + poolsState.pairAddress;
 
             dispatch({ type: 'SET_TXN_LOADING', payload: 1 });
@@ -44,8 +49,11 @@ export const useGetPoolDetail = () => {
             });
 
         }
+        else if (poolId) {
+            setPoolsState({ ...poolsState, pairAddress: poolId })
+        }
         else {
-            console.log("Unsetting pool");
+            //console.log("Unsetting pool");
             setPool(undefined);
         }
 

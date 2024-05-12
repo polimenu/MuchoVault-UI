@@ -81,7 +81,7 @@ export const PoolDetail = ({ data }: { data: IPoolDetail }) => {
                         <div id="otherButtons" className="mb-5 ml-5 flex justify-end w-[49%] mb-5">
                             <BlueBtn className="!w-[100px]" onClick={() => { setReverse(!reverse); }}>{reverse ? `${data.QuoteToken} / ${data.BaseToken}` : `${data.BaseToken} / ${data.QuoteToken}`}</BlueBtn>
                             <BlueBtn className="ml-5 !w-[140px]" onClick={() => { window.open(`https://dexscreener.com/${data.ChainId}/${data.pairAddress}`) }}>DexScreener</BlueBtn>
-                            <BlueBtn className="ml-5 !w-[140px]" onClick={() => { setPoolsState({ ...poolsState, pairAddress: undefined }) }}>Back to List</BlueBtn>
+                            <BlueBtn className="ml-5 !w-[140px]" onClick={() => { window.location.href = "/pools" }}>Back to List</BlueBtn>
                         </div>
                     </div></>}
                 Heading={<></>}

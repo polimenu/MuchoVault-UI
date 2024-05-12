@@ -1,6 +1,8 @@
 import {
   Routes,
   Route,
+  RouterProvider,
+  createBrowserRouter,
 } from 'react-router-dom';
 import { atom } from 'jotai';
 import { Earn } from '@Views/Earn';
@@ -48,35 +50,36 @@ export const snackAtom = atom<{
 function App() {
   const { i18n, t } = useTranslation();
   const topStyles = 'flex flex-row items-center justify-center mb-2 text-f22';
+  const router = createBrowserRouter([
+    { path: "/*", element: <FrontPageNew /> },
+    { path: "/v1", element: <Earn /> },
+
+    { path: "/badgeAdmin", element: <Badge admin={true} /> },
+    { path: "/badge", element: <Badge admin={false} /> },
+    { path: "/nft", element: <Badge admin={false} /> },
+    { path: "/v2", element: <V2UserPage /> },
+
+    { path: "/v2/admin/muchovault", element: <V2AdminPage pageType={V2AdminContract.MuchoVault} version={1} /> },
+    { path: "/v2/admin/muchohub", element: <V2AdminPage pageType={V2AdminContract.MuchoHub} version={1} /> },
+    { path: "/v2/admin/muchoprotocolgmx", element: <V2AdminPage pageType={V2AdminContract.MuchoProtocolGmx} version={1} /> },
+    { path: "/v2/admin/muchoprotocolgmx2", element: <V2AdminPage pageType={V2AdminContract.MuchoProtocolGmx} version={2} /> },
+
+    { path: "/airdrop", element: <AirdropPage /> },
+    { path: "/airdrop/admin", element: <AdminFarmAirdropPage /> },
+    { path: "/ramp", element: <RampPage /> },
+    { path: "/rampb2b", element: <RampPageB2B /> },
+    { path: "/ramp/admin", element: <RampAdminPage /> },
+    { path: "/index-launch", element: <IndexPage /> },
+    { path: "/index", element: <IndexMarketPage /> },
+    { path: "/poolsf", element: <PoolsFelix /> },
+    { path: "/pools", element: <PoolsPage2 /> },
+    { path: "/pools/:poolId", element: <PoolsPage2 />, loader: (({ params }) => params.poolId) }
+  ]);
 
   return (
     <>
       <LanguageModal />
-      <Routes>
-        <Route path="/*" element={<FrontPageNew />} />
-        <Route path="/old" element={<FrontPage />} />
-        <Route path="/v1" element={<Earn />} />
-        <Route path="/badgeAdmin" element={<Badge admin={true} />} />
-        <Route path="/badge" element={<Badge admin={false} />} />
-        <Route path="/nft" element={<Badge admin={false} />} />
-        <Route path="/v2" element={<V2UserPage />} />
-        <Route path="/v2/admin/muchovault" element={<V2AdminPage pageType={V2AdminContract.MuchoVault} />} />
-        <Route path="/v2/admin/muchohub" element={<V2AdminPage pageType={V2AdminContract.MuchoHub} />} />
-        <Route path="/v2/admin/muchoprotocolgmx" element={<V2AdminPage pageType={V2AdminContract.MuchoProtocolGmx} />} />
-        <Route path="/v2/admin/muchoprotocolgmx2" element={<V2AdminPage pageType={V2AdminContract.MuchoProtocolGmx} version={2} />} />
-        {/*<Route path="/swap" element={<SwapPage />} />*/}
-        <Route path="/airdrop" element={<AirdropPage />} />
-        <Route path="/airdrop/admin" element={<AdminFarmAirdropPage />} />
-        <Route path="/ramp" element={<RampPage />} />
-        <Route path="/rampb2b" element={<RampPageB2B />} />
-        <Route path="/ramp/admin" element={<RampAdminPage />} />
-        <Route path="/index-launch" element={<IndexPage />} />
-        <Route path="/index" element={<IndexMarketPage />} />
-        <Route path="/poolsf" element={<PoolsFelix />} />
-        <Route path="/pools" element={<PoolsPage2 />} />
-
-
-      </Routes>
+      <RouterProvider router={router} />
       <MyLandbot url="https://storage.googleapis.com/landbot.pro/v3/H-2203691-EOCIO7NCFUKIRLTA/index.json" />
     </>
   );
