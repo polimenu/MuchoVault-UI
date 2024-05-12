@@ -14,7 +14,6 @@ import { PoolsModals } from './Modals';
 import { useGetPoolDetail } from './Hooks/useGetPoolDetail';
 import { PoolDetail } from './Components/PoolDetail';
 import { OnlyNFT } from '@Views/Common/OnlyNFT';
-import { useLoaderData } from 'react-router-dom';
 
 const Styles = styled.div`
   width: 100%;

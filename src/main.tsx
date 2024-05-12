@@ -27,13 +27,15 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <Suspense fallback="loading">
     <WagmiConfig client={wagmiClient}>
       <RainbowKitProvider chains={chains} theme={darkTheme()}>
-        <SWRConfig value={options}>
-          <ContextProvider>
-            <JotaiProvider>
-              <App />
-            </JotaiProvider>
-          </ContextProvider>
-        </SWRConfig>
+        <HashRouter>
+          <SWRConfig value={options}>
+            <ContextProvider>
+              <JotaiProvider>
+                <App />
+              </JotaiProvider>
+            </ContextProvider>
+          </SWRConfig>
+        </HashRouter>
       </RainbowKitProvider>
     </WagmiConfig>
   </Suspense>
