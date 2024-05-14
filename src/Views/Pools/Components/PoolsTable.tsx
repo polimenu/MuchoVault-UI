@@ -600,7 +600,7 @@ export const PoolsTable = ({ data }: { data: IPoolsData }) => {
         return <>
             <div id="PoolListTableContainer" className="m-auto w-[90vw]">
                 <PoolListTable
-                    defaultSortId="APR"
+                    defaultSortId="VolTVL"
                     defaultOrder="desc"
                     headerJSX={headerJSX}
                     cols={headerJSX.length}
