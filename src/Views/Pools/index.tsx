@@ -33,7 +33,6 @@ export const PoolsPage = () => {
   useEffect(() => {
     document.title = "(mucho) finance | Liquidity pools";
   }, []);
-
   const { activeChain } = useActiveChain();
 
   return (

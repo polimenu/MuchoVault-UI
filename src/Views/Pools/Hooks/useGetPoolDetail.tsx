@@ -18,7 +18,7 @@ export const useGetPoolDetail = (poolId: string) => {
     }
 
     useEffect(() => {
-        console.log("Fetching pool detail", poolId);
+        //console.log("Fetching pool detail", poolId);
         if (poolId) {
 
             const url = "https://apiindex.mucho.finance/pool/history?id=" + poolId;
@@ -33,9 +33,9 @@ export const useGetPoolDetail = (poolId: string) => {
             }).then(response => {
                 response.json().then(json => {
                     dispatch({ type: 'SET_TXN_LOADING', payload: 0 });
-                    console.log("Pool detail Txn finished", json);
+                    //console.log("Pool detail Txn finished", json);
                     setPool(parsePool(json.pool));
-                    console.log("Pool detail Txn finished", json.pool);
+                    //console.log("Pool detail Txn finished", json.pool);
                 })
             }).catch(e => {
                 console.log("Error API", e);
@@ -44,7 +44,7 @@ export const useGetPoolDetail = (poolId: string) => {
 
         }
         else {
-            console.log("Unsetting pool");
+            //console.log("Unsetting pool");
             setPool(undefined);
         }
 

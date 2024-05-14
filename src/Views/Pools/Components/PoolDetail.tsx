@@ -28,9 +28,11 @@ export const PoolDetail = ({ data }: { data: IPoolDetail }) => {
 
     const lastEpoch = data ? data.history.sort((a, b) => b.date - a.date)[0].date.getTime() : 0;
     useEffect(() => {
-        const epMin = lastEpoch - numDays * 24 * 60 * 60 * 1000;
-        //console.log("epMin", epMin, numDays);
-        setEpochMin(epMin);
+        if (lastEpoch && numDays) {
+            const epMin = lastEpoch - numDays * 24 * 60 * 60 * 1000;
+            //console.log("epMin", epMin, numDays);
+            setEpochMin(epMin);
+        }
     }, [lastEpoch, numDays])
 
     if (!data) {
