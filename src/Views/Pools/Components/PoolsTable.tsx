@@ -609,8 +609,9 @@ export const PoolsTable = ({ data }: { data: IPoolsData }) => {
                     bodyJSX={bodyJSX}
                     loading={!dashboardData.length}
                     onRowClick={(row: any) => {
-                        console.log("pairDetail", row)
-                        setPoolsState({ ...poolsState, pairAddress: row.pairAddress });
+                        //console.log("pairDetail", row)
+                        //setPoolsState({ ...poolsState, pairAddress: row.pairAddress });
+                        window.location.href = "/#/pools/" + escape(row.pairAddress);
                     }
                     }
                     widths={['12%', '12%', '12%', '12%', '14%', '14%', '12%', '12%']}

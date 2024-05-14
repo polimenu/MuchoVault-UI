@@ -6,7 +6,7 @@ import Background from 'src/AppStyles';
 import { ArbitrumOnly } from '@Views/Common/ChainNotSupported';
 import { useActiveChain } from '@Hooks/useActiveChain';
 import { useAtom } from 'jotai';
-import { poolsDataAtom } from './poolsAtom';
+import { poolsAtom, poolsDataAtom } from './poolsAtom';
 import { useGetPoolsData } from './Hooks/useGetPoolsData';
 import { PoolsTable } from './Components/PoolsTable';
 import { PoolsContext } from './felix';
@@ -29,9 +29,11 @@ const descStyles = 'w-[46rem] text-center m-auto tab:w-full';
 const PoolContextProvider = PoolsContext.Provider;
 
 
-export const PoolsPage = () => {
+export const PoolDetailPage = () => {
+  const { poolId } = useParams();
+  console.log("poolId", poolId);
   useEffect(() => {
-    document.title = "(mucho) finance | Liquidity pools";
+    document.title = "(mucho) finance | Liquidity pool";
   }, []);
 
   const { activeChain } = useActiveChain();
@@ -50,8 +52,7 @@ export const PoolsPage = () => {
                     nftAllowed={[1, 5]}
                     activeChain={activeChain}
                     child={<>
-                      <PoolsModals />
-                      <PoolsComponent />
+                      <PoolDetailComponent poolId={poolId} />
                     </>} />
 
                 </Styles>
@@ -64,18 +65,21 @@ export const PoolsPage = () => {
   );
 };
 
-const PoolsComponent = () => {
+const PoolDetailComponent = ({ poolId }: { poolId: string }) => {
   const [, setPoolsData] = useAtom(poolsDataAtom);
   const poolsData = useGetPoolsData();
+  const [poolDetail] = useGetPoolDetail(poolId);
   //console.log("poolsData", poolsData);
   setPoolsData(poolsData);
+
+
 
   return (<>
     <Section
       Heading={<div className={topStyles}>(mucho) Pools</div>}
       Cards={[]}
-      subHeading={<div className={descStyles}>Top Liquidity Pools</div>}
-      other={<PoolsTable data={poolsData} />}
+      subHeading={<div className={descStyles}>{poolDetail ? `${poolDetail.BaseToken} / ${poolDetail.QuoteToken} ${poolDetail.feeTier / 10000}% - ${poolDetail.DexId} (${poolDetail.ChainId})` : "Top Liquidity Pools"}</div>}
+      other={<PoolDetail data={poolDetail} />}
     />
   </>
   );

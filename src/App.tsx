@@ -22,9 +22,10 @@ import { IndexPage } from '@Views/Index';
 import { IndexMarketPage } from '@Views/Index/market';
 import { RampPageB2B } from '@Views/Ramp/b2b';
 import { PoolsFelix } from '@Views/Pools/felix';
-import { PoolsPage2 } from '@Views/Pools';
+import { PoolsPage } from '@Views/Pools';
 import MyLandbot from '@Views/Common/MyLandBot';
 import { OnlyNFT } from '@Views/Common/OnlyNFT';
+import { PoolDetailPage } from '@Views/Pools/pool';
 
 if (import.meta.env.VITE_MODE === 'production') {
   //console.log(`import.meta.env.SENTRY_DSN: `, import.meta.env.VITE_SENTRY_DSN);
@@ -73,7 +74,8 @@ function App() {
         <Route path="/index-launch" element={<IndexPage />} />
         <Route path="/index" element={<IndexMarketPage />} />
         <Route path="/poolsf" element={<PoolsFelix />} />
-        <Route path="/pools" element={<PoolsPage2 />} />
+        <Route path="/pools" element={<PoolsPage />} />
+        <Route path="/pools/:poolId" element={<PoolDetailPage />} />
 
 
       </Routes>

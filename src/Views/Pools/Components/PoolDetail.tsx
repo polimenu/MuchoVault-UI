@@ -18,7 +18,7 @@ export const PoolDetail = ({ data }: { data: IPoolDetail }) => {
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(0);
     const topStyles = 'flex flex-row items-center justify-center mb-2 text-f22';
-    //console.log("PoolsTable data", data);
+    console.log("PoolDetail data", data);
     const [poolsState, setPoolsState] = useAtom(poolsAtom);
     const [reverse, setReverse] = useState(false);
     const dateButtons = [
@@ -26,6 +26,12 @@ export const PoolDetail = ({ data }: { data: IPoolDetail }) => {
         { label: "1M", days: 30 }, { label: "2M", days: 60 }, { label: "3M", days: 90 }, { label: "6M", days: 180 }
     ]
 
+    const lastEpoch = data ? data.history.sort((a, b) => b.date - a.date)[0].date.getTime() : 0;
+    useEffect(() => {
+        const epMin = lastEpoch - numDays * 24 * 60 * 60 * 1000;
+        //console.log("epMin", epMin, numDays);
+        setEpochMin(epMin);
+    }, [lastEpoch, numDays])
 
     if (!data) {
         return <Skeleton
@@ -35,12 +41,6 @@ export const PoolDetail = ({ data }: { data: IPoolDetail }) => {
         />
     }
     else {
-        const lastEpoch = data.history.sort((a, b) => b.date - a.date)[0].date.getTime();
-        useEffect(() => {
-            const epMin = lastEpoch - numDays * 24 * 60 * 60 * 1000;
-            console.log("epMin", epMin, numDays);
-            setEpochMin(epMin);
-        }, [lastEpoch, numDays])
 
         const filteredData = { ...data, history: data.history.filter(h => h.date.getTime() >= epochMin) };
         //console.log("epochMin filtering", epochMin);
@@ -81,7 +81,7 @@ export const PoolDetail = ({ data }: { data: IPoolDetail }) => {
                         <div id="otherButtons" className="mb-5 ml-5 flex justify-end w-[49%] mb-5">
                             <BlueBtn className="!w-[100px]" onClick={() => { setReverse(!reverse); }}>{reverse ? `${data.QuoteToken} / ${data.BaseToken}` : `${data.BaseToken} / ${data.QuoteToken}`}</BlueBtn>
                             <BlueBtn className="ml-5 !w-[140px]" onClick={() => { window.open(`https://dexscreener.com/${data.ChainId}/${data.pairAddress}`) }}>DexScreener</BlueBtn>
-                            <BlueBtn className="ml-5 !w-[140px]" onClick={() => { setPoolsState({ ...poolsState, pairAddress: undefined }) }}>Back to List</BlueBtn>
+                            <BlueBtn className="ml-5 !w-[140px]" onClick={() => { window.location.href = "/#/pools" }}>Back to List</BlueBtn>
                         </div>
                     </div></>}
                 Heading={<></>}

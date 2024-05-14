@@ -4,9 +4,8 @@ import { useGlobal } from '@Contexts/Global';
 import { useAtom } from 'jotai';
 
 
-export const useGetPoolDetail = () => {
+export const useGetPoolDetail = (poolId: string) => {
     const { dispatch } = useGlobal();
-    const [poolsState,] = useAtom(poolsAtom);
     const [pool, setPool] = useState<IPoolDetail>();
 
     const parsePool = (poolRes: any) => {
@@ -19,10 +18,10 @@ export const useGetPoolDetail = () => {
     }
 
     useEffect(() => {
-        //console.log("Fetching pool detail", url);
-        if (poolsState.pairAddress) {
+        console.log("Fetching pool detail", poolId);
+        if (poolId) {
 
-            const url = "https://apiindex.mucho.finance/pool/history?id=" + poolsState.pairAddress;
+            const url = "https://apiindex.mucho.finance/pool/history?id=" + poolId;
 
             dispatch({ type: 'SET_TXN_LOADING', payload: 1 });
             fetch(url, {
@@ -34,9 +33,9 @@ export const useGetPoolDetail = () => {
             }).then(response => {
                 response.json().then(json => {
                     dispatch({ type: 'SET_TXN_LOADING', payload: 0 });
-                    //console.log("Pool detail Txn finished", json);
+                    console.log("Pool detail Txn finished", json);
                     setPool(parsePool(json.pool));
-                    //console.log("Pool detail Txn finished", pool);
+                    console.log("Pool detail Txn finished", json.pool);
                 })
             }).catch(e => {
                 console.log("Error API", e);
@@ -49,7 +48,7 @@ export const useGetPoolDetail = () => {
             setPool(undefined);
         }
 
-    }, [poolsState.pairAddress])
+    }, [poolId])
 
 
     return [pool];

@@ -3,7 +3,7 @@ import { Section } from "../Card/Section";
 import { useGetUserHasNFT } from "../Hooks/useNFTCall";
 
 export const OnlyNFT = ({ nftAllowed, child, heading, activeChain }: { nftAllowed: number[], child: JSX.Element, heading: JSX.Element, activeChain: Chain }) => {
-    const hasNFT = useGetUserHasNFT(nftAllowed, activeChain);
+    const hasNFT = import.meta.env.VITE_MODE !== 'production' || useGetUserHasNFT(nftAllowed, activeChain);
     const descStyles = 'w-[46rem] text-center m-auto tab:w-full';
 
     if (!hasNFT) {
