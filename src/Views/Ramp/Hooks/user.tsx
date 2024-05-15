@@ -84,7 +84,7 @@ export const useGetUserDetails = (sessionId?: string): (IRampUserDetails | undef
     const save = (obj: any) => {
         //console.log("setting user details", obj);
         if (obj.status !== "KO") {
-            obj.response.status = "SOFT_KYC_FAILED"; //TEMPORARY!
+            //obj.response.status = "SOFT_KYC_FAILED"; //TEMPORARY!
             //parse date
             if (obj.response.date_of_birth)
                 obj.response.date_of_birth = obj.response.date_of_birth && obj.response.date_of_birth.substring(0, 10);
