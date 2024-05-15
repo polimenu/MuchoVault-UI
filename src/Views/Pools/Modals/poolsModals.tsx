@@ -40,44 +40,7 @@ function ModalChild() {
     if (activeModal == "FILTER")
         return <FilterModal />;
 
-    if (activeModal == "setMin" || activeModal == "setMax")
-        return <SetMinMaxModal />;
-
     return <div>{activeModal}</div>;
-}
-
-const SetMinMaxModal = () => {
-    const [pageState, setPageState] = useAtom(poolsAtom);
-
-    if (!pageState || !pageState.auxModalData)
-        return <></>;
-
-    const { num, setNum, title, currentValue, reverse } = pageState.auxModalData;
-    const [input, setInput] = useState(currentValue);
-
-    const closeModal = (anchor: boolean = false) => {
-        console.log("Closing modal", anchor);
-        setNum(reverse ? 1 / input : input, anchor);
-        setPageState({ ...pageState, isModalOpen: false, activeModal: "" });
-    }
-
-    return <div className="text-f16 m-auto mb-5 w-full mt-5">
-        <div className='max-h-[400px] o-auto'>
-            <BufferInput
-                className=""
-                header={`${title}:`}
-                bgClass="!bg-2 !text-1"
-                ipClass="!bg-1 !p-3 w-full !text-1 mt-5"
-                value={input}
-                onChange={(val) => {
-                    setInput(val);
-                }}
-            />
-            <BlueBtn className='mb-5' onClick={() => closeModal(false)}>Save</BlueBtn>
-            <BlueBtn className='mb-5' onClick={() => closeModal(true)}>Save & Anchor</BlueBtn>
-        </div>
-
-    </div>
 }
 
 const FilterModal = () => {

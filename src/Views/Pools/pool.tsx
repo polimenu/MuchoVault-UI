@@ -6,15 +6,14 @@ import Background from 'src/AppStyles';
 import { ArbitrumOnly } from '@Views/Common/ChainNotSupported';
 import { useActiveChain } from '@Hooks/useActiveChain';
 import { useAtom } from 'jotai';
-import { poolsAtom, poolsDataAtom } from './poolsAtom';
+import { poolsDataAtom } from './poolsAtom';
 import { useGetPoolsData } from './Hooks/useGetPoolsData';
-import { PoolsTable } from './Components/PoolsTable';
 import { PoolsContext } from './felix';
-import { PoolsModals } from './Modals';
 import { useGetPoolDetail } from './Hooks/useGetPoolDetail';
 import { PoolDetail } from './Components/PoolDetail';
 import { OnlyNFT } from '@Views/Common/OnlyNFT';
 import { useParams } from 'react-router-dom';
+import { PoolDetailModals } from './Modals/poolDetailModals';
 
 const Styles = styled.div`
   width: 100%;
@@ -52,6 +51,7 @@ export const PoolDetailPage = () => {
                     nftAllowed={[1, 5]}
                     activeChain={activeChain}
                     child={<>
+                      <PoolDetailModals />
                       <PoolDetailComponent poolId={poolId} />
                     </>} />
 

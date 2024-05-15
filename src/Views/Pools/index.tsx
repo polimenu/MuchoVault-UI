@@ -10,11 +10,8 @@ import { poolsDataAtom } from './poolsAtom';
 import { useGetPoolsData } from './Hooks/useGetPoolsData';
 import { PoolsTable } from './Components/PoolsTable';
 import { PoolsContext } from './felix';
-import { PoolsModals } from './Modals';
-import { useGetPoolDetail } from './Hooks/useGetPoolDetail';
-import { PoolDetail } from './Components/PoolDetail';
+import { PoolsModals } from './Modals/poolsModals';
 import { OnlyNFT } from '@Views/Common/OnlyNFT';
-import { useParams } from 'react-router-dom';
 
 const Styles = styled.div`
   width: 100%;
