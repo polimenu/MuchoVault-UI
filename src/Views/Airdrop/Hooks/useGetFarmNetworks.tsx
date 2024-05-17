@@ -30,21 +30,21 @@ export const useGetFarmNetwork = (network: string): (IFarmNetwork[]) => {
     return [net];
 }
 
-export const useGetFarmNetworksBriefing = (): (IFarmNetworkBriefing[][]) => {
+export const useGetFarmNetworksBriefing = (wallet: string): (IFarmNetworkBriefing[][]) => {
     //const { dispatch } = useGlobal();
     const [net, setNet] = useState<IFarmNetworkBriefing[]>();
     const save = (obj: any) => {
         //parse
         //console.log("useGetFarmNetworksBriefing res", obj);
         if (obj) {
-            console.log("changing net");
+            //console.log("changing net");
             setNet(obj);
         }
     }
 
     useEffect(() => {
-        fetchFromFarmApi(`/airdrop/allnetworks`, 'GET', {}, save, () => { });
-    }, []);
+        fetchFromFarmApi(`/airdrop/allnetworks`, 'GET', { wallet }, save, () => { });
+    }, [wallet]);
 
     return [net];
 }

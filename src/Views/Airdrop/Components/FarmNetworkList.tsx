@@ -6,7 +6,7 @@ import { IFarmNetwork, IFarmNetworkBriefing } from "../AirdropAtom";
 import TransactionTable from "@Views/Ramp/Components/TransactionTable";
 
 
-export const FarmNetworkList = ({ farmNetwork, prices }: { farmNetwork?: IFarmNetwork, prices: any }) => {
+export const FarmNetworkList = ({ farmNetwork, prices, setWallet }: { farmNetwork?: IFarmNetwork, prices: any, setWallet: any }) => {
     if (!farmNetwork) {
         return <Skeleton
             key="FarmNetwork"
@@ -19,8 +19,7 @@ export const FarmNetworkList = ({ farmNetwork, prices }: { farmNetwork?: IFarmNe
         //console.log("PRICES", prices);
 
         const uniqueTokens = farmNetwork.wallets[0].balances.map(b => b.token);
-
-        farmNetwork.wallets.sort((a, b) => a.nativeBalance - b.nativeBalance);
+        uniqueTokens.push(farmNetwork.nativeToken);
 
         const displayValue = (token: string, balance: number, useColors: boolean = false, addClass: string = "") => {
             let classColors = "";
@@ -41,37 +40,44 @@ export const FarmNetworkList = ({ farmNetwork, prices }: { farmNetwork?: IFarmNe
 
         const headerJSX = [
             { id: "w", label: "Wallet" },
-            { id: "n", label: farmNetwork.nativeToken },
-            ...uniqueTokens.map(tk => { return { id: `tk_${tk}`, label: tk } })
+            ...uniqueTokens.map(tk => { return { id: `${tk}`, label: tk } })
         ];
+        //console.log("headerJSX", headerJSX);
 
         let dashboardData = [];
 
-        const totals = farmNetwork.wallets.reduce((p, c) => {
-            return {
-                wallet: <b>TOTAL</b>,
-                nativeBalance: p.nativeBalance + c.nativeBalance,
-                balances: uniqueTokens.map((tk, i) => {
-                    return {
-                        token: tk,
-                        balance: p.balances[i].balance + c.balances[i].balance,
-                    }
-                })
-            };
-        })
-        dashboardData.push([
-            (totals.wallet),
-            displayValue(farmNetwork.nativeToken, totals.nativeBalance, true, "bold"),
-            ...totals.balances.map(tk => displayValue(tk.token, tk.balance, false, "bold"))
-        ]);
+        //console.log("farmNetwork.wallets", farmNetwork.wallets);
+        const walletsCooked = farmNetwork.wallets.map(w => {
+            const res = {
+                w: w.name,
+                [farmNetwork.nativeToken]: w.nativeBalance,
+            }
+            uniqueTokens.forEach((tk, i) => {
+                res[tk] = (tk == farmNetwork.nativeToken) ? w.nativeBalance : w.balances.find(b => b.token == tk).balance;
+            })
+            return res;
+        });
 
-        dashboardData = dashboardData.concat(farmNetwork.wallets.map(w => {
-            return [
-                (w.name),
-                displayValue(farmNetwork.nativeToken, w.nativeBalance, true),
-                ...w.balances.map(tk => displayValue(tk.token, tk.balance))
-            ]
-        }));
+        const totals = walletsCooked.reduce((p, c) => {
+            const res = {};
+            uniqueTokens.forEach(tk => {
+                res[tk] = p[tk] + c[tk];
+            })
+            return res;
+        })
+        //console.log("totals*********", totals);
+
+
+        dashboardData.push({
+            w: "TOTAL",
+            ...totals
+        });
+
+        //console.log("111*********", dashboardData);
+
+        dashboardData = dashboardData.concat(walletsCooked);
+
+        //console.log("222*********", dashboardData);
 
         //console.log("dashboardData", dashboardData);
 
@@ -100,7 +106,9 @@ export const FarmNetworkList = ({ farmNetwork, prices }: { farmNetwork?: IFarmNe
             col: number,
             sortedData: typeof dashboardData
         ) => {
-            const currentData = sortedData[row][col];
+            const token = headerJSX[col].id;
+            const currentData = sortedData[row][token];
+            const val = displayValue(token, currentData, (col > 0), sortedData[row].w == "TOTAL" ? "bold" : "");
             let classNames = "";
             /*if (col == 1) {
                 if (currentData > 0)
@@ -108,11 +116,10 @@ export const FarmNetworkList = ({ farmNetwork, prices }: { farmNetwork?: IFarmNe
                 else
                     classNames += "red";
             }*/
-            //console.log("currentData", currentData);
+            //if (col == 3 && row == 3)
+            //    console.log("currentData", currentData);
             return <CellContent mykey={"cellfwlist_" + row.toString() + "_" + col.toString()}
-                content={[
-                    currentData,
-                ]}
+                content={[val]}
                 className={classNames}
             />;
         }
@@ -128,7 +135,14 @@ export const FarmNetworkList = ({ farmNetwork, prices }: { farmNetwork?: IFarmNe
             bodyJSX={bodyJSX}
             loading={!dashboardData.length}
             onRowClick={(idx) => {
-                //navigate(`/binary/${dashboardData[idx].pair}`);
+                const w = dashboardData[idx].w;
+                if (w != "TOTAL") {
+                    setWallet(w);
+                    //console.log("Set wallet!", w);
+                }
+                else {
+                    setWallet("");
+                }
             }}
             widths={['40%', '20%', ...uniqueTokens.map(u => `${Math.round(40 / uniqueTokens.length)}%`)]}
             shouldShowMobile={true}

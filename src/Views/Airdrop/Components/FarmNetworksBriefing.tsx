@@ -16,9 +16,11 @@ export const FarmNetworksBriefing = ({ farmNetworkBriefings, prices, setNetwork 
     else {
 
         //console.log("PRICES", prices);
+        console.log("farmNetworkBriefings", farmNetworkBriefings);
 
         const uniqueTokens: string[] = [];
-        console.log("BRIEFINGS", farmNetworkBriefings);
+
+        //console.log("BRIEFINGS", farmNetworkBriefings);
         for (let inet in farmNetworkBriefings) {
             for (let it in farmNetworkBriefings[inet].balances) {
                 const bal = farmNetworkBriefings[inet].balances[it];
@@ -31,9 +33,9 @@ export const FarmNetworksBriefing = ({ farmNetworkBriefings, prices, setNetwork 
             const vb = b.startsWith("USD") ? 1 : -1;
             return va - vb;
         })
-        console.log("uniqueTokens", uniqueTokens);
+        //console.log("uniqueTokens", uniqueTokens);
 
-        const displayValue = (token: string, balance: number, useColors: boolean = false, addClass: string = "") => {
+        const displayValue = (token: string, balance: number, useColors: boolean = false, addClass: string = "", network: string = "") => {
             let classColors = "";
             if (useColors) {
                 classColors = balance > 0 ? "green" : "red";
@@ -41,13 +43,13 @@ export const FarmNetworksBriefing = ({ farmNetworkBriefings, prices, setNetwork 
             //console.log("Test prices", token, prices[token], prices)
             if (prices[token]) {
                 //return `${roundTo(balance, 6)} ($ ${roundTo(prices[token] * balance, 2)})`;
-                return <><Display className={`!justify-start inline ${classColors} ${addClass}`} data={balance} precision={balance > 1000 ? 0 : 3} />
+                return <div key={token + "_" + network}><Display className={`!justify-start inline ${classColors} ${addClass}`} data={balance} precision={balance > 1000 ? 0 : 3} />
                     &nbsp;
                     ($ <Display className={`!justify-start inline ${addClass}`} data={prices[token] * balance} precision={0} />)
-                </>
+                </div>
             }
 
-            return <Display className={`!justify-start inline ${classColors} ${addClass}`} data={balance} precision={0} />;
+            return <Display key={token + "_" + network} className={`!justify-start inline ${classColors} ${addClass}`} data={balance} precision={0} />;
         }
 
         const headerJSX = [
@@ -74,8 +76,8 @@ export const FarmNetworksBriefing = ({ farmNetworkBriefings, prices, setNetwork 
         }
 
         dashboardData.push([
-            <b>TOTAL</b>,
-            ...totals.map(tk => displayValue(tk.token, tk.total, false, "bold"))
+            <b key="totalCol">TOTAL</b>,
+            ...totals.map(tk => displayValue(tk.token, tk.total, false, "bold", "total"))
         ]);
 
 
@@ -90,7 +92,7 @@ export const FarmNetworksBriefing = ({ farmNetworkBriefings, prices, setNetwork 
                         val += bal;
                     }
                 }
-                netValues.push(displayValue(token, val, false, ""));
+                netValues.push(displayValue(token, val, false, "", farmNetworkBriefings[inet].network));
             }
             dashboardData.push(netValues);
         }

@@ -55,11 +55,12 @@ export const AdminFarmAirdropPage = () => {
   const { activeChain } = useActiveChain();
   const defNetwork = "Arbitrum";
   const [network, setNetwork] = useState(defNetwork);
+  const [wallet, setWallet] = useState("");
   const [netData] = useGetFarmNetwork(network);
-  const [brief] = useGetFarmNetworksBriefing();
+  const [brief] = useGetFarmNetworksBriefing(wallet);
   const prices = useGetPrices();
   const total = getTotalUSD(brief, prices);
-  console.log("netData", netData);
+  //console.log("netData", netData);
   useEffect(() => {
     document.title = "(mucho) finance | airdrop admin";
   }, []);
@@ -78,7 +79,7 @@ export const AdminFarmAirdropPage = () => {
                   child={<>
                     <div className='mb-5'>
                       <Section
-                        Heading={<div className={topStyles}>Farming networks summary ($ <Display data={total} precision={2} />)</div>}
+                        Heading={<div className={topStyles}>{wallet ? "Wallet " + wallet : "Farming networks summary"} ($ <Display data={total} precision={2} />)</div>}
                         subHeading={
                           <div className={descStyles}></div>
                         }
@@ -103,7 +104,7 @@ export const AdminFarmAirdropPage = () => {
                                 Last Update: {netData.lastUpdate}
                               </div>}
                             </div>
-                            <FarmNetworkList farmNetwork={netData} prices={prices} />
+                            <FarmNetworkList farmNetwork={netData} prices={prices} setWallet={setWallet} />
                           </div>}
                       />
 
