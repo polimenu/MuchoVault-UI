@@ -16,13 +16,18 @@ export const TrxDetailModal = () => {
     const [pageState, setPageState] = useAtom(rampAtom);
     const [rampAdminData] = useAtom(rampAdminDataAtom);
     const tid = pageState.auxModalData.tid;
+    //console.log("******ORL************", rampAdminData.OnRampList);
     const offramp = rampAdminData.OffRampList.find(r => r.transaction_id == tid);
     const onramp = rampAdminData.OnRampList.find(r => r.transaction_id == tid);
-    const trx = offramp ?? onramp;
+    //console.log("******onramp************", onramp);
+    //console.log("******offramp************", offramp);
+    const trx = offramp ? offramp : onramp;
 
     if (!trx) {
-        return <div>No data found!</div>;
+        return <div>No data found ({tid})!</div>;
     }
+
+    //console.log("trx", trx);
 
     const headerJSX = [
         { id: "date", label: "Date" },
@@ -102,7 +107,7 @@ export const TrxDetailModal = () => {
 
 
     return <Section
-        Heading={<div className={topStyles}>Transaction Details</div>}
+        Heading={<div className={topStyles}>Transaction Details ({tid})</div>}
         subHeading={
             <div className={descStyles}>
             </div>

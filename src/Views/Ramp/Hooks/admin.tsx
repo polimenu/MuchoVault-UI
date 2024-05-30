@@ -23,6 +23,7 @@ export const useGetRampAdminData = () => {
 const useGetAllTransactionList = (session_id: string) => {
     const { dispatch } = useGlobal();
     const [onRampList, setOnRampList] = useState<IRampAdminTransaction[]>([]);
+    //console.log("OnRampList updated", onRampList);
     const [offRampList, setOffRampList] = useState<IRampAdminTransaction[]>([]);
 
     const save = (obj: any) => {
@@ -30,6 +31,7 @@ const useGetAllTransactionList = (session_id: string) => {
             console.log("Setting list transactions", obj);
             const on = obj.onramp.sort((a, b) => b.init - a.init);
             const off = obj.offramp.sort((a, b) => b.init - a.init);
+            //console.log("OnRampList", on);
             setOnRampList(on);
             setOffRampList(off);
 
