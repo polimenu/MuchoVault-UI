@@ -3,7 +3,7 @@ export const contractLink = (contract: string, name: string) => {
 }
 
 export const addressSummary = (address: string) => {
-    return address.substring(0, 10) + "..." + address.substring(address.length - 10, address.length);
+    return address ? address.substring(0, 10) + "..." + address.substring(address.length - 10, address.length) : "";
 }
 
 export const dateFormat = (date: Date) => {
