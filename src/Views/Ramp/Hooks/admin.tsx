@@ -13,36 +13,34 @@ export const useGetRampAdminData = () => {
     //Admin data
     [rampAdminData.KYCList] = useGetKycList(rampStateAtom.sessionId);
     [rampAdminData.KYBList] = useGetKybList(rampStateAtom.sessionId);
-    [rampAdminData.OffRampList, rampAdminData.OnRampList] = useGetAllTransactionList(rampStateAtom.sessionId);
+    //[rampAdminData.OffRampList, rampAdminData.OnRampList] = useGetAllTransactionList(rampStateAtom.sessionId);
+    [rampAdminData.OffRampList] = useGetTransactionList(rampStateAtom.sessionId, "cryptoToFiat");
+    [rampAdminData.OnRampList] = useGetTransactionList(rampStateAtom.sessionId, "fiatToCrypto");
 
     return useMemo(() => rampAdminData,
         [rampStateAtom.sessionId, rampAdminData.KYCList, rampAdminData.KYBList, rampAdminData.OffRampList, rampAdminData.OnRampList]);
 }
 
 
-const useGetAllTransactionList = (session_id: string) => {
+const useGetTransactionList = (session_id: string, type: string) => {
     const { dispatch } = useGlobal();
-    const [onRampList, setOnRampList] = useState<IRampAdminTransaction[]>([]);
     //console.log("OnRampList updated", onRampList);
-    const [offRampList, setOffRampList] = useState<IRampAdminTransaction[]>([]);
+    const [trxList, setTrxList] = useState<IRampAdminTransaction[]>([]);
 
     const save = (obj: any) => {
         if (obj.status == "OK") {
             console.log("Setting list transactions", obj);
-            const on = obj.onramp.sort((a, b) => b.init - a.init);
-            const off = obj.offramp.sort((a, b) => b.init - a.init);
+            const trx = obj.transactions.sort((a, b) => b.init - a.init);
             //console.log("OnRampList", on);
-            setOnRampList(on);
-            setOffRampList(off);
-
+            setTrxList(trx);
         }
     }
 
     useEffect(() => {
-        fetchFromRampApi(`/admin/transactions`, 'GET', { session_id }, save, dispatch);
+        fetchFromRampApi(`/admin/transactionsByType`, 'GET', { session_id, type }, save, dispatch);
     }, [session_id]);
 
-    return [offRampList, onRampList];
+    return [trxList];
 }
 
 
