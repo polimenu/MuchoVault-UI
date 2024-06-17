@@ -26,6 +26,7 @@ import { PoolsPage } from '@Views/Pools';
 import MyLandbot from '@Views/Common/MyLandBot';
 import { OnlyNFT } from '@Views/Common/OnlyNFT';
 import { PoolDetailPage } from '@Views/Pools/pool';
+import { NFT } from '@Views/NFT';
 
 if (import.meta.env.VITE_MODE === 'production') {
   //console.log(`import.meta.env.SENTRY_DSN: `, import.meta.env.VITE_SENTRY_DSN);
@@ -59,7 +60,7 @@ function App() {
         <Route path="/v1" element={<Earn />} />
         <Route path="/badgeAdmin" element={<Badge admin={true} />} />
         <Route path="/badge" element={<Badge admin={false} />} />
-        <Route path="/nft" element={<Badge admin={false} />} />
+        <Route path="/nft" element={<NFT />} />
         <Route path="/v2" element={<V2UserPage />} />
         <Route path="/v2/admin/muchovault" element={<V2AdminPage pageType={V2AdminContract.MuchoVault} />} />
         <Route path="/v2/admin/muchohub" element={<V2AdminPage pageType={V2AdminContract.MuchoHub} />} />
