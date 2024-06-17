@@ -8,7 +8,7 @@ import {
 
 import { Chain, useContractReads } from 'wagmi';
 import { BadgeContext } from '..';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useUserAccount } from '@Hooks/useUserAccount';
 import { IBadge, IPlan } from '../badgeAtom';
 
@@ -22,6 +22,7 @@ export const fromWei = (value: string, decimals: number = 18) => {
 };
 
 export const useGetPlans = (admin: boolean) => {
+  let res: IBadge = null;
   //console.log("useGetPlans");
   const { address: account } = useUserAccount();
   let activeChain: Chain | null = null;
@@ -40,18 +41,6 @@ export const useGetPlans = (admin: boolean) => {
   }
 
   let calls = [allPlansCall];
-
-  /*if (account) {
-    calls = calls.concat([{
-      address: badge_config.MuchoNFTFetcher,
-      abi: FetcherAbi,
-      functionName: 'activePlansForUser',
-      chainId: activeChain.id,
-      args: [account],
-    }]);
-
-  }*/
-
   //console.log("Calls"); console.log(calls);
 
   let { data } = useContractReads({
@@ -60,23 +49,22 @@ export const useGetPlans = (admin: boolean) => {
   });
   data = getBNtoStringCopy(data);
 
-  console.log("Result plans"); console.log(data);
+  //console.log("Result plans"); console.log(data);
 
-  let response = {};
 
   if (data && data[0]) {
 
     const tokenMap = VALID_TOKENS;
     //console.log("test"); console.log(tokenMap(tokens[0]));
-    console.log("DATA!", data);
+    // console.log("DATA!", data);
 
     let resObject: IBadge = {};
     resObject.plans = [];
 
-    const plans = data[0].filter(p => BLACKLISTED_NFT.indexOf(Number(p.id)) < 0);
+    const plans = data[0].filter(p => BLACKLISTED_NFT.indexOf(p.nftAddress) < 0);
 
     for (const plan of plans) {
-      console.log("Checking plan ", plan);
+      //console.log("Checking plan ", plan);
       const subTk = tokenMap[plan.subscriptionPrice.token];
       const renTk = tokenMap[plan.renewalPrice.token];
 
@@ -85,10 +73,10 @@ export const useGetPlans = (admin: boolean) => {
 
       if (admin || enabledSubscription) {
         resObject.plans.push({
-          id: plan.id,
-          name: plan.name,
-          uri: plan.uri,
-          subscribers: plan.subscribers,
+          id: plan.nftAddress,
+          name: plan.planName,
+          uri: "",
+          subscribers: 0,
           subscriptionPrice: {
             token: subTk.symbol,
             amount: plan.subscriptionPrice.amount / (10 ** subTk.decimals),
@@ -101,11 +89,11 @@ export const useGetPlans = (admin: boolean) => {
             contract: plan.renewalPrice.token,
             decimals: renTk.decimals
           },
-          time: plan.time / (24 * 3600),
-          exists: plan.exists,
+          time: plan.duration / (24 * 3600),
+          exists: true,
           enabled: plan.enabled,
           status: plan.enabled ? "Enabled" : "Disabled",
-          activeSubscribers: plan.activeSubscribers,
+          activeSubscribers: 0,
           isActiveForCurrentUser: false, //ToDo
           isExpiredForCurrentUser: false,
         });
@@ -114,7 +102,7 @@ export const useGetPlans = (admin: boolean) => {
 
 
     // FORMATTING
-    response = resObject;
+    res = resObject;
 
 
   }
@@ -122,5 +110,5 @@ export const useGetPlans = (admin: boolean) => {
   //console.log("Formatting done!");
   //console.log(response);
 
-  return response ? response : { plans: null };
+  return res;
 };

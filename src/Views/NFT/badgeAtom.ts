@@ -30,16 +30,16 @@ export interface IPlan {
   id: number;
   name: string;
   uri: string;
-  subscribers: number;
   subscriptionPrice: IPrice;
   renewalPrice: IPrice;
   time: Date;
-  exists: boolean;
   enabled: boolean;
   status: string;
-  activeSubscribers: number;
+  balanceForCurrentUser: number;
+  tokenIdForCurrentUser: number;
   isActiveForCurrentUser: boolean;
   isExpiredForCurrentUser: boolean;
+  remainingDaysForCurrentUser: number;
 }
 
 export interface IPrice {

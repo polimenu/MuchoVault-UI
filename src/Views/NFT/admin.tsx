@@ -32,11 +32,11 @@ export const BadgeContext = React.createContext<{ activeChain: Chain } | null>(
   null
 );
 const BadgeContextProvider = BadgeContext.Provider;
-export const Badge = ({ admin }: { admin: boolean }) => {
+export const NFTAdmin = () => {
   const { activeChain } = useActiveChain();
   //console.log("admin", admin);
   useEffect(() => {
-    document.title = `(mucho) finance | NFT Plans ${admin ? "Admin" : ""}`;
+    document.title = `(mucho) finance | NFT V2 Admin`;
   }, []);
   return (
     <Background>
@@ -46,7 +46,7 @@ export const Badge = ({ admin }: { admin: boolean }) => {
         <ArbitrumOnly>
           <BadgeContextProvider value={{ activeChain }}>
             <main className="content-drawer">
-              <BadgePage admin={admin} />
+              <NFTAdminPage />
             </main>
             <Drawer open={false}>
               <></>
@@ -60,9 +60,9 @@ export const Badge = ({ admin }: { admin: boolean }) => {
   );
 };
 
-export const BadgePage = ({ admin }: { admin: boolean }) => {
+export const NFTAdminPage = () => {
   const [, setBadgeData] = useAtom(writeBadgeData);
-  const data: IBadge = useGetPlans(admin);
+  const data: IBadge = useGetPlans(true);
 
   setBadgeData(data);
 
@@ -73,19 +73,19 @@ export const BadgePage = ({ admin }: { admin: boolean }) => {
         Heading={
           <>
             <div className={topStyles}>
-              <MuchoWhite width={120} /> &nbsp;NFT Plan {admin ? "Admin" : ""}
+              <MuchoWhite width={120} /> &nbsp;NFT V2 Admin
             </div>
           </>
         }
-        Cards={getPlanCards(data, admin)}
+        Cards={getPlanCards(data, true)}
         subHeading={
           <>
             <div className={descStyles}>
               {t("badge.HeroText")}
             </div>
-            {admin && <div className="mt-5">
+            <div className="mt-5">
               <AddPlanButton />
-            </div>}
+            </div>
           </>
         }
       />

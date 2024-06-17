@@ -139,8 +139,8 @@ const PlanInfoAdmin = ({ plan }: { plan: IPlan }) => {
 
 
 const PlanInfoUser = ({ plan }: { plan: IPlan }) => {
-  //console.log("Plan:"); console.log(plan);
-  const enabledStr: string = plan.isActiveForCurrentUser ? t("badge.Subscribed") :
+  //console.log("CARD Plan:", plan);
+  const enabledStr: string = plan.isActiveForCurrentUser ? t("badge.Subscribed") + ` (${plan.remainingDaysForCurrentUser})` :
     (plan.isExpiredForCurrentUser ? t("badge.Expired") : t("badge.Not subscribed"));
 
   //console.log("Enabled:"); console.log(enabledStr);

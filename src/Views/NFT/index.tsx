@@ -1,11 +1,11 @@
 import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Drawer from '@Views/Common/V2-Drawer';
 import { Chain } from 'wagmi';
 import { getPlanCards } from './Components/PlanCards';
 import { Section } from '../Common/Card/Section';
-import { IBadge, writeBadgeData } from './badgeAtom';
+import { IBadge, IPlan, writeBadgeData } from './badgeAtom';
 import { useGetPlans } from './Hooks/useAllPlansCall';
 import { PlanModals } from './Modals';
 import { useActiveChain } from '@Hooks/useActiveChain';
@@ -16,6 +16,8 @@ import MuchoWhite from '@SVG/Elements/MuchoWhite';
 import Background from 'src/AppStyles';
 import { Navbar } from '@Views/Common/Navbar';
 import { t } from 'i18next';
+import { useSetNFTAttributesForUser, useSetNFTBalancesForUser, useSetNFTStatusForUser, useSetNFTTokenIdsForUser } from './Hooks/usePlanStatusForUser';
+import { useUserAccount } from '@Hooks/useUserAccount';
 
 const BadgeStyles = styled.div`
   width: min(1200px, 100%);
@@ -61,8 +63,9 @@ export const NFT = () => {
 
 export const NFTPage = () => {
   const [, setBadgeData] = useAtom(writeBadgeData);
-  const data: IBadge = useGetPlans(false);
 
+  const data = useGetPlans(false);
+  useSetNFTAttributesForUser(data ? data.plans : []);
   setBadgeData(data);
 
   return (
