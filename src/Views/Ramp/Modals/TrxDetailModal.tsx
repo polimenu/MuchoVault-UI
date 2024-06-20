@@ -6,6 +6,7 @@ import { addressSummary } from "@Views/Common/Utils";
 import { Display } from "@Views/Common/Tooltips/Display";
 import { Section } from "@Views/Common/Card/Section";
 import TransactionTable from "../Components/TransactionTable";
+import { useGetTransactionDataById } from "../Hooks/admin";
 
 
 
@@ -17,14 +18,15 @@ export const TrxDetailModal = () => {
     const [rampAdminData] = useAtom(rampAdminDataAtom);
     const tid = pageState.auxModalData.tid;
     //console.log("******ORL************", rampAdminData.OnRampList);
-    const offramp = rampAdminData.OffRampList.find(r => r.transaction_id == tid);
-    const onramp = rampAdminData.OnRampList.find(r => r.transaction_id == tid);
+    //const offramp = rampAdminData.OffRampList.find(r => r.transaction_id == tid);
+    //const onramp = rampAdminData.OnRampList.find(r => r.transaction_id == tid);
     //console.log("******onramp************", onramp);
     //console.log("******offramp************", offramp);
-    const trx = offramp ? offramp : onramp;
+    //const trx = offramp ? offramp : onramp;
+    const [trx] = useGetTransactionDataById(pageState.sessionId, tid);
 
-    if (!trx) {
-        return <div>No data found ({tid})!</div>;
+    if (!trx || !trx.interactions) {
+        return <div>Loading data... ({tid})!</div>;
     }
 
     //console.log("trx", trx);

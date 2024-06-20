@@ -43,6 +43,27 @@ const useGetTransactionList = (session_id: string, type: string) => {
     return [trxList];
 }
 
+export const useGetTransactionDataById = (session_id: string, transactionId: string) => {
+    const { dispatch } = useGlobal();
+    //console.log("OnRampList updated", onRampList);
+    const [trx, setTrx] = useState<IRampAdminTransaction>();
+
+    const save = (obj: any) => {
+        if (obj.status == "OK") {
+            console.log("Setting transaction", obj);
+            //console.log("OnRampList", on);
+            setTrx(obj.transactions);
+        }
+    }
+
+    useEffect(() => {
+        fetchFromRampApi(`/admin/transactionById`, 'GET', { session_id, id: transactionId }, save, dispatch);
+    }, [session_id]);
+
+    return [trx];
+
+}
+
 
 const useGetKycList = (session_id: string) => {
     const { dispatch } = useGlobal();

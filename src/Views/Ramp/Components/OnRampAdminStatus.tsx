@@ -19,13 +19,14 @@ export const underLineClass =
 
 export const OnRampAdminStatus = () => {
   const [rampData] = useAtom(rampAdminDataAtom);
+  const [email, setEmail] = useState('');
 
   //console.log("OnRampAdminStatus loading", rampData);
 
   return <div>
     <KYBListSection KYBList={rampData.KYBList} />
     <KYCListSection KYCList={rampData.KYCList} />
-    <OnRampTransactionsSection trxList={rampData.OnRampList} />
+    <OnRampTransactionsSection trxList={rampData.OnRampList} params={{ email, setEmail }} />
     <OffRampTransactionsSection trxList={rampData.OffRampList} />
   </div>;
 
@@ -295,7 +296,7 @@ const KYCListSection = ({ KYCList }: { KYCList?: IRampKYC[] }) => {
 
 
 
-const OnRampTransactionsSection = ({ trxList }: { trxList?: IRampAdminTransaction[] }) => {
+const OnRampTransactionsSection = ({ trxList, params }: { trxList?: IRampAdminTransaction[], params: { email: string, setEmail: any } }) => {
   const [pageState, setPageState] = useAtom(rampAtom);
   const [from, setFrom] = useState(0);
   const [to, setTo] = useState(10);
@@ -415,6 +416,9 @@ const OnRampTransactionsSection = ({ trxList }: { trxList?: IRampAdminTransactio
           </div>
           <div className='inline ml-5'>
             to <BufferInput placeholder={"20"} bgClass="!bg-1" ipClass="mt-1" className='w-[5vw]' value={to} onChange={(val) => { setTo(val); }} />
+          </div>
+          <div className='inline ml-5'>
+            EMAIL <BufferInput placeholder={""} bgClass="!bg-1" ipClass="mt-1" className='w-[5vw]' value={params.email} onChange={(val) => { params.setEmail(val); }} />
           </div>
         </div>
       }
