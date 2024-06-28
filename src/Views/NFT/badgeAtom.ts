@@ -27,7 +27,7 @@ export const writeBadgeData = atom(null, (get, set, update: IBadge) => {
 
 
 export interface IPlan {
-  id: number;
+  id: string;
   name: string;
   uri: string;
   subscriptionPrice: IPrice;

@@ -1,25 +1,18 @@
 import { useToast } from '@Contexts/Toast';
 import { useWriteCall } from '@Hooks/useWriteCall';
-import { multiply } from '@Utils/NumString/stringArithmatics';
-import MuchoBadgeManagerABI from '../Config/Abis/MuchoBadgeManager.json'
-import MuchoBadgeWrapperABI from '../Config/Abis/MuchoBadgeWrapper.json'
-import MuchoRewardRouterABI from '../Config/Abis/MuchoRewardRouter.json'
+import MuchoNFTABI from '../Config/Abis/MuchoNFT.json'
 import { useAtom } from 'jotai';
 import { BADGE_CONFIG } from '../Config/BadgeConfig';
 import { writeBadgeAtom } from '../badgeAtom';
-import { toFixed } from '@Utils/NumString';
 import { useContext } from 'react';
 import { BadgeContext } from '..';
 import { IPrice } from '../badgeAtom';
-import { ethers } from 'ethers';
 import { useUserAccount } from '@Hooks/useUserAccount';
 
 
 
-export const usePlanEditCalls = () => {
-  const { activeChain } = useContext(BadgeContext);
-  const { writeCall } = useWriteCall(BADGE_CONFIG[activeChain?.id].MuchoBadgeManager, MuchoBadgeManagerABI);
-  const toastify = useToast();
+export const usePlanEditCalls = (nftAddress: string) => {
+  const { writeCall } = useWriteCall(nftAddress, MuchoNFTABI);
   const [, setPageState] = useAtom(writeBadgeAtom);
 
   function callBack(res) {
@@ -32,8 +25,8 @@ export const usePlanEditCalls = () => {
       });
   }
 
-  function updatePlanCall(id: number, name: string, duration: number, subPrice: IPrice, renPrice: IPrice) {
-    const req = [id, name, "", duration * 24 * 3600, { token: subPrice.contract, amount: Math.round(subPrice.amount * (10 ** subPrice.decimals)) },
+  function updatePlanCall(name: string, duration: number, subPrice: IPrice, renPrice: IPrice) {
+    const req = [name, "", duration * 24 * 3600, { token: subPrice.contract, amount: Math.round(subPrice.amount * (10 ** subPrice.decimals)) },
       { token: renPrice.contract, amount: Math.round(renPrice.amount * (10 ** renPrice.decimals)) }, true];
     //console.log("updatePlan request:");
     //console.log(req);
@@ -54,12 +47,8 @@ export const usePlanEditCalls = () => {
   };
 };
 
-export const usePlanUserCalls = () => {
-  const { activeChain } = useContext(BadgeContext);
-  const { address: account } = useUserAccount();
-  const { writeCall } = useWriteCall(BADGE_CONFIG[activeChain?.id].MuchoBadgeManager, MuchoBadgeManagerABI);
-  const writeCallRR = useWriteCall(BADGE_CONFIG[activeChain?.id].MuchoRewardRouter, MuchoRewardRouterABI).writeCall;
-  const toastify = useToast();
+export const usePlanUserCalls = (nftAddress: string) => {
+  const { writeCall } = useWriteCall(nftAddress, MuchoNFTABI);
   const [, setPageState] = useAtom(writeBadgeAtom);
 
   function callBack(res) {
@@ -72,12 +61,12 @@ export const usePlanUserCalls = () => {
       });
   }
 
-  function subscribeUserCall(id: number) {
-    writeCall(callBack, "subscribe(uint256)", [id]);
+  function subscribeUserCall() {
+    writeCall(callBack, "subscribe(uint256)", []);
   }
 
-  function renewUserCall(id: number) {
-    writeCall(callBack, "renew(uint256)", [id]);
+  function renewUserCall() {
+    writeCall(callBack, "renew(uint256)", []);
   }
 
   return {

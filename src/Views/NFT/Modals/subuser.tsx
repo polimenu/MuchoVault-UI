@@ -1,20 +1,16 @@
 import { useAtom } from 'jotai';
 import { useContext, useState } from 'react';
 import BufferInput from '@Views/Common/BufferInput';
-import { Display } from '@Views/Common/Tooltips/Display';
 import { BlueBtn } from '@Views/Common/V2-Button';
 import { badgeAtom } from '../badgeAtom';
-//import { EARN_CONFIG } from '../Config/Pools';
 import { toFixed } from '@Utils/NumString';
-import { getPosInf, gt, gte } from '@Utils/NumString/stringArithmatics';
+import { getPosInf, gte } from '@Utils/NumString/stringArithmatics';
 import { useGlobal } from '@Contexts/Global';
-import { useToast } from '@Contexts/Toast';
 import { BadgeContext } from '..';
 import { erc20ABI } from 'wagmi';
 import { IContract } from 'src/Interfaces/interfaces';
 import { useGetAllowance, useGetApprovalAmount } from '../../Common/Hooks/useAllowanceCall';
 import { usePlanUserCalls } from '../Hooks/usePlanWriteCalls';
-import { BADGE_CONFIG } from '../Config/BadgeConfig';
 
 export const SubscribeUserModal = ({
   renew
@@ -25,7 +21,7 @@ export const SubscribeUserModal = ({
   const [pageState] = useAtom(badgeAtom);
   const activeModal = pageState.activeModal;
   const plan = activeModal.plan;
-  const { subscribeUserCall, renewUserCall } = usePlanUserCalls();
+  const { subscribeUserCall, renewUserCall } = usePlanUserCalls(plan.id);
   const call = renew ? renewUserCall : subscribeUserCall;
   const price = renew ? plan.renewalPrice : plan.subscriptionPrice;
   const head = renew ? `Renew your plan ${plan.name}` : `Subscribe to plan ${plan.name}`;
@@ -52,20 +48,19 @@ export const SubscribeUserModal = ({
 
 
 const Subscribe = ({ planId, head, unit, tokenContract, call, precision, decimals, amount, button }:
-  { planId: number; head: string; unit: string; tokenContract: IContract; call: any; precision: number; decimals: number; amount: number; button: string }) => {
+  { planId: string; head: string; unit: string; tokenContract: IContract; call: any; precision: number; decimals: number; amount: number; button: string }) => {
   //console.log("DEPOSIT CALL:"); console.log(call);
   const { activeChain } = useContext(BadgeContext);
   const { approve } = useGetApprovalAmount(
     tokenContract?.abi,
     tokenContract?.contract,
-    BADGE_CONFIG[activeChain.id].MuchoBadgeManager
+    planId
   );
-  const toastify = useToast();
   const [approveState, setApprovalState] = useState(false);
   const { state } = useGlobal();
 
   //console.log("Decimals:"); console.log(decimals);
-  const allowance = useGetAllowance(tokenContract.contract, decimals, BADGE_CONFIG[activeChain.id]?.MuchoBadgeManager, activeChain.id);
+  const allowance = useGetAllowance(tokenContract.contract, decimals, planId, activeChain.id);
   //console.log("Allowance:"); console.log(allowance);
 
   const isApproved = gte(Number(allowance), amount || '1');

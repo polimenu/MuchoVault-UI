@@ -45,7 +45,7 @@ export function PlanButtons({ plan }: { plan: IPlan }) {
         {t("badge.Subscribe")}
       </BlueBtn>}
 
-      {plan.isExpiredForCurrentUser && <BlueBtn
+      {plan.balanceForCurrentUser > 0 && plan.renewalPrice.amount > 0 && <BlueBtn
         onClick={() =>
           setPageState({ ...state, activeModal: { plan: plan, action: "renewUser" }, isModalOpen: true })
         }
