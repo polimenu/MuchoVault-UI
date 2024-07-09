@@ -266,7 +266,15 @@
 		"No transactions allowed. Please finish your KYB.": "No transactions allowed. Please finish your KYB.",
 		"No transactions allowed. Please wait until KYB revision is ended.": "No transactions allowed. Please wait until KYB revision is ended.",
 		"No transactions allowed. You can retry your KYB application.": "No transactions allowed. You can retry your KYB application.",
-		"Note this bank account is a virtual IBAN generated with your corporate legal name, so the receptor will be your corporate, the funds will never be shared with other users.": "Note this bank account is a virtual IBAN generated with your corporate legal name, so the receptor will be your corporate, the funds will never be shared with other users."
+		"Note this bank account is a virtual IBAN generated with your corporate legal name, so the receptor will be your corporate, the funds will never be shared with other users.": "Note this bank account is a virtual IBAN generated with your corporate legal name, so the receptor will be your corporate, the funds will never be shared with other users.",
+		"Enter corporation data": "Enter corporation data",
+		"Legal Name": "Legal Name",
+		"Corporation Type": "Corporation Type",
+		"Registration number": "Registration number",
+		"Contact Name Explanation": "Corporation contact name",
+		"Contact Email Explanation": "Corporation email",
+		"Contact Phone Explanation": "Corporation phone",
+		"New Corporation": "New Corporation"
 	},
 	"index": {
 		"hero": "(mucho) Index will automatically invest for you in different protocols. By buying mIndex tokens, you are participating on the results of the portfolio.",

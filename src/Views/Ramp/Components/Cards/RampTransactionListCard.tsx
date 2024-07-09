@@ -68,6 +68,8 @@ export const RampTransactionListCard = ({ transactions }: { transactions?: IRamp
         ) => {
             const currentData = sortedData[row][col];
             let classNames = "";
+            if (!currentData)
+                return "";
             if (currentData.indexOf("COMPLETED") > 0)
                 classNames += "green";
             else if (currentData.indexOf("REJECTED") > 0)
