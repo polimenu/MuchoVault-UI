@@ -520,6 +520,11 @@
                 "internalType": "address[]",
                 "name": "_subscribers",
                 "type": "address[]"
+            },
+            {
+                "internalType": "string[]",
+                "name": "_metadata",
+                "type": "string[]"
             }
         ],
         "name": "bulkSubscribeTo",
@@ -567,6 +572,24 @@
             }
         ],
         "name": "changeExpiration",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_tokenId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "_metadata",
+                "type": "string"
+            }
+        ],
+        "name": "changeMetaData",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -708,40 +731,6 @@
                         "type": "string"
                     },
                     {
-                        "components": [
-                            {
-                                "internalType": "address",
-                                "name": "token",
-                                "type": "address"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "amount",
-                                "type": "uint256"
-                            }
-                        ],
-                        "internalType": "struct IMuchoNFT.Price",
-                        "name": "subscriptionPrice",
-                        "type": "tuple"
-                    },
-                    {
-                        "components": [
-                            {
-                                "internalType": "address",
-                                "name": "token",
-                                "type": "address"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "amount",
-                                "type": "uint256"
-                            }
-                        ],
-                        "internalType": "struct IMuchoNFT.Price",
-                        "name": "renewalPrice",
-                        "type": "tuple"
-                    },
-                    {
                         "internalType": "uint256",
                         "name": "duration",
                         "type": "uint256"
@@ -769,13 +758,6 @@
             }
         ],
         "name": "removeAuthorized",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "renew",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -912,42 +894,6 @@
         "inputs": [
             {
                 "internalType": "address",
-                "name": "_token",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_price",
-                "type": "uint256"
-            }
-        ],
-        "name": "setRenewalPrice",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_token",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_price",
-                "type": "uint256"
-            }
-        ],
-        "name": "setSubscriptionPrice",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
                 "name": "_uriGen",
                 "type": "address"
             }
@@ -958,18 +904,16 @@
         "type": "function"
     },
     {
-        "inputs": [],
-        "name": "subscribe",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
         "inputs": [
             {
                 "internalType": "address",
                 "name": "_subscriber",
                 "type": "address"
+            },
+            {
+                "internalType": "string",
+                "name": "_metadata",
+                "type": "string"
             }
         ],
         "name": "subscribeTo",
@@ -1054,6 +998,11 @@
                         "internalType": "uint256",
                         "name": "expirationTime",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "metaData",
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct IMuchoNFT.TokenAttributes",

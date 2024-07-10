@@ -3,6 +3,33 @@
         "inputs": [
             {
                 "internalType": "address",
+                "name": "target",
+                "type": "address"
+            }
+        ],
+        "name": "AddressEmptyCode",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            }
+        ],
+        "name": "AddressInsufficientBalance",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "FailedInnerCall",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
                 "name": "owner",
                 "type": "address"
             }
@@ -19,6 +46,17 @@
             }
         ],
         "name": "OwnableUnauthorizedAccount",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "token",
+                "type": "address"
+            }
+        ],
+        "name": "SafeERC20FailedOperation",
         "type": "error"
     },
     {
@@ -69,38 +107,6 @@
     {
         "inputs": [
             {
-                "internalType": "uint256",
-                "name": "_i",
-                "type": "uint256"
-            }
-        ],
-        "name": "NFTAt",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "nft",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "NFTCount",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "num",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
                 "internalType": "address",
                 "name": "_user",
                 "type": "address"
@@ -111,6 +117,11 @@
             {
                 "components": [
                     {
+                        "internalType": "uint256",
+                        "name": "id",
+                        "type": "uint256"
+                    },
+                    {
                         "internalType": "address",
                         "name": "nftAddress",
                         "type": "address"
@@ -119,40 +130,6 @@
                         "internalType": "string",
                         "name": "planName",
                         "type": "string"
-                    },
-                    {
-                        "components": [
-                            {
-                                "internalType": "address",
-                                "name": "token",
-                                "type": "address"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "amount",
-                                "type": "uint256"
-                            }
-                        ],
-                        "internalType": "struct IMuchoNFT.Price",
-                        "name": "subscriptionPrice",
-                        "type": "tuple"
-                    },
-                    {
-                        "components": [
-                            {
-                                "internalType": "address",
-                                "name": "token",
-                                "type": "address"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "amount",
-                                "type": "uint256"
-                            }
-                        ],
-                        "internalType": "struct IMuchoNFT.Price",
-                        "name": "renewalPrice",
-                        "type": "tuple"
                     },
                     {
                         "internalType": "uint256",
@@ -165,7 +142,7 @@
                         "type": "bool"
                     }
                 ],
-                "internalType": "struct IMuchoNFT.PlanAttributes[]",
+                "internalType": "struct MuchoNFTFetcher.PlanAttributesExtended[]",
                 "name": "plans",
                 "type": "tuple[]"
             }
@@ -189,7 +166,7 @@
     {
         "inputs": [
             {
-                "internalType": "address",
+                "internalType": "contract IMuchoNFT",
                 "name": "_nft",
                 "type": "address"
             }
@@ -206,6 +183,11 @@
             {
                 "components": [
                     {
+                        "internalType": "uint256",
+                        "name": "id",
+                        "type": "uint256"
+                    },
+                    {
                         "internalType": "address",
                         "name": "nftAddress",
                         "type": "address"
@@ -214,40 +196,6 @@
                         "internalType": "string",
                         "name": "planName",
                         "type": "string"
-                    },
-                    {
-                        "components": [
-                            {
-                                "internalType": "address",
-                                "name": "token",
-                                "type": "address"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "amount",
-                                "type": "uint256"
-                            }
-                        ],
-                        "internalType": "struct IMuchoNFT.Price",
-                        "name": "subscriptionPrice",
-                        "type": "tuple"
-                    },
-                    {
-                        "components": [
-                            {
-                                "internalType": "address",
-                                "name": "token",
-                                "type": "address"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "amount",
-                                "type": "uint256"
-                            }
-                        ],
-                        "internalType": "struct IMuchoNFT.Price",
-                        "name": "renewalPrice",
-                        "type": "tuple"
                     },
                     {
                         "internalType": "uint256",
@@ -260,12 +208,40 @@
                         "type": "bool"
                     }
                 ],
-                "internalType": "struct IMuchoNFT.PlanAttributes[]",
+                "internalType": "struct MuchoNFTFetcher.PlanAttributesExtended[]",
                 "name": "plans",
                 "type": "tuple[]"
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "_nftName",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_nftSymbol",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_planName",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_planDuration",
+                "type": "uint256"
+            }
+        ],
+        "name": "deployNFT",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
@@ -275,6 +251,11 @@
             {
                 "components": [
                     {
+                        "internalType": "uint256",
+                        "name": "id",
+                        "type": "uint256"
+                    },
+                    {
                         "internalType": "address",
                         "name": "nftAddress",
                         "type": "address"
@@ -283,40 +264,6 @@
                         "internalType": "string",
                         "name": "planName",
                         "type": "string"
-                    },
-                    {
-                        "components": [
-                            {
-                                "internalType": "address",
-                                "name": "token",
-                                "type": "address"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "amount",
-                                "type": "uint256"
-                            }
-                        ],
-                        "internalType": "struct IMuchoNFT.Price",
-                        "name": "subscriptionPrice",
-                        "type": "tuple"
-                    },
-                    {
-                        "components": [
-                            {
-                                "internalType": "address",
-                                "name": "token",
-                                "type": "address"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "amount",
-                                "type": "uint256"
-                            }
-                        ],
-                        "internalType": "struct IMuchoNFT.Price",
-                        "name": "renewalPrice",
-                        "type": "tuple"
                     },
                     {
                         "internalType": "uint256",
@@ -329,7 +276,7 @@
                         "type": "bool"
                     }
                 ],
-                "internalType": "struct IMuchoNFT.PlanAttributes[]",
+                "internalType": "struct MuchoNFTFetcher.PlanAttributesExtended[]",
                 "name": "plans",
                 "type": "tuple[]"
             }
@@ -351,6 +298,95 @@
                 "internalType": "bool",
                 "name": "",
                 "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "nextNFT",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_id",
+                "type": "uint256"
+            }
+        ],
+        "name": "nftById",
+        "outputs": [
+            {
+                "internalType": "contract IMuchoNFT",
+                "name": "nft",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "nftList",
+        "outputs": [
+            {
+                "internalType": "contract IMuchoNFT",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "nftPricing",
+        "outputs": [
+            {
+                "internalType": "contract IMuchoPricing",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "nftRenewalPricing",
+        "outputs": [
+            {
+                "internalType": "contract IMuchoPricing",
+                "name": "",
+                "type": "address"
             }
         ],
         "stateMutability": "view",
@@ -385,14 +421,63 @@
     {
         "inputs": [
             {
-                "internalType": "address",
-                "name": "_nft",
-                "type": "address"
+                "internalType": "uint256",
+                "name": "_idNft",
+                "type": "uint256"
             }
         ],
         "name": "removeNFT",
         "outputs": [],
         "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_idNFT",
+                "type": "uint256"
+            }
+        ],
+        "name": "renew",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_idNFT",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "_user",
+                "type": "address"
+            }
+        ],
+        "name": "renewalPrice",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "token",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct IMuchoPricing.Price",
+                "name": "price",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -405,12 +490,120 @@
     {
         "inputs": [
             {
+                "internalType": "uint256",
+                "name": "_idToken",
+                "type": "uint256"
+            },
+            {
+                "internalType": "contract IMuchoPricing",
+                "name": "_pricing",
+                "type": "address"
+            }
+        ],
+        "name": "setRenewalPricing",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_idToken",
+                "type": "uint256"
+            },
+            {
+                "internalType": "contract IMuchoPricing",
+                "name": "_pricing",
+                "type": "address"
+            }
+        ],
+        "name": "setSubscriptionPricing",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_idNFT",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "_metadata",
+                "type": "string"
+            }
+        ],
+        "name": "subscribe",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_idNFT",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "_user",
+                "type": "address"
+            }
+        ],
+        "name": "subscriptionPrice",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "token",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct IMuchoPricing.Price",
+                "name": "price",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "address",
                 "name": "newOwner",
                 "type": "address"
             }
         ],
         "name": "transferOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_token",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "withdraw",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

@@ -30,6 +30,7 @@ export const useGetPlans = (admin: boolean) => {
   if (badgeContextValue) {
     activeChain = badgeContextValue.activeChain;
   }
+  console.log("activeChain", activeChain);
   // const { state } = useGlobal();
   const badge_config: (typeof BADGE_CONFIG)[42161] = BADGE_CONFIG[activeChain.id];
 

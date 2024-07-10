@@ -5,6 +5,7 @@ import { badgeAtom } from '../badgeAtom';
 import { EditModal } from './edit';
 import { SubModal } from './sub';
 import { SubscribeUserModal } from './subuser';
+import { SaleSubscribeUserModal } from './saleSubuser';
 
 export const PlanModals = () => {
   const [pageState, setPageState] = useAtom(badgeAtom);
@@ -56,6 +57,12 @@ function ModalChild() {
     else if ((activeModal.action == "subscribeUser") || (activeModal.action == "renewUser")) {
       return (
         <SubscribeUserModal renew={activeModal.action == "renewUser"} />
+      );
+    }
+
+    else if ((activeModal.action == "saleSubscribe")) {
+      return (
+        <SaleSubscribeUserModal />
       );
     }
   }

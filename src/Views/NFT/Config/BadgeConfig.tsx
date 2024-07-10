@@ -1,6 +1,6 @@
 export const BADGE_CONFIG = {
   42161: {
-    MuchoNFTFetcher: '0x8e8652AdBB188d2f55C2e3a779365C41AF7BB204'
+    MuchoNFTFetcher: '0xBA3EacD2afADD1C38b940A461c48540c77a121d3'
   },
 };
 
