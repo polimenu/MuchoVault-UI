@@ -65,7 +65,7 @@ const SalePage = ({ nftId, title }: { nftId: number, title: string }) => {
   const { nftAddress, pricingAddress } = useGetNFTAddressesById(nftId);
   //console.log("address", address);
   const data = useGetNFTPlanForSalePage(nftAddress, nftId, pricingAddress);
-  console.log("Data", data);
+  //console.log("Data", data);
   //useSetNFTAttributesForUser(data ? data.plans : []);
   //setBadgeData(data);
 

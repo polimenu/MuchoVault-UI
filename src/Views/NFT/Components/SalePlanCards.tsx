@@ -71,6 +71,7 @@ const PlanInfoUser = ({ data }: { data: any }) => {
   const enabledStr: string = data.userBalance > 0 ? t("badge.Subscribed") + ` (${data.tokenIdAttributes.remainingDays} days) [Id=${data.tokenIdAttributes.tokenId}]` : t("badge.Not subscribed");
 
   //console.log("Enabled:"); console.log(enabledStr);
+  //console.log("data.pricing", data.pricing);
   return (
     <>
       <TableAligner
@@ -86,6 +87,14 @@ const PlanInfoUser = ({ data }: { data: any }) => {
             />
           </div>,
           <div className={`${wrapperClasses}`}>
+            {
+              (data.pricing.subscriptionPublicPrice.amount > data.pricing.subscriptionPrice.amount) && <span className='line-through mr-5'><Display
+                className="!justify-end"
+                data={data.pricing.subscriptionPublicPrice.amount}
+                precision={2}
+              />
+              </span>
+            }
             <Display
               className="!justify-end"
               data={data.pricing.subscriptionPrice.amount}

@@ -39,7 +39,7 @@ export function SalePlanButtons({ data }: { data: any }) {
         className={btnClasses}
       >
         {data.planAttributes.planName == "NFT Baby Scout" ? "Inscribirme a la formación Baby Scout Verano 2024" :
-          data.planAttributes.planName == "NFT Membresía" ? "Inscribirme a la membresía con acceso a TODAS las formaciones" : ""}
+          data.planAttributes.planName == "NFT Membresía" ? "Inscribirme para tener acceso a TODAS las formaciones" : ""}
       </BlueBtn>}
       {data.userBalance > 0 && <BlueBtn
         onClick={() => { }}
