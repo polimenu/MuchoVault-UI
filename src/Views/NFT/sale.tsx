@@ -81,7 +81,7 @@ const SalePage = ({ nftId, title }: { nftId: number, title: string }) => {
           </>
         }
         other={
-          <div className='pl-[200px] pr-[200px]'>
+          <div className='max-w-[650px] m-auto mt-[50px]'>
             <SalePlanCard data={data} />
           </div>
         }

@@ -166,7 +166,7 @@ export const useGetNFTPlanForSalePage = (address: string, idNFT: number, pricing
   data = getBNtoStringCopy(data);
   //console.log("data", data);
   let res = null;
-  if (data && data.length > 0) {
+  if (data && data.length > 5) {
     res = {
       id: idNFT,
       planAttributes: {
