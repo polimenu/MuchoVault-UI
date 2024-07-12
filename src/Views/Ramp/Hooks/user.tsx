@@ -93,6 +93,7 @@ export const useGetUserDetails = (sessionId?: string): (IRampUserDetails | undef
 
             obj.response.kyc_status = kycStatus(obj.response.status);
             obj.response.canCreateKYC = (["CREATED", "KYC_NEEDED"].indexOf(obj.response.status) >= 0);
+            //console.log("USER DETAILS", obj.response);
             setUserDetails(obj.response);
         }
         else {

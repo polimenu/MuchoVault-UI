@@ -7,6 +7,8 @@ import { ERampStatus, rampAtom, rampDataAtom } from "../rampAtom";
 import { t } from "i18next";
 
 export interface IKYCRequest {
+    first_name: string;
+    last_name: string;
     address_line_1: string;
     address_line_2: string;
     post_code: string;
@@ -58,12 +60,14 @@ export const useCreateKYC = (session_id?: string, request?: IKYCRequest) => {
             window.location.reload();
         }
         else {
-            toastify({ type: "error", msg: t("ramp.Could not create KYC") + (obj.errorMessage ? "" : ": " + obj.errorMessage) });
+            toastify({ type: "error", msg: t("ramp.Could not create KYC") + (obj.errorMessage ? ": " + obj.errorMessage : "") });
         }
     }
 
     useEffect(() => {
-        if (request && session_id && request.address_line_1 && request.post_code && request.city && request.country && request.date_of_birth && request.source_of_funds) {
+        if (request && session_id && request.address_line_1 && request.post_code && request.city
+            && request.country && request.date_of_birth && request.source_of_funds
+            && request.first_name && request.last_name) {
             const [isError, message] = validateKYCRequest(request);
             if (!isError) {
                 console.log("Fetching KYC creation");

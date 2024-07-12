@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-import { rampAtom } from "../rampAtom";
+import { rampAtom, rampDataAtom } from "../rampAtom";
 import { useState } from "react";
 import { useGlobal } from "@Contexts/Global";
 import BufferInput from "@Views/Common/BufferInput";
@@ -11,12 +11,20 @@ import { CountriesDropDown } from "../Components/CountriesDropDown";
 
 export const CompleteKYCModal = () => {
     const [pageState] = useAtom(rampAtom);
-    const [address_line_1, setAddr1] = useState('');
-    const [address_line_2, setAddr2] = useState('');
-    const [post_code, setPC] = useState('');
-    const [city, setCity] = useState('');
-    const [country, setCountry] = useState({ country_code: "ES", country_name: "Spain" });
-    const [date_of_birth, setDob] = useState('');
+    const [rampData] = useAtom(rampDataAtom);
+    if (!rampData.userDetails) {
+        return <></>;
+    }
+    const [first_name, setFirstName] = useState(rampData.userDetails.first_name);
+    const [last_name, setLastName] = useState(rampData.userDetails.last_name);
+    const [address_line_1, setAddr1] = useState(rampData.userDetails.address.address_line_1);
+    const [address_line_2, setAddr2] = useState(rampData.userDetails.address.address_line_2);
+    const [post_code, setPC] = useState(rampData.userDetails.address.post_code);
+    const [city, setCity] = useState(rampData.userDetails.address.city);
+    const fCountry = rampData.allowedCountries?.find(c => c.country_symbol == rampData.userDetails.address.country);
+    const defCountry = fCountry ? { country_code: fCountry.country_symbol, country_name: fCountry.country_name } : { country_code: "ES", country_name: "Spain" };
+    const [country, setCountry] = useState(defCountry);
+    const [date_of_birth, setDob] = useState(rampData.userDetails.date_of_birth);
     const [source_of_funds, setSof] = useState('SALARY');
     const [kycReq, setKycReq] = useState<IKYCRequest>();
 
@@ -29,6 +37,10 @@ export const CompleteKYCModal = () => {
         <>
             <div className="text-f14">
                 <div className="text-f15 mb-5">{t("ramp.Enter your data")}:</div>
+                <div className='mt-5'>{t("ramp.First Name")}:</div>
+                <BufferInput placeholder={t("ramp.First Name")} bgClass="!bg-1" ipClass="mt-1" value={first_name} onChange={(val) => { setFirstName(val); }} />
+                <div className='mt-5'>{t("ramp.Last Name")} ({t("ramp.Last Name Explanation")}):</div>
+                <BufferInput placeholder={t("ramp.Last Name")} bgClass="!bg-1" ipClass="mt-1" value={last_name} onChange={(val) => { setLastName(val); }} />
                 <div className='mt-5'>{t("ramp.Address")}:</div>
                 <BufferInput placeholder={"Line 1"} bgClass="!bg-1" ipClass="mt-1" value={address_line_1} onChange={(val) => { setAddr1(val); }} />
                 <BufferInput placeholder={"Line 2"} bgClass="!bg-1" ipClass="mt-1" value={address_line_2} onChange={(val) => { setAddr2(val); }} />
@@ -45,12 +57,12 @@ export const CompleteKYCModal = () => {
             </div>
             <div className="flex whitespace-nowrap mt-5">
                 <BlueBtn
-                    onClick={() => { setKycReq({ address_line_1, address_line_2, post_code, city, country: country.country_code, date_of_birth, source_of_funds }); }}
+                    onClick={() => { setKycReq({ first_name, last_name, address_line_1, address_line_2, post_code, city, country: country.country_code, date_of_birth, source_of_funds }); }}
                     className="rounded"
                     isDisabled={state.txnLoading > 1}
                     isLoading={state.txnLoading === 1}
                 >
-                    {t("ramp.Start KYC")}
+                    {t("ramp.Save")}
                 </BlueBtn>
             </div>
         </>

@@ -1,3 +1,4 @@
+import { useGlobal } from "@Contexts/Global";
 import { Card } from "@Views/Common/Card/Card";
 import { TableAligner } from "@Views/Common/TableAligner";
 import { Display } from "@Views/Common/Tooltips/Display";
@@ -30,6 +31,7 @@ export const UserDetailsCard = ({ userDetails, addCorpButton = false }: { userDe
             parsedAddress = `${userDetails.address.post_code} ${userDetails.address.city} (${userDetails.address.country})`;
     }
 
+    const toFinishKYC = ["PENDING_KYC_DATA", "SOFT_KYC_FAILED"].indexOf(userDetails?.status) >= 0
 
     return <Card
         top={
@@ -90,9 +92,28 @@ export const UserDetailsCard = ({ userDetails, addCorpButton = false }: { userDe
 
         </>}
 
-        bottom={addCorpButton && <div><BlueBtn onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "NEWCORP", auxModalData: {} }) }}>&nbsp;&nbsp;&nbsp;
+        bottom={<UserDetailsButtons addCorpButton={addCorpButton} canCreateKYC={userDetails.canCreateKYC} toFinishKYC={toFinishKYC} />}
+    />;
+}
+
+const UserDetailsButtons = ({ addCorpButton, canCreateKYC, toFinishKYC }: { addCorpButton: boolean, canCreateKYC: boolean, toFinishKYC: boolean }) => {
+    const [rampState, setRampState] = useAtom(rampAtom);
+    const { state } = useGlobal();
+    return <div>
+        {canCreateKYC && <BlueBtn
+            isDisabled={state.txnLoading > 1}
+            isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "KYC" }) }}>{t("ramp.Start KYC")}
+        </BlueBtn>}
+
+        {toFinishKYC && <BlueBtn
+            isDisabled={state.txnLoading > 1}
+            isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "KYC" }) }}>{t("ramp.Edit user profile")}
+        </BlueBtn>}
+
+        {addCorpButton && <BlueBtn onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "NEWCORP", auxModalData: {} }) }}>&nbsp;&nbsp;&nbsp;
             <span dangerouslySetInnerHTML={
                 { __html: t("ramp.Add Corporation", { interpolation: { escapeValue: false } }) }
-            }></span>&nbsp;&nbsp;&nbsp;</BlueBtn></div>}
-    />;
+            }></span>&nbsp;&nbsp;&nbsp;</BlueBtn>}
+
+    </div>;
 }
