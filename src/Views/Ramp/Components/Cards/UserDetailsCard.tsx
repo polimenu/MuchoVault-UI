@@ -31,7 +31,7 @@ export const UserDetailsCard = ({ userDetails, addCorpButton = false }: { userDe
             parsedAddress = `${userDetails.address.post_code} ${userDetails.address.city} (${userDetails.address.country})`;
     }
 
-    const toFinishKYC = ["PENDING_KYC_DATA", "SOFT_KYC_FAILED"].indexOf(userDetails?.status) >= 0
+    const toFinishKYC = ["PENDING_KYC_DATA", "SOFT_KYC_FAILED", "KYC_PENDING", "KYC_NEEDED", "CREATED"].indexOf(userDetails?.status) >= 0
 
     return <Card
         top={
@@ -105,7 +105,7 @@ const UserDetailsButtons = ({ addCorpButton, canCreateKYC, toFinishKYC }: { addC
             isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "KYC" }) }}>{t("ramp.Start KYC")}
         </BlueBtn>}
 
-        {toFinishKYC && <BlueBtn
+        {!canCreateKYC && toFinishKYC && <BlueBtn
             isDisabled={state.txnLoading > 1}
             isLoading={state.txnLoading === 1} onClick={() => { setRampState({ ...rampState, isModalOpen: true, activeModal: "KYC" }) }}>{t("ramp.Edit user profile")}
         </BlueBtn>}
