@@ -65,9 +65,10 @@ const Subscribe = ({ planId, head, unit, tokenContract, call, precision, decimal
 
   //console.log("Decimals:"); console.log(decimals);
   const allowance = useGetAllowance(tokenContract.contract, decimals, badge_config.MuchoNFTFetcher, activeChain.id);
+  const allowanceAmount = amount + 3;
   //console.log("Allowance:"); console.log(allowance);
 
-  const isApproved = gte(Number(allowance), amount || '1');
+  const isApproved = gte(Number(allowance), allowanceAmount || '1');
 
   const encrypt = (text: string) => {
     return text;
@@ -98,7 +99,7 @@ const Subscribe = ({ planId, head, unit, tokenContract, call, precision, decimal
         {!isApproved && <BlueBtn
           onClick={() => {
             if (firstName.length > 2 && lastName.length > 2 && email.length > 2 && email.indexOf("@") > 0) {
-              approve(toFixed((amount * 10 ** decimals + 1).toString(), 0), setApprovalState);
+              approve(toFixed((allowanceAmount * 10 ** decimals + 1).toString(), 0), setApprovalState);
             }
             else {
               alert("Por favor rellena todos los campos");
