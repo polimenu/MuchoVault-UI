@@ -1,29 +1,32 @@
-import { configureChains, createClient, Chain } from 'wagmi';
-import { arbitrum, arbitrumGoerli, polygon, polygonMumbai } from 'wagmi/chains';
-import { publicProvider } from 'wagmi/providers/public';
 import {
-  trustWallet,
-  injectedWallet,
-  rainbowWallet,
-  braveWallet,
-  metaMaskWallet,
-  coinbaseWallet,
-  walletConnectWallet,
-  imTokenWallet,
-  //ledgerWallet,
-  omniWallet,
-} from '@rainbow-me/rainbowkit/wallets';
+  getDefaultConfig,
+} from '@rainbow-me/rainbowkit';
+import {
+  arbitrum,
+  arbitrumGoerli
+} from 'wagmi/chains';
+import {
+  QueryClient,
+} from "@tanstack/react-query";
+
+
 const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID;
-//console.log(`projectId: `, projectId);
-import { connectorsForWallets } from '@rainbow-me/rainbowkit';
 
+export const wagmiConfig = getDefaultConfig({
+  appName: 'Mucho.Finance',
+  projectId: projectId,
+  chains: [arbitrum],
+  ssr: false, // If your dApp uses server side rendering (SSR)
+});
+export const wagmiQueryClient = new QueryClient();
 
+/*-------------------------------------------*/
 
 export const getChains = () =>
   import.meta.env.VITE_ENV.toLowerCase() == 'testnet'
-    ? [arbitrumGoerli/*,polygonMumbai*/]
-    : [arbitrum/*,polygon*/];
-
+    ? [arbitrumGoerli]
+    : [arbitrum];
+/*
 const getWallets = (chains: Chain[]) => {
   const bothSupported = [
     {
@@ -68,3 +71,4 @@ const wagmiClient = createClient({
 });
 
 export default wagmiClient;
+*/

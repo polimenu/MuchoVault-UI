@@ -1,14 +1,14 @@
 import axios from 'axios';
 import ReactDOM from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
-import { WagmiConfig } from 'wagmi';
 import App from './App';
+import { WagmiProvider, http } from 'wagmi'
 import '@rainbow-me/rainbowkit/styles.css'
 import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/theme-dark.css';
 import '@szhsin/react-menu/dist/transitions/slide.css';
 
-import wagmiClient, { chains } from './Config/wagmiClient';
+import { chains, wagmiConfig, wagmiQueryClient } from './Config/wagmiClient';
 import ContextProvider from './contexts';
 import { SWRConfig } from 'swr';
 import { Provider as JotaiProvider } from 'jotai';
@@ -22,21 +22,24 @@ const options = {
 };
 import { inject } from '@vercel/analytics';
 import { Suspense } from 'react';
+import { QueryClientProvider } from '@tanstack/react-query';
 inject();
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <Suspense fallback="loading">
-    <WagmiConfig client={wagmiClient}>
-      <RainbowKitProvider chains={chains} theme={darkTheme()}>
-        <HashRouter>
-          <SWRConfig value={options}>
-            <ContextProvider>
-              <JotaiProvider>
-                <App />
-              </JotaiProvider>
-            </ContextProvider>
-          </SWRConfig>
-        </HashRouter>
-      </RainbowKitProvider>
-    </WagmiConfig>
+    <WagmiProvider config={wagmiConfig}>
+      <QueryClientProvider client={wagmiQueryClient}>
+        <RainbowKitProvider>
+          <HashRouter>
+            <SWRConfig value={options}>
+              <ContextProvider>
+                <JotaiProvider>
+                  <App />
+                </JotaiProvider>
+              </ContextProvider>
+            </SWRConfig>
+          </HashRouter>
+        </RainbowKitProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   </Suspense>
 );
