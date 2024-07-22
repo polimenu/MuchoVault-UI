@@ -12,6 +12,8 @@ import {
   imTokenWallet,
   //ledgerWallet,
   omniWallet,
+  rabbyWallet,
+  okxWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID;
 //console.log(`projectId: `, projectId);
@@ -29,8 +31,9 @@ const getWallets = (chains: Chain[]) => {
     {
       groupName: 'Recommended',
       wallets: [
+        rabbyWallet({ chains }),
         metaMaskWallet({ chains, projectId }),
-        coinbaseWallet({ chains, appName: 'MuchoFinance-UI' }),
+        okxWallet({ chains, projectId })
       ],
     },
   ];
@@ -47,6 +50,7 @@ const getWallets = (chains: Chain[]) => {
     {
       groupName: 'Others',
       wallets: [
+        coinbaseWallet({ chains, appName: 'MuchoFinance-UI' }),
         rainbowWallet({ chains, projectId }),
         imTokenWallet({ chains, projectId }),
         //ledgerWallet({ chains, projectId }),
