@@ -36,17 +36,17 @@ export const baseGraphqlUrl =
 export const baseGraphqlLiteUrl =
   import.meta.env.VITE_ENV.toLowerCase() === 'mainnet'
     ? {
-        sandbox:
-          'https://api.thegraph.com/subgraphs/name/bufferfinance/mainnet-lite',
-        testnet:
-          'https://api.thegraph.com/subgraphs/name/bufferfinance/mainnet-lite',
-      }
+      sandbox:
+        'https://api.thegraph.com/subgraphs/name/bufferfinance/mainnet-lite',
+      testnet:
+        'https://api.thegraph.com/subgraphs/name/bufferfinance/mainnet-lite',
+    }
     : {
-        sandbox:
-          'https://api.thegraph.com/subgraphs/name/bufferfinance/testnet-lite',
-        testnet:
-          'https://api.thegraph.com/subgraphs/name/bufferfinance/testnet-lite',
-      };
+      sandbox:
+        'https://api.thegraph.com/subgraphs/name/bufferfinance/testnet-lite',
+      testnet:
+        'https://api.thegraph.com/subgraphs/name/bufferfinance/testnet-lite',
+    };
 
 export const periodsValue = [86400, 259200, 604800, 2592000, 5184000, 7776000];
 export const optionsPeriodsValue = [
@@ -240,7 +240,7 @@ export const getChainName = (router) => {
   if (requestedChain && requestedChain !== '') {
     const chainObj =
       CHAIN_CONFIGS[import.meta.env.VITE_ENV.toUpperCase()][
-        (requestedChain as string).toUpperCase()
+      (requestedChain as string).toUpperCase()
       ];
     if (chainObj) {
       return chainObj.chainName;
@@ -268,47 +268,46 @@ export const multiCall = {
 export const supportedWallets =
   import.meta.env.VITE_ENV.toLowerCase() === 'testnet'
     ? [
-        { name: 'Metamask', img: 'metamask', connectorId: 0 },
-        { name: 'Coin98', img: 'coin98', connectorId: 1 },
-        { name: 'Trust Wallet', img: 'trust_wallet', connectorId: 2 },
-        {
-          name: 'Wallet Connect',
-          img: 'wallet_connect',
-          connectorId: 3,
-        },
-        // {
-        //   name: "Tally Ho",
-        //   img: "tally_ho",
-        //   connectorId: 2,
-        // },
-        // {
-        //   name: "Coinbase",
-        //   img: "coinbase",
-        //   connectorId: 1,
-        // },
-      ]
+      { name: 'Metamask', img: 'metamask', connectorId: 0 },
+      { name: 'Coin98', img: 'coin98', connectorId: 1 },
+      { name: 'Trust Wallet', img: 'trust_wallet', connectorId: 2 },
+      {
+        name: 'Wallet Connect',
+        img: 'wallet_connect',
+        connectorId: 3,
+      },
+      // {
+      //   name: "Tally Ho",
+      //   img: "tally_ho",
+      //   connectorId: 2,
+      // },
+      // {
+      //   name: "Coinbase",
+      //   img: "coinbase",
+      //   connectorId: 1,
+      // },
+    ]
     : [
-        { name: 'Metamask', img: 'metamask', connectorId: 0 },
-        { name: 'Coin98', img: 'coin98', connectorId: 1 },
-        { name: 'Trust Wallet', img: 'trust_wallet', connectorId: 2 },
-        {
-          name: 'Wallet Connect',
-          img: 'wallet_connect',
-          connectorId: 3,
-        },
-        {
-          name: 'Tally Ho',
-          img: 'tally_ho',
-          connectorId: 2,
-        },
-        {
-          name: 'Coinbase',
-          img: 'coinbase',
-          connectorId: 1,
-        },
-      ];
+      { name: 'Metamask', img: 'metamask', connectorId: 0 },
+      { name: 'Coin98', img: 'coin98', connectorId: 1 },
+      { name: 'Trust Wallet', img: 'trust_wallet', connectorId: 2 },
+      {
+        name: 'Wallet Connect',
+        img: 'wallet_connect',
+        connectorId: 3,
+      },
+      {
+        name: 'Tally Ho',
+        img: 'tally_ho',
+        connectorId: 2,
+      },
+      {
+        name: 'Coinbase',
+        img: 'coinbase',
+        connectorId: 1,
+      },
+    ];
 
-export const gitbookLink = 'https://github.com/Buffer-Finance/Buffer-Protocol';
 
 export const INDEX_MAPPINGS = {
   generic: 'main',

@@ -13,7 +13,7 @@ import { HamburguerIcon } from '@SVG/buttons/hamburguer';
 /*import { activeMarketFromStorageAtom } from '@Views/BinaryOptions';*/
 
 
-interface INavbar { }
+interface INavbar { hideAccount: boolean }
 
 export const Navbar: React.FC<INavbar> = ({ hideAccount }: { hideAccount: boolean }) => {
   const tabs = getTabs();
