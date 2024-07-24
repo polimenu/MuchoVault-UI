@@ -226,13 +226,6 @@ export const useGetMuchoVaultV2Data = () => {
 
   let badgeDataCalls = [
     {
-      address: v2UserConfig.MuchoBadgeManager.contract,
-      abi: MuchoBadgeManagerAbi,
-      functionName: 'allPlans',
-      chainId: activeChain?.id,
-      map: 'allPlans'
-    },
-    {
       address: v2UserConfig.MuchoHub.contract,
       abi: MuchoHubAbi,
       functionName: 'getExpectedNFTAnnualYield',

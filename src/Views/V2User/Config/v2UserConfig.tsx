@@ -14,7 +14,7 @@ export const V2USER_CONFIG = {
       rewardsToken: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
     },
     MuchoBadgeManager: {
-      contract: "0xC439d29ee3C7fa237da928AD3A3D6aEcA9aA0717",
+      contract: "0x957C225ea6B3B43cB03114613684317Ffb35b862",
     },
     MuchoHub: {
       contract: "0xfeADb28e91337f848ADf3AFC7E0f431c4eebede2",
