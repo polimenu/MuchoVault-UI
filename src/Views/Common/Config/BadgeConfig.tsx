@@ -1,5 +1,5 @@
 export const BADGE_CONFIG = {
     42161: {
-        MuchoBadgeManager: '0xC439d29ee3C7fa237da928AD3A3D6aEcA9aA0717',
+        MuchoBadgeManager: '0x957C225ea6B3B43cB03114613684317Ffb35b862',
     },
 };
