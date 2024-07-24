@@ -21,6 +21,7 @@ export const underLineClass =
 export const OnRampStatus = () => {
   const [rampData] = useAtom(rampDataAtom);
   const premiumInfo = useGetPremiumInfo(rampData.userDetails?.uuid);
+  //console.log("canHavePremium", premiumInfo && premiumInfo?.canHavePremium);
   //console.log("premiumInfo", premiumInfo);
 
   //console.log("OnRampStatus loading", rampData);

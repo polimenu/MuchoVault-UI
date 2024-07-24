@@ -67,18 +67,21 @@ export const useGetPremiumInfo = (user_id: string) => {
     //console.log("DATA!!", data);
     data.indexes = indexes;
 
+    const premiumCandidate = Boolean(getDataString(data, "activePlansForUser").length > 0 && getDataString(data, "activePlansForUser").find(p => p.id == "1"));
+    //console.log("premiumCandidate", premiumCandidate);
+
     if (getDataString(data, "planIds").length == 0) {
       return {
         isPremium: false,
         address: "",
-        canHavePremium: getDataString(data, "activePlansForUser").length > 0 && getDataString(data, "activePlansForUser").find(p => p.id == "1")
+        canHavePremium: premiumCandidate
       }
     }
 
     //console.log("planIds", getDataString(data, "planIds"));
 
     const isPremium = getDataString(data, "planIds").filter(f => { return config.PremiumPlans.indexOf(f) >= 0 }).length > 0;
-    const canHavePremium = !isPremium && (getDataString(data, "activePlansForUser").length > 0) && getDataString(data, "activePlansForUser").find(p => p.id == "1");
+    const canHavePremium = !isPremium && premiumCandidate;
 
     return {
       isPremium: isPremium,
