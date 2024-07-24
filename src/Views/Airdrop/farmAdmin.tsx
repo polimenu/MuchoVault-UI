@@ -74,7 +74,7 @@ export const AdminFarmAirdropPage = () => {
             <main className="content-drawer mt-5">
               <Styles>
                 <OnlyNFT heading={<div className={topStyles}>(mucho) Airdrop</div>}
-                  nftAllowed={[3]}
+                  nftAllowed={[7]}
                   activeChain={activeChain}
                   child={<>
                     <div className='mb-5'>

@@ -56,7 +56,7 @@ export const V2AdminPage = ({ pageType, version }: { pageType: V2AdminContract, 
         <ArbitrumOnly>
           <ViewContextProvider value={{ activeChain }}>
             <OnlyNFT heading={<div className={topStyles}>(mucho) v2 Admin</div>}
-              nftAllowed={[3]}
+              nftAllowed={[7]}
               activeChain={activeChain}
               child={<>
                 <main className="content-drawer">
