@@ -83,9 +83,9 @@ export const BadgePage = ({ admin }: { admin: boolean }) => {
             <div className={descStyles}>
               {t("badge.HeroText")}
             </div>
-            {admin && <div className="mt-5">
+            {/*admin && <div className="mt-5">
               <AddPlanButton />
-            </div>}
+        </div>*/}
           </>
         }
       />
