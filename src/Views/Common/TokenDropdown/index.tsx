@@ -71,13 +71,13 @@ export const TokenDropdown = ({ className, activeToken, setVal, items }) => {
           );
         }}
         className="px-[20px] py-4 bg-1"
-        item={(singleItem, handleClose, onChange, active) => (
+        item={(singleItem, handelClose, onChange, active) => (
           <div
             key={singleItem.name}
             role="button"
             onClick={() => {
               setVal(singleItem.name, singleItem.contract, singleItem.decimals);
-              handleClose();
+              handelClose();
             }}
             className={`${singleItem.name === activeToken && 'active text-1'
               } chain-row flex min-w-max justify-between items-center py-3 text-4 hover:text-1 text-f15 font-normal transition-all duration-150 ease-in-out`}

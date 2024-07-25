@@ -1,12 +1,12 @@
 export const BADGE_CONFIG = {
   42161: {
-    MuchoBadgeManager: '0xC439d29ee3C7fa237da928AD3A3D6aEcA9aA0717',
+    MuchoNFTFetcher: '0xBA3EacD2afADD1C38b940A461c48540c77a121d3',
     MuchoRewardRouter: '0x96D395d088C8e053f759F97695Efac4D4b45407A',
     MuchoBadgeWrapper: '0xA5d616D7A572F7eD9B8c90FaC8a5f62ec827f1c0'
   },
 };
 
-export const BLACKLISTED_NFT = [3];
+export const BLACKLISTED_NFT = [7];
 
 export const VALID_TOKENS = {
   "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8": {

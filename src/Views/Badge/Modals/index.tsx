@@ -5,6 +5,13 @@ import { badgeAtom } from '../badgeAtom';
 import { EditModal } from './edit';
 import { SubModal } from './sub';
 import { SubscribeUserModal } from './subuser';
+import { EditNameModal } from './editName';
+import { EditDurationModal } from './editDuration';
+import { EditPricingTokenModal } from './editPricingToken';
+import { EditPricingPriceModal } from './editPricingPrice';
+import { EditPricingDateModal } from './editPricingDate';
+import { TokenIdActionModal } from './tokenIdAction';
+import { DiscountModal } from './discount';
 
 export const PlanModals = () => {
   const [pageState, setPageState] = useAtom(badgeAtom);
@@ -17,7 +24,7 @@ export const PlanModals = () => {
     });
   return (
     <Dialog open={pageState.isModalOpen} onClose={closeModal}>
-      <div className="text-1 bg-2 p-6 rounded-md relative">
+      <div className="text-1 bg-2 p-6 rounded-md relative w-[600px]">
         <IconButton
           className="!absolute text-1 top-[20px] right-[20px]"
           onClick={closeModal}
@@ -40,7 +47,41 @@ function ModalChild() {
       return (
         <EditModal />
       );
-
+    }
+    else if (activeModal.action == "editName") {
+      return (
+        <EditNameModal />
+      );
+    }
+    else if (activeModal.action == "editDuration") {
+      return (
+        <EditDurationModal />
+      );
+    }
+    else if (activeModal.action == "editPricingPrice") {
+      return (
+        <EditPricingPriceModal />
+      )
+    }
+    else if (activeModal.action == "editPricingDate") {
+      return (
+        <EditPricingDateModal />
+      )
+    }
+    else if (activeModal.action == "tokenIdAction") {
+      return (
+        <TokenIdActionModal />
+      )
+    }
+    else if (activeModal.action == "discount") {
+      return (
+        <DiscountModal />
+      )
+    }
+    else if (activeModal.action == "editToken") {
+      return (
+        <EditPricingTokenModal />
+      );
     }
     else if (activeModal.action == "add") {
       return (

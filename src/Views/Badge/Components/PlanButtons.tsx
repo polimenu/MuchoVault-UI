@@ -64,7 +64,7 @@ export function PlanAdminButtons({ plan }: { plan: IPlan }) {
   const { activeChain } = useContext(BadgeContext);
   const { chain } = useNetwork();
 
-  const { disablePlanCall, enablePlanCall } = usePlanEnableDisableCalls(plan.id);
+  const { disablePlanCall, enablePlanCall } = usePlanEnableDisableCalls(plan.address);
 
   if (!account || activeChain.id !== chain?.id)
     return (
@@ -76,15 +76,7 @@ export function PlanAdminButtons({ plan }: { plan: IPlan }) {
     );
 
   return (<>
-    <div className="flex gap-5">
-      <BlueBtn
-        onClick={() =>
-          setPageState({ ...state, activeModal: { plan: plan, action: "edit" }, isModalOpen: true })
-        }
-        className={btnClasses}
-      >
-        Edit
-      </BlueBtn>
+    <div className="flex gap-5 mt-5">
 
       <BlueBtn
         onClick={() =>
@@ -94,8 +86,6 @@ export function PlanAdminButtons({ plan }: { plan: IPlan }) {
       >
         {plan.enabled ? "Disable" : "Enable"}
       </BlueBtn>
-    </div>
-    <div className="flex gap-5 mt-5">
       <BlueBtn
         onClick={() =>
           setPageState({ ...state, activeModal: { plan: plan, action: "subscribe" }, isModalOpen: true })
@@ -107,6 +97,33 @@ export function PlanAdminButtons({ plan }: { plan: IPlan }) {
 
       <BlueBtn
         onClick={() =>
+          setPageState({ ...state, activeModal: { plan: plan, action: "tokenIdAction", tokenIdAction: "unsubscribe" }, isModalOpen: true })
+        }
+        className={btnClasses}
+      >
+        Unsub to
+      </BlueBtn>
+    </div>
+    <div className="flex gap-5 mt-5">
+      <BlueBtn
+        onClick={() =>
+          setPageState({ ...state, activeModal: { pricing: plan.subscriptionPricing, action: "discount" }, isModalOpen: true })
+        }
+        className={btnClasses}
+      >
+        Sub Discount
+      </BlueBtn>
+      <BlueBtn
+        onClick={() =>
+          setPageState({ ...state, activeModal: { pricing: plan.renewalPricing, action: "discount" }, isModalOpen: true })
+        }
+        className={btnClasses}
+      >
+        Ren Discount
+      </BlueBtn>
+
+      {/*<BlueBtn
+        onClick={() =>
           setPageState({ ...state, activeModal: { plan: plan, action: "bulkSubscribe" }, isModalOpen: true })
         }
         className={btnClasses}
@@ -114,23 +131,15 @@ export function PlanAdminButtons({ plan }: { plan: IPlan }) {
         Bulk sub to
       </BlueBtn>
 
-      <BlueBtn
-        onClick={() =>
-          setPageState({ ...state, activeModal: { plan: plan, action: "unsubscribe" }, isModalOpen: true })
-        }
-        className={btnClasses}
-      >
-        Unsub to
-      </BlueBtn>
 
       <BlueBtn
         onClick={() =>
-          setPageState({ ...state, activeModal: { plan: plan, action: "renew" }, isModalOpen: true })
+          setPageState({ ...state, activeModal: { plan: plan, action: "tokenIdAction", tokenIdAction: "renew" }, isModalOpen: true })
         }
         className={btnClasses}
       >
         Renew to
-      </BlueBtn>
+      </BlueBtn>*/}
     </div ></>
   );
 

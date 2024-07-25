@@ -37,9 +37,23 @@ export interface IPlan {
   exists: boolean;
   enabled: boolean;
   status: string;
-  activeSubscribers: number;
   isActiveForCurrentUser: boolean;
-  isExpiredForCurrentUser: boolean;
+  address: string;
+  subscriptionPricing: IPricing;
+  renewalPricing: IPricing;
+}
+
+export interface IPricing {
+  contract: string,
+  dateIni: Date,
+  dateEnd: Date,
+  dateRampIni: Date,
+  dateRampEnd: Date,
+  priceRampIni: Number,
+  priceRampEnd: Number,
+  token: string,
+  tokenSymbol: string,
+  tokenDecimals: Number
 }
 
 export interface IPrice {

@@ -1,25 +1,21 @@
 import { useToast } from '@Contexts/Toast';
 import { useWriteCall } from '@Hooks/useWriteCall';
-import { multiply } from '@Utils/NumString/stringArithmatics';
 import MuchoBadgeManagerABI from '../Config/Abis/MuchoBadgeManager.json'
 import MuchoBadgeWrapperABI from '../Config/Abis/MuchoBadgeWrapper.json'
 import MuchoRewardRouterABI from '../Config/Abis/MuchoRewardRouter.json'
+import MuchoNFTAbi from '../Config/Abis/MuchoNFT.json'
+import MuchoPricingAbi from '../Config/Abis/MuchoPricing.json'
 import { useAtom } from 'jotai';
 import { BADGE_CONFIG } from '../Config/BadgeConfig';
-import { writeBadgeAtom } from '../badgeAtom';
-import { toFixed } from '@Utils/NumString';
+import { IPlan, IPricing, writeBadgeAtom } from '../badgeAtom';
 import { useContext } from 'react';
 import { BadgeContext } from '..';
-import { IPrice } from '../badgeAtom';
-import { ethers } from 'ethers';
 import { useUserAccount } from '@Hooks/useUserAccount';
+import { fromDateYYYYMMDDhhmmss } from '@Views/Common/Utils';
 
 
-
-export const usePlanEditCalls = () => {
-  const { activeChain } = useContext(BadgeContext);
-  const { writeCall } = useWriteCall(BADGE_CONFIG[activeChain?.id].MuchoBadgeManager, MuchoBadgeManagerABI);
-  const toastify = useToast();
+export const usePricingEditCalls = (pricing: IPricing) => {
+  const { writeCall: writePricingCall } = useWriteCall(pricing.contract, MuchoPricingAbi);
   const [, setPageState] = useAtom(writeBadgeAtom);
 
   function callBack(res) {
@@ -32,25 +28,79 @@ export const usePlanEditCalls = () => {
       });
   }
 
-  function updatePlanCall(id: number, name: string, duration: number, subPrice: IPrice, renPrice: IPrice) {
-    const req = [id, name, "", duration * 24 * 3600, { token: subPrice.contract, amount: Math.round(subPrice.amount * (10 ** subPrice.decimals)) },
-      { token: renPrice.contract, amount: Math.round(renPrice.amount * (10 ** renPrice.decimals)) }, true];
-    //console.log("updatePlan request:");
-    //console.log(req);
-    writeCall(callBack, "updatePlan", req);
-  }
 
-  function addPlanCall(name: string, duration: number, subPrice: IPrice, renPrice: IPrice) {
-    const req = [name, "", duration * 24 * 3600, { token: subPrice.contract, amount: Math.round(subPrice.amount * (10 ** subPrice.decimals)) },
-      { token: renPrice.contract, amount: Math.round(renPrice.amount * (10 ** renPrice.decimals)) }, true];
-    //console.log("updatePlan request:");
-    //console.log(req);
-    writeCall(callBack, "addPlan", req);
+  const updatePricingToken = (tokenAddress: string) => {
+    writePricingCall(callBack, "setToken", [tokenAddress]);
+  }
+  const updatePriceIni = (price: Number) => {
+    writePricingCall(callBack, "setPriceRampIni", [price * 10 ** pricing.tokenDecimals]);
+  }
+  const updatePriceEnd = (price: Number) => {
+    writePricingCall(callBack, "setPriceRampEnd", [price * 10 ** pricing.tokenDecimals]);
+  }
+  const updateIni = (dt: string) => {
+    writePricingCall(callBack, "setDateIni", [Math.floor(fromDateYYYYMMDDhhmmss(dt).getTime() / 1000)]);
+  }
+  const updateEnd = (dt: string) => {
+    writePricingCall(callBack, "setDateEnd", [Math.floor(fromDateYYYYMMDDhhmmss(dt).getTime() / 1000)]);
+  }
+  const updateRampIni = (dt: string) => {
+    writePricingCall(callBack, "setDateRampIni", [Math.floor(fromDateYYYYMMDDhhmmss(dt).getTime() / 1000)]);
+  }
+  const updateRampEnd = (dt: string) => {
+    writePricingCall(callBack, "setDateRampEnd", [Math.floor(fromDateYYYYMMDDhhmmss(dt).getTime() / 1000)]);
+  }
+  const updateDiscountCall = (address: string, discType: Number, disc: Number) => {
+    if (discType == 1) {
+      disc = Math.floor(disc * 100)
+    }
+    else if (discType == 0) {
+      disc = disc * 10 ** pricing.tokenDecimals;
+    }
+    console.log("disc", address, discType, disc);
+    writePricingCall(callBack, "setUserDiscount", [address, [discType, disc]]);
   }
 
   return {
-    updatePlanCall,
-    addPlanCall
+    updatePricingToken,
+    updatePriceIni,
+    updatePriceEnd,
+    updateIni,
+    updateEnd,
+    updateRampIni,
+    updateRampEnd,
+    updateDiscountCall
+  };
+};
+
+export const usePlanEditCalls = (plan: IPlan) => {
+  const { writeCall: writeNFTCall } = useWriteCall(plan.address, MuchoNFTAbi);
+  const { writeCall: writeSubPricingCall } = useWriteCall(plan.subscriptionPricing.contract, MuchoPricingAbi);
+  const { writeCall: writeRenPricingCall } = useWriteCall(plan.renewalPricing.contract, MuchoPricingAbi);
+  const [, setPageState] = useAtom(writeBadgeAtom);
+
+  function callBack(res) {
+    //console.log("updatePlan:");
+    //console.log(res);
+    if (res.payload)
+      setPageState({
+        isModalOpen: false,
+        activeModal: null,
+      });
+  }
+
+
+  const updateNameCall = (name: string) => {
+    writeNFTCall(callBack, "setPlanName", [name]);
+  }
+
+  const updateDurationcall = (days: Number) => {
+    writeNFTCall(callBack, "setDuration", [days * 24 * 60 * 60]);
+  }
+
+  return {
+    updateNameCall,
+    updateDurationcall,
   };
 };
 
@@ -87,9 +137,8 @@ export const usePlanUserCalls = () => {
 
 }
 
-export const usePlanEnableDisableCalls = () => {
-  const { activeChain } = useContext(BadgeContext);
-  const { writeCall } = useWriteCall(BADGE_CONFIG[activeChain?.id].MuchoBadgeManager, MuchoBadgeManagerABI);
+export const usePlanEnableDisableCalls = (nftAddress) => {
+  const { writeCall } = useWriteCall(nftAddress, MuchoNFTAbi);
   const toastify = useToast();
   const [, setPageState] = useAtom(writeBadgeAtom);
 
@@ -104,11 +153,11 @@ export const usePlanEnableDisableCalls = () => {
   }
 
   function disablePlanCall(id: number) {
-    writeCall(callBack, "disablePlan", [id]);
+    writeCall(callBack, "setEnabled", [false]);
   }
 
   function enablePlanCall(id: number) {
-    writeCall(callBack, "enablePlan", [id]);
+    writeCall(callBack, "setEnabled", [true]);
   }
 
   return {
@@ -118,15 +167,11 @@ export const usePlanEnableDisableCalls = () => {
 };
 
 
-export const usePlanSubUnsubCalls = () => {
-  const { activeChain } = useContext(BadgeContext);
-  const { writeCall: writeCallWrapper } = useWriteCall(BADGE_CONFIG[activeChain?.id].MuchoBadgeWrapper, MuchoBadgeWrapperABI);
-  const { writeCall } = useWriteCall(BADGE_CONFIG[activeChain?.id].MuchoBadgeManager, MuchoBadgeManagerABI);
+export const usePlanSubUnsubCalls = (nftAddress) => {
+  const { writeCall } = useWriteCall(nftAddress, MuchoNFTAbi);
   const [, setPageState] = useAtom(writeBadgeAtom);
 
   function callBack(res) {
-    //console.log("updatePlan:");
-    //console.log(res);
     if (res.payload)
       setPageState({
         isModalOpen: false,
@@ -134,24 +179,23 @@ export const usePlanSubUnsubCalls = () => {
       });
   }
 
-  function unsubCall(id: number, sub: string) {
+  function unsubCall(tokenId: number) {
     //console.log("Sending call");
-    writeCall(callBack, "cancelSubscription", [id, sub]);
+    writeCall(callBack, "cancelSubscriptionTo", [tokenId]);
   }
 
-  function subCall(id: number, sub: string, cBack: any) {
+  function subCall(address: string, metadata: any) {
     //console.log("Sending call");
-    const cb = (cBack ? cBack : callBack);
-    writeCallWrapper(callBack, "subscribe(uint256,address)", [id, sub]);
+    writeCall(callBack, "subscribeTo", [address, JSON.stringify(metadata)]);
   }
 
-  function renewCall(id: number, sub: string) {
+  function renewCall(tokenId: number) {
     //console.log("Sending call");
-    writeCallWrapper(callBack, "renew(uint256,address)", [id, sub]);
+    writeCall(callBack, "renewTo", [tokenId]);
   }
 
-  function subBulkCall(id: number, subs: string[]) {
-    writeCallWrapper(callBack, "bulkSubscribe", [id, subs]);
+  function subBulkCall(address: string[], metadata: any[]) {
+    writeCall(callBack, "bulkSubscribeTo", [address, metadata.map(m => JSON.stringify(m))]);
   }
 
   return {

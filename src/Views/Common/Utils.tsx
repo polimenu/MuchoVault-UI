@@ -9,3 +9,7 @@ export const addressSummary = (address: string) => {
 export const dateFormat = (date: Date) => {
     return date.toISOString().split('T')[0] + " " + date.toLocaleTimeString("es-ES");
 }
+
+export const fromDateYYYYMMDDhhmmss = (dt: string) => {
+    return new Date(dt.substring(0, 4), dt.substring(5, 7) - 1, dt.substring(8, 10), dt.substring(11, 13), dt.substring(14, 16), dt.substring(17, 19));
+}
