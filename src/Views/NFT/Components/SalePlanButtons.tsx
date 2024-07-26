@@ -8,6 +8,9 @@ import { IPlan, badgeAtom } from '../badgeAtom';
 import { ConnectionRequired } from '@Views/Common/Navbar/AccountDropdown';
 import { usePlanEnableDisableCalls } from '../Hooks/usePlanWriteCalls';
 import { t } from 'i18next';
+import { useWriteCall } from '@Hooks/useWriteCall';
+import { BADGE_CONFIG } from '../Config/BadgeConfig';
+import MuchoNFTFetcherAbi from '../Config/Abis/MuchoNFTFetcher.json';
 
 export const btnClasses = '!w-fit px-4 rounded-sm !h-7 ml-auto';
 
@@ -15,7 +18,6 @@ const CLOSED_PLANS = [1, 5];
 
 export function SalePlanButtons({ data }: { data: any }) {
   const { address: account } = useUserAccount();
-  const [state, setPageState] = useAtom(badgeAtom);
   const { activeChain } = useContext(BadgeContext);
   const { chain } = useNetwork();
 
@@ -30,25 +32,88 @@ export function SalePlanButtons({ data }: { data: any }) {
       </div>
     );
 
+  //console.log("data", data);
+  if (data.userBalance == 0) {
+    return <SalePlanButtonsNotSubscribed data={data} />
+  }
+
+  return <SalePlanButtonsSubscribed data={data} />
+
+}
+
+
+function SalePlanButtonsNotSubscribed({ data }: { data: any }) {
+  const [state, setPageState] = useAtom(badgeAtom);
+
+  //console.log("*******DRAWING PLAN BUTTONS*****", plan.id, CLOSED_PLANS, CLOSED_PLANS.find(p => p == plan.id));
+  console.log("data.planAttributes", data.planAttributes);
+
   return (
     <div className={`${btnClasses} flex gap-5 m-auto`}>
-      {data.userBalance == 0 && <BlueBtn
+      <BlueBtn
         onClick={() =>
           setPageState({ ...state, activeModal: { saleData: data, action: "saleSubscribe" }, isModalOpen: true })
         }
         className={btnClasses}
       >
         {data.planAttributes.planName == "NFT Baby Scout" ? "Inscribirme a la formación Baby Scout Verano 2024" :
-          data.planAttributes.planName == "NFT Membresía" ? "Inscribirme para tener acceso a TODAS las formaciones" : ""}
-      </BlueBtn>}
-      {data.userBalance > 0 && <BlueBtn
+          data.id == 1 ? "Inscribirme para tener acceso a TODAS las formaciones" : ""}
+      </BlueBtn>
+    </div>
+  );
+}
+
+const getRenewCall = (nftId: string) => {
+  const { activeChain } = useContext(BadgeContext);
+  const { writeCall } = useWriteCall(BADGE_CONFIG[activeChain.id].MuchoNFTFetcher, MuchoNFTFetcherAbi);
+  const [state, setPageState] = useAtom(badgeAtom);
+
+  function callBack(res) {
+    //console.log("updatePlan:");
+    //console.log(res);
+    if (res.payload)
+      setPageState({
+        isModalOpen: false,
+        activeModal: null,
+      });
+  }
+
+  function myCall() {
+    //console.log("Sending call");
+    writeCall(callBack, "renew", [nftId]);
+  }
+
+  return myCall;
+};
+
+function SalePlanButtonsSubscribed({ data }: { data: any }) {
+
+  console.log("data", data);
+  const call = getRenewCall(data.id);
+
+  if (data.tokenIdAttributes.remainingDays < 5) {
+    return <div className={`${btnClasses} flex gap-5 m-auto`}>
+      <BlueBtn
+        onClick={() => {
+          call();
+        }
+        }
+        className={btnClasses}
+      >
+        Renovar acceso por {data.planAttributes.duration} días
+      </BlueBtn>
+    </div >
+  }
+
+  return (
+    <div className={`${btnClasses} flex gap-5 m-auto`}>
+      <BlueBtn
         onClick={() => { }}
         isDisabled={true}
         className={btnClasses}
       >
         ¡Enhorabuena, ya estás suscrito!
-      </BlueBtn>}
+      </BlueBtn>
     </div >
   );
-
 }

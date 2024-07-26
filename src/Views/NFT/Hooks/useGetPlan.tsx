@@ -10,9 +10,10 @@ import {
 
 import { Chain, useContractRead, useContractReads } from 'wagmi';
 import { BadgeContext } from '../sale';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useUserAccount } from '@Hooks/useUserAccount';
 import { IBadge, IPlan } from '../badgeAtom';
+import { getDataNumber, getDataString } from '@Views/Index/Hooks/useCommonUtils';
 
 export const BASIS_POINTS_DIVISOR = '10000';
 export const SECONDS_PER_YEAR = '31536000';
@@ -74,6 +75,8 @@ export const useGetNFTPlanForSalePage = (address: string, idNFT: number, pricing
   // const { state } = useGlobal();
   const badge_config: (typeof BADGE_CONFIG)[42161] = BADGE_CONFIG[activeChain.id];
   const queryAccount = account ?? NULL_ACCOUNT;
+  const [tokenId, setTokenId] = useState(0);
+  const [balance, setBalance] = useState(0);
   //console.log("queryAccount", queryAccount);
 
   let calls = [];
@@ -102,6 +105,22 @@ export const useGetNFTPlanForSalePage = (address: string, idNFT: number, pricing
         args: [idNFT, NULL_ACCOUNT],
         chainId: activeChain.id,
         map: "subscriptionPublicPrice"
+      },
+      {
+        address: badge_config.MuchoNFTFetcher,
+        abi: FetcherAbi,
+        functionName: 'renewalPrice',
+        args: [idNFT, queryAccount],
+        chainId: activeChain.id,
+        map: "renewalPrice"
+      },
+      {
+        address: badge_config.MuchoNFTFetcher,
+        abi: FetcherAbi,
+        functionName: 'renewalPrice',
+        args: [idNFT, NULL_ACCOUNT],
+        chainId: activeChain.id,
+        map: "renewalPublicPrice"
       },
       {
         address: pricingAddress,
@@ -135,91 +154,122 @@ export const useGetNFTPlanForSalePage = (address: string, idNFT: number, pricing
         chainId: activeChain.id,
         map: "dateRampEnd"
       },
-      {
+
+    ]);
+
+    if (account) {
+      calls.push({
         address: address,
         abi: NFTAbi,
         functionName: 'activeBalanceOf',
         args: [queryAccount],
         chainId: activeChain.id,
         map: "activeBalanceOf"
-      }
-    ]);
+      });
+    }
+
+    //Get token ID if user has
+    if (balance > 0) {
+      calls.push({
+        address: address,
+        abi: NFTAbi,
+        functionName: 'tokenOfOwnerByIndex',
+        args: [queryAccount, 0],
+        chainId: activeChain.id,
+        map: 'tokenOfOwnerByIndex',
+      });
+    }
+
+    //Get token details if user has
+    if (tokenId > 0) {
+      calls.push({
+        address: address,
+        abi: NFTAbi,
+        functionName: 'tokenIdAttributes',
+        args: [tokenId],
+        chainId: activeChain.id,
+        map: 'tokenIdAttributes',
+      });
+    }
+
   }
 
 
+  let indexes: any = {};
+  calls.forEach((c, i) => { indexes[c.map] = i; });
   let { data } = useContractReads({
     contracts: calls,
     watch: true,
   });
 
-  const parsePrice = (price: { amount: string, token: string }) => {
-    const tokenData = VALID_TOKENS[price.token];
-    //console.log("tokenData", tokenData);
-    return {
-      amount: Number(price.amount) / 10 ** tokenData.decimals,
-      token: tokenData.symbol,
-      contract: price.token,
-      decimals: tokenData.decimals
-    }
-  }
-
   data = getBNtoStringCopy(data);
+  //console.log("calls", calls);
   //console.log("data", data);
   let res = null;
   if (data && data.length > 5) {
+    data.indexes = indexes;
+    const planAttributes = getDataString(data, "planAttributes");
+    const tokenIdAttributes = getDataString(data, 'tokenIdAttributes');
     res = {
       id: idNFT,
       planAttributes: {
-        duration: data[0].duration / (3600 * 24),
-        enabled: data[0].enabled,
-        nftAddress: data[0].nftAddress,
-        planName: data[0].planName
+        duration: planAttributes.duration / (3600 * 24),
+        enabled: planAttributes.enabled,
+        nftAddress: planAttributes.nftAddress,
+        planName: planAttributes.planName
       },
       pricing: {
-        subscriptionPrice: parsePrice(data[1]),
-        subscriptionPublicPrice: parsePrice(data[2]),
-        dateIni: new Date(data[3] * 1000),
-        dateEnd: new Date(data[4] * 1000),
-        dateRampIni: new Date(data[5] * 1000),
-        dateRampEnd: new Date(data[6] * 1000)
+        subscriptionPrice: parsePrice(getDataNumber(data, "subscriptionPrice")),
+        subscriptionPublicPrice: parsePrice(getDataNumber(data, "subscriptionPublicPrice")),
+        renewalPrice: parsePrice(getDataNumber(data, "renewalPrice")),
+        renewalPublicPrice: parsePrice(getDataNumber(data, "renewalPublicPrice")),
+        dateIni: new Date(getDataNumber(data, "dateIni") * 1000),
+        dateEnd: new Date(getDataNumber(data, "dateEnd") * 1000),
+        dateRampIni: new Date(getDataNumber(data, "dateRampIni") * 1000),
+        dateRampEnd: new Date(getDataNumber(data, "dateRampEnd") * 1000)
       },
-      userBalance: data[7]
+      userBalance: getDataNumber(data, "activeBalanceOf"),
+      tokenIdAttributes: {
+        remainingDays: tokenIdAttributes ? Math.round((tokenIdAttributes.expirationTime - (new Date()).getTime() / 1000) / (24 * 3600)) : 0,
+        metaData: tokenIdAttributes ? tokenIdAttributes.metaData : "",
+        tokenId: getDataNumber(data, "tokenOfOwnerByIndex"),
+        startDate: tokenIdAttributes ? new Date(tokenIdAttributes.startTime * 1000) : (new Date(0)),
+        expirationDate: tokenIdAttributes ? new Date(tokenIdAttributes.expirationTime * 1000) : (new Date(0))
+      }
     }
   }
 
-  //Get token ID if user has
-  const tokenIdCall = (res?.userBalance > 0) ? {
-    address: address,
-    abi: NFTAbi,
-    functionName: 'tokenOfOwnerByIndex',
-    args: [queryAccount, 0],
-    chainId: activeChain.id,
-    watch: true
-  } : {};
-  let { data: tokenId } = useContractRead(tokenIdCall);
+  useEffect(() => {
+    if (res && res.userBalance && res.userBalance > 0) {
+      setBalance(res.userBalance);
+    }
+  }, [res ? res.userBalance : null])
 
-  //Get token details if user has
-  const tokenIdAttributesCall = (tokenId) ? {
-    address: address,
-    abi: NFTAbi,
-    functionName: 'tokenIdAttributes',
-    args: [tokenId],
-    chainId: activeChain.id,
-    watch: true
-  } : {};
-  let { data: tokenIdAttributes } = useContractRead(tokenIdAttributesCall);
-
-  if (tokenIdAttributes) {
-    tokenIdAttributes = getBNtoStringCopy(tokenIdAttributes);
-    //console.log("tokenIdAttributes", tokenIdAttributes);
-    res.tokenIdAttributes = {
-      remainingDays: Math.round((tokenIdAttributes.expirationTime - (new Date()).getTime() / 1000) / (24 * 3600)),
-      metaData: tokenIdAttributes.metaData,
-      tokenId: tokenIdAttributes.tokenId,
-      startDate: new Date(tokenIdAttributes.startTime * 1000),
-      expirationDate: new Date(tokenIdAttributes.expirationTime * 1000)
-    };
-  }
+  useEffect(() => {
+    if (res && res.tokenIdAttributes && res && res.tokenIdAttributes.tokenId > 0) {
+      setTokenId(res.tokenIdAttributes.tokenId);
+    }
+  }, [res && res.tokenIdAttributes ? res.tokenIdAttributes.tokenId : null])
 
   return res;
-};
+}
+
+
+const parsePrice = (price: { amount: string, token: string }) => {
+  if (!price) {
+    return {
+      amount: 10000,
+      token: "USDC",
+      contract: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      decimals: 6
+    }
+  }
+  const tokenData = VALID_TOKENS[price.token];
+  //console.log("tokenData", tokenData);
+  return {
+    amount: Number(price.amount) / 10 ** tokenData.decimals,
+    token: tokenData.symbol,
+    contract: price.token,
+    decimals: tokenData.decimals
+  }
+}

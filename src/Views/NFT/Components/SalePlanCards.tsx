@@ -3,7 +3,7 @@ import { Display } from '@Views/Common/Tooltips/Display';
 import { TableAligner } from '@Views/Common/TableAligner';
 import { Card } from '../../Common/Card/Card';
 import { BadgeContext } from '..';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { t } from 'i18next';
 import { SalePlanButtons } from './SalePlanButtons';
 export const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
@@ -64,18 +64,14 @@ const PlanCard = ({ data }: { data: any }) => {
   );
 }
 
-
-
-const PlanInfoUser = ({ data }: { data: any }) => {
-  //console.log("CARD Plan:", plan);
-  const enabledStr: string = data.userBalance > 0 ? t("badge.Subscribed") + ` (${data.tokenIdAttributes.remainingDays} days) [Id=${data.tokenIdAttributes.tokenId}]` : t("badge.Not subscribed");
+const PlanInfoUserNotSubscribed = ({ data }: { data: any }) => {
 
   //console.log("Enabled:"); console.log(enabledStr);
   //console.log("data.pricing", data.pricing);
   return (
     <>
       <TableAligner
-        keysName={[t('badge.Duration'), t('badge.Subscription Price'), t('badge.Status (time left)')]}
+        keysName={[t('badge.Duration'), t('badge.Subscription Price'), t('badge.Status'), t('badge.Time left to subscribe')]}
         values={[
           <div className={`${wrapperClasses}`}>
 
@@ -105,9 +101,117 @@ const PlanInfoUser = ({ data }: { data: any }) => {
           <div className={`${wrapperClasses}`}>
             {<Display
               className="!justify-end"
-              data={enabledStr}
+              data={t("badge.Not subscribed")}
             />}
           </div>,
+          <div className={`${wrapperClasses}`}>
+            <Countdown date={data.pricing.dateEnd} />
+          </div>,
+        ]}
+        keyStyle={keyClasses}
+        valueStyle={valueClasses}
+      />
+    </>
+  );
+};
+
+const Countdown = ({ date }: { date: Date }) => {
+
+  const dateLiterals = { d: t("airdrop.Days"), h: t("airdrop.Hours"), m: t("airdrop.Minutes"), s: t("airdrop.Seconds") };
+  const [counter, setCounter] = useState("");
+  useEffect(() => {
+    setTimeout(() => setCounter(secsToDiffDate(dateDiffInSecs(new Date(Date.now()), date), dateLiterals, t("airdrop.Sales ended!"))), 1000);
+  }, [counter]);
+
+  return (
+    <div>{counter}</div>
+  );
+}
+
+function dateDiffInSecs(a: Date, b: Date) {
+  // Discard the time and time-zone information.
+  const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+  const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+  return Math.floor((b.getTime() - a.getTime()) / 1000);
+}
+
+function secsToDiffDate(secs: number, dateLiterals: any, endedLiteral: string) {
+  if (secs <= 0) {
+    return endedLiteral;
+  }
+  let days = 0, hours = 0, minutes = 0;
+  const DAY_IN_SECS = 60 * 60 * 24;
+  const HOUR_IN_SECS = 60 * 60;
+  const MIN_IN_SECS = 60;
+
+  if (secs > DAY_IN_SECS) {
+    days = Math.floor(secs / DAY_IN_SECS);
+    secs -= days * DAY_IN_SECS;
+  }
+
+  if (secs > HOUR_IN_SECS) {
+    hours = Math.floor(secs / HOUR_IN_SECS);
+    secs -= hours * HOUR_IN_SECS;
+  }
+
+  if (secs > MIN_IN_SECS) {
+    minutes = Math.floor(secs / MIN_IN_SECS);
+    secs -= minutes * MIN_IN_SECS;
+  }
+
+  let countDownLiterl = '';
+  if (days > 0)
+    countDownLiterl += `${days} ${dateLiterals.d} `;
+
+  if (hours > 0 || days > 0)
+    countDownLiterl += `${hours} ${dateLiterals.h} `;
+
+  if (minutes > 0 || hours > 0 || days > 0)
+    countDownLiterl += `${minutes} ${dateLiterals.m} `;
+
+  return `${countDownLiterl} ${secs} ${dateLiterals.s}`;
+}
+
+const PlanInfoUser = ({ data }: { data: any }) => {
+
+  if (data.userBalance == 0) {
+    return <PlanInfoUserNotSubscribed data={data} />
+  }
+
+  return (
+    <>
+      <TableAligner
+        keysName={[t('badge.Status'), t('badge.Time left'), t('badge.Renewal Price')]}
+        values={[
+          <div className={`${wrapperClasses}`}>
+            <Display
+              className="!justify-end"
+              data={t("badge.Subscribed")}
+            />
+          </div>,
+          <div className={`${wrapperClasses}`}>
+            <Display
+              className="!justify-end"
+              data={`${data.tokenIdAttributes.remainingDays} days`}
+            />
+          </div>,
+          <div className={`${wrapperClasses}`}>
+            {
+              (data.pricing.renewalPublicPrice.amount > data.pricing.renewalPrice.amount) && <span className='line-through mr-5'><Display
+                className="!justify-end"
+                data={data.pricing.renewalPublicPrice.amount}
+                precision={2}
+              />
+              </span>
+            }
+            <Display
+              className="!justify-end"
+              data={data.pricing.renewalPrice.amount}
+              unit={data.pricing.renewalPrice.token}
+              precision={2}
+            />
+          </div>
         ]}
         keyStyle={keyClasses}
         valueStyle={valueClasses}
