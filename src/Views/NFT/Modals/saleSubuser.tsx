@@ -24,7 +24,7 @@ export const SaleSubscribeUserModal = () => {
   const head = `Subscribirme a ${data.planAttributes.planName}`;
   const button = `Pagar ${Math.round(100 * price.amount) / 100} ${price.token} y Subscribirme`;
 
-  console.log("price.contract", price.contract);
+  //console.log("price.contract", price.contract);
   const tokenContract: IContract = {
     abi: erc20ABI,
     contract: price.contract
