@@ -101,7 +101,7 @@ const getRenewCall = (nftId: string) => {
 
 function SalePlanButtonsSubscribed({ data }: { data: any }) {
 
-  console.log("data", data);
+  //console.log("data", data);
   const call = getRenewCall(data.id);
 
   if (data.tokenIdAttributes.remainingDays < 5) {
