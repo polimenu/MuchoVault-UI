@@ -11,6 +11,7 @@ import { t } from 'i18next';
 import { useWriteCall } from '@Hooks/useWriteCall';
 import { BADGE_CONFIG } from '../Config/BadgeConfig';
 import MuchoNFTFetcherAbi from '../Config/Abis/MuchoNFTFetcher.json';
+import { Divider } from '@Views/Common/Card/Divider';
 
 export const btnClasses = '!w-fit px-4 rounded-sm !h-7 ml-auto';
 
@@ -48,7 +49,7 @@ function SalePlanButtonsNotSubscribed({ data }: { data: any }) {
   //console.log("*******DRAWING PLAN BUTTONS*****", plan.id, CLOSED_PLANS, CLOSED_PLANS.find(p => p == plan.id));
   console.log("data.planAttributes", data.planAttributes);
 
-  return (
+  return (<>
     <div className={`${btnClasses} flex gap-5 m-auto`}>
       <BlueBtn
         onClick={() =>
@@ -60,6 +61,18 @@ function SalePlanButtonsNotSubscribed({ data }: { data: any }) {
           data.id == 1 ? "Inscribirme para tener acceso a TODAS las formaciones" : ""}
       </BlueBtn>
     </div>
+    {data.id == 1 && <><Divider />
+      <div className={`${btnClasses} flex gap-5 mt-[20px] bold !w-full`}>
+        INCLUIDO CON TU COMPRA:
+      </div>
+      <div className={`${btnClasses} flex gap-5 mt-[10px] !w-full`}>
+        Acceso a la membresía del Campamento DeFi (12 meses de todas las formaciones impartidas en el Campamento)
+      </div>
+      <div className={`${btnClasses} flex gap-5 mt-[20px] !w-full`}>
+        NFT con poderes especiales
+      </div>
+    </>}
+  </>
   );
 }
 
