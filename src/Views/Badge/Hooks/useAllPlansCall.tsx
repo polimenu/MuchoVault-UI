@@ -9,9 +9,11 @@ import {
 
 import { Chain, useContractReads } from 'wagmi';
 import { BadgeContext } from '..';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useUserAccount } from '@Hooks/useUserAccount';
-import { IBadge } from '../badgeAtom';
+import { IBadge, IPlan } from '../badgeAtom';
+import { getDataString } from '@Views/Index/Hooks/useCommonUtils';
+import { getDataNumber } from '@Views/Index/Hooks/useCommonUtils';
 
 export const BASIS_POINTS_DIVISOR = '10000';
 export const SECONDS_PER_YEAR = '31536000';
@@ -23,6 +25,7 @@ export const fromWei = (value: string, decimals: number = 18) => {
 };
 
 export const useGetPlans = (admin: boolean) => {
+  let response: IBadge = {};
   //console.log("useGetPlans");
   const { address: account } = useUserAccount();
   let activeChain: Chain | null = null;
@@ -32,318 +35,249 @@ export const useGetPlans = (admin: boolean) => {
   }
   // const { state } = useGlobal();
   const badge_config: (typeof BADGE_CONFIG)[42161] = BADGE_CONFIG[activeChain.id];
+  const [plans, setPlans] = useState<IPlan[]>([]);
+
+  const calls = [];
 
   const allPlansCall = {
     address: badge_config.MuchoNFTFetcher,
     abi: MuchoNFTFetcherAbi,
     functionName: 'allPlans',
     chainId: activeChain.id,
+    map: 'allPlans'
   }
+  calls.push(allPlansCall);
 
-  let calls = [allPlansCall];
-  const nftIds = [];
-
+  //Active plans for user
   if (account) {
-    calls = calls.concat([{
+    calls.push({
       address: badge_config.MuchoNFTFetcher,
       abi: MuchoNFTFetcherAbi,
       functionName: 'activePlansForUser',
       chainId: activeChain.id,
       args: [account],
-    }]);
-
+      map: 'activePlansForUser',
+    });
   }
 
-  //console.log("Calls"); console.log(calls);
+  //Calls by PLAN ID:
+  if (plans && plans.length > 0) {
 
+    let planIdCalls = [];
+    //Supply
+    planIdCalls = planIdCalls.concat(plans.map(p => {
+      return {
+        address: p.address,
+        abi: MuchoNFTAbi,
+        functionName: 'totalSupply',
+        chainId: activeChain.id,
+        map: `totalSupply_${p.id}`
+      }
+    }));
+
+    //Pricings address (subscription)
+    planIdCalls = planIdCalls.concat(plans.map(p => {
+      return {
+        address: badge_config.MuchoNFTFetcher,
+        abi: MuchoNFTFetcherAbi,
+        functionName: 'nftPricing',
+        chainId: activeChain.id,
+        args: [p.id],
+        map: `nftSubPricing_${p.id}`
+      }
+    }));
+
+    //Pricings address (renewal)
+    planIdCalls = planIdCalls.concat(plans.map(p => {
+      return {
+        address: badge_config.MuchoNFTFetcher,
+        abi: MuchoNFTFetcherAbi,
+        functionName: 'nftRenewalPricing',
+        chainId: activeChain.id,
+        args: [p.id],
+        map: `nftRenPricing_${p.id}`
+      }
+    }));
+
+    /*---------------------------------------------------*/
+
+    //Pricings data
+    const PRICING_FIELDS = ['dateIni', 'dateEnd', 'dateRampIni', 'dateRampEnd', 'priceRampIni', 'priceRampEnd', 'token'];
+
+    //Subscription
+    planIdCalls = planIdCalls.concat(plans.map(p => {
+      if (!p.subscriptionPricing.contract || p.subscriptionPricing.contract === "0x0000000000000000000000000000000000000000") {
+        return undefined;
+      }
+      return PRICING_FIELDS.map(c => {
+        return {
+          address: p.subscriptionPricing.contract,
+          abi: MuchoPricingAbi,
+          functionName: c,
+          chainId: activeChain.id,
+          map: `subPricing_${c}_${p.id}`
+        }
+      });
+    }).flat());
+
+    //Renewal
+    planIdCalls = planIdCalls.concat(plans.map(p => {
+      if (!p.subscriptionPricing.contract || p.subscriptionPricing.contract === "0x0000000000000000000000000000000000000000") {
+        return undefined;
+      }
+      return PRICING_FIELDS.map(c => {
+        return {
+          address: p.renewalPricing.contract,
+          abi: MuchoPricingAbi,
+          functionName: c,
+          chainId: activeChain.id,
+          map: `renPricing_${c}_${p.id}`
+        }
+      });
+    }).flat());
+
+    /*---------------------------------------------------------------------------*/
+    //Price data
+    const priceAccount = account ?? "0x0000000000000000000000000000000000000000";
+
+    //Subscription:
+    planIdCalls = planIdCalls.concat(plans.map(n => {
+      return {
+        address: badge_config.MuchoNFTFetcher,
+        abi: MuchoNFTFetcherAbi,
+        functionName: 'subscriptionPrice',
+        chainId: activeChain.id,
+        args: [n.id, priceAccount],
+        map: `subscriptionPrice_${n.id}`
+      }
+    }));
+
+    //Renewal:
+    planIdCalls = planIdCalls.concat(plans.map(n => {
+      return {
+        address: badge_config.MuchoNFTFetcher,
+        abi: MuchoNFTFetcherAbi,
+        functionName: 'renewalPrice',
+        chainId: activeChain.id,
+        args: [n.id, priceAccount],
+        map: `renewalPrice_${n.id}`
+      }
+    }));
+
+    /*---------------------------------------------------------------------------*/
+
+    planIdCalls.forEach(pc => {
+      if (pc) {
+        calls.push(pc)
+      }
+    });
+  }
+
+  //console.log("Calls", calls);
+  let indexes: any = {};
+  calls.forEach((c, i) => { indexes[c.map] = i; });
   let { data } = useContractReads({
     contracts: calls,
     watch: true,
   });
   data = getBNtoStringCopy(data);
-
   //console.log("Result plans", data);
 
-  let response = {};
+
 
   if (data && data[0]) {
-
+    data.indexes = indexes;
     //console.log("test"); console.log(tokenMap(tokens[0]));
     //console.log("DATA!", data);
 
     let resObject: IBadge = {};
     resObject.plans = [];
 
-    const plans = data[0].filter(p => BLACKLISTED_NFT.indexOf(Number(p.id)) < 0);
+    const planList = getDataString(data, 'allPlans').filter(p => BLACKLISTED_NFT.indexOf(Number(p.id)) < 0);
+    //console.log("plans", plans);
 
-    for (const plan of plans) {
-      nftIds.push(plan.id);
+    for (const plan of planList) {
 
-      //console.log("Checking plan " + plans);
-      //console.log(data[1].filter(p => p.id == plan.id));
-      //console.log(data[2].filter(p => p.id == plan.id));
-      const activeSubscription = Boolean(data[1] && (data[1].filter(p => p.id == plan.id).length > 0));
-      const enabledSubscription = plan.enabled;
+      const activePlans = getDataString(data, 'activePlansForUser');
+      const activeSubscription = Boolean(activePlans && (activePlans.filter(p => p.id == plan.id).length > 0));
+      const subToken = getDataString(data, `subPricing_token_${plan.id}`) == "" ? "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9" : getDataString(data, `subPricing_token_${plan.id}`); //default USDT
+      //console.log("subToken", subToken);
+      const renToken = getDataString(data, `renPricing_token_${plan.id}`) == "" ? "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9" : getDataString(data, `renPricing_token_${plan.id}`); //default USDT
+      //console.log("renToken", subToken);
 
-      if (admin || enabledSubscription) {
-        resObject.plans.push({
-          address: plan.nftAddress,
-          id: plan.id,
-          name: plan.planName,
-          uri: "",
-          subscribers: 0,
-          subscriptionPrice: {
-            token: "",
-            amount: 0,
-            contract: "",
-            decimals: 0
-          },
-          renewalPrice: {
-            token: "",
-            amount: 0,
-            contract: "",
-            decimals: 0
-          },
-          time: plan.duration / (24 * 3600),
-          exists: true,
-          enabled: plan.enabled,
-          status: plan.enabled ? "Enabled" : "Disabled",
-          isActiveForCurrentUser: activeSubscription,
-          subscriptionPricing: {
-            contract: "",
-            dateIni: new Date(),
-            dateEnd: new Date(),
-            dateRampIni: new Date(),
-            dateRampEnd: new Date(),
-            priceRampIni: 0,
-            priceRampEnd: 0,
-            token: "",
-            tokenDecimals: 0,
-            tokenSymbol: ""
-          },
-          renewalPricing: {
-            contract: "",
-            dateIni: new Date(),
-            dateEnd: new Date(),
-            dateRampIni: new Date(),
-            dateRampEnd: new Date(),
-            priceRampIni: 0,
-            priceRampEnd: 0,
-            token: "",
-            tokenDecimals: 0,
-            tokenSymbol: ""
-          }
-        });
-      }
+      //console.log("PUSHING PLAN!");
+      resObject.plans.push({
+        address: plan.nftAddress,
+        id: plan.id,
+        name: plan.planName,
+        uri: "",
+        subscribers: getDataNumber(data, `totalSupply_${plan.id}`),
+        subscriptionPrice: {
+          token: VALID_TOKENS[subToken].symbol,
+          amount: getDataString(data, `subscriptionPrice_${plan.id}`).amount / 10 ** VALID_TOKENS[subToken].decimals,
+          contract: subToken,
+          decimals: VALID_TOKENS[subToken].decimals,
+        },
+        renewalPrice: {
+          token: VALID_TOKENS[renToken].symbol,
+          amount: getDataString(data, `renewalPrice_${plan.id}`).amount / 10 ** VALID_TOKENS[renToken].decimals,
+          contract: renToken,
+          decimals: VALID_TOKENS[renToken].decimals,
+        },
+        time: plan.duration / (24 * 3600),
+        exists: true,
+        enabled: plan.enabled,
+        status: plan.enabled ? "Enabled" : "Disabled",
+        isActiveForCurrentUser: activeSubscription,
+        subscriptionPricing: {
+          contract: getDataString(data, `nftSubPricing_${plan.id}`),
+          dateIni: new Date(1000 * getDataNumber(data, `subPricing_dateIni_${plan.id}`)),
+          dateEnd: new Date(1000 * getDataNumber(data, `subPricing_dateEnd_${plan.id}`)),
+          dateRampIni: new Date(1000 * getDataNumber(data, `subPricing_dateRampIni_${plan.id}`)),
+          dateRampEnd: new Date(1000 * getDataNumber(data, `subPricing_dateRampEnd_${plan.id}`)),
+          priceRampIni: getDataNumber(data, `subPricing_priceRampIni_${plan.id}`) / 10 ** VALID_TOKENS[subToken].decimals,
+          priceRampEnd: getDataNumber(data, `subPricing_priceRampEnd_${plan.id}`) / 10 ** VALID_TOKENS[subToken].decimals,
+          token: subToken,
+          tokenDecimals: VALID_TOKENS[subToken].symbol,
+          tokenSymbol: VALID_TOKENS[subToken].decimals
+        },
+        renewalPricing: {
+          contract: getDataString(data, `nftRenPricing_${plan.id}`),
+          dateIni: new Date(1000 * getDataNumber(data, `renPricing_dateIni_${plan.id}`)),
+          dateEnd: new Date(1000 * getDataNumber(data, `renPricing_dateEnd_${plan.id}`)),
+          dateRampIni: new Date(1000 * getDataNumber(data, `renPricing_dateRampIni_${plan.id}`)),
+          dateRampEnd: new Date(1000 * getDataNumber(data, `renPricing_dateRampEnd_${plan.id}`)),
+          priceRampIni: getDataNumber(data, `renPricing_priceRampIni_${plan.id}`) / 10 ** VALID_TOKENS[renToken].decimals,
+          priceRampEnd: getDataNumber(data, `renPricing_priceRampEnd_${plan.id}`) / 10 ** VALID_TOKENS[renToken].decimals,
+          token: renToken,
+          tokenDecimals: VALID_TOKENS[renToken].symbol,
+          tokenSymbol: VALID_TOKENS[renToken].decimals
+        }
+      });
     }
 
-    //console.log("nftIds", nftIds);
+    //console.log("resObject", resObject);
 
     // FORMATTING
     response = resObject;
-
-
   }
 
-  //Supply
-  const supplyCalls = response.plans ? response.plans.map(p => {
-    return {
-      address: p.address,
-      abi: MuchoNFTAbi,
-      functionName: 'totalSupply',
-      chainId: activeChain.id,
-    }
-  }) : [];
-  let { data: supplyData } = useContractReads({
-    contracts: supplyCalls,
-    watch: true,
-  });
-  supplyData = getBNtoStringCopy(supplyData);
-  if (supplyData && supplyData[0]) {
-    for (const i in supplyData) {
-      response.plans[i].subscribers = supplyData[i];
-    }
-  }
+  //Hash: plan ID's + subcription pricing contracts + renewal pricing contracts
+  const planIdsHash = (response.plans) ? response.plans.map(p => p.id).sort().join("#") : "";
+  const subPricingCtHash = (response.plans) ? response.plans.map(p => p.subscriptionPricing.contract).sort().join("#") : "";
+  const renPricingCtHash = (response.plans) ? response.plans.map(p => p.renewalPricing.contract).sort().join("#") : "";
+  const hash = [planIdsHash, subPricingCtHash, renPricingCtHash].join("#");
+  //console.log("hash", hash);
 
-  //Pricings address
-  const subPricingCalls = response.plans ? response.plans.map(p => {
-    return {
-      address: badge_config.MuchoNFTFetcher,
-      abi: MuchoNFTFetcherAbi,
-      functionName: 'nftPricing',
-      chainId: activeChain.id,
-      args: [p.id]
+  useEffect(() => {
+    //console.log("**********************************************Trying to set plans with hash", hash);
+    if (hash && hash != "##" && response && response.plans) {
+      //console.log("**********************************************Setting plans with hash", hash);
+      setPlans(response.plans);
     }
-  }) : [];
-  const { data: subPricingData } = useContractReads({
-    contracts: subPricingCalls,
-    watch: true,
-  });
-  //console.log("subPricingData", subPricingData);
-  if (subPricingData && subPricingData[0]) {
-    for (const i in subPricingData) {
-      response.plans[i].subscriptionPricing.contract = subPricingData[i];
-    }
-  }
-
-  const renPricingCalls = response.plans ? response.plans.map(p => {
-    return {
-      address: badge_config.MuchoNFTFetcher,
-      abi: MuchoNFTFetcherAbi,
-      functionName: 'nftRenewalPricing',
-      chainId: activeChain.id,
-      args: [p.id]
-    }
-  }) : [];
-  const { data: renPricingData } = useContractReads({
-    contracts: renPricingCalls,
-    watch: true,
-  });
-  if (renPricingData && renPricingData[0]) {
-    for (const i in renPricingData) {
-      response.plans[i].renewalPricing.contract = renPricingData[i];
-    }
-  }
-
-  //Pricings data
-  const PRICING_FIELDS = ['dateIni', 'dateEnd', 'dateRampIni', 'dateRampEnd', 'priceRampIni', 'priceRampEnd', 'token'];
-  const subPricingDataCalls = response.plans ? response.plans.map(p => {
-    if (!p.subscriptionPricing.contract || p.subscriptionPricing.contract === "0x0000000000000000000000000000000000000000") {
-      return {};
-    }
-    return PRICING_FIELDS.map(c => {
-      return {
-        address: p.subscriptionPricing.contract,
-        abi: MuchoPricingAbi,
-        functionName: c,
-        chainId: activeChain.id,
-      }
-    });
-  }).flat() : [];
-  const { data: subPricingFullData } = useContractReads({
-    contracts: subPricingDataCalls,
-    watch: true,
-  });
-  //console.log("subPricingData", subPricingData);
-  if (subPricingFullData && subPricingFullData[0]) {
-    for (const i in subPricingFullData) {
-      const field = PRICING_FIELDS[Number(i) % PRICING_FIELDS.length];
-      response.plans[Math.floor(i / PRICING_FIELDS.length)].subscriptionPricing[field] = field.indexOf("date") >= 0 ? new Date(1000 * subPricingFullData[i]) : subPricingFullData[i];
-    }
-
-    //token symbol and decimals
-    for (const p of response.plans) {
-      if (p.subscriptionPricing.token) {
-        p.subscriptionPricing.tokenSymbol = VALID_TOKENS[p.subscriptionPricing.token].symbol;
-        p.subscriptionPricing.tokenDecimals = VALID_TOKENS[p.subscriptionPricing.token].decimals;
-        p.subscriptionPricing.priceRampIni = Number(p.subscriptionPricing.priceRampIni) / 10 ** p.subscriptionPricing.tokenDecimals;
-        p.subscriptionPricing.priceRampEnd = Number(p.subscriptionPricing.priceRampEnd) / 10 ** p.subscriptionPricing.tokenDecimals;
-      }
-    }
-  }
-
-  const renPricingDataCalls = response.plans ? response.plans.map(p => {
-    if (!p.renewalPricing.contract || p.renewalPricing.contract === "0x0000000000000000000000000000000000000000") {
-      return {};
-    }
-    return PRICING_FIELDS.map(c => {
-      return {
-        address: p.renewalPricing.contract,
-        abi: MuchoPricingAbi,
-        functionName: c,
-        chainId: activeChain.id,
-      }
-    });
-  }).flat() : [];
-  const { data: renPricingFullData } = useContractReads({
-    contracts: renPricingDataCalls,
-    watch: true,
-  });
-  //console.log("renPricingData", renPricingData);
-  if (renPricingFullData && renPricingFullData[0]) {
-    for (const i in renPricingFullData) {
-      const field = PRICING_FIELDS[Number(i) % PRICING_FIELDS.length];
-      response.plans[Math.floor(i / PRICING_FIELDS.length)].renewalPricing[field] = field.indexOf("date") >= 0 ? new Date(1000 * renPricingFullData[i]) : renPricingFullData[i];
-    }
-
-    //token symbol and decimals
-    for (const p of response.plans) {
-      if (p.renewalPricing.token) {
-        p.renewalPricing.tokenSymbol = VALID_TOKENS[p.renewalPricing.token].symbol;
-        p.renewalPricing.tokenDecimals = VALID_TOKENS[p.renewalPricing.token].decimals;
-        p.renewalPricing.priceRampIni = Number(p.renewalPricing.priceRampIni) / 10 ** p.renewalPricing.tokenDecimals;
-        p.renewalPricing.priceRampEnd = Number(p.renewalPricing.priceRampEnd) / 10 ** p.renewalPricing.tokenDecimals;
-      }
-    }
-  }
+  }, [hash])
 
 
-  //Price data
-  const priceAccount = account ?? "0x0000000000000000000000000000000000000000";
-  const subPriceCalls = nftIds ? nftIds.map(n => {
-    return {
-      address: badge_config.MuchoNFTFetcher,
-      abi: MuchoNFTFetcherAbi,
-      functionName: 'subscriptionPrice',
-      chainId: activeChain.id,
-      args: [n, priceAccount],
-    }
-  }) : [];
-
-  let { data: subPriceData } = useContractReads({
-    contracts: subPriceCalls,
-    watch: true,
-  });
-  subPriceData = getBNtoStringCopy(subPriceData);
-  //console.log("subPricingData", subPricingData);
-  if (subPriceData && subPriceData[0]) {
-    for (const iPri in subPriceData) {
-      const amount = subPriceData[iPri].amount;
-      const decimals = VALID_TOKENS[subPriceData[iPri].token].decimals;
-      response.plans[iPri].subscriptionPrice = {
-        token: VALID_TOKENS[subPriceData[iPri].token].symbol,
-        amount: amount / 10 ** decimals,
-        contract: VALID_TOKENS[subPriceData[iPri].token].contract,
-        decimals: decimals
-      }
-    }
-
-    //console.log("-------Plans after subs pricing------", plans);
-  }
-
-  const renPriceCalls = nftIds ? nftIds.map(n => {
-    return {
-      address: badge_config.MuchoNFTFetcher,
-      abi: MuchoNFTFetcherAbi,
-      functionName: 'renewalPrice',
-      chainId: activeChain.id,
-      args: [n, priceAccount],
-    }
-  }) : [];
-
-  let { data: renPriceData } = useContractReads({
-    contracts: renPriceCalls,
-    watch: true,
-  });
-  renPriceData = getBNtoStringCopy(renPriceData);
-  //console.log("renPricingData", renPricingData);
-  if (renPriceData && renPriceData[0]) {
-    for (const iPri in renPriceData) {
-      const amount = renPriceData[iPri].amount;
-      const decimals = VALID_TOKENS[renPriceData[iPri].token].decimals;
-      response.plans[iPri].renewalPrice = {
-        token: VALID_TOKENS[renPriceData[iPri].token].symbol,
-        amount: amount / 10 ** decimals,
-        contract: VALID_TOKENS[renPriceData[iPri].token].contract,
-        decimals: decimals
-      }
-    }
-
-    //console.log("-------Plans after rens pricing------", plans);
-  }
-
-  //console.log("Formatting done!");
   //console.log("******response", response);
-
   return response ? response : { plans: null };
 };
