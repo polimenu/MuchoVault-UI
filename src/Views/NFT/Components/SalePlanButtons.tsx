@@ -47,7 +47,7 @@ function SalePlanButtonsNotSubscribed({ data }: { data: any }) {
   const [state, setPageState] = useAtom(badgeAtom);
 
   //console.log("*******DRAWING PLAN BUTTONS*****", plan.id, CLOSED_PLANS, CLOSED_PLANS.find(p => p == plan.id));
-  console.log("data.planAttributes", data.planAttributes);
+  //console.log("data.planAttributes", data.planAttributes);
 
   return (<>
     <div className={`${btnClasses} flex gap-5 m-auto`}>
