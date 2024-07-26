@@ -240,7 +240,7 @@ export const useGetNFTPlanForSalePage = (address: string, idNFT: number, pricing
   }
 
   useEffect(() => {
-    if (res && res.userBalance && res.userBalance > 0) {
+    if (res && res.userBalance && res.userBalance != balance) {
       setBalance(res.userBalance);
     }
   }, [res ? res.userBalance : null])
