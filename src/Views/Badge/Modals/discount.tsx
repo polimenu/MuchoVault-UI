@@ -30,7 +30,6 @@ const Edit = ({ call, buttonTitle }: { call: any, buttonTitle: string }) => {
   //const toastify = useToast();
   const clickHandler = () => {
 
-    //console.log("Calling"); console.log(planId); console.log(subscriber); console.log(call);
     call(address, discType, disc);
   }
 

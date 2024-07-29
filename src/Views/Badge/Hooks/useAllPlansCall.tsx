@@ -244,8 +244,8 @@ export const useGetPlans = (admin: boolean) => {
           priceRampIni: getDataNumber(data, `subPricing_priceRampIni_${plan.id}`) / 10 ** VALID_TOKENS[subToken].decimals,
           priceRampEnd: getDataNumber(data, `subPricing_priceRampEnd_${plan.id}`) / 10 ** VALID_TOKENS[subToken].decimals,
           token: subToken,
-          tokenDecimals: VALID_TOKENS[subToken].symbol,
-          tokenSymbol: VALID_TOKENS[subToken].decimals
+          tokenDecimals: VALID_TOKENS[subToken].decimals,
+          tokenSymbol: VALID_TOKENS[subToken].symbol
         },
         renewalPricing: {
           contract: getDataString(data, `nftRenPricing_${plan.id}`),
@@ -256,8 +256,8 @@ export const useGetPlans = (admin: boolean) => {
           priceRampIni: getDataNumber(data, `renPricing_priceRampIni_${plan.id}`) / 10 ** VALID_TOKENS[renToken].decimals,
           priceRampEnd: getDataNumber(data, `renPricing_priceRampEnd_${plan.id}`) / 10 ** VALID_TOKENS[renToken].decimals,
           token: renToken,
-          tokenDecimals: VALID_TOKENS[renToken].symbol,
-          tokenSymbol: VALID_TOKENS[renToken].decimals
+          tokenDecimals: VALID_TOKENS[renToken].decimals,
+          tokenSymbol: VALID_TOKENS[renToken].symbol
         }
       });
     }
