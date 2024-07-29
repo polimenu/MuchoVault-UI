@@ -167,7 +167,7 @@ export const usePlanEnableDisableCalls = (nftAddress) => {
 };
 
 
-export const usePlanSubUnsubCalls = (nftAddress) => {
+export const useTokenIdActionCalls = (nftAddress) => {
   const { writeCall } = useWriteCall(nftAddress, MuchoNFTAbi);
   const [, setPageState] = useAtom(writeBadgeAtom);
 
@@ -194,6 +194,12 @@ export const usePlanSubUnsubCalls = (nftAddress) => {
     writeCall(callBack, "renewTo", [tokenId]);
   }
 
+  function changeExpirationCall(tokenId: number, dateExpiration: string) {
+    //console.log("Sending call");
+    const dtExp = fromDateYYYYMMDDhhmmss(dateExpiration + " 00:01:00");
+    writeCall(callBack, "changeExpiration", [tokenId, dtExp.getTime() / 1000]);
+  }
+
   function subBulkCall(address: string[], metadata: any[]) {
     writeCall(callBack, "bulkSubscribeTo", [address, metadata.map(m => JSON.stringify(m))]);
   }
@@ -202,6 +208,7 @@ export const usePlanSubUnsubCalls = (nftAddress) => {
     unsubCall,
     subCall,
     renewCall,
+    changeExpirationCall,
     subBulkCall
   };
 };

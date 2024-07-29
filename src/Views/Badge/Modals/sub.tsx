@@ -3,7 +3,7 @@ import { useState } from 'react';
 import BufferInput from '@Views/Common/BufferInput';
 import { BlueBtn } from '@Views/Common/V2-Button';
 import { IPlan, badgeAtom } from '../badgeAtom';
-import { usePlanSubUnsubCalls } from '../Hooks/usePlanWriteCalls';
+import { useTokenIdActionCalls } from '../Hooks/usePlanWriteCalls';
 import { useGlobal } from '@Contexts/Global';
 import Web3 from 'web3';
 import { useToast } from '@Contexts/Toast';
@@ -14,7 +14,7 @@ export const SubModal = ({ mode }: { mode: string }) => {
 
   const [pageState] = useAtom(badgeAtom);
   const plan: IPlan = pageState.activeModal.plan;
-  const { subCall, unsubCall, renewCall, subBulkCall } = usePlanSubUnsubCalls(plan.address);
+  const { subCall, unsubCall, renewCall, subBulkCall } = useTokenIdActionCalls(plan.address);
 
   const modalConfig = {
     "subscribe": {

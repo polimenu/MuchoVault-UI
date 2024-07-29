@@ -84,7 +84,7 @@ export function PlanAdminButtons({ plan }: { plan: IPlan }) {
         }
         className={btnClasses}
       >
-        {plan.enabled ? "Disable" : "Enable"}
+        {plan.enabled ? "Disable" : "Enable"} Plan
       </BlueBtn>
       <BlueBtn
         onClick={() =>
@@ -92,52 +92,34 @@ export function PlanAdminButtons({ plan }: { plan: IPlan }) {
         }
         className={btnClasses}
       >
-        Sub
+        Subscribe
       </BlueBtn>
-
-      <BlueBtn
-        onClick={() =>
-          setPageState({ ...state, activeModal: { plan: plan, action: "tokenIdAction", tokenIdAction: "unsubscribe" }, isModalOpen: true })
-        }
-        className={btnClasses}
-      >
-        Unsub
-      </BlueBtn>
-    </div>
-    <div className="flex gap-5 mt-5">
       <BlueBtn
         onClick={() =>
           setPageState({ ...state, activeModal: { pricing: plan.subscriptionPricing, action: "discount" }, isModalOpen: true })
         }
         className={btnClasses}
       >
-        Sub Discount
+        User Subscriber Discount
       </BlueBtn>
+    </div>
+    <div className="flex gap-5 mt-5">
       <BlueBtn
         onClick={() =>
           setPageState({ ...state, activeModal: { pricing: plan.renewalPricing, action: "discount" }, isModalOpen: true })
         }
         className={btnClasses}
       >
-        Ren Discount
+        User Renewal Discount
       </BlueBtn>
 
       <BlueBtn
         onClick={() =>
-          setPageState({ ...state, activeModal: { plan: plan, action: "tokenIdAction", tokenIdAction: "renew" }, isModalOpen: true })
+          setPageState({ ...state, activeModal: { plan: plan, action: "tokenIdAction" }, isModalOpen: true })
         }
         className={btnClasses}
       >
-        Renew
-      </BlueBtn>
-
-      <BlueBtn
-        onClick={() =>
-          setPageState({ ...state, activeModal: { plan: plan, action: "tokenIdAction", tokenIdAction: "changeExpiration" }, isModalOpen: true })
-        }
-        className={btnClasses}
-      >
-        Expiration
+        Token ID Actions
       </BlueBtn>
 
       {/*<BlueBtn
@@ -147,16 +129,6 @@ export function PlanAdminButtons({ plan }: { plan: IPlan }) {
         className={btnClasses}
       >
         Bulk sub to
-      </BlueBtn>
-
-
-      <BlueBtn
-        onClick={() =>
-          setPageState({ ...state, activeModal: { plan: plan, action: "tokenIdAction", tokenIdAction: "renew" }, isModalOpen: true })
-        }
-        className={btnClasses}
-      >
-        Renew to
       </BlueBtn>*/}
     </div ></>
   );

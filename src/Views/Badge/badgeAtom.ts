@@ -33,7 +33,7 @@ export interface IPlan {
   subscribers: number;
   subscriptionPrice: IPrice;
   renewalPrice: IPrice;
-  time: Date;
+  time: Number;
   exists: boolean;
   enabled: boolean;
   status: string;
@@ -69,3 +69,15 @@ export interface IBadge {
   ];
 }
 
+export interface ITokenIdAttributes {
+  expirationTime: Date;
+  startTime: Date;
+  metaData: {
+    rawMetaData: string;
+    name: string;
+    surname: string;
+    email: string;
+    discord: string;
+  }
+  tokenId: Number;
+}
