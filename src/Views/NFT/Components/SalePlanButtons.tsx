@@ -48,10 +48,14 @@ function SalePlanButtonsNotSubscribed({ data }: { data: any }) {
 
   //console.log("*******DRAWING PLAN BUTTONS*****", plan.id, CLOSED_PLANS, CLOSED_PLANS.find(p => p == plan.id));
   //console.log("data.planAttributes", data.planAttributes);
-
+  //data.pricing.dateEnd
+  //t("airdrop.Sales ended!")
+  //console.log("dates", data.pricing.dateEnd.getTime(), (new Date()).getTime())
+  const priceEnded = (data.pricing.dateEnd.getTime() < ((new Date()).getTime()))
   return (<>
     <div className={`${btnClasses} flex gap-5 m-auto`}>
-      <BlueBtn
+
+      {!priceEnded && <BlueBtn
         onClick={() =>
           setPageState({ ...state, activeModal: { saleData: data, action: "saleSubscribe" }, isModalOpen: true })
         }
@@ -59,7 +63,8 @@ function SalePlanButtonsNotSubscribed({ data }: { data: any }) {
       >
         {data.planAttributes.planName == "NFT Baby Scout" ? "Inscribirme a la formación Baby Scout Verano 2024" :
           data.id == 1 ? "Inscribirme para tener acceso a TODAS las formaciones" : ""}
-      </BlueBtn>
+      </BlueBtn>}
+      {priceEnded && <BlueBtn onClick={() => { }} isDisabled={true}>{t("airdrop.Sales ended!")}</BlueBtn>}
     </div>
     {data.id == 1 && <><Divider />
       <div className={`${btnClasses} flex gap-5 mt-[20px] bold !w-full`}>
