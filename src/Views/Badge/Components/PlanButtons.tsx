@@ -92,7 +92,7 @@ export function PlanAdminButtons({ plan }: { plan: IPlan }) {
         }
         className={btnClasses}
       >
-        Sub to
+        Sub
       </BlueBtn>
 
       <BlueBtn
@@ -101,7 +101,7 @@ export function PlanAdminButtons({ plan }: { plan: IPlan }) {
         }
         className={btnClasses}
       >
-        Unsub to
+        Unsub
       </BlueBtn>
     </div>
     <div className="flex gap-5 mt-5">
@@ -120,6 +120,24 @@ export function PlanAdminButtons({ plan }: { plan: IPlan }) {
         className={btnClasses}
       >
         Ren Discount
+      </BlueBtn>
+
+      <BlueBtn
+        onClick={() =>
+          setPageState({ ...state, activeModal: { plan: plan, action: "tokenIdAction", tokenIdAction: "renew" }, isModalOpen: true })
+        }
+        className={btnClasses}
+      >
+        Renew
+      </BlueBtn>
+
+      <BlueBtn
+        onClick={() =>
+          setPageState({ ...state, activeModal: { plan: plan, action: "tokenIdAction", tokenIdAction: "changeExpiration" }, isModalOpen: true })
+        }
+        className={btnClasses}
+      >
+        Expiration
       </BlueBtn>
 
       {/*<BlueBtn

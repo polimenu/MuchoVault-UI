@@ -4,7 +4,7 @@ import {
 } from 'react-router-dom';
 import { atom } from 'jotai';
 import { Earn } from '@Views/Earn';
-import { Badge } from '@Views/Badge';
+import { Badge, BadgeAdmin } from '@Views/Badge';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
 import { V2AdminPage } from '@Views/V2Admin';
@@ -60,7 +60,7 @@ function App() {
         <Route path="/*" element={<FrontPageNew />} />
         <Route path="/old" element={<FrontPage />} />
         <Route path="/v1" element={<Earn />} />
-        <Route path="/badgeAdmin" element={<Badge admin={true} />} />
+        <Route path="/badgeAdmin" element={<BadgeAdmin />} />
         <Route path="/badge" element={<Badge admin={false} />} />
         <Route path="/nft" element={<Badge admin={false} />} />
         <Route path="/nft2" element={<NFT />} />

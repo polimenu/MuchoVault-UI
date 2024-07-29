@@ -17,6 +17,7 @@ import { AddPlanButton } from './Components/PlanButtons';
 import Background from 'src/AppStyles';
 import { Navbar } from '@Views/Common/Navbar';
 import { t } from 'i18next';
+import { OnlyNFT } from '@Views/Common/OnlyNFT';
 
 const BadgeStyles = styled.div`
   width: min(1200px, 100%);
@@ -32,21 +33,53 @@ export const BadgeContext = React.createContext<{ activeChain: Chain } | null>(
   null
 );
 const BadgeContextProvider = BadgeContext.Provider;
-export const Badge = ({ admin }: { admin: boolean }) => {
+
+export const BadgeAdmin = () => {
   const { activeChain } = useActiveChain();
   //console.log("admin", admin);
   useEffect(() => {
-    document.title = `(mucho) finance | NFT Plans ${admin ? "Admin" : ""}`;
+    document.title = `(mucho) finance | NFT Plans Admin`;
   }, []);
   return (
     <Background>
-      <Navbar />
+      <Navbar hideAccount={false} />
+      <div className="root w-[100vw]">
+        <ArbitrumOnly>
+          <BadgeContextProvider value={{ activeChain }}>
+            <OnlyNFT heading={<div className={topStyles}>(mucho) NFT Plans Admin</div>}
+              nftAllowed={[7]}
+              activeChain={activeChain}
+              child={<>
+                <main className="content-drawer">
+                  <BadgePage admin={true} />
+                </main>
+              </>} />
+            <Drawer open={false}>
+              <></>
+            </Drawer>
+          </BadgeContextProvider>
+        </ArbitrumOnly>
+      </div>
+    </Background>
+
+  );
+}
+
+export const Badge = () => {
+  const { activeChain } = useActiveChain();
+  //console.log("admin", admin);
+  useEffect(() => {
+    document.title = `(mucho) finance | NFT Plans`;
+  }, []);
+  return (
+    <Background>
+      <Navbar hideAccount={false} />
 
       <div className="root w-[100vw]">
         <ArbitrumOnly>
           <BadgeContextProvider value={{ activeChain }}>
             <main className="content-drawer">
-              <BadgePage admin={admin} />
+              <BadgePage admin={false} />
             </main>
             <Drawer open={false}>
               <></>
@@ -60,7 +93,7 @@ export const Badge = ({ admin }: { admin: boolean }) => {
   );
 };
 
-export const BadgePage = ({ admin }: { admin: boolean }) => {
+const BadgePage = ({ admin }: { admin: boolean }) => {
   const [, setBadgeData] = useAtom(writeBadgeData);
   const data: IBadge = useGetPlans(admin);
 

@@ -12,7 +12,7 @@ export const OnlyNFT = ({ nftAllowed, child, heading, activeChain }: { nftAllowe
             <Section
                 Heading={heading}
                 subHeading={<></>}
-                other={<div className={`${descStyles} text-f16 m-auto`}>This content is only available for NFT subscribers</div>}
+                other={<div className={`${descStyles} text-f16 m-auto`}>This content is only available for some NFT subscribers</div>}
             />
         </>
         );
