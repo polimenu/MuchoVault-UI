@@ -142,6 +142,9 @@ export const useGetPlans = (admin: boolean) => {
 
     //Subscription:
     planIdCalls = planIdCalls.concat(plans.map(n => {
+      if (!n.subscriptionPricing.contract || n.subscriptionPricing.contract === "0x0000000000000000000000000000000000000000") {
+        return undefined;
+      }
       return {
         address: badge_config.MuchoNFTFetcher,
         abi: MuchoNFTFetcherAbi,
@@ -154,6 +157,9 @@ export const useGetPlans = (admin: boolean) => {
 
     //Renewal:
     planIdCalls = planIdCalls.concat(plans.map(n => {
+      if (!n.renewalPricing.contract || n.renewalPricing.contract === "0x0000000000000000000000000000000000000000") {
+        return undefined;
+      }
       return {
         address: badge_config.MuchoNFTFetcher,
         abi: MuchoNFTFetcherAbi,
@@ -193,7 +199,7 @@ export const useGetPlans = (admin: boolean) => {
     let resObject: IBadge = {};
     resObject.plans = [];
 
-    const planList = getDataString(data, 'allPlans').filter(p => BLACKLISTED_NFT.indexOf(Number(p.id)) < 0);
+    const planList = getDataString(data, 'allPlans').filter(p => admin || BLACKLISTED_NFT.indexOf(Number(p.id)) < 0);
     //console.log("plans", plans);
 
     for (const plan of planList) {
