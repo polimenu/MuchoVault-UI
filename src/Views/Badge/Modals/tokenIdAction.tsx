@@ -117,19 +117,19 @@ const TokenIdAction = ({ actions, plan }: { actions: { call: any, title: string,
           {actions.map(act => {
 
             const clickHandler = () => {
-              console.log("act", act);
-              console.log("act.field", act.field);
-              console.log("act.showField", act.showField);
+              //console.log("act", act);
+              //console.log("act.field", act.field);
+              //console.log("act.showField", act.showField);
               if (act.field && !act.showField) {
-                console.log("showing field");
+                //console.log("showing field");
                 act.setShowField(true);
               }
               else if (!act.field) {
-                console.log("calling action with no field");
+                //console.log("calling action with no field");
                 act.call(tokenId);
               }
               else {
-                console.log("calling action with field", act.variable);
+                //console.log("calling action with field", act.variable);
                 act.call(tokenId, act.variable);
               }
             }
