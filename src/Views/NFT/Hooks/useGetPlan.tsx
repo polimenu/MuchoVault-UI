@@ -258,7 +258,7 @@ export const useGetNFTPlanForSalePage = (address: string, idNFT: number, pricing
 const parsePrice = (price: { amount: string, token: string }) => {
   if (!price) {
     return {
-      amount: 10000,
+      amount: 0,
       token: "USDC",
       contract: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       decimals: 6

@@ -64,7 +64,7 @@ function SalePlanButtonsNotSubscribed({ data }: { data: any }) {
         {data.planAttributes.planName == "NFT Baby Scout" ? "Inscribirme a la formación Baby Scout Verano 2024" :
           data.id == 1 ? "Inscribirme para tener acceso a TODAS las formaciones" : ""}
       </BlueBtn>}
-      {priceEnded && <BlueBtn onClick={() => { }} isDisabled={true}>{t("airdrop.Sales ended!")}</BlueBtn>}
+      {priceEnded && <BlueBtn className={btnClasses} onClick={() => { }} isDisabled={true}>{t("airdrop.Sales ended!")}</BlueBtn>}
     </div>
     {data.id == 1 && <><Divider />
       <div className={`${btnClasses} flex gap-5 mt-[20px] bold !w-full`}>

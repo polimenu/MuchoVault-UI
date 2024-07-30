@@ -91,12 +91,16 @@ const PlanInfoUserNotSubscribed = ({ data }: { data: any }) => {
               />
               </span>
             }
-            <Display
+            {data.pricing.subscriptionPrice.amount > 0 && <Display
               className="!justify-end"
               data={data.pricing.subscriptionPrice.amount}
               unit={data.pricing.subscriptionPrice.token}
               precision={2}
-            />
+            />}
+            {data.pricing.subscriptionPrice.amount <= 0 && <Display
+              className="!justify-end"
+              data={t("badge.Not available")}
+            />}
           </div>,
           <div className={`${wrapperClasses}`}>
             {<Display
