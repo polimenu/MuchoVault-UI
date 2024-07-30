@@ -8,7 +8,7 @@ export const MINDEX_CONFIG = {
     DecimalsIndexToken: 6,
     SellQueueContract: "0x6d2C6F6AA05d8c88d8Df1f6544DAa523425f9A05",
     BuyToken: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-    SellToken: "0x2eE1Fc67bEC816F3DAe2d2c9409483BEf49F181B",
+    SellToken: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831", //USDC //"0x2eE1Fc67bEC816F3DAe2d2c9409483BEf49F181B", //mUSDC
     LauncherContract: "0x24bD2eE4A1deD572bC8161ae686065f99Ba062F2",
     RewardRouterContract: "0xcF3aCfEc02C23885B2E7Ba156d38dF18616135EF",
     RewardBlacklist: ["0"],

@@ -4,9 +4,8 @@ import { useContext } from 'react';
 import { BlueBtn } from '@Views/Common/V2-Button';
 import { Chain, useNetwork } from 'wagmi';
 import { ConnectionRequired } from '@Views/Common/Navbar/AccountDropdown';
-import { IMuchoTokenLauncherData, IMuchoTokenMarketData, indexAtom } from '../IndexAtom';
+import { IMuchoTokenMarketData, indexAtom } from '../IndexAtom';
 import { ViewContext } from '../market';
-import { MINDEX_CONFIG } from '../Config/mIndexConfig';
 import { t } from 'i18next';
 
 export const btnClasses = '!w-fit px-4 rounded-sm !h-7 m-auto';
@@ -27,6 +26,9 @@ const getModalButton = (caption: string, action: string, data: IMuchoTokenMarket
 
 const GetBuyAndSellButtons = ({ data, state, setPageState }: { data: IMuchoTokenMarketData, state: any, setPageState: any }) => {
   //console.log("data", data);
+  /*return <>
+    {[<BlueBtn key="buyButton" className={btnClasses} onClick={() => { }} isDisabled={true}>Temporarily disabled</BlueBtn>]}
+  </>*/
   return <>
     {
       [
