@@ -1,7 +1,7 @@
 import { useToast } from '@Contexts/Toast';
 import { useWriteCall } from '@Hooks/useWriteCall';
 import MuchoBadgeManagerABI from '../Config/Abis/MuchoBadgeManager.json'
-import MuchoBadgeWrapperABI from '../Config/Abis/MuchoBadgeWrapper.json'
+import MuchoNFTFetcherABI from '../Config/Abis/MuchoNFTFetcher.json'
 import MuchoRewardRouterABI from '../Config/Abis/MuchoRewardRouter.json'
 import MuchoNFTAbi from '../Config/Abis/MuchoNFT.json'
 import MuchoPricingAbi from '../Config/Abis/MuchoPricing.json'
@@ -212,3 +212,31 @@ export const useTokenIdActionCalls = (nftAddress) => {
     subBulkCall
   };
 };
+
+
+export const useSalePlanUserCalls = () => {
+  const badge_config: (typeof BADGE_CONFIG)[42161] = BADGE_CONFIG[42161]; //Todo multichain
+
+  const { writeCall } = useWriteCall(badge_config.MuchoNFTFetcher, MuchoNFTFetcherABI);
+  const [, setPageState] = useAtom(writeBadgeAtom);
+
+  function callBack(res) {
+    //console.log("updatePlan:");
+    //console.log(res);
+    if (res.payload)
+      setPageState({
+        isModalOpen: false,
+        activeModal: null,
+      });
+  }
+
+  function subscribeUserCall(idNFT: string, metadata: string) {
+    writeCall(callBack, "subscribe", [idNFT, metadata]);
+  }
+
+
+  return {
+    subscribeUserCall
+  };
+
+}

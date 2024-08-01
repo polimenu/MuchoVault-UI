@@ -10,7 +10,7 @@ import { BadgeContext } from '../sale';
 import { erc20ABI } from 'wagmi';
 import { IContract } from 'src/Interfaces/interfaces';
 import { useGetAllowance, useGetApprovalAmount } from '../../Common/Hooks/useAllowanceCall';
-import { usePlanUserCalls, useSalePlanUserCalls } from '../Hooks/usePlanWriteCalls';
+import { useSalePlanUserCalls } from '../Hooks/usePlanWriteCalls';
 import { t } from 'i18next';
 import { BADGE_CONFIG } from '../Config/BadgeConfig';
 

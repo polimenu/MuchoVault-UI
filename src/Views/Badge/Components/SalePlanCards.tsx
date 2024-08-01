@@ -200,7 +200,7 @@ const PlanInfoUser = ({ data }: { data: any }) => {
               data={`${data.tokenIdAttributes.remainingDays} days`}
             />
           </div>,
-          <div className={`${wrapperClasses}`}>
+          data.pricing.renewalPrice.amount > 0 ? <div className={`${wrapperClasses}`}>
             {
               (data.pricing.renewalPublicPrice.amount > data.pricing.renewalPrice.amount) && <span className='line-through mr-5'><Display
                 className="!justify-end"
@@ -216,6 +216,12 @@ const PlanInfoUser = ({ data }: { data: any }) => {
               precision={2}
             />
           </div>
+            : <div className={`${wrapperClasses}`}>
+              <Display
+                className="!justify-end"
+                data={"-"}
+              />
+            </div>
         ]}
         keyStyle={keyClasses}
         valueStyle={valueClasses}

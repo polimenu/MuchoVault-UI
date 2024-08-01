@@ -12,6 +12,7 @@ import { EditPricingPriceModal } from './editPricingPrice';
 import { EditPricingDateModal } from './editPricingDate';
 import { TokenIdActionModal } from './tokenIdAction';
 import { DiscountModal } from './discount';
+import { SaleSubscribeUserModal } from './saleSubuser';
 
 export const PlanModals = () => {
   const [pageState, setPageState] = useAtom(badgeAtom);
@@ -97,6 +98,12 @@ function ModalChild() {
     else if ((activeModal.action == "subscribeUser") || (activeModal.action == "renewUser")) {
       return (
         <SubscribeUserModal renew={activeModal.action == "renewUser"} />
+      );
+    }
+
+    else if ((activeModal.action == "saleSubscribe")) {
+      return (
+        <SaleSubscribeUserModal />
       );
     }
   }

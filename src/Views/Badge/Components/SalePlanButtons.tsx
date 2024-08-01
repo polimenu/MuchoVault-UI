@@ -4,9 +4,8 @@ import { useContext } from 'react';
 import { BlueBtn } from '@Views/Common/V2-Button';
 import { useNetwork } from 'wagmi';
 import { BadgeContext } from '../sale';
-import { IPlan, badgeAtom } from '../badgeAtom';
+import { badgeAtom } from '../badgeAtom';
 import { ConnectionRequired } from '@Views/Common/Navbar/AccountDropdown';
-import { usePlanEnableDisableCalls } from '../Hooks/usePlanWriteCalls';
 import { t } from 'i18next';
 import { useWriteCall } from '@Hooks/useWriteCall';
 import { BADGE_CONFIG } from '../Config/BadgeConfig';
@@ -51,6 +50,14 @@ function SalePlanButtonsNotSubscribed({ data }: { data: any }) {
   //data.pricing.dateEnd
   //t("airdrop.Sales ended!")
   //console.log("dates", data.pricing.dateEnd.getTime(), (new Date()).getTime())
+  let subscribeText = "Subscribirme";
+  if (data.planAttributes.planName == "NFT Baby Scout") {
+    subscribeText = "Inscribirme a la formación Baby Scout Verano 2024";
+  }
+  else if (data.id == 1) {
+    subscribeText = "Inscribirme para tener acceso a TODAS las formaciones";
+  }
+
   const priceEnded = (data.pricing.dateEnd.getTime() < ((new Date()).getTime()))
   return (<>
     <div className={`${btnClasses} flex gap-5 m-auto`}>
@@ -61,8 +68,7 @@ function SalePlanButtonsNotSubscribed({ data }: { data: any }) {
         }
         className={btnClasses}
       >
-        {data.planAttributes.planName == "NFT Baby Scout" ? "Inscribirme a la formación Baby Scout Verano 2024" :
-          data.id == 1 ? "Inscribirme para tener acceso a TODAS las formaciones" : ""}
+        {subscribeText}
       </BlueBtn>}
       {priceEnded && <BlueBtn className={btnClasses} onClick={() => { }} isDisabled={true}>{t("airdrop.Sales ended!")}</BlueBtn>}
     </div>

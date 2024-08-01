@@ -28,7 +28,7 @@ import { OnlyNFT } from '@Views/Common/OnlyNFT';
 import { PoolDetailPage } from '@Views/Pools/pool';
 import { NFT } from '@Views/NFT';
 import { NFTAdmin } from '@Views/NFT/admin';
-import { NFTSale } from '@Views/NFT/sale';
+import { NFTSale } from '@Views/Badge/sale';
 
 if (import.meta.env.VITE_MODE === 'production') {
   //console.log(`import.meta.env.SENTRY_DSN: `, import.meta.env.VITE_SENTRY_DSN);
@@ -61,10 +61,8 @@ function App() {
         <Route path="/old" element={<FrontPage />} />
         <Route path="/v1" element={<Earn />} />
         <Route path="/badgeAdmin" element={<BadgeAdmin />} />
-        <Route path="/badge" element={<Badge admin={false} />} />
-        <Route path="/nft" element={<Badge admin={false} />} />
-        <Route path="/nft2" element={<NFT />} />
-        <Route path="/nft2/admin" element={<NFTAdmin />} />
+        <Route path="/badge" element={<Badge />} />
+        <Route path="/nft" element={<Badge />} />
         <Route path="/v2" element={<V2UserPage />} />
         <Route path="/v2/admin/muchovault" element={<V2AdminPage pageType={V2AdminContract.MuchoVault} />} />
         <Route path="/v2/admin/muchohub" element={<V2AdminPage pageType={V2AdminContract.MuchoHub} />} />
@@ -81,8 +79,9 @@ function App() {
         <Route path="/poolsf" element={<PoolsFelix />} />
         <Route path="/pools" element={<PoolsPage />} />
         <Route path="/pools/:poolId" element={<PoolDetailPage />} />
-        <Route path="/scout" element={<NFTSale nftId="6" title="Baby Scout Verano 2024" />} />
-        <Route path="/membresia" element={<NFTSale nftId="1" title="Membresía Campamento DeFi" />} />
+        <Route path="/scout" element={<NFTSale nftId={6} title="Baby Scout Verano 2024" />} />
+        <Route path="/membresia" element={<NFTSale nftId={1} title="Membresía Campamento DeFi" />} />
+        <Route path="/metodo" element={<NFTSale nftId={5} title="Método Mucho" />} />
 
 
       </Routes>
