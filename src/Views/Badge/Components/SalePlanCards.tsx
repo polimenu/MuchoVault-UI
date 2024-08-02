@@ -26,17 +26,15 @@ const planReadyToDraw = (plan: IPlanDetailed) => {
 }
 
 export const SalePlanCard = ({ data, isSalePage }: { data: IPlanDetailed, isSalePage: boolean }) => {
-  //console.log("getBadgeCards 0");
-  if (!planReadyToDraw(data)) {
+  /*if (!planReadyToDraw(data)) {
     //console.log("getBadgeCards 1");
     return <Skeleton
       key={"sk"}
       variant="rectangular"
       className="w-full !h-full min-h-[370px] !transform-none !bg-1"
     />;
-  }
-  //console.log("getBadgeCards");
-  //console.log(data);
+  }*/
+
   let activeChain: Chain | null = null;
   const badgeContextValue = useContext(BadgeContext);
   if (badgeContextValue) {
