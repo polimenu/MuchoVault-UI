@@ -2,7 +2,7 @@ import { useAtom } from 'jotai';
 import { useState } from 'react';
 import BufferInput from '@Views/Common/BufferInput';
 import { BlueBtn } from '@Views/Common/V2-Button';
-import { IPricing, badgeAtom } from '../badgeAtom';
+import { IDEPRECATED_Pricing, IPlanPricingData, badgeAtom } from '../badgeAtom';
 import { usePricingEditCalls } from '../Hooks/usePlanWriteCalls';
 import { useGlobal } from '@Contexts/Global';
 
@@ -11,11 +11,11 @@ import { useGlobal } from '@Contexts/Global';
 export const DiscountModal = () => {
 
   const [pageState] = useAtom(badgeAtom);
-  const pricing: IPricing = pageState.activeModal.pricing;
+  const pricing: IPlanPricingData = pageState.activeModal.pricing;
   const { updateDiscountCall } = usePricingEditCalls(pricing);
 
   return (
-    <Edit pricing={pricing} call={updateDiscountCall} buttonTitle={"Set discount"} />
+    <Edit call={updateDiscountCall} buttonTitle={"Set discount"} />
   );
 
 };

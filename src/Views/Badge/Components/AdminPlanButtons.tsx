@@ -4,67 +4,21 @@ import { useContext } from 'react';
 import { BlueBtn } from '@Views/Common/V2-Button';
 import { useNetwork } from 'wagmi';
 import { BadgeContext } from '..';
-import { IPlan, badgeAtom } from '../badgeAtom';
+import { IPlanDetailed, badgeAtom } from '../badgeAtom';
 import { ConnectionRequired } from '@Views/Common/Navbar/AccountDropdown';
 import { usePlanEnableDisableCalls } from '../Hooks/usePlanWriteCalls';
-import { t } from 'i18next';
+import { NULL_ACCOUNT } from '@Views/Common/Utils';
 
 export const btnClasses = '!w-fit px-4 rounded-sm !h-7 ml-auto';
 
-const CLOSED_PLANS = [1, 5];
 
-export function PlanButtons({ plan }: { plan: IPlan }) {
+export function AdminPlanButtons({ plan }: { plan: IPlanDetailed }) {
   const { address: account } = useUserAccount();
   const [state, setPageState] = useAtom(badgeAtom);
   const { activeChain } = useContext(BadgeContext);
   const { chain } = useNetwork();
 
-  //console.log("*******DRAWING PLAN BUTTONS*****", plan.id, CLOSED_PLANS, CLOSED_PLANS.find(p => p == plan.id));
-
-  if (CLOSED_PLANS.find(pId => pId == plan.id)) {
-    return <BlueBtn isDisabled={true} onClick={() => { }}>{t("badge.Not available")}</BlueBtn>
-  }
-
-  if (!account || activeChain.id !== chain?.id)
-    return (
-      <div className={btnClasses}>
-        <ConnectionRequired>
-          <></>
-        </ConnectionRequired>
-      </div>
-    );
-
-  return (
-    <div className={`${btnClasses} flex gap-5`}>
-      {!plan.isActiveForCurrentUser && !plan.isExpiredForCurrentUser && <BlueBtn
-        onClick={() =>
-          setPageState({ ...state, activeModal: { plan: plan, action: "subscribeUser" }, isModalOpen: true })
-        }
-        className={btnClasses}
-      >
-        {t("badge.Subscribe")}
-      </BlueBtn>}
-
-      {plan.isExpiredForCurrentUser && <BlueBtn
-        onClick={() =>
-          setPageState({ ...state, activeModal: { plan: plan, action: "renewUser" }, isModalOpen: true })
-        }
-        className={btnClasses}
-      >
-        {t("badge.Renew")}
-      </BlueBtn>}
-    </div >
-  );
-
-}
-
-export function PlanAdminButtons({ plan }: { plan: IPlan }) {
-  const { address: account } = useUserAccount();
-  const [state, setPageState] = useAtom(badgeAtom);
-  const { activeChain } = useContext(BadgeContext);
-  const { chain } = useNetwork();
-
-  const { disablePlanCall, enablePlanCall } = usePlanEnableDisableCalls(plan.address);
+  const { disablePlanCall, enablePlanCall } = usePlanEnableDisableCalls(plan.planAttributes.nftAddress);
 
   if (!account || activeChain.id !== chain?.id)
     return (
@@ -80,11 +34,11 @@ export function PlanAdminButtons({ plan }: { plan: IPlan }) {
 
       <BlueBtn
         onClick={() =>
-          plan.enabled ? disablePlanCall(plan.id) : enablePlanCall(plan.id)
+          plan.planAttributes.enabled ? disablePlanCall(plan.id) : enablePlanCall(plan.id)
         }
         className={btnClasses}
       >
-        {plan.enabled ? "Disable" : "Enable"} Plan
+        {plan.planAttributes.enabled ? "Disable" : "Enable"} Plan
       </BlueBtn>
       <BlueBtn
         onClick={() =>
@@ -94,24 +48,24 @@ export function PlanAdminButtons({ plan }: { plan: IPlan }) {
       >
         Subscribe
       </BlueBtn>
-      <BlueBtn
+      {plan.pricing && plan.pricing.contract && plan.pricing.contract != NULL_ACCOUNT && <BlueBtn
         onClick={() =>
-          setPageState({ ...state, activeModal: { pricing: plan.subscriptionPricing, action: "discount" }, isModalOpen: true })
+          setPageState({ ...state, activeModal: { pricing: plan.pricing, action: "discount" }, isModalOpen: true })
         }
         className={btnClasses}
       >
         User Subscriber Discount
-      </BlueBtn>
+      </BlueBtn>}
     </div>
     <div className="flex gap-5 mt-5">
-      <BlueBtn
+      {plan.renewalPricing && plan.renewalPricing.contract && plan.renewalPricing.contract != NULL_ACCOUNT && <BlueBtn
         onClick={() =>
           setPageState({ ...state, activeModal: { pricing: plan.renewalPricing, action: "discount" }, isModalOpen: true })
         }
         className={btnClasses}
       >
         User Renewal Discount
-      </BlueBtn>
+      </BlueBtn>}
 
       <BlueBtn
         onClick={() =>
@@ -135,7 +89,7 @@ export function PlanAdminButtons({ plan }: { plan: IPlan }) {
 
 }
 
-
+/*
 export function AddPlanButton() {
 
   const [state, setPageState] = useAtom(badgeAtom);
@@ -165,4 +119,4 @@ export function AddPlanButton() {
 
     </div>
   );
-}
+}*/

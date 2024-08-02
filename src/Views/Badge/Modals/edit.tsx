@@ -3,7 +3,7 @@ import { useContext, useState } from 'react';
 import BufferInput from '@Views/Common/BufferInput';
 import { Display } from '@Views/Common/Tooltips/Display';
 import { BlueBtn } from '@Views/Common/V2-Button';
-import { IPlan, badgeAtom } from '../badgeAtom';
+import { DEPRECATED_IPlan, badgeAtom } from '../badgeAtom';
 import { usePlanEditCalls } from '../Hooks/usePlanWriteCalls';
 //import { EARN_CONFIG } from '../Config/Pools';
 import { toFixed } from '@Utils/NumString';
@@ -30,7 +30,7 @@ export const EditModal = ({ create }: { create: boolean }) => {
 
 };
 
-const Edit = ({ call, head, plan }: { call: any, head: string, plan: IPlan }) => {
+const Edit = ({ call, head, plan }: { call: any, head: string, plan: DEPRECATED_IPlan }) => {
   const defaultPrice = Number(1000);
 
   //const toastify = useToast();

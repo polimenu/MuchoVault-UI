@@ -6,6 +6,7 @@ import { BadgeContext } from '..';
 import { useContext, useEffect, useState } from 'react';
 import { t } from 'i18next';
 import { SalePlanButtons } from './SalePlanButtons';
+import { IPlanDetailed } from '../badgeAtom';
 export const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 export const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
 export const tooltipKeyClasses = '!text-f14 !text-2 !text-left !py-1 !pl-[0px]';
@@ -17,9 +18,16 @@ export const underLineClass =
 
 export const wrapperClasses = 'flex justify-end flex-wrap';
 
-export const SalePlanCard = ({ data }: { data: any }) => {
+const planReadyToDraw = (plan: IPlanDetailed) => {
+  return Boolean(plan
+    && plan.planAttributes && plan.planAttributes.planName.length > 0
+    && plan.pricing && plan.pricing.contract
+    && plan.tokenIdAttributes)
+}
+
+export const SalePlanCard = ({ data, isSalePage }: { data: IPlanDetailed, isSalePage: boolean }) => {
   //console.log("getBadgeCards 0");
-  if (!data || (data.userBalance > 0 && !data.tokenIdAttributes)) {
+  if (!planReadyToDraw(data)) {
     //console.log("getBadgeCards 1");
     return <Skeleton
       key={"sk"}
@@ -35,19 +43,19 @@ export const SalePlanCard = ({ data }: { data: any }) => {
     activeChain = badgeContextValue.activeChain;
   }
 
-  return <PlanCard data={data} key="SalePlanCard" />;
+  return <PlanCard data={data} key="SalePlanCard" isSalePage={isSalePage} />;
 
 };
 
 
 
-const PlanCard = ({ data }: { data: any }) => {
+const PlanCard = ({ data, isSalePage }: { data: IPlanDetailed, isSalePage: boolean }) => {
   //console.log("PlanCard");
   return (
     <Card
       top={
         <>
-          <span className={underLineClass}>{data.planAttributes.planName}</span>
+          <span className={underLineClass}>{data && data.planAttributes ? data.planAttributes.planName : "Loading..."}</span>
         </>
       }
       middle={
@@ -57,14 +65,14 @@ const PlanCard = ({ data }: { data: any }) => {
       }
       bottom={
         < div className="mt-5" >
-          {<SalePlanButtons data={data} />}
+          {<SalePlanButtons data={data} showSaleText={isSalePage} />}
         </div >
       }
     />
   );
 }
 
-const PlanInfoUserNotSubscribed = ({ data }: { data: any }) => {
+const PlanInfoUserNotSubscribed = ({ data }: { data: IPlanDetailed }) => {
 
   //console.log("Enabled:"); console.log(enabledStr);
   //console.log("data.pricing", data.pricing);
@@ -84,20 +92,20 @@ const PlanInfoUserNotSubscribed = ({ data }: { data: any }) => {
           </div>,
           <div className={`${wrapperClasses}`}>
             {
-              (data.pricing.subscriptionPublicPrice.amount > data.pricing.subscriptionPrice.amount) && <span className='line-through mr-5'><Display
+              (data.pricing.publicPrice.amount > data.pricing.userPrice.amount) && <span className='line-through mr-5'><Display
                 className="!justify-end"
-                data={data.pricing.subscriptionPublicPrice.amount}
+                data={data.pricing.publicPrice.amount}
                 precision={2}
               />
               </span>
             }
-            {data.pricing.subscriptionPrice.amount > 0 && <Display
+            {data.pricing.userPrice.amount > 0 && <Display
               className="!justify-end"
-              data={data.pricing.subscriptionPrice.amount}
-              unit={data.pricing.subscriptionPrice.token}
+              data={data.pricing.userPrice.amount}
+              unit={data.pricing.userPrice.token}
               precision={2}
             />}
-            {data.pricing.subscriptionPrice.amount <= 0 && <Display
+            {data.pricing.userPrice.amount <= 0 && <Display
               className="!justify-end"
               data={t("badge.Not available")}
             />}
@@ -177,7 +185,7 @@ function secsToDiffDate(secs: number, dateLiterals: any, endedLiteral: string) {
   return `${countDownLiterl} ${secs} ${dateLiterals.s}`;
 }
 
-const PlanInfoUser = ({ data }: { data: any }) => {
+const PlanInfoUser = ({ data }: { data: IPlanDetailed }) => {
 
   if (data.userBalance == 0) {
     return <PlanInfoUserNotSubscribed data={data} />
@@ -200,19 +208,19 @@ const PlanInfoUser = ({ data }: { data: any }) => {
               data={`${data.tokenIdAttributes.remainingDays} days`}
             />
           </div>,
-          data.pricing.renewalPrice.amount > 0 ? <div className={`${wrapperClasses}`}>
+          data.renewalPricing.userPrice.amount > 0 ? <div className={`${wrapperClasses}`}>
             {
-              (data.pricing.renewalPublicPrice.amount > data.pricing.renewalPrice.amount) && <span className='line-through mr-5'><Display
+              (data.renewalPricing.publicPrice.amount > data.renewalPricing.userPrice.amount) && <span className='line-through mr-5'><Display
                 className="!justify-end"
-                data={data.pricing.renewalPublicPrice.amount}
+                data={data.renewalPricing.publicPrice.amount}
                 precision={2}
               />
               </span>
             }
             <Display
               className="!justify-end"
-              data={data.pricing.renewalPrice.amount}
-              unit={data.pricing.renewalPrice.token}
+              data={data.renewalPricing.userPrice.amount}
+              unit={data.renewalPricing.userPrice.token}
               precision={2}
             />
           </div>

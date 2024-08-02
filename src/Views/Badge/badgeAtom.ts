@@ -1,7 +1,7 @@
 import { atom } from 'jotai';
 
 interface IActiveModal {
-  plan: IPlan;
+  plan: IPlanDetailed;
 }
 
 interface IBadgeAtom {
@@ -19,14 +19,14 @@ export const writeBadgeAtom = atom(null, (get, set, update: IBadgeAtom) =>
   set(badgeAtom, update)
 );
 
-const badgeData = atom<IBadge>({ plans: null });
+const badgeData = atom<IPlanDetailed[]>([]);
 export const readBadgeData = atom((get) => get(badgeData));
-export const writeBadgeData = atom(null, (get, set, update: IBadge) => {
+export const writeBadgeData = atom(null, (get, set, update: IPlanDetailed[]) => {
   set(badgeData, update);
 });
 
 
-export interface IPlan {
+export interface DEPRECATED_IPlan {
   id: number;
   name: string;
   uri: string;
@@ -39,11 +39,55 @@ export interface IPlan {
   status: string;
   isActiveForCurrentUser: boolean;
   address: string;
-  subscriptionPricing: IPricing;
-  renewalPricing: IPricing;
+  subscriptionPricing: IDEPRECATED_Pricing;
+  renewalPricing: IDEPRECATED_Pricing;
 }
 
-export interface IPricing {
+export interface IPlanAttributes {
+  duration: number;
+  enabled: boolean;
+  nftAddress: string;
+  planName: string;
+  supply: number;
+}
+
+export interface IPlanPricingData {
+  userPrice: IPrice;
+  publicPrice: IPrice;
+  dateIni: Date;
+  dateEnd: Date;
+  dateRampIni: Date;
+  dateRampEnd: Date;
+  contract: string;
+  priceRampIni: Number;
+  priceRampEnd: Number;
+}
+
+export interface ITokenIdAttributes {
+  expirationTime: Date;
+  startTime: Date;
+  metaData: {
+    rawMetaData: string;
+    name: string;
+    surname: string;
+    email: string;
+    discord: string;
+  }
+  tokenId: number;
+  remainingDays: number;
+}
+
+export interface IPlanDetailed {
+  id: number;
+  planAttributes: IPlanAttributes;
+  pricing: IPlanPricingData;
+  renewalPricing: IPlanPricingData;
+  userBalance: number;
+  tokenIdAttributes: ITokenIdAttributes;
+}
+
+
+export interface IDEPRECATED_Pricing {
   contract: string,
   dateIni: Date,
   dateEnd: Date,
@@ -63,21 +107,8 @@ export interface IPrice {
   decimals: number;
 }
 
-export interface IBadge {
+export interface DEPRECATED_IBadge {
   plans?: [
-    plan?: IPlan,
+    plan?: DEPRECATED_IPlan,
   ];
-}
-
-export interface ITokenIdAttributes {
-  expirationTime: Date;
-  startTime: Date;
-  metaData: {
-    rawMetaData: string;
-    name: string;
-    surname: string;
-    email: string;
-    discord: string;
-  }
-  tokenId: Number;
 }

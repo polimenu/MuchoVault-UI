@@ -2,7 +2,7 @@ import { useAtom } from 'jotai';
 import { useState } from 'react';
 import BufferInput from '@Views/Common/BufferInput';
 import { BlueBtn } from '@Views/Common/V2-Button';
-import { IPricing, badgeAtom } from '../badgeAtom';
+import { IDEPRECATED_Pricing, badgeAtom } from '../badgeAtom';
 import { usePricingEditCalls } from '../Hooks/usePlanWriteCalls';
 import { useGlobal } from '@Contexts/Global';
 
@@ -25,7 +25,7 @@ export const EditPricingPriceModal = () => {
 
 };
 
-const Edit = ({ call, head, pricing, priceVal }: { call: any, head: string, pricing: IPricing, priceVal: Number }) => {
+const Edit = ({ call, head, pricing, priceVal }: { call: any, head: string, pricing: IDEPRECATED_Pricing, priceVal: Number }) => {
 
   //const toastify = useToast();
   const { state } = useGlobal();

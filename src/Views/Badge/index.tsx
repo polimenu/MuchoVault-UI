@@ -3,9 +3,8 @@ import { useAtom } from 'jotai';
 import React, { useEffect } from 'react';
 import Drawer from '@Views/Common/V2-Drawer';
 import { Chain } from 'wagmi';
-import { getPlanCards } from './Components/PlanCards';
 import { Section } from '../Common/Card/Section';
-import { IBadge, writeBadgeData } from './badgeAtom';
+import { writeBadgeData } from './badgeAtom';
 import { useGetPlans } from './Hooks/useAllPlansCall';
 import { PlanModals } from './Modals';
 import { useActiveChain } from '@Hooks/useActiveChain';
@@ -13,11 +12,10 @@ import {
   ArbitrumOnly,
 } from '@Views/Common/ChainNotSupported';
 import MuchoWhite from '@SVG/Elements/MuchoWhite';
-import { AddPlanButton } from './Components/PlanButtons';
 import Background from 'src/AppStyles';
 import { Navbar } from '@Views/Common/Navbar';
 import { t } from 'i18next';
-import { OnlyNFT } from '@Views/Common/OnlyNFT';
+import { SalePlanCard } from './Components/SalePlanCards';
 
 const BadgeStyles = styled.div`
   width: min(1200px, 100%);
@@ -34,37 +32,6 @@ export const BadgeContext = React.createContext<{ activeChain: Chain } | null>(
 );
 const BadgeContextProvider = BadgeContext.Provider;
 
-export const BadgeAdmin = () => {
-  const { activeChain } = useActiveChain();
-  //console.log("admin", admin);
-  useEffect(() => {
-    document.title = `(mucho) finance | NFT Plans Admin`;
-  }, []);
-  return (
-    <Background>
-      <Navbar hideAccount={false} />
-      <div className="root w-[100vw]">
-        <ArbitrumOnly>
-          <BadgeContextProvider value={{ activeChain }}>
-            <OnlyNFT heading={<div className={topStyles}>(mucho) NFT Plans Admin</div>}
-              nftAllowed={[7]}
-              activeChain={activeChain}
-              child={<>
-                <main className="content-drawer">
-                  <BadgePage admin={true} />
-                </main>
-              </>} />
-            <Drawer open={false}>
-              <></>
-            </Drawer>
-          </BadgeContextProvider>
-        </ArbitrumOnly>
-      </div>
-    </Background>
-
-  );
-}
-
 export const Badge = () => {
   const { activeChain } = useActiveChain();
   //console.log("admin", admin);
@@ -79,7 +46,7 @@ export const Badge = () => {
         <ArbitrumOnly>
           <BadgeContextProvider value={{ activeChain }}>
             <main className="content-drawer">
-              <BadgePage admin={false} />
+              <BadgePage />
             </main>
             <Drawer open={false}>
               <></>
@@ -93,9 +60,9 @@ export const Badge = () => {
   );
 };
 
-const BadgePage = ({ admin }: { admin: boolean }) => {
+const BadgePage = () => {
   const [, setBadgeData] = useAtom(writeBadgeData);
-  const data: IBadge = useGetPlans(admin);
+  const data = useGetPlans(false);
 
   setBadgeData(data);
 
@@ -106,19 +73,18 @@ const BadgePage = ({ admin }: { admin: boolean }) => {
         Heading={
           <>
             <div className={topStyles}>
-              <MuchoWhite width={120} /> &nbsp;NFT Plan {admin ? "Admin" : ""}
+              <MuchoWhite width={120} /> &nbsp;NFT Plan
             </div>
           </>
         }
-        Cards={getPlanCards(data, admin)}
+        Cards={data.map(p => <div className='max-w-[650px] m-auto mt-[50px]'>
+          <SalePlanCard data={p} isSalePage={false} />
+        </div>)}
         subHeading={
           <>
             <div className={descStyles}>
               {t("badge.HeroText")}
             </div>
-            {/*admin && <div className="mt-5">
-              <AddPlanButton />
-        </div>*/}
           </>
         }
       />

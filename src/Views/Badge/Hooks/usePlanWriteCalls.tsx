@@ -7,14 +7,14 @@ import MuchoNFTAbi from '../Config/Abis/MuchoNFT.json'
 import MuchoPricingAbi from '../Config/Abis/MuchoPricing.json'
 import { useAtom } from 'jotai';
 import { BADGE_CONFIG } from '../Config/BadgeConfig';
-import { IPlan, IPricing, writeBadgeAtom } from '../badgeAtom';
+import { DEPRECATED_IPlan, IPlanDetailed, writeBadgeAtom, IPlanPricingData } from '../badgeAtom';
 import { useContext } from 'react';
 import { BadgeContext } from '..';
 import { useUserAccount } from '@Hooks/useUserAccount';
 import { fromDateYYYYMMDDhhmmss } from '@Views/Common/Utils';
 
 
-export const usePricingEditCalls = (pricing: IPricing) => {
+export const usePricingEditCalls = (pricing: IPlanPricingData) => {
   const { writeCall: writePricingCall } = useWriteCall(pricing.contract, MuchoPricingAbi);
   const [, setPageState] = useAtom(writeBadgeAtom);
 
@@ -32,11 +32,11 @@ export const usePricingEditCalls = (pricing: IPricing) => {
   const updatePricingToken = (tokenAddress: string) => {
     writePricingCall(callBack, "setToken", [tokenAddress]);
   }
-  const updatePriceIni = (price: Number) => {
-    writePricingCall(callBack, "setPriceRampIni", [price * 10 ** pricing.tokenDecimals]);
+  const updatePriceIni = (price: number) => {
+    writePricingCall(callBack, "setPriceRampIni", [price * 10 ** pricing.userPrice.decimals]);
   }
-  const updatePriceEnd = (price: Number) => {
-    writePricingCall(callBack, "setPriceRampEnd", [price * 10 ** pricing.tokenDecimals]);
+  const updatePriceEnd = (price: number) => {
+    writePricingCall(callBack, "setPriceRampEnd", [price * 10 ** pricing.userPrice.decimals]);
   }
   const updateIni = (dt: string) => {
     writePricingCall(callBack, "setDateIni", [Math.floor(fromDateYYYYMMDDhhmmss(dt).getTime() / 1000)]);
@@ -50,12 +50,12 @@ export const usePricingEditCalls = (pricing: IPricing) => {
   const updateRampEnd = (dt: string) => {
     writePricingCall(callBack, "setDateRampEnd", [Math.floor(fromDateYYYYMMDDhhmmss(dt).getTime() / 1000)]);
   }
-  const updateDiscountCall = (address: string, discType: Number, disc: Number) => {
+  const updateDiscountCall = (address: string, discType: number, disc: number) => {
     if (discType == 1) {
       disc = Math.floor(disc * 100)
     }
     else if (discType == 0) {
-      disc = disc * 10 ** pricing.tokenDecimals;
+      disc = disc * 10 ** pricing.userPrice.decimals;
     }
     console.log("disc", address, discType, disc);
     writePricingCall(callBack, "setUserDiscount", [address, [discType, disc]]);
@@ -73,7 +73,7 @@ export const usePricingEditCalls = (pricing: IPricing) => {
   };
 };
 
-export const usePlanEditCalls = (plan: IPlan) => {
+export const usePlanEditCalls = (plan: DEPRECATED_IPlan) => {
   const { writeCall: writeNFTCall } = useWriteCall(plan.address, MuchoNFTAbi);
   const { writeCall: writeSubPricingCall } = useWriteCall(plan.subscriptionPricing.contract, MuchoPricingAbi);
   const { writeCall: writeRenPricingCall } = useWriteCall(plan.renewalPricing.contract, MuchoPricingAbi);
@@ -167,9 +167,11 @@ export const usePlanEnableDisableCalls = (nftAddress) => {
 };
 
 
-export const useTokenIdActionCalls = (nftAddress) => {
+export const useTokenIdActionCalls = (plan: IPlanDetailed) => {
+  const nftAddress = plan.planAttributes.nftAddress;
   const { writeCall } = useWriteCall(nftAddress, MuchoNFTAbi);
   const [, setPageState] = useAtom(writeBadgeAtom);
+  const { address: account } = useUserAccount();
 
   function callBack(res) {
     if (res.payload)
@@ -204,12 +206,18 @@ export const useTokenIdActionCalls = (nftAddress) => {
     writeCall(callBack, "bulkSubscribeTo", [address, metadata.map(m => JSON.stringify(m))]);
   }
 
+  function transferCall(tokenId: number, address: string) {
+    //console.log("Sending call");
+    writeCall(callBack, "transferFrom", [account, address, tokenId]);
+  }
+
   return {
     unsubCall,
     subCall,
     renewCall,
     changeExpirationCall,
-    subBulkCall
+    subBulkCall,
+    transferCall
   };
 };
 

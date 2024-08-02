@@ -3,20 +3,20 @@ import { useAtom } from 'jotai';
 import { useContext } from 'react';
 import { BlueBtn } from '@Views/Common/V2-Button';
 import { useNetwork } from 'wagmi';
-import { BadgeContext } from '../sale';
-import { badgeAtom } from '../badgeAtom';
+import { BadgeContext } from '..';
+import { IPlanDetailed, badgeAtom } from '../badgeAtom';
 import { ConnectionRequired } from '@Views/Common/Navbar/AccountDropdown';
 import { t } from 'i18next';
 import { useWriteCall } from '@Hooks/useWriteCall';
 import { BADGE_CONFIG } from '../Config/BadgeConfig';
 import MuchoNFTFetcherAbi from '../Config/Abis/MuchoNFTFetcher.json';
+import MuchoNFTAbi from '../Config/Abis/MuchoNFT.json';
 import { Divider } from '@Views/Common/Card/Divider';
 
 export const btnClasses = '!w-fit px-4 rounded-sm !h-7 ml-auto';
 
-const CLOSED_PLANS = [1, 5];
 
-export function SalePlanButtons({ data }: { data: any }) {
+export function SalePlanButtons({ data, showSaleText }: { data: IPlanDetailed, showSaleText: boolean }) {
   const { address: account } = useUserAccount();
   const { activeChain } = useContext(BadgeContext);
   const { chain } = useNetwork();
@@ -34,7 +34,7 @@ export function SalePlanButtons({ data }: { data: any }) {
 
   //console.log("data", data);
   if (data.userBalance == 0) {
-    return <SalePlanButtonsNotSubscribed data={data} />
+    return <SalePlanButtonsNotSubscribed data={data} showSaleText={showSaleText} />
   }
 
   return <SalePlanButtonsSubscribed data={data} />
@@ -42,7 +42,7 @@ export function SalePlanButtons({ data }: { data: any }) {
 }
 
 
-function SalePlanButtonsNotSubscribed({ data }: { data: any }) {
+function SalePlanButtonsNotSubscribed({ data, showSaleText }: { data: IPlanDetailed, showSaleText: boolean }) {
   const [state, setPageState] = useAtom(badgeAtom);
 
   //console.log("*******DRAWING PLAN BUTTONS*****", plan.id, CLOSED_PLANS, CLOSED_PLANS.find(p => p == plan.id));
@@ -72,7 +72,7 @@ function SalePlanButtonsNotSubscribed({ data }: { data: any }) {
       </BlueBtn>}
       {priceEnded && <BlueBtn className={btnClasses} onClick={() => { }} isDisabled={true}>{t("airdrop.Sales ended!")}</BlueBtn>}
     </div>
-    {data.id == 1 && <><Divider />
+    {showSaleText && data.id == 1 && <><Divider />
       <div className={`${btnClasses} flex gap-5 mt-[20px] bold !w-full`}>
         INCLUIDO CON TU COMPRA:
       </div>
@@ -110,12 +110,14 @@ const getRenewCall = (nftId: string) => {
   return myCall;
 };
 
-function SalePlanButtonsSubscribed({ data }: { data: any }) {
+
+function SalePlanButtonsSubscribed({ data }: { data: IPlanDetailed }) {
+  const [state, setPageState] = useAtom(badgeAtom);
 
   //console.log("data", data);
-  const call = getRenewCall(data.id);
+  const call = getRenewCall(data.id.toString());
 
-  if (data.tokenIdAttributes.remainingDays < 5) {
+  if (data.tokenIdAttributes.remainingDays < 5 && data.renewalPricing.userPrice.amount > 0) {
     return <div className={`${btnClasses} flex gap-5 m-auto`}>
       <BlueBtn
         onClick={() => {
@@ -132,12 +134,14 @@ function SalePlanButtonsSubscribed({ data }: { data: any }) {
   return (
     <div className={`${btnClasses} flex gap-5 m-auto`}>
       <BlueBtn
-        onClick={() => { }}
-        isDisabled={true}
+        onClick={() => {
+          setPageState({ ...state, activeModal: { plan: data, action: "transfer" }, isModalOpen: true })
+        }
+        }
         className={btnClasses}
       >
-        ¡Enhorabuena, ya estás suscrito!
+        Enviar mi NFT a otra dirección
       </BlueBtn>
-    </div >
+    </div>
   );
 }

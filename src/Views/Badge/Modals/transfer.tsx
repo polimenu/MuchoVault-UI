@@ -1,0 +1,70 @@
+import { useAtom } from 'jotai';
+import { useState } from 'react';
+import BufferInput from '@Views/Common/BufferInput';
+import { BlueBtn } from '@Views/Common/V2-Button';
+import { DEPRECATED_IPlan, IPlanDetailed, badgeAtom } from '../badgeAtom';
+import { useTokenIdActionCalls } from '../Hooks/usePlanWriteCalls';
+import { useGlobal } from '@Contexts/Global';
+import Web3 from 'web3';
+import { useToast } from '@Contexts/Toast';
+
+
+
+export const TransferModal = () => {
+
+  const [pageState] = useAtom(badgeAtom);
+  const plan: IPlanDetailed = pageState.activeModal.plan;
+  const { transferCall } = useTokenIdActionCalls(plan);
+
+
+  return (
+    <Transfer plan={plan} call={transferCall} />
+  );
+
+};
+
+const Transfer = ({ call, plan }: { call: any, plan: IPlanDetailed }) => {
+
+  const [address, setAddress] = useState("");
+
+  const { state } = useGlobal();
+  //const toastify = useToast();
+  const clickHandler = () => {
+    //console.log("Calling"); console.log(planId); console.log(subscriber); console.log(call);
+    call(plan.tokenIdAttributes.tokenId, address);
+  }
+
+
+  return (
+    <>
+      <div className={""}>
+        <div className="text-f15 mb-5">Transferir NFT</div>
+        <BufferInput
+          header={
+            <div className="flex flex-row justify-between w-full text-3 text-f14 mt-2">
+              <span>Dirección de destino</span>
+            </div>
+          }
+          placeholder="0x..."
+          bgClass={"!bg-1"}
+          ipClass={"mt-1"}
+          //inputType={isBulk ? "textarea" : null}
+          value={address}
+          onChange={(val) => {
+            setAddress(val);
+          }}
+        />
+      </div>
+      <div className="flex whitespace-nowrap mt-5">
+        <BlueBtn
+          onClick={clickHandler}
+          className="rounded"
+          isDisabled={state.txnLoading > 1}
+          isLoading={state.txnLoading === 1}
+        >
+          Enviar mi NFT a la dirección indicada
+        </BlueBtn>
+      </div>
+    </>
+  );
+};

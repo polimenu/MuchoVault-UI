@@ -2,7 +2,7 @@ import { useAtom } from 'jotai';
 import { useState } from 'react';
 import BufferInput from '@Views/Common/BufferInput';
 import { BlueBtn } from '@Views/Common/V2-Button';
-import { IPlan, badgeAtom } from '../badgeAtom';
+import { DEPRECATED_IPlan, IPlanDetailed, badgeAtom } from '../badgeAtom';
 import { useTokenIdActionCalls } from '../Hooks/usePlanWriteCalls';
 import { useGlobal } from '@Contexts/Global';
 import { useGetTokenIdAttributes } from '../Hooks/useGetTokenIdAttributes';
@@ -15,8 +15,8 @@ import { formatDate } from '@Views/Ramp/Utils';
 export const TokenIdActionModal = () => {
 
   const [pageState] = useAtom(badgeAtom);
-  const plan: IPlan = pageState.activeModal.plan;
-  const { unsubCall, renewCall, changeExpirationCall } = useTokenIdActionCalls(plan.address);
+  const plan: IPlanDetailed = pageState.activeModal.plan;
+  const { unsubCall, renewCall, changeExpirationCall } = useTokenIdActionCalls(plan);
   const [ExpirationField, expiration, showExpirationField, setShowExpirationField] = expirationField();
 
   const actions = [
@@ -72,15 +72,15 @@ const expirationField = () => {
   />}</div>, expiration, display, setDisplay];
 }
 
-const TokenIdAction = ({ actions, plan }: { actions: { call: any, title: string, field?: Element, showField: boolean, setShowField: any, variable: any }[], plan: IPlan }) => {
+const TokenIdAction = ({ actions, plan }: { actions: { call: any, title: string, field?: Element, showField: boolean, setShowField: any, variable: any }[], plan: IPlanDetailed }) => {
 
   const [tokenId, setTokenId] = useState(0);
-  const [tokenIdAttributes] = useGetTokenIdAttributes(plan.address, tokenId);
-  //console.log("CHANGE tokenIdAttributes", tokenIdAttributes);
+  const [tokenIdAttributes] = useGetTokenIdAttributes(plan.planAttributes.nftAddress, tokenId);
+  //console.log("CHANGE tokenIdAttributes", tokenIdAttributes, tokenId);
   const { state } = useGlobal();
 
   const today = new Date();
-  const renewDate = (new Date()).setDate(today.getDate() + Number(plan.time));
+  const renewDate = (new Date()).setDate(today.getDate() + Number(plan.planAttributes.duration));
   //console.log("renewDate", formatDate(renewDate));
 
   return (
@@ -97,7 +97,7 @@ const TokenIdAction = ({ actions, plan }: { actions: { call: any, title: string,
           bgClass={"!bg-1"}
           ipClass={"mt-1"}
           //inputType={isBulk ? "textarea" : null}
-          value={tokenId}
+          value={tokenId > 0 ? tokenId : ""}
           onChange={(val) => {
             setTokenId(val);
           }}

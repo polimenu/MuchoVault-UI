@@ -4,14 +4,13 @@ import {
 } from 'react-router-dom';
 import { atom } from 'jotai';
 import { Earn } from '@Views/Earn';
-import { Badge, BadgeAdmin } from '@Views/Badge';
+import { Badge } from '@Views/Badge';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
 import { V2AdminPage } from '@Views/V2Admin';
 import { V2AdminContract } from '@Views/V2Admin';
 import { V2UserPage } from '@Views/V2User';
 import { FrontPage, FrontPageNew } from '@Views/FrontPage';
-import { SwapPage } from '@Views/Swap';
 import { RampPage } from '@Views/Ramp';
 import { AirdropPage } from '@Views/Airdrop';
 import { LanguageModal } from '@Views/Common/ModalLanguage';
@@ -24,11 +23,9 @@ import { RampPageB2B } from '@Views/Ramp/b2b';
 import { PoolsFelix } from '@Views/Pools/felix';
 import { PoolsPage } from '@Views/Pools';
 import MyLandbot from '@Views/Common/MyLandBot';
-import { OnlyNFT } from '@Views/Common/OnlyNFT';
 import { PoolDetailPage } from '@Views/Pools/pool';
-import { NFT } from '@Views/NFT';
-import { NFTAdmin } from '@Views/NFT/admin';
 import { NFTSale } from '@Views/Badge/sale';
+import { BadgeAdmin } from '@Views/Badge/admin';
 
 if (import.meta.env.VITE_MODE === 'production') {
   //console.log(`import.meta.env.SENTRY_DSN: `, import.meta.env.VITE_SENTRY_DSN);

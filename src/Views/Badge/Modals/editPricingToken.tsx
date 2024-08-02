@@ -3,7 +3,7 @@ import { useContext, useState } from 'react';
 import BufferInput from '@Views/Common/BufferInput';
 import { Display } from '@Views/Common/Tooltips/Display';
 import { BlueBtn } from '@Views/Common/V2-Button';
-import { IPlan, IPricing, badgeAtom } from '../badgeAtom';
+import { DEPRECATED_IPlan, IDEPRECATED_Pricing, badgeAtom } from '../badgeAtom';
 import { usePlanEditCalls, usePricingEditCalls } from '../Hooks/usePlanWriteCalls';
 //import { EARN_CONFIG } from '../Config/Pools';
 import { toFixed } from '@Utils/NumString';
@@ -30,7 +30,7 @@ export const EditPricingTokenModal = () => {
 
 };
 
-const Edit = ({ call, head, pricing }: { call: any, head: string, pricing: IPricing }) => {
+const Edit = ({ call, head, pricing }: { call: any, head: string, pricing: IDEPRECATED_Pricing }) => {
 
   //const toastify = useToast();
   const { state } = useGlobal();
