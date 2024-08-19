@@ -313,6 +313,31 @@ export const usePatchAddress = (session_id?: string, address: string) => {
     return [patchResult];
 }
 
+export const usePatchSolanaAddress = (session_id?: string, address: string) => {
+    ///user/target-address
+    const { dispatch } = useGlobal();
+    const toastify = useToast();
+    const [patchResult, setPatchResult] = useState(false);
+
+    const save = (obj: { status: string, errorMessage?: string }) => {
+        if (obj.status === "OK") {
+            //console.log("Patched ok", obj);
+            setPatchResult(true);
+        }
+        else {
+            toastify({ type: "error", msg: `${t("ramp.Could not set new target Solana address")}: ${obj.errorMessage ?? ""}` });
+        }
+    }
+
+    useEffect(() => {
+        if (session_id && address) {
+            //console.log("Fetching target address patch");
+            fetchFromRampApi(`/user/target-solana-address`, 'PATCH', { session_id: session_id, target_solana_address: address }, save, dispatch, toastify);
+        }
+    }, [session_id, address]);
+
+    return [patchResult];
+}
 
 export const useAddAccount = (session_id: string, account: { name: string, iban: string }, currency: string) => {
     const { dispatch } = useGlobal();

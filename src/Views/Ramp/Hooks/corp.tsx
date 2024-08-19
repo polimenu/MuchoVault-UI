@@ -26,6 +26,7 @@ export interface ICorporate {
     contact_details: IContactDetails;
     registered_address: IAddress;
     target_address: string;
+    target_solana_address: string;
     status: string;
     kybUrl: string;
     kybStatus: { status: string, explanation: string, canTransact: boolean };
@@ -254,6 +255,32 @@ export const usePatchAddressB2B = (session_id?: string, uuid?: string, address?:
     return [patchResult];
 }
 
+
+export const usePatchSolanaAddressB2B = (session_id?: string, uuid?: string, address?: string) => {
+    ///user/target-address
+    const { dispatch } = useGlobal();
+    const toastify = useToast();
+    const [patchResult, setPatchResult] = useState(false);
+
+    const save = (obj: { status: string, errorMessage?: string }) => {
+        if (obj.status === "OK") {
+            //console.log("Patched ok", obj);
+            setPatchResult(true);
+        }
+        else {
+            toastify({ type: "error", msg: `${t("ramp.Could not set new target Solana address")}: ${obj.errorMessage ?? ""}` });
+        }
+    }
+
+    useEffect(() => {
+        if (session_id && uuid && address) {
+            //console.log("Fetching target address patch");
+            fetchFromRampApi(`/corporate/target-solana-address`, 'PATCH', { session_id: session_id, uuid, target_solana_address: address }, save, dispatch, toastify);
+        }
+    }, [session_id, address]);
+
+    return [patchResult];
+}
 
 export const useGetBankAccountsB2B = (sessionId?: string, uuid?: string, reloadTime?: number): (IRampBankAccount[] | undefined)[] => {
     //console.log("*******************GETTING BANK ACCOUNTS********************", sessionId);

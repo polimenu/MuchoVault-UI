@@ -3,7 +3,7 @@ import { useAtom } from 'jotai';
 import { IRampData, IRampPremiumInfo, IRampUserDetails, rampAtom, rampDataAtom } from '../rampAtom';
 import { t } from 'i18next';
 import { useGetBankAccounts, useGetRampTransactions, useSetMainBankAccount } from '../Hooks/user';
-import { OnRampCard } from './Cards/OnRampCard';
+import { OnRampUserCard } from './Cards/OnRampUserCard';
 import { OffRampCard } from './Cards/OffRampCard';
 import { UserDetailsCard } from './Cards/UserDetailsCard';
 import { KYCPremiumCard } from './Cards/KYCCard';
@@ -46,7 +46,7 @@ const OnOffRampSection = ({ rampData }: { rampData: IRampData }) => {
     }
     Cards={
       [
-        <OnRampCard tokenPreferences={rampData.tokenPreferences} userDetails={rampData.userDetails} />,
+        <OnRampUserCard tokenPreferences={rampData.tokenPreferences} userDetails={rampData.userDetails} />,
         <OffRampCard bankAccounts={bankAccounts}
           canTransact={rampData.userDetails ? rampData.userDetails.kyc_status.canTransact : false}
           setMainBankAccount={(account) => { return useSetMainBankAccount(rampState.sessionId, account); }}

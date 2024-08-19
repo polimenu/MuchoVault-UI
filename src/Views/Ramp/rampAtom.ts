@@ -117,6 +117,7 @@ export interface IRampUserDetails {
     };
     date_of_birth: string;
     target_address: string;
+    target_solana_address: string;
     email: string;
     first_name: string;
     last_name: string;

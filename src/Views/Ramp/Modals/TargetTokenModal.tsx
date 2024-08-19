@@ -55,6 +55,8 @@ export const TargetTokenModalB2B = ({ corpId }: { corpId: string }) => {
     const [rampData] = useAtom(rampDataAtom);
     const tokenPreferences = rampData.tokenPreferencesB2B ? rampData.tokenPreferencesB2B.find(c => c.corporateUuid == corpId)?.tokenPreferences : null;
     const current = tokenPreferences ? tokenPreferences.find(t => t.currency == pageState.auxModalData.currency) : null;
+    //console.log("current", current);
+    //console.log("pageState.auxModalData", pageState.auxModalData);
     const defaultToken = current ? { token: current.token, chain: current.chain } : { token: "", chain: "" };
     const [chain, setChain] = useState(defaultToken.chain);
     const [token, setToken] = useState<ITokenChain>(defaultToken);

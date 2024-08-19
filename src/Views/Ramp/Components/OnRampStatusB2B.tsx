@@ -6,9 +6,9 @@ import { UserDetailsCard } from './Cards/UserDetailsCard';
 import { RampTransactionListCard } from './Cards/RampTransactionListCard';
 import { KYBCards } from './Cards/KYBCard';
 import { ICorporate, useGetBankAccountsB2B, useGetRampTransactionsB2B, useSetMainBankAccountB2B } from '../Hooks/corp';
-import { OnRampCard } from './Cards/OnRampCard';
 import { OffRampCard } from './Cards/OffRampCard';
 import { useState } from 'react';
+import { OnRampCorpCard } from './Cards/OnRampCorpCard';
 
 
 const topStyles = 'mx-3 text-f22';
@@ -111,7 +111,7 @@ const OnOffRampSection = ({ rampData }: { rampData: IRampData }) => {
   if (rampData.corpDetails && rampData.corpDetails.length > 0 && rampData.tokenPreferencesB2B) {
     cards = rampData.corpDetails.map(corp => {
       return [
-        <OnRampCard tokenPreferences={rampData.tokenPreferencesB2B?.find(c => c.corporateUuid == corp.uuid)?.tokenPreferences} userDetails={rampData.userDetails} corpDetails={corp} />,
+        <OnRampCorpCard tokenPreferences={rampData.tokenPreferencesB2B?.find(c => c.corporateUuid == corp.uuid)?.tokenPreferences} corpDetails={corp} />,
         <OffRampCardWrapper sessionId={rampState.sessionId} uuid={corp.uuid} canTransact={corp.kybStatus.canTransact} />
       ]
     }
