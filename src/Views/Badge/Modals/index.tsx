@@ -2,7 +2,6 @@ import { CloseOutlined } from '@mui/icons-material';
 import { Dialog, IconButton } from '@mui/material';
 import { useAtom } from 'jotai';
 import { badgeAtom } from '../badgeAtom';
-import { EditModal } from './edit';
 import { SubModal } from './sub';
 import { SubscribeUserModal } from './subuser';
 import { EditNameModal } from './editName';
@@ -45,12 +44,7 @@ function ModalChild() {
 
   if (activeModal) {
 
-    if (activeModal.action == "edit") {
-      return (
-        <EditModal />
-      );
-    }
-    else if (activeModal.action == "editName") {
+    if (activeModal.action == "editName") {
       return (
         <EditNameModal />
       );
@@ -83,11 +77,6 @@ function ModalChild() {
     else if (activeModal.action == "editToken") {
       return (
         <EditPricingTokenModal />
-      );
-    }
-    else if (activeModal.action == "add") {
-      return (
-        <EditModal create={true} />
       );
     }
     else if ((activeModal.action == "subscribe") || (activeModal.action == "unsubscribe") || (activeModal.action == "renew") || (activeModal.action == "bulkSubscribe")) {

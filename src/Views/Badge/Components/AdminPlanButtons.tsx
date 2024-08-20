@@ -88,35 +88,3 @@ export function AdminPlanButtons({ plan }: { plan: IPlanDetailed }) {
   );
 
 }
-
-/*
-export function AddPlanButton() {
-
-  const [state, setPageState] = useAtom(badgeAtom);
-  const { address: account } = useUserAccount();
-  const { activeChain } = useContext(BadgeContext);
-  const { chain } = useNetwork();
-
-  if (!account || activeChain.id !== chain?.id)
-    return (
-      <div className={btnClasses}>
-        <ConnectionRequired>
-          <></>
-        </ConnectionRequired>
-      </div>
-    );
-
-  return (
-    <div className="flex gap-5">
-      <BlueBtn
-        onClick={() =>
-          setPageState({ ...state, activeModal: { action: "add" }, isModalOpen: true })
-        }
-        className={btnClasses}
-      >
-        Add new plan
-      </BlueBtn>
-
-    </div>
-  );
-}*/
