@@ -1,19 +1,10 @@
 import { useAtom } from 'jotai';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import BufferInput from '@Views/Common/BufferInput';
-import { Display } from '@Views/Common/Tooltips/Display';
 import { BlueBtn } from '@Views/Common/V2-Button';
-import { DEPRECATED_IPlan, badgeAtom } from '../badgeAtom';
+import { IPlanDetailed, badgeAtom } from '../badgeAtom';
 import { usePlanEditCalls } from '../Hooks/usePlanWriteCalls';
-//import { EARN_CONFIG } from '../Config/Pools';
-import { toFixed } from '@Utils/NumString';
-import { getPosInf, gt, gte } from '@Utils/NumString/stringArithmatics';
 import { useGlobal } from '@Contexts/Global';
-import { useToast } from '@Contexts/Toast';
-import { BadgeContext } from '..';
-import { IContract } from 'src/Interfaces/interfaces';
-import { TokenDropdown } from '@Views/Common/TokenDropdown';
-import { VALID_TOKENS } from '../Config/BadgeConfig';
 
 
 
@@ -30,12 +21,12 @@ export const EditNameModal = () => {
 
 };
 
-const EditName = ({ call, head, plan }: { call: any, head: string, plan: DEPRECATED_IPlan }) => {
+const EditName = ({ call, head, plan }: { call: any, head: string, plan: IPlanDetailed }) => {
 
   //const toastify = useToast();
   const { state } = useGlobal();
 
-  const [name, setName] = useState(plan ? plan.name : "");
+  const [name, setName] = useState(plan ? plan.planAttributes.planName : "");
 
   const clickHandler = () => {
     return call(name);
@@ -50,7 +41,7 @@ const EditName = ({ call, head, plan }: { call: any, head: string, plan: DEPRECA
             <span>Name</span>
           </div>
         }
-        placeholder={plan ? plan.name : "Name"}
+        placeholder={plan ? plan.planAttributes.planName : "Name"}
         bgClass="!bg-1"
         ipClass="mt-1"
         value={name}

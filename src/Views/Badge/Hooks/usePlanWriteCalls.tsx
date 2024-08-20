@@ -7,7 +7,7 @@ import MuchoNFTAbi from '../Config/Abis/MuchoNFT.json'
 import MuchoPricingAbi from '../Config/Abis/MuchoPricing.json'
 import { useAtom } from 'jotai';
 import { BADGE_CONFIG } from '../Config/BadgeConfig';
-import { DEPRECATED_IPlan, IPlanDetailed, writeBadgeAtom, IPlanPricingData } from '../badgeAtom';
+import { IPlanDetailed, writeBadgeAtom, IPlanPricingData } from '../badgeAtom';
 import { useContext } from 'react';
 import { BadgeContext } from '..';
 import { useUserAccount } from '@Hooks/useUserAccount';
@@ -73,10 +73,8 @@ export const usePricingEditCalls = (pricing: IPlanPricingData) => {
   };
 };
 
-export const usePlanEditCalls = (plan: DEPRECATED_IPlan) => {
-  const { writeCall: writeNFTCall } = useWriteCall(plan.address, MuchoNFTAbi);
-  const { writeCall: writeSubPricingCall } = useWriteCall(plan.subscriptionPricing.contract, MuchoPricingAbi);
-  const { writeCall: writeRenPricingCall } = useWriteCall(plan.renewalPricing.contract, MuchoPricingAbi);
+export const usePlanEditCalls = (plan: IPlanDetailed) => {
+  const { writeCall: writeNFTCall } = useWriteCall(plan.planAttributes.nftAddress, MuchoNFTAbi);
   const [, setPageState] = useAtom(writeBadgeAtom);
 
   function callBack(res) {
