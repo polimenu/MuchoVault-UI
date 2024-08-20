@@ -2,9 +2,9 @@ import styled from '@emotion/styled';
 import { useAtom } from 'jotai';
 import { useEffect } from 'react';
 import Drawer from '@Views/Common/V2-Drawer';
-import { AdminPlanCard, getPlanCards } from './Components/AdminPlanCards';
+import { AdminPlanCard } from './Components/AdminPlanCards';
 import { Section } from '../Common/Card/Section';
-import { DEPRECATED_IBadge, IPlanDetailed, writeBadgeData } from './badgeAtom';
+import { IPlanDetailed, writeBadgeData } from './badgeAtom';
 import { useGetPlans } from './Hooks/useAllPlansCall';
 import { PlanModals } from './Modals';
 import { useActiveChain } from '@Hooks/useActiveChain';
@@ -17,7 +17,6 @@ import { Navbar } from '@Views/Common/Navbar';
 import { t } from 'i18next';
 import { OnlyNFT } from '@Views/Common/OnlyNFT';
 import { BadgeContext } from '.';
-import { SalePlanCard } from './Components/SalePlanCards';
 
 const BadgeStyles = styled.div`
   width: min(1200px, 100%);

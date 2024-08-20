@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai';
 import { useState } from 'react';
 import { BlueBtn } from '@Views/Common/V2-Button';
-import { IDEPRECATED_Pricing, badgeAtom } from '../badgeAtom';
+import { IDEPRECATED_Pricing, IPlanPricingData, badgeAtom } from '../badgeAtom';
 import { usePricingEditCalls } from '../Hooks/usePlanWriteCalls';
 //import { EARN_CONFIG } from '../Config/Pools';
 import { useGlobal } from '@Contexts/Global';
@@ -23,12 +23,12 @@ export const EditPricingTokenModal = () => {
 
 };
 
-const Edit = ({ call, head, pricing }: { call: any, head: string, pricing: IDEPRECATED_Pricing }) => {
+const Edit = ({ call, head, pricing }: { call: any, head: string, pricing: IPlanPricingData }) => {
 
   //const toastify = useToast();
   const { state } = useGlobal();
 
-  const [token, setToken] = useState(pricing ? VALID_TOKENS[pricing.token] : { symbol: "", contract: "", decimals: 0 });
+  const [token, setToken] = useState(pricing ? VALID_TOKENS[pricing.userPrice.contract] : { symbol: "", contract: "", decimals: 0 });
 
   const clickHandler = () => {
     //if (validations(val)) return;

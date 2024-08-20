@@ -75,8 +75,8 @@ export const parsePlanDetailedFromContractData = (data: any, planId: number): IP
     },
     pricing: {
       contract: getDataString(data, `nftPricing_${planId}`),
-      userPrice: parsePrice(getDataNumber(data, `subscriptionPrice_${planId}`)),
-      publicPrice: parsePrice(getDataNumber(data, `subscriptionPublicPrice_${planId}`)),
+      userPrice: parsePrice(getDataNumber(data, `subscriptionPrice_${planId}`), getDataString(data, `subToken_${planId}`)),
+      publicPrice: parsePrice(getDataNumber(data, `subscriptionPublicPrice_${planId}`), getDataString(data, `subToken_${planId}`)),
       dateIni: new Date(getDataNumber(data, `subDateIni_${planId}`) * 1000),
       dateEnd: new Date(getDataNumber(data, `subDateEnd_${planId}`) * 1000),
       dateRampIni: new Date(getDataNumber(data, `subDateRampIni_${planId}`) * 1000),
@@ -86,8 +86,8 @@ export const parsePlanDetailedFromContractData = (data: any, planId: number): IP
     },
     renewalPricing: {
       contract: getDataString(data, `renNftPricing_${planId}`),
-      userPrice: parsePrice(getDataNumber(data, `renewalPrice_${planId}`)),
-      publicPrice: parsePrice(getDataNumber(data, `renewalPublicPrice_${planId}`)),
+      userPrice: parsePrice(getDataNumber(data, `renewalPrice_${planId}`), getDataString(data, `renToken_${planId}`)),
+      publicPrice: parsePrice(getDataNumber(data, `renewalPublicPrice_${planId}`), getDataString(data, `renToken_${planId}`)),
       dateIni: new Date(getDataNumber(data, `renDateIni_${planId}`) * 1000),
       dateEnd: new Date(getDataNumber(data, `renDateEnd_${planId}`) * 1000),
       dateRampIni: new Date(getDataNumber(data, `renDateRampIni_${planId}`) * 1000),
@@ -115,14 +115,16 @@ export const parsePlanDetailedFromContractData = (data: any, planId: number): IP
 }
 
 
-const parsePrice = (price: { amount: string, token: string }): IPrice => {
+const parsePrice = (price: { amount: string, token: string }, priceToken: string): IPrice => {
   if (!price) {
-    return {
+    const res = {
       amount: 0,
-      token: "USDC",
-      contract: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-      decimals: 6
+      token: VALID_TOKENS[priceToken] ? VALID_TOKENS[priceToken].symbol : "USDC",
+      contract: VALID_TOKENS[priceToken] ? VALID_TOKENS[priceToken].contract : "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      decimals: VALID_TOKENS[priceToken] ? VALID_TOKENS[priceToken].decimals : 6
     }
+    //console.log("RETURNING GENERIC PRICING TOKEN", priceToken, res);
+    return res;
   }
   const tokenData = VALID_TOKENS[price.token];
   //console.log("tokenData", tokenData);
@@ -235,6 +237,14 @@ const PricingCalls = (address: string, chainId: number, planId: number, type: "s
       args: [],
       chainId: chainId,
       map: `${type}PriceRampEnd_${planId}`
+    },
+    {
+      address: address,
+      abi: PricingAbi,
+      functionName: 'token',
+      args: [],
+      chainId: chainId,
+      map: `${type}Token_${planId}`
     },
   ];
 }

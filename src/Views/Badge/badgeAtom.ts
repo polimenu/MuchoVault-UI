@@ -26,22 +26,6 @@ export const writeBadgeData = atom(null, (get, set, update: IPlanDetailed[]) => 
 });
 
 
-export interface DEPRECATED_IPlan {
-  id: number;
-  name: string;
-  uri: string;
-  subscribers: number;
-  subscriptionPrice: IPrice;
-  renewalPrice: IPrice;
-  time: Number;
-  exists: boolean;
-  enabled: boolean;
-  status: string;
-  isActiveForCurrentUser: boolean;
-  address: string;
-  subscriptionPricing: IDEPRECATED_Pricing;
-  renewalPricing: IDEPRECATED_Pricing;
-}
 
 export interface IPlanAttributes {
   duration: number;
@@ -105,10 +89,4 @@ export interface IPrice {
   amount: number;
   contract: string;
   decimals: number;
-}
-
-export interface DEPRECATED_IBadge {
-  plans?: [
-    plan?: DEPRECATED_IPlan,
-  ];
 }
