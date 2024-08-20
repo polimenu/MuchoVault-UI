@@ -2,7 +2,7 @@ import { useAtom } from 'jotai';
 import { useState } from 'react';
 import BufferInput from '@Views/Common/BufferInput';
 import { BlueBtn } from '@Views/Common/V2-Button';
-import { DEPRECATED_IPlan, badgeAtom } from '../badgeAtom';
+import { IPlanDetailed, badgeAtom } from '../badgeAtom';
 import { usePlanEditCalls } from '../Hooks/usePlanWriteCalls';
 import { useGlobal } from '@Contexts/Global';
 
@@ -16,17 +16,17 @@ export const EditDurationModal = () => {
   const { updateDurationcall } = usePlanEditCalls(plan);
 
   return (
-    <EditDuration head={`Editing plan [${plan.id}] - ${plan.name}`} plan={plan} call={updateDurationcall} />
+    <EditDuration head={`Editing plan [${plan.id}] - ${plan.planAttributes.planName}`} plan={plan} call={updateDurationcall} />
   );
 
 };
 
-const EditDuration = ({ call, head, plan }: { call: any, head: string, plan: DEPRECATED_IPlan }) => {
+const EditDuration = ({ call, head, plan }: { call: any, head: string, plan: IPlanDetailed }) => {
 
   //const toastify = useToast();
   const { state } = useGlobal();
 
-  const [duration, setDuration] = useState(plan ? plan.time : "");
+  const [duration, setDuration] = useState(plan ? plan.planAttributes.duration : "");
 
   const clickHandler = () => {
     return call(duration);
