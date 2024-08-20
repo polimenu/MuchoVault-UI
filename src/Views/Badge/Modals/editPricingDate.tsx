@@ -2,7 +2,7 @@ import { useAtom } from 'jotai';
 import { useState } from 'react';
 import BufferInput from '@Views/Common/BufferInput';
 import { BlueBtn } from '@Views/Common/V2-Button';
-import { IDEPRECATED_Pricing, badgeAtom } from '../badgeAtom';
+import { IPlanPricingData, badgeAtom } from '../badgeAtom';
 import { usePricingEditCalls } from '../Hooks/usePlanWriteCalls';
 import { useGlobal } from '@Contexts/Global';
 import { dateFormat } from '@Views/Common/Utils';
@@ -13,7 +13,7 @@ export const EditPricingDateModal = () => {
 
   const [pageState] = useAtom(badgeAtom);
   const activeModal = pageState.activeModal;
-  const pricing: IDEPRECATED_Pricing = activeModal.pricing;
+  const pricing: IPlanPricingData = activeModal.pricing;
   const dateType = activeModal.dateType;
   const { updateIni, updateEnd, updateRampIni, updateRampEnd } = usePricingEditCalls(pricing);
   let call: any, val: string = "";
@@ -38,14 +38,13 @@ export const EditPricingDateModal = () => {
 
   return (
     <Edit head={`Editing pricing date (${dateType})`}
-      pricing={pricing}
       call={call}
       dateVal={val} />
   );
 
 };
 
-const Edit = ({ call, head, pricing, dateVal }: { call: any, head: string, pricing: IDEPRECATED_Pricing, dateVal: string }) => {
+const Edit = ({ call, head, dateVal }: { call: any, head: string, dateVal: string }) => {
 
   //const toastify = useToast();
   const { state } = useGlobal();

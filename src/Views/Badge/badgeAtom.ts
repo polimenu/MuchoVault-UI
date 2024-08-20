@@ -71,19 +71,6 @@ export interface IPlanDetailed {
 }
 
 
-export interface IDEPRECATED_Pricing {
-  contract: string,
-  dateIni: Date,
-  dateEnd: Date,
-  dateRampIni: Date,
-  dateRampEnd: Date,
-  priceRampIni: Number,
-  priceRampEnd: Number,
-  token: string,
-  tokenSymbol: string,
-  tokenDecimals: Number
-}
-
 export interface IPrice {
   token: string;
   amount: number;
