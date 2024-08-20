@@ -1,17 +1,10 @@
 import { useAtom } from 'jotai';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import BufferInput from '@Views/Common/BufferInput';
-import { Display } from '@Views/Common/Tooltips/Display';
 import { BlueBtn } from '@Views/Common/V2-Button';
 import { DEPRECATED_IPlan, badgeAtom } from '../badgeAtom';
 import { usePlanEditCalls } from '../Hooks/usePlanWriteCalls';
-//import { EARN_CONFIG } from '../Config/Pools';
-import { toFixed } from '@Utils/NumString';
-import { getPosInf, gt, gte } from '@Utils/NumString/stringArithmatics';
 import { useGlobal } from '@Contexts/Global';
-import { useToast } from '@Contexts/Toast';
-import { BadgeContext } from '..';
-import { IContract } from 'src/Interfaces/interfaces';
 import { TokenDropdown } from '@Views/Common/TokenDropdown';
 import { VALID_TOKENS } from '../Config/BadgeConfig';
 

@@ -2,7 +2,7 @@ import { useAtom } from 'jotai';
 import { useState } from 'react';
 import BufferInput from '@Views/Common/BufferInput';
 import { BlueBtn } from '@Views/Common/V2-Button';
-import { DEPRECATED_IPlan, IPlanDetailed, badgeAtom } from '../badgeAtom';
+import { IPlanDetailed, badgeAtom } from '../badgeAtom';
 import { useTokenIdActionCalls } from '../Hooks/usePlanWriteCalls';
 import { useGlobal } from '@Contexts/Global';
 import { useGetTokenIdAttributes } from '../Hooks/useGetTokenIdAttributes';

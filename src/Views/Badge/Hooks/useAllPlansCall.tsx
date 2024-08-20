@@ -1,19 +1,15 @@
 import FetcherAbi from '../Config/Abis/MuchoNFTFetcher.json';
-import MuchoNFTAbi from '../Config/Abis/MuchoNFT.json';
-import MuchoPricingAbi from '../Config/Abis/MuchoPricing.json';
-import { BADGE_CONFIG, BLACKLISTED_NFT, VALID_TOKENS } from '../Config/BadgeConfig';
+import { BADGE_CONFIG, BLACKLISTED_NFT } from '../Config/BadgeConfig';
 import { getBNtoStringCopy } from '@Utils/useReadCall';
 import {
   divide,
 } from '@Utils/NumString/stringArithmatics';
 
-import { Chain, useContractRead, useContractReads } from 'wagmi';
+import { Chain, useContractRead } from 'wagmi';
 import { BadgeContext } from '..';
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { useUserAccount } from '@Hooks/useUserAccount';
-import { DEPRECATED_IBadge, DEPRECATED_IPlan, IPlanDetailed } from '../badgeAtom';
-import { getDataString } from '@Views/Index/Hooks/useCommonUtils';
-import { getDataNumber } from '@Views/Index/Hooks/useCommonUtils';
+import { IPlanDetailed } from '../badgeAtom';
 import { useGetPlansDetailed } from './useGetPlanData';
 
 export const BASIS_POINTS_DIVISOR = '10000';
