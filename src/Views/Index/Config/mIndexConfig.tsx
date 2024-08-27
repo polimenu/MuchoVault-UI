@@ -1,4 +1,4 @@
-export const APIINDEXURL = "https://apiindex.mucho.finance";
+export const APIINDEXURL = import.meta.env.VITE_APIINDEX_ENV == "production" ? "https://apiindex.mucho.finance" : "http://localhost:3000";
 
 export const MINDEX_CONFIG = {
   42161: {

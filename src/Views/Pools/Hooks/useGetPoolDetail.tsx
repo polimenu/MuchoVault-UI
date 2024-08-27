@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { IPoolDetail, poolsAtom } from '../poolsAtom';
 import { useGlobal } from '@Contexts/Global';
 import { useAtom } from 'jotai';
+import { APIINDEXURL } from '@Views/Index/Config/mIndexConfig';
 
 
 export const useGetPoolDetail = (poolId: string) => {
@@ -21,7 +22,7 @@ export const useGetPoolDetail = (poolId: string) => {
         //console.log("Fetching pool detail", poolId);
         if (poolId) {
 
-            const url = "https://apiindex.mucho.finance/pool/history?id=" + poolId;
+            const url = `${APIINDEXURL}/pool/history?id=` + poolId;
 
             dispatch({ type: 'SET_TXN_LOADING', payload: 1 });
             fetch(url, {

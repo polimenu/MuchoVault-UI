@@ -5,7 +5,7 @@ import { BlueBtn } from '@Views/Common/V2-Button';
 import { IPlanDetailed, badgeAtom } from '../badgeAtom';
 import { useTokenIdActionCalls } from '../Hooks/usePlanWriteCalls';
 import { useGlobal } from '@Contexts/Global';
-import Web3 from 'web3';
+import { isAddress } from 'ethers/lib/utils.js';
 import { useToast } from '@Contexts/Toast';
 
 
@@ -26,12 +26,19 @@ export const TransferModal = () => {
 const Transfer = ({ call, plan }: { call: any, plan: IPlanDetailed }) => {
 
   const [address, setAddress] = useState("");
+  const toastify = useToast();
 
   const { state } = useGlobal();
   //const toastify = useToast();
   const clickHandler = () => {
     //console.log("Calling"); console.log(planId); console.log(subscriber); console.log(call);
-    call(plan.tokenIdAttributes.tokenId, address);
+    if (!isAddress(address)) {
+      toastify({ msg: "Introduce una dirección válida", type: "error", timings: 50 })
+    }
+    else {
+
+      call(plan.tokenIdAttributes.tokenId, address);
+    }
   }
 
 

@@ -12,6 +12,8 @@ import { useContext } from 'react';
 import { BadgeContext } from '..';
 import { useUserAccount } from '@Hooks/useUserAccount';
 import { fromDateYYYYMMDDhhmmss } from '@Views/Common/Utils';
+import { useSignMessageCall } from '@Hooks/useSignMessage';
+import { APIINDEXURL } from '@Views/Index/Config/mIndexConfig';
 
 
 export const usePricingEditCalls = (pricing: IPlanPricingData) => {
@@ -170,6 +172,7 @@ export const useTokenIdActionCalls = (plan: IPlanDetailed) => {
   const { writeCall } = useWriteCall(nftAddress, MuchoNFTAbi);
   const [, setPageState] = useAtom(writeBadgeAtom);
   const { address: account } = useUserAccount();
+  const { signMessage } = useSignMessageCall();
 
   function callBack(res) {
     if (res.payload)
@@ -204,9 +207,38 @@ export const useTokenIdActionCalls = (plan: IPlanDetailed) => {
     writeCall(callBack, "bulkSubscribeTo", [address, metadata.map(m => JSON.stringify(m))]);
   }
 
-  function transferCall(tokenId: number, address: string) {
+  function transferCall(tokenId: number, receiver: string) {
+
+    const callBackTransfer = async (msg: string, res: any) => {
+      const url = `${APIINDEXURL}/mintAndBurn`;
+
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            'Accept': "application/json",
+            'Content-Type': "application/json",
+          },
+          body: JSON.stringify({
+            msg, sender: account, tokenId, receiver, nft: nftAddress
+          })
+        })
+
+        const json = await response.json();
+
+        console.log("Mint and burn finished", json);
+        console.log("Calling CALLBACK");
+        callBack(res);
+        return json;
+
+      } catch (e) {
+        console.log("Error API", e);
+        return { status: "KO", errorMessage: e.message };
+      }
+    }
     //console.log("Sending call");
-    writeCall(callBack, "transferFrom", [account, address, tokenId]);
+    //writeCall(callBack, "transferFrom", [account, address, tokenId]);
+    signMessage(callBackTransfer, `Transfer token ID ${tokenId} of nft ${nftAddress} from address ${account} to address ${receiver}`);
   }
 
   return {

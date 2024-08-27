@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { IPool, IPoolsData } from '../poolsAtom';
 import { useGlobal } from '@Contexts/Global';
+import { APIINDEXURL } from '@Views/Index/Config/mIndexConfig';
 
 
 export const useGetPoolsData = () => {
@@ -18,7 +19,7 @@ export const useGetPoolsData = () => {
 
 
 const useGetPools = () => {
-    const url = "https://apiindex.mucho.finance/pools";
+    const url = `${APIINDEXURL}/pools`;
     const { dispatch } = useGlobal();
     const [pools, setPools] = useState<IPool[]>();
 
