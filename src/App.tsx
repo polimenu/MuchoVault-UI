@@ -55,8 +55,8 @@ function App() {
       <LanguageModal />
       <Routes>
         <Route path="/*" element={<FrontPageNew />} />
-        <Route path="/old" element={<FrontPage />} />
-        <Route path="/v1" element={<Earn />} />
+        {/*<Route path="/old" element={<FrontPage />} />
+        <Route path="/v1" element={<Earn />} />*/}
         <Route path="/badgeAdmin" element={<BadgeAdmin />} />
         <Route path="/badge" element={<Badge />} />
         <Route path="/nft" element={<Badge />} />
@@ -71,13 +71,13 @@ function App() {
         <Route path="/ramp" element={<RampPage />} />
         <Route path="/rampb2b" element={<RampPageB2B />} />
         <Route path="/ramp/admin" element={<RampAdminPage />} />
-        <Route path="/index-launch" element={<IndexPage />} />
+        {/*<Route path="/index-launch" element={<IndexPage />} />*/}
         <Route path="/index" element={<IndexMarketPage />} />
-        <Route path="/poolsf" element={<PoolsFelix />} />
+        {/*<Route path="/poolsf" element={<PoolsFelix />} />*/}
         <Route path="/pools" element={<PoolsPage />} />
         <Route path="/pools/:poolId" element={<PoolDetailPage />} />
-        <Route path="/scout" element={<NFTSale nftId={6} title="Baby Scout Verano 2024" />} />
-        {/*<Route path="/membresia" element={<NFTSale nftId={1} title="Membresía Campamento DeFi" />} />
+        {/*<Route path="/scout" element={<NFTSale nftId={6} title="Baby Scout Verano 2024" />} />
+        <Route path="/membresia" element={<NFTSale nftId={1} title="Membresía Campamento DeFi" />} />
         <Route path="/metodo" element={<NFTSale nftId={5} title="Método Mucho" />} />*/}
 
 
