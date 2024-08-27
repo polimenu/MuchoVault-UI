@@ -226,13 +226,13 @@ export const useTokenIdActionCalls = (plan: IPlanDetailed) => {
 
         const json = await response.json();
 
-        console.log("Mint and burn finished", json);
-        console.log("Calling CALLBACK");
+        //console.log("Mint and burn finished", json);
+        //console.log("Calling CALLBACK");
         callBack(res);
         return json;
 
       } catch (e) {
-        console.log("Error API", e);
+        //console.log("Error API", e);
         return { status: "KO", errorMessage: e.message };
       }
     }

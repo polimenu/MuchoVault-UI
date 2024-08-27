@@ -56,7 +56,7 @@ export function useSignMessageCall() {
 
       const res = await signMessageAsync({ message });
 
-      console.log("Message signed", res);
+      //console.log("Message signed", res);
       const cbRes = await callBack(res, { payload: { res } });
       if (cbRes.status == "OK") {
         toastify({ id: TOAST_ID, msg: `Token transferred, new token ID is ${cbRes.newTokenId}`, timings: 100, type: 'success' });
