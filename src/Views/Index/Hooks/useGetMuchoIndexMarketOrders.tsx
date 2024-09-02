@@ -29,28 +29,27 @@ export const useGetMuchoIndexMarketOrders = () => {
 
   const { address: account } = useUserAccount();
 
-  if (!account) {
-    return [];
+  if (account) {
+    calls = calls.concat([
+      {
+        address: config.BuyQueueContract,
+        abi: QueueAbi,
+        functionName: 'userOrders',
+        args: [account],
+        chainId: activeChain?.id,
+        map: 'userOrdersBuy',
+      },
+      {
+        address: config.SellQueueContract,
+        abi: QueueAbi,
+        functionName: 'userOrders',
+        args: [account],
+        chainId: activeChain?.id,
+        map: 'userOrdersSell',
+      },
+    ])
   }
 
-  calls = calls.concat([
-    {
-      address: config.BuyQueueContract,
-      abi: QueueAbi,
-      functionName: 'userOrders',
-      args: [account],
-      chainId: activeChain?.id,
-      map: 'userOrdersBuy',
-    },
-    {
-      address: config.SellQueueContract,
-      abi: QueueAbi,
-      functionName: 'userOrders',
-      args: [account],
-      chainId: activeChain?.id,
-      map: 'userOrdersSell',
-    },
-  ])
 
 
 
@@ -89,10 +88,10 @@ export const useGetMuchoIndexMarketOrders = () => {
   if (data && data[0]) {
     //console.log("DATA!!", data);
     data.indexes = indexes;
-    console.log("DATA!!", data);
+    //console.log("DATA!!", data);
     //console.log("Distributions", getDataString(data, 'userAllAirdropRewards'));
     const ordBuy = getDataString(data, "userOrdersBuy");
-    console.log("ordBuy!!", ordBuy);
+    //console.log("ordBuy!!", ordBuy);
     const ordSell = getDataString(data, "userOrdersSell");
 
     const orderStatus = (ord: number): string => {
