@@ -344,6 +344,8 @@
 		"Note": "Nota",
 		"this return amount is an estimation": "este valor de retorno es estimado.",
 		"Real returned amount will be calculated when order executes with real time price": "El valor real se obtendrá cuando la orden se ejecute, con el precio real del momento.",
-		"A buy or sell order can take approximately 10 minutes to be executed.": "Una orden de compra o venta puede tardar aproximadamente 10 minutos en ejecutarse."
+		"A buy or sell order can take approximately 10 minutes to be executed.": "Una orden de compra o venta puede tardar aproximadamente 10 minutos en ejecutarse.",
+		"Historical price since (mucho) index beginnings.": "Precio histórico semanal desde el inicio de (mucho) index",
+		"Historical Price": "Histórico de precios"
 	}
 }

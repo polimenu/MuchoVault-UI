@@ -344,6 +344,8 @@
 		"Note": "Note",
 		"this return amount is an estimation": "this return amount is an estimation",
 		"Real returned amount will be calculated when order executes with real time price": "Real returned amount will be calculated when order executes with real time price",
-		"A buy or sell order can take approximately 10 minutes to be executed.": "A buy or sell order can take approximately 10 minutes to be executed."
+		"A buy or sell order can take approximately 10 minutes to be executed.": "A buy or sell order can take approximately 10 minutes to be executed.",
+		"Historical price since (mucho) index beginnings.": "Weekly historical price since (mucho) index beginnings.",
+		"Historical Price": "Historical Prices"
 	}
 }

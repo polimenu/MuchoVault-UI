@@ -115,6 +115,65 @@ export interface IIndexPrice {
 }
 
 
+export interface IMuchoIndexDailyPrice {
+  price: number;
+  timestamp: number;
+  date: string;
+}
+
+export interface IIndexAum {
+  price: number;
+  buyPrice: number;
+  sellPrice: number;
+  updated: Date;
+  composition: IMuchoIndexMarketComposition[];
+  aum: IMuchoIndexAum;
+}
+
+export interface IMuchoIndexAum {
+  totalBalance: IMuchoIndexTotalBalance;
+  networks: IMuchoIndexNetwork[];
+}
+
+export interface IMuchoIndexTotalBalance {
+  totalUsd: number;
+  totalByToken: IMuchoIndexTotalByToken[];
+  totalByStrategy: IMuchoIndexTotalByStrategy[];
+}
+
+export interface IMuchoIndexTotalByToken {
+  token: string;
+  balance: number;
+  usd: number;
+}
+
+export interface IMuchoIndexTotalByStrategy {
+  strategy: string;
+  balance: number;
+  usd: number;
+}
+
+export interface IMuchoIndexNetwork {
+  network: string;
+  totalBalance: IMuchoIndexTotalBalance;
+  addresses: IMuchoIndexAddressBalances[];
+}
+
+export interface IMuchoIndexAddressBalances {
+  address: IMuchoIndexAddressData;
+  totalBalance: IMuchoIndexTotalBalance;
+  wallet: IMuchoIndexTotalByToken[];
+}
+
+export interface IMuchoIndexAddressData {
+  address: string;
+  name: string;
+  checkBalances: boolean;
+  checkUniswap: boolean;
+  checkOrca: boolean;
+  checkPendleLP: boolean;
+}
+
 const launcherData = atom<IMuchoTokenLauncherData>({
   contract: "", mTokenContract: "", mTokenCurrentSupply: 0, mTokenDecimals: 0, mTokenVersion: "", userBalance: 0, dateIni: new Date(),
   dateEnd: new Date(), active: true, prices: []

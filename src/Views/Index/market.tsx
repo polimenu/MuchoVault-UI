@@ -21,9 +21,12 @@ import { t } from 'i18next';
 import { useGetMuchoIndexMarket } from './Hooks/useGetMuchoIndexMarket';
 import { getMuchoIndexMarketCards } from './Components/MuchoIndexMarketCards';
 import { IndexMarketModals } from './Modals/market';
-import { useGetMuchoIndexLatestPrice } from './Hooks/useGetMuchoIndexPrices';
+import { useGetMuchoIndexDailyPrices, useGetMuchoIndexLatestPrice } from './Hooks/useGetMuchoIndexPrices';
 import { MuchoIndexTransactionList } from './Components/MuchoIndexMarketTransactionList';
 import { useGetMuchoIndexMarketOrders } from './Hooks/useGetMuchoIndexMarketOrders';
+import { LineChart } from '@mui/x-charts';
+import { ThemeProvider, createTheme } from '@mui/material';
+import { MuchoIndexDailyPriceChart } from './Components/MuchoIndexDailyPriceChart';
 
 const Styles = styled.div`
   width: min(1200px, 100%);
@@ -72,6 +75,8 @@ export const IndexMarketUserPage = () => {
   const [, setMarketData] = useAtom(writeMarketData);
   const data: IMuchoTokenMarketData = useGetMuchoIndexMarket();
   const [price] = useGetMuchoIndexLatestPrice();
+  const [dailyPrices] = useGetMuchoIndexDailyPrices();
+
   const transactions = useGetMuchoIndexMarketOrders();
   setMarketData(data);
 
@@ -81,6 +86,8 @@ export const IndexMarketUserPage = () => {
     { orderPosition: 4, orderType: "BUY", orderStatus: "PENDING", remitant: "0x00", amount: 100, fee: 2, date: 1707490959, attempts: 0, lastAttempt: 0 },
     { orderPosition: 9, orderType: "BUY", orderStatus: "CANCELLED", remitant: "0x00", amount: 100, fee: 2, date: 1707490959, attempts: 0, lastAttempt: 0 },
   ];*/
+  let iAxis = 0;
+  const theme = createTheme({ palette: { mode: "dark" } })
 
   return (
     <Styles>
@@ -92,7 +99,7 @@ export const IndexMarketUserPage = () => {
         Cards={getMuchoIndexMarketCards(data ? data : null, price ? price : null)}
         subHeading={<><div className={descStyles}>{t("index.hero")}</div></>}
       />
-      <div hidden={!transactions || transactions.length == 0}>
+      <div hidden={!transactions || transactions.length == 0} className='mt-[50px]'>
         <Section
           Heading={<div className={topStyles}>{t("index.Pending Orders")}</div>}
           subHeading={
@@ -103,6 +110,20 @@ export const IndexMarketUserPage = () => {
           other={<MuchoIndexTransactionList transactions={transactions} data={data} />}
         />
       </div>
+      {dailyPrices && <div className='mt-[50px]'>
+        <Section
+          Heading={<div className={topStyles}>{t("index.Historical Price")}</div>}
+          subHeading={
+            <div className={descStyles}>
+              {t("index.Historical price since (mucho) index beginnings.")}
+            </div>
+          }
+          other={
+            <MuchoIndexDailyPriceChart data={dailyPrices.filter(p => Number(p.date.substring(8)) % 7 == 0)} />
+          }
+        />
+      </div>}
+
     </Styles>
   );
 };

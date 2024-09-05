@@ -26,6 +26,7 @@ import MyLandbot from '@Views/Common/MyLandBot';
 import { PoolDetailPage } from '@Views/Pools/pool';
 import { NFTSale } from '@Views/Badge/sale';
 import { BadgeAdmin } from '@Views/Badge/admin';
+import { IndexAdminPage } from '@Views/Index/admin';
 
 if (import.meta.env.VITE_MODE === 'production') {
   //console.log(`import.meta.env.SENTRY_DSN: `, import.meta.env.VITE_SENTRY_DSN);
@@ -73,6 +74,7 @@ function App() {
         <Route path="/ramp/admin" element={<RampAdminPage />} />
         {/*<Route path="/index-launch" element={<IndexPage />} />*/}
         <Route path="/index" element={<IndexMarketPage />} />
+        <Route path="/index/admin" element={<IndexAdminPage />} />
         {/*<Route path="/poolsf" element={<PoolsFelix />} />*/}
         <Route path="/pools" element={<PoolsPage />} />
         <Route path="/pools/:poolId" element={<PoolDetailPage />} />

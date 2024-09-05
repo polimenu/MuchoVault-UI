@@ -1,4 +1,4 @@
-import { Skeleton } from '@mui/material';
+import { Skeleton, ThemeProvider, createTheme } from '@mui/material';
 import { Display } from '@Views/Common/Tooltips/Display';
 import { TableAligner } from '@Views/Common/TableAligner';
 import { IIndexPrice, IMuchoIndexMarketComposition, IMuchoTokenMarketData } from '../IndexAtom';
@@ -9,8 +9,8 @@ import { useContext } from 'react';
 import { Chain } from 'wagmi';
 import { t } from 'i18next';
 import { IndexMarketButtons } from './MuchoIndexMarketButtons';
-import { formatDate } from '@Views/Ramp/Utils';
 import { dateFormat } from '@Views/Common/Utils';
+import { PieChart, mangoFusionPaletteDark } from '@mui/x-charts';
 
 export const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 export const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
@@ -48,7 +48,8 @@ export const getMuchoIndexMarketCards = (data: IMuchoTokenMarketData, price: IIn
   }
 
 
-  return [<MuchoIndexMarketCard data={data} price={price} />, <MuchoIndexComposition data={price ? price.composition : []} />];
+  return [<MuchoIndexMarketCard data={data} price={price} />/*, <MuchoIndexComposition data={price ? price.composition : []} />*/,
+  <MuchoIndexCompositionChartCard data={price ? price.composition : []} />];
 }
 
 
@@ -91,6 +92,60 @@ const MuchoIndexComposition = ({ data }: { data: IMuchoIndexMarketComposition[] 
 }
 
 
+const MuchoIndexCompositionChartCard = ({ data }: { data: IMuchoIndexMarketComposition[] }) => {
+  if (!data) {
+    return <Skeleton
+      key={0}
+      variant="rectangular"
+      className="w-full !h-full min-h-[370px] !transform-none !bg-1"
+    />
+  }
+
+  let i = 0;
+  const theme = createTheme({ palette: { mode: "dark" } })
+  const serie = {
+    data: data.map(c => {
+      return {
+        id: i++,
+        value: c.percentage,
+        label: c.asset
+      }
+    })
+  }
+
+  return (
+    <Card
+      top={
+        <>
+          <span className={underLineClass}>{t("index.mIndex composition")}</span>
+        </>
+      }
+      middle={
+        <ThemeProvider theme={theme}>
+          <PieChart
+            series={[
+              serie
+            ]}
+            colors={mangoFusionPaletteDark}
+            height={300}
+            slotProps={{
+              legend: {
+                labelStyle: {
+                  fontSize: 14,
+                },
+                seriesToDisplay: serie.data.map(s => {
+                  return { id: s.id, label: `${s.label}: ${Math.round(s.value * 10) / 10}%`, color: mangoFusionPaletteDark[s.id] }
+                })
+              }
+            }}
+          />
+        </ThemeProvider>
+      }
+    />
+  );
+}
+
+
 const MuchoIndexMarketCard = ({ data, price }: { data: IMuchoTokenMarketData, price: IIndexPrice }) => {
 
   if (!data) {
@@ -100,6 +155,7 @@ const MuchoIndexMarketCard = ({ data, price }: { data: IMuchoTokenMarketData, pr
       className="w-full !h-full min-h-[370px] !transform-none !bg-1"
     />
   }
+
 
   return (
     <Card
@@ -138,7 +194,7 @@ const MuchoIndexMarketInfo = ({ data, price }: { data: IMuchoTokenMarketData, pr
           [
             t('index.Your mIndex in wallet'),
             t('index.Price'),
-            t('index.APR'),
+            //t('index.APR'),
             t('index.Deposit fee'),
             t('index.Withdraw fee'),
             // t('index.Slippage'),
@@ -169,7 +225,7 @@ const MuchoIndexMarketInfo = ({ data, price }: { data: IMuchoTokenMarketData, pr
               precision={4}
             />
           </div>,
-          <div className={`${wrapperClasses}`}>
+          /*<div className={`${wrapperClasses}`}>
 
             <Display
               className="!justify-end"
@@ -184,7 +240,7 @@ const MuchoIndexMarketInfo = ({ data, price }: { data: IMuchoTokenMarketData, pr
               /> &nbsp;&nbsp;&nbsp;({price ? formatDate(price.initTs * 1000) : ""})</span>}
             />
           </div>
-          ,
+          ,*/
           <div className={`${wrapperClasses}`}>
 
             <Display
