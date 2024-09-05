@@ -13,6 +13,7 @@ import { TokenIdActionModal } from './tokenIdAction';
 import { DiscountModal } from './discount';
 import { SaleSubscribeUserModal } from './saleSubuser';
 import { TransferModal } from './transfer';
+import { SaleRenewUserModal } from './saleRenuser';
 
 export const PlanModals = () => {
   const [pageState, setPageState] = useAtom(badgeAtom);
@@ -94,6 +95,12 @@ function ModalChild() {
     else if ((activeModal.action == "saleSubscribe")) {
       return (
         <SaleSubscribeUserModal />
+      );
+    }
+
+    else if ((activeModal.action == "saleRenew")) {
+      return (
+        <SaleRenewUserModal />
       );
     }
 

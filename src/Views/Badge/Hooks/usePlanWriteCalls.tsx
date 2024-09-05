@@ -272,9 +272,13 @@ export const useSalePlanUserCalls = () => {
     writeCall(callBack, "subscribe", [idNFT, metadata]);
   }
 
+  function renewUserCall(idNFT: string) {
+    writeCall(callBack, "renew", [idNFT]);
+  }
 
   return {
-    subscribeUserCall
+    subscribeUserCall,
+    renewUserCall
   };
 
 }

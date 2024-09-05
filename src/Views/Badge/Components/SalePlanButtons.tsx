@@ -117,11 +117,11 @@ function SalePlanButtonsSubscribed({ data }: { data: IPlanDetailed }) {
   //console.log("data", data);
   const call = getRenewCall(data.id.toString());
 
-  if (data.tokenIdAttributes.remainingDays < 5 && data.renewalPricing.userPrice.amount > 0) {
+  if (true || data.tokenIdAttributes.remainingDays < 5 && data.renewalPricing.userPrice.amount > 0) {
     return <div className={`${btnClasses} flex gap-5 m-auto`}>
       <BlueBtn
         onClick={() => {
-          call();
+          setPageState({ ...state, activeModal: { plan: data, action: "saleRenew" }, isModalOpen: true })
         }
         }
         className={btnClasses}
