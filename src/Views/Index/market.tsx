@@ -118,9 +118,8 @@ export const IndexMarketUserPage = () => {
               {t("index.Historical price since (mucho) index beginnings.")}
             </div>
           }
-          other={
-            <MuchoIndexDailyPriceChart data={dailyPrices.filter(p => Number(p.date.substring(8)) % 7 == 0)} />
-          }
+          Cards={[<MuchoIndexDailyPriceChart data={dailyPrices.filter(p => Number(p.date.substring(8)) % 7 == 0)} title={t("index.Weekly (all time)")} />,
+          <MuchoIndexDailyPriceChart data={dailyPrices.slice(-15)} title={t("index.Daily (last 15d)")} />]}
         />
       </div>}
 

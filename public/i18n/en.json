@@ -346,6 +346,8 @@
 		"Real returned amount will be calculated when order executes with real time price": "Real returned amount will be calculated when order executes with real time price",
 		"A buy or sell order can take approximately 10 minutes to be executed.": "A buy or sell order can take approximately 10 minutes to be executed.",
 		"Historical price since (mucho) index beginnings.": "Weekly historical price since (mucho) index beginnings.",
-		"Historical Price": "Historical Prices"
+		"Historical Price": "Historical Prices",
+		"Weekly (all time)": "Weekly (all time)",
+		"Daily (last 15d)": "Daily (last 15d)"
 	}
 }

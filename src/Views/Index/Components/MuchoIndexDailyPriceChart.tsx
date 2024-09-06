@@ -3,7 +3,7 @@ import { Chart } from "react-charts";
 import { Card } from "@Views/Common/Card/Card";
 import { IMuchoIndexDailyPrice } from "../IndexAtom";
 
-export const MuchoIndexDailyPriceChart = ({ data }: { data: IMuchoIndexDailyPrice[] }) => {
+export const MuchoIndexDailyPriceChart = ({ data, title }: { data: IMuchoIndexDailyPrice[], title: string }) => {
     type Price = {
         primary: string;
         price: number;
@@ -47,7 +47,7 @@ export const MuchoIndexDailyPriceChart = ({ data }: { data: IMuchoIndexDailyPric
 
     return (
         <Card
-            top={<></>}
+            top={<>{title}</>}
             middle={
                 <div className="w-full h-[20vw]">
                     <Chart<Price>
