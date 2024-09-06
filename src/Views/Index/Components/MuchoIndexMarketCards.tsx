@@ -101,6 +101,8 @@ const MuchoIndexCompositionChartCard = ({ data }: { data: IMuchoIndexMarketCompo
     />
   }
 
+  data = data.filter(c => c.percentage * 10 > 1).sort((a, b) => b.percentage - a.percentage);
+
   let i = 0;
   const theme = createTheme({ palette: { mode: "dark" } })
   const serie = {
