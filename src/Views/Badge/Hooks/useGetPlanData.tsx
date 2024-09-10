@@ -12,7 +12,6 @@ import { NULL_ACCOUNT } from '@Views/Common/Utils';
 
 export const useGetPlansDetailed = (planIds: number[]): IPlanDetailed[] => {
   let res: IPlanDetailed[] = [];
-  const [plans, setPlans] = useState<IPlanDetailed[]>([]);
 
   let activeChain: Chain | null = null;
   const badgeContextValue = useContext(BadgeContext);

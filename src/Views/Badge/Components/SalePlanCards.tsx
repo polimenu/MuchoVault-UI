@@ -18,22 +18,16 @@ export const underLineClass =
 
 export const wrapperClasses = 'flex justify-end flex-wrap';
 
-const planReadyToDraw = (plan: IPlanDetailed) => {
-  return Boolean(plan
-    && plan.planAttributes && plan.planAttributes.planName.length > 0
-    && plan.pricing && plan.pricing.contract
-    && plan.tokenIdAttributes)
-}
 
 export const SalePlanCard = ({ data, isSalePage }: { data: IPlanDetailed, isSalePage: boolean }) => {
-  /*if (!planReadyToDraw(data)) {
+  if (!data) {
     //console.log("getBadgeCards 1");
     return <Skeleton
       key={"sk"}
       variant="rectangular"
       className="w-full !h-full min-h-[370px] !transform-none !bg-1"
     />;
-  }*/
+  }
 
   let activeChain: Chain | null = null;
   const badgeContextValue = useContext(BadgeContext);

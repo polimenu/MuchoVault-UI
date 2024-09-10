@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import Drawer from '@Views/Common/V2-Drawer';
 import { AdminPlanCard } from './Components/AdminPlanCards';
 import { Section } from '../Common/Card/Section';
-import { IPlanDetailed, writeBadgeData } from './badgeAtom';
+import { IPlanDetailed, badgeAtom, writeBadgeData } from './badgeAtom';
 import { useGetPlans } from './Hooks/useAllPlansCall';
 import { PlanModals } from './Modals';
 import { useActiveChain } from '@Hooks/useActiveChain';
@@ -17,6 +17,7 @@ import { Navbar } from '@Views/Common/Navbar';
 import { t } from 'i18next';
 import { OnlyNFT } from '@Views/Common/OnlyNFT';
 import { BadgeContext } from '.';
+import { BlueBtn } from '@Views/Common/V2-Button';
 
 const BadgeStyles = styled.div`
   width: min(1200px, 100%);
@@ -64,6 +65,7 @@ export const BadgeAdmin = () => {
 
 
 const BadgePageAdmin = () => {
+  const [state, setPageState] = useAtom(badgeAtom);
   const [, setBadgeData] = useAtom(writeBadgeData);
   const data: IPlanDetailed[] = useGetPlans(true);
 
@@ -88,9 +90,11 @@ const BadgePageAdmin = () => {
             <div className={descStyles}>
               {t("badge.HeroText")}
             </div>
-            {/*admin && <div className="mt-5">
-              <AddPlanButton />
-        </div>*/}
+            <div className='mt-[10px]'>
+              <BlueBtn onClick={() => {
+                setPageState({ ...state, activeModal: { action: "deployNewNFT" }, isModalOpen: true })
+              }} className='!w-fit px-4 rounded-sm !h-7 ml-auto'>Deploy new NFT</BlueBtn>
+            </div>
           </>
         }
       />

@@ -45,11 +45,7 @@ export function SalePlanButtons({ data, showSaleText }: { data: IPlanDetailed, s
 function SalePlanButtonsNotSubscribed({ data, showSaleText }: { data: IPlanDetailed, showSaleText: boolean }) {
   const [state, setPageState] = useAtom(badgeAtom);
 
-  //console.log("*******DRAWING PLAN BUTTONS*****", plan.id, CLOSED_PLANS, CLOSED_PLANS.find(p => p == plan.id));
-  //console.log("data.planAttributes", data.planAttributes);
-  //data.pricing.dateEnd
-  //t("airdrop.Sales ended!")
-  //console.log("dates", data.pricing.dateEnd.getTime(), (new Date()).getTime())
+
   let subscribeText = "Subscribirme";
   if (data.planAttributes.planName == "NFT Baby Scout") {
     subscribeText = "Inscribirme a la formación Baby Scout Verano 2024";
@@ -58,11 +54,12 @@ function SalePlanButtonsNotSubscribed({ data, showSaleText }: { data: IPlanDetai
     subscribeText = "Inscribirme para tener acceso a TODAS las formaciones";
   }
 
+  const priceNotStarted = (data.pricing.dateIni.getTime() > ((new Date()).getTime()))
   const priceEnded = (data.pricing.dateEnd.getTime() < ((new Date()).getTime()))
   return (<>
     <div className={`${btnClasses} flex gap-5 m-auto`}>
 
-      {!priceEnded && <BlueBtn
+      {!priceEnded && !priceNotStarted && <BlueBtn
         onClick={() =>
           setPageState({ ...state, activeModal: { saleData: data, action: "saleSubscribe" }, isModalOpen: true })
         }
@@ -70,6 +67,7 @@ function SalePlanButtonsNotSubscribed({ data, showSaleText }: { data: IPlanDetai
       >
         {subscribeText}
       </BlueBtn>}
+      {priceNotStarted && <BlueBtn className={btnClasses} onClick={() => { }} isDisabled={true}>No disponible todavía</BlueBtn>}
       {priceEnded && <BlueBtn className={btnClasses} onClick={() => { }} isDisabled={true}>{t("airdrop.Sales ended!")}</BlueBtn>}
     </div>
     {showSaleText && data.id == 1 && <><Divider />

@@ -75,6 +75,32 @@ export const usePricingEditCalls = (pricing: IPlanPricingData) => {
   };
 };
 
+export const usePlanDeployCall = () => {
+  const badge_config: (typeof BADGE_CONFIG)[42161] = BADGE_CONFIG[42161]; //Todo multichain
+  const { writeCall } = useWriteCall(badge_config.MuchoNFTFetcher, MuchoNFTFetcherABI);
+  const [, setPageState] = useAtom(writeBadgeAtom);
+
+  function callBack(res) {
+    //console.log("updatePlan:");
+    //console.log(res);
+    if (res.payload)
+      setPageState({
+        isModalOpen: false,
+        activeModal: null,
+      });
+  }
+
+
+  const deployNFTCall = (nftName: string, symbol: string, planName: string, duration: number) => {
+    writeCall(callBack, "deployNFT", [nftName, symbol, planName, duration * 24 * 60 * 60]);
+  }
+
+
+  return {
+    deployNFTCall
+  };
+}
+
 export const usePlanEditCalls = (plan: IPlanDetailed) => {
   const { writeCall: writeNFTCall } = useWriteCall(plan.planAttributes.nftAddress, MuchoNFTAbi);
   const [, setPageState] = useAtom(writeBadgeAtom);

@@ -14,6 +14,7 @@ import { DiscountModal } from './discount';
 import { SaleSubscribeUserModal } from './saleSubuser';
 import { TransferModal } from './transfer';
 import { SaleRenewUserModal } from './saleRenuser';
+import { DeployNFTModal } from './deployNewNFT';
 
 export const PlanModals = () => {
   const [pageState, setPageState] = useAtom(badgeAtom);
@@ -108,6 +109,12 @@ function ModalChild() {
       return (
         <TransferModal />
       );
+    }
+
+    else if (activeModal.action == "deployNewNFT") {
+      return (
+        <DeployNFTModal />
+      )
     }
   }
 

@@ -38,7 +38,7 @@ export const NFTSale = ({ nftId, title }: { nftId: number, title: string }) => {
   }, []);
   return (
     <Background>
-      <Navbar />
+      <Navbar hideAccount={false} />
 
       <div className="root w-[100vw]">
         <ArbitrumOnly>
@@ -63,7 +63,7 @@ const SalePage = ({ nftId, title }: { nftId: number, title: string }) => {
 
   //console.log("address", address);
   const [data] = useGetPlansDetailed([nftId]);
-  //console.log("Data", data);
+  console.log("Data", nftId, data);
   //useSetNFTAttributesForUser(data ? data.plans : []);
   //setBadgeData(data);
 
