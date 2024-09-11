@@ -14,6 +14,7 @@ import { useSalePlanUserCalls } from '../Hooks/usePlanWriteCalls';
 import { t } from 'i18next';
 import { BADGE_CONFIG } from '../Config/BadgeConfig';
 import { useGetPlansDetailed } from '../Hooks/useGetPlanData';
+import { useGetEncryptedMetadata } from '../Hooks/useGetEncryptedMetadata';
 
 export const SaleSubscribeUserModal = () => {
 
@@ -55,6 +56,7 @@ const Subscribe = ({ planId, head, unit, tokenContract, call, precision, decimal
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  //const [metadata, setMetadata] = useState('');
   //console.log("DEPOSIT CALL:"); console.log(call);
   const { activeChain } = useContext(BadgeContext);
   const { approve } = useGetApprovalAmount(
@@ -68,20 +70,19 @@ const Subscribe = ({ planId, head, unit, tokenContract, call, precision, decimal
 
   //console.log("Decimals:"); console.log(decimals);
   const allowance = useGetAllowance(tokenContract.contract, decimals, badge_config.MuchoNFTFetcher, activeChain.id);
-  const allowanceAmount = amount + 3;
+  const allowanceAmount = amount;// + 3;
   //console.log("Allowance:"); console.log(allowance);
 
   const isApproved = gte(Number(allowance), allowanceAmount || '1');
 
-  const encrypt = (text: string) => {
-    return text;
-    //const cipher = createCipheriv(import.meta.env.ENCRYPTION_ALGO, Buffer.from(import.meta.env.ENCRYPTION_KEY), Buffer.from(import.meta.env.ENCRYPTION_IV));
-    //return cipher.update(text, 'utf8', 'hex') + cipher.final('hex');
-  }
+  //const [encryptedMD] = useGetEncryptedMetadata(metadata);
+
 
   const clickHandler = () => {
-    const metadata = encrypt(JSON.stringify({ name: firstName, surname: lastName, email: email }));
-    return call(planId, metadata);
+    //setMetadata(JSON.stringify({ name: firstName, surname: lastName, email: email }));
+    //if (encryptedMD) {
+    return call(planId, JSON.stringify({ name: firstName, surname: lastName, email: email }));
+    //}
   };
 
   // console.log("AAA", import.meta.env.ENCRYPTION_ALGO);
