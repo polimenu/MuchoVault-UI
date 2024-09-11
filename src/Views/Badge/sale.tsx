@@ -63,7 +63,7 @@ const SalePage = ({ nftId, title }: { nftId: number, title: string }) => {
 
   //console.log("address", address);
   const [data] = useGetPlansDetailed([nftId]);
-  console.log("Data", nftId, data);
+  //console.log("Data", nftId, data);
   //useSetNFTAttributesForUser(data ? data.plans : []);
   //setBadgeData(data);
 
@@ -85,9 +85,13 @@ const SalePage = ({ nftId, title }: { nftId: number, title: string }) => {
         }
         subHeading={
           <>
-            <div className={descStyles}>
-              Inscríbete a {title}
+            {data && data.id == 8 && <div className={descStyles}>
+              Tu puerta de entrada al mundo DeFi
             </div>
+            }
+            {(!data || data.id != 8) && <div className={descStyles}>
+              Inscríbete a {title}
+            </div>}
           </>
         }
       />

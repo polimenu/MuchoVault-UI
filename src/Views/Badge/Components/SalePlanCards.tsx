@@ -65,13 +65,40 @@ const PlanCard = ({ data, isSalePage }: { data: IPlanDetailed, isSalePage: boole
 }
 
 const PlanInfoUserNotSubscribed = ({ data }: { data: IPlanDetailed }) => {
+  const [dateCountDown, setDateCountDown] = useState(<></>);
+  const [timeLeftLiteral, setTimeLeftLiteral] = useState("");
+
+  enum PlanStatus {
+    NOT_STARTED,
+    STARTED,
+    ENDED
+  }
+
+  const now = new Date();
+  const status = data.pricing.dateEnd < now ? PlanStatus.ENDED :
+    (data.pricing.dateIni > now ? PlanStatus.NOT_STARTED : PlanStatus.STARTED);
+  //console.log("plan status", data.planAttributes.planName, status);
+
+  useEffect(() => {
+    //console.log("SETTING COUNTDOWN", data.planAttributes.planName, status, data.pricing.dateIni, data.pricing.dateEnd);
+
+    setDateCountDown((status == PlanStatus.ENDED) ? <>{t("airdrop.Sales ended!")}</> : <Countdown dates={[data.pricing.dateIni, data.pricing.dateEnd]} />);
+
+    setTimeLeftLiteral((status == PlanStatus.NOT_STARTED) ? t('badge.Time left to start') :
+      (status == PlanStatus.STARTED ? t('badge.Time left to subscribe') : ""));
+  }, [status]);
 
   //console.log("Enabled:"); console.log(enabledStr);
   //console.log("data.pricing", data.pricing);
   return (
     <>
       <TableAligner
-        keysName={[t('badge.Duration'), t('badge.Subscription Price'), t('badge.Status'), t('badge.Time left to subscribe')]}
+        keysName={[
+          t('badge.Duration'),
+          t('badge.Subscription Price'),
+          t('badge.Status'),
+          timeLeftLiteral
+        ]}
         values={[
           <div className={`${wrapperClasses}`}>
 
@@ -109,7 +136,7 @@ const PlanInfoUserNotSubscribed = ({ data }: { data: IPlanDetailed }) => {
             />}
           </div>,
           <div className={`${wrapperClasses}`}>
-            <Countdown date={data.pricing.dateEnd} />
+            {dateCountDown}
           </div>,
         ]}
         keyStyle={keyClasses}
@@ -119,12 +146,19 @@ const PlanInfoUserNotSubscribed = ({ data }: { data: IPlanDetailed }) => {
   );
 };
 
-const Countdown = ({ date }: { date: Date }) => {
+const Countdown = ({ dates }: { dates: Date[] }) => {
 
+  let cdTimeout: NodeJS.Timeout;
   const dateLiterals = { d: t("airdrop.Days"), h: t("airdrop.Hours"), m: t("airdrop.Minutes"), s: t("airdrop.Seconds") };
   const [counter, setCounter] = useState("");
   useEffect(() => {
-    setTimeout(() => setCounter(secsToDiffDate(dateDiffInSecs(new Date(Date.now()), date), dateLiterals, t("airdrop.Sales ended!"))), 1000);
+    for (const date of dates) {
+      const diffSecs = dateDiffInSecs(new Date(Date.now()), date);
+      if (diffSecs >= 0) {
+        cdTimeout = setTimeout(() => setCounter(secsToDiffDate(diffSecs, dateLiterals)), 1000);
+        break;
+      }
+    }
   }, [counter]);
 
   return (
@@ -140,9 +174,9 @@ function dateDiffInSecs(a: Date, b: Date) {
   return Math.floor((b.getTime() - a.getTime()) / 1000);
 }
 
-function secsToDiffDate(secs: number, dateLiterals: any, endedLiteral: string) {
+function secsToDiffDate(secs: number, dateLiterals: any) {
   if (secs <= 0) {
-    return endedLiteral;
+    return `0 ${dateLiterals.s}`;
   }
   let days = 0, hours = 0, minutes = 0;
   const DAY_IN_SECS = 60 * 60 * 24;

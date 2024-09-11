@@ -78,8 +78,9 @@ function App() {
         {/*<Route path="/poolsf" element={<PoolsFelix />} />*/}
         <Route path="/pools" element={<PoolsPage />} />
         <Route path="/pools/:poolId" element={<PoolDetailPage />} />
-        <Route path="/scout09" element={<NFTSale nftId={6} title="Baby Scout Verano 2024" />} />
-        <Route path="/membresia09" element={<NFTSale nftId={1} title="Membresía Campamento DeFi" />} />
+        <Route path="/scout" element={<NFTSale nftId={6} title="Baby Scout Otoño 2024" />} />
+        <Route path="/membresia" element={<NFTSale nftId={1} title="Membresía Campamento DeFi" />} />
+        <Route path="/librodefi" element={<NFTSale nftId={8} title="NFT Libro DeFi" />} />
         {/*<Route path="/metodo" element={<NFTSale nftId={5} title="Método Mucho" />} />*/}
 
 

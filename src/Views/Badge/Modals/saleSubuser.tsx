@@ -2,7 +2,7 @@ import { useAtom } from 'jotai';
 import { useContext, useState } from 'react';
 import BufferInput from '@Views/Common/BufferInput';
 import { BlueBtn } from '@Views/Common/V2-Button';
-import { badgeAtom } from '../badgeAtom';
+import { IPlanDetailed, badgeAtom } from '../badgeAtom';
 import { toFixed } from '@Utils/NumString';
 import { gte } from '@Utils/NumString/stringArithmatics';
 import { useGlobal } from '@Contexts/Global';
@@ -13,14 +13,17 @@ import { useGetAllowance, useGetApprovalAmount } from '../../Common/Hooks/useAll
 import { useSalePlanUserCalls } from '../Hooks/usePlanWriteCalls';
 import { t } from 'i18next';
 import { BADGE_CONFIG } from '../Config/BadgeConfig';
+import { useGetPlansDetailed } from '../Hooks/useGetPlanData';
 
 export const SaleSubscribeUserModal = () => {
 
   const [pageState] = useAtom(badgeAtom);
   const activeModal = pageState.activeModal;
-  const data = activeModal.saleData;
+  const [data] = useGetPlansDetailed([activeModal.planId]);
   const { subscribeUserCall } = useSalePlanUserCalls();
-  const price = data.pricing.subscriptionPrice;
+  if (!data)
+    return <></>;
+  const price = data.pricing.userPrice;
   const head = `Subscribirme a ${data.planAttributes.planName}`;
   const button = `Pagar ${Math.round(100 * price.amount) / 100} ${price.token} y Subscribirme`;
 
@@ -46,7 +49,7 @@ export const SaleSubscribeUserModal = () => {
 
 
 const Subscribe = ({ planId, head, unit, tokenContract, call, precision, decimals, amount, button }:
-  { planId: string; head: string; unit: string; tokenContract: IContract; call: any; precision: number; decimals: number; amount: number; button: string }) => {
+  { planId: number; head: string; unit: string; tokenContract: IContract; call: any; precision: number; decimals: number; amount: number; button: string }) => {
   const badge_config: (typeof BADGE_CONFIG)[42161] = BADGE_CONFIG[42161]; //Todo multichain
 
   const [email, setEmail] = useState('');
@@ -99,7 +102,7 @@ const Subscribe = ({ planId, head, unit, tokenContract, call, precision, decimal
         {!isApproved && <BlueBtn
           onClick={() => {
             if (firstName.length > 2 && lastName.length > 2 && email.length > 2 && email.indexOf("@") > 0) {
-              approve(toFixed((allowanceAmount * 10 ** decimals + 1).toString(), 0), setApprovalState);
+              approve(toFixed((allowanceAmount * 10 ** decimals).toString(), 0), setApprovalState);
             }
             else {
               alert("Por favor rellena todos los campos");
