@@ -66,10 +66,14 @@ const BadgePage = () => {
 
   setBadgeData(data);
 
+  const now = new Date();
+  const availablePlans = data.filter(p => p.planAttributes.enabled && p.pricing.dateEnd > now && p.pricing.dateIni <= now).sort((a, b) => a.pricing.userPrice.amount - b.pricing.userPrice.amount);
+  const notAvailablePlans = data.filter(p => availablePlans.map(ap => ap.id).indexOf(p.id) < 0);
+
   return (
     <BadgeStyles>
       <PlanModals />
-      <Section
+      {availablePlans.length > 0 && <Section
         Heading={
           <>
             <div className={topStyles}>
@@ -77,17 +81,37 @@ const BadgePage = () => {
             </div>
           </>
         }
-        Cards={data.map(p => <div className='max-w-[650px] m-auto mt-[50px]'>
+        Cards={availablePlans.map(p => <div className='max-w-[650px] m-auto mt-[50px]'>
           <SalePlanCard data={p} isSalePage={false} />
         </div>)}
         subHeading={
           <>
             <div className={descStyles}>
-              {t("badge.HeroText")}
+              {notAvailablePlans.length > 0 ? t("badge.PlansOnSale") : t("badge.HeroText")}
             </div>
           </>
         }
-      />
+      />}
+      {notAvailablePlans.length > 0 && <Section
+        className='mt-[80px]'
+        Heading={
+          <>
+            <div className={topStyles}>
+              <MuchoWhite width={120} /> &nbsp;NFT Plan
+            </div>
+          </>
+        }
+        Cards={notAvailablePlans.map(p => <div className='max-w-[650px] m-auto mt-[50px]'>
+          <SalePlanCard data={p} isSalePage={false} />
+        </div>)}
+        subHeading={
+          <>
+            <div className={descStyles}>
+              {availablePlans.length > 0 ? t("badge.PlansOffSale") : t("badge.HeroText")}
+            </div>
+          </>
+        }
+      />}
     </BadgeStyles>
   );
 };
