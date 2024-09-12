@@ -26,7 +26,7 @@ export const SaleSubscribeUserModal = () => {
     return <></>;
   const price = data.pricing.userPrice;
   const head = `Subscribirme a ${data.planAttributes.planName}`;
-  const button = `Pagar ${Math.round(100 * price.amount) / 100} ${price.token} y Subscribirme`;
+  const button = `Paso 2 de 2: Pagar ${Math.round(100 * price.amount) / 100} ${price.token} y Subscribirme`;
 
   //console.log("price.contract", price.contract);
   const tokenContract: IContract = {
@@ -58,7 +58,11 @@ const Subscribe = ({ planId, head, unit, tokenContract, call, precision, decimal
   const [lastName, setLastName] = useState('');
   //const [metadata, setMetadata] = useState('');
   //console.log("DEPOSIT CALL:"); console.log(call);
-  const { activeChain } = useContext(BadgeContext);
+  let chainId = 42161;
+  const badgeContextValue = useContext(BadgeContext);
+  if (badgeContextValue) {
+    chainId = badgeContextValue.activeChain.id;
+  }
   const { approve } = useGetApprovalAmount(
     tokenContract?.abi,
     tokenContract?.contract,
@@ -69,7 +73,7 @@ const Subscribe = ({ planId, head, unit, tokenContract, call, precision, decimal
   const { state, dispatch } = useGlobal();
 
   //console.log("Decimals:"); console.log(decimals);
-  const allowance = useGetAllowance(tokenContract.contract, decimals, badge_config.MuchoNFTFetcher, activeChain.id);
+  const allowance = useGetAllowance(tokenContract.contract, decimals, badge_config.MuchoNFTFetcher, chainId);
   const allowanceAmount = amount;// + 3;
   //console.log("Allowance:"); console.log(allowance);
 
@@ -104,7 +108,7 @@ const Subscribe = ({ planId, head, unit, tokenContract, call, precision, decimal
         <BufferInput placeholder={t("ramp.E-mail")} bgClass="!bg-1" ipClass="mt-1" value={email} onChange={(val) => { setEmail(val); }} />
       </div>
       <div className="flex whitespace-nowrap mt-5">
-        {!isApproved && <BlueBtn
+        <BlueBtn
           onClick={() => {
             if (firstName.length > 2 && lastName.length > 2 && email.length > 2 && email.indexOf("@") > 0) {
               approve(toFixed((allowanceAmount * 10 ** decimals).toString(), 0), setApprovalState);
@@ -113,13 +117,15 @@ const Subscribe = ({ planId, head, unit, tokenContract, call, precision, decimal
               alert("Por favor rellena todos los campos");
             }
           }}
-          className="mr-4 rounded"
-          isDisabled={isApproved || state.txnLoading > 1}
+          className="mt-5 rounded"
+          isDisabled={isApproved || approveState || state.txnLoading > 1}
           isLoading={state.txnLoading === 1 && approveState}
         >
-          Autorizar Pago
-        </BlueBtn>}
-        {isApproved && <BlueBtn
+          {isApproved && " ✅"} Paso 1 de 2: Autorizar Gasto al Protocolo
+        </BlueBtn>
+      </div>
+      <div className="flex whitespace-nowrap mt-5">
+        <BlueBtn
           onClick={() => {
             if (firstName.length > 2 && lastName.length > 2 && email.length > 2 && email.indexOf("@") > 0) {
               clickHandler();
@@ -133,7 +139,7 @@ const Subscribe = ({ planId, head, unit, tokenContract, call, precision, decimal
           isLoading={state.txnLoading === 1 && !approveState}
         >
           {button}
-        </BlueBtn>}
+        </BlueBtn>
       </div>
     </>
   );

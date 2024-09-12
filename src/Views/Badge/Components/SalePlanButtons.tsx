@@ -18,12 +18,16 @@ export const btnClasses = '!w-fit px-4 rounded-sm !h-7 ml-auto !text-[18px]';
 
 export function SalePlanButtons({ data, showSaleText }: { data: IPlanDetailed, showSaleText: boolean }) {
   const { address: account } = useUserAccount();
-  const { activeChain } = useContext(BadgeContext);
+  let chainId = 42161;
+  const badgeContextValue = useContext(BadgeContext);
+  if (badgeContextValue) {
+    chainId = badgeContextValue.activeChain.id;
+  }
   const { chain } = useNetwork();
 
   //console.log("*******DRAWING PLAN BUTTONS*****", plan.id, CLOSED_PLANS, CLOSED_PLANS.find(p => p == plan.id));
 
-  if (!account || activeChain.id !== chain?.id)
+  if (!account || chainId !== chain?.id)
     return (
       <div className={btnClasses}>
         <ConnectionRequired>
@@ -110,9 +114,14 @@ function SalePlanButtonsNotSubscribed({ data, showSaleText }: { data: IPlanDetai
 }
 
 const getRenewCall = (nftId: string) => {
-  const { activeChain } = useContext(BadgeContext);
-  const { writeCall } = useWriteCall(BADGE_CONFIG[activeChain.id].MuchoNFTFetcher, MuchoNFTFetcherAbi);
+  let chainId = 42161;
+  const badgeContextValue = useContext(BadgeContext);
+  if (badgeContextValue) {
+    chainId = badgeContextValue.activeChain.id;
+  }
+  const { writeCall } = useWriteCall(BADGE_CONFIG[chainId].MuchoNFTFetcher, MuchoNFTFetcherAbi);
   const [state, setPageState] = useAtom(badgeAtom);
+
 
   function callBack(res) {
     //console.log("updatePlan:");

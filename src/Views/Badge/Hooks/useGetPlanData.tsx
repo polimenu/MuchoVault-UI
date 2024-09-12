@@ -14,13 +14,15 @@ export const useGetPlansDetailed = (planIds: number[]): IPlanDetailed[] => {
   let res: IPlanDetailed[] = [];
 
   let activeChain: Chain | null = null;
+  let chainId = 42161
   const badgeContextValue = useContext(BadgeContext);
   if (badgeContextValue) {
     activeChain = badgeContextValue.activeChain;
+    chainId = activeChain.id;
   }
 
   const { address: account } = useUserAccount();
-  const badge_config: (typeof BADGE_CONFIG)[42161] = BADGE_CONFIG[activeChain ? activeChain.id : 42161];
+  const badge_config: (typeof BADGE_CONFIG)[42161] = BADGE_CONFIG[chainId];
   const queryAddress = account ? account : NULL_ACCOUNT;
 
   const call = {
@@ -28,7 +30,7 @@ export const useGetPlansDetailed = (planIds: number[]): IPlanDetailed[] => {
     abi: MuchoNFTReaderAbi,
     functionName: 'detailedNftsById',
     args: [planIds, queryAddress],
-    chainId: activeChain.id,
+    chainId: chainId,
     watch: true,
     map: `detailedNftsById`,
   }
