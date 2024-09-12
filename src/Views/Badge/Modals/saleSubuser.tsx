@@ -14,7 +14,7 @@ import { useSalePlanUserCalls } from '../Hooks/usePlanWriteCalls';
 import { t } from 'i18next';
 import { BADGE_CONFIG } from '../Config/BadgeConfig';
 import { useGetPlansDetailed } from '../Hooks/useGetPlanData';
-import { useGetEncryptedMetadata } from '../Hooks/useGetEncryptedMetadata';
+import { getEncryptedMetadata, useGetEncryptedMetadata } from '../Hooks/useGetEncryptedMetadata';
 
 export const SaleSubscribeUserModal = () => {
 
@@ -66,7 +66,7 @@ const Subscribe = ({ planId, head, unit, tokenContract, call, precision, decimal
   );
   //console.log("approve", approve);
   const [approveState, setApprovalState] = useState(false);
-  const { state } = useGlobal();
+  const { state, dispatch } = useGlobal();
 
   //console.log("Decimals:"); console.log(decimals);
   const allowance = useGetAllowance(tokenContract.contract, decimals, badge_config.MuchoNFTFetcher, activeChain.id);
@@ -76,13 +76,17 @@ const Subscribe = ({ planId, head, unit, tokenContract, call, precision, decimal
   const isApproved = gte(Number(allowance), allowanceAmount || '1');
 
   //const [encryptedMD] = useGetEncryptedMetadata(metadata);
+  //console.log("encryptedMD", encryptedMD, metadata);
 
 
-  const clickHandler = () => {
+  const clickHandler = async () => {
     //setMetadata(JSON.stringify({ name: firstName, surname: lastName, email: email }));
-    //if (encryptedMD) {
-    return call(planId, JSON.stringify({ name: firstName, surname: lastName, email: email }));
-    //}
+    const md = JSON.stringify({ name: firstName, surname: lastName, email: email });
+    const encryptedMD = await getEncryptedMetadata(md, dispatch);
+    if (encryptedMD) {
+      //console.log("encryptedMD", encryptedMD);
+      return call(planId, encryptedMD);
+    }
   };
 
   // console.log("AAA", import.meta.env.ENCRYPTION_ALGO);

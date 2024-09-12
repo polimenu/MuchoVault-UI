@@ -1,5 +1,5 @@
 import { useGlobal } from "@Contexts/Global";
-import { fetchFromIndexApi } from "@Views/Index/Hooks/fetch";
+import { asyncFetchFromIndexApi, fetchFromIndexApi } from "@Views/Index/Hooks/fetch";
 import { useEffect, useState } from "react";
 
 
@@ -18,4 +18,11 @@ export const useGetEncryptedMetadata = (metadata: string) => {
     }, [metadata]);
 
     return [encryptedMetadata];
+}
+
+export const getEncryptedMetadata = async (metadata: string, dispatch: any) => {
+    //const { dispatch } = useGlobal();
+    const res = await asyncFetchFromIndexApi(`/encryptMetadata`, 'GET', { data: metadata }, dispatch);
+
+    return res.data;
 }
