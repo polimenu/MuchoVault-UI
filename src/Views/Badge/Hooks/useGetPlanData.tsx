@@ -20,7 +20,7 @@ export const useGetPlansDetailed = (planIds: number[]): IPlanDetailed[] => {
   }
 
   const { address: account } = useUserAccount();
-  const badge_config: (typeof BADGE_CONFIG)[42161] = BADGE_CONFIG[activeChain.id];
+  const badge_config: (typeof BADGE_CONFIG)[42161] = BADGE_CONFIG[activeChain ? activeChain.id : 42161];
   const queryAddress = account ? account : NULL_ACCOUNT;
 
   const call = {
