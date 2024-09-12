@@ -153,6 +153,18 @@ function SalePlanButtonsSubscribed({ data }: { data: IPlanDetailed }) {
     </div >
   }
 
+  if (data.id == 8) {
+    return <div className={`${btnClasses} flex gap-5 m-auto`}>
+      <BlueBtn
+        onClick={() => { }}
+        className={btnClasses}
+        isDisabled={true}
+      >
+        Enhorabuena, ya tienes tu NFT Libro DeFi
+      </BlueBtn>
+    </div>
+  }
+
   return (
     <div className={`${btnClasses} flex gap-5 m-auto`}>
       <BlueBtn
