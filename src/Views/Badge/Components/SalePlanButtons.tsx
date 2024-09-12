@@ -51,7 +51,7 @@ function SalePlanButtonsNotSubscribed({ data, showSaleText }: { data: IPlanDetai
 
 
   let subscribeText = "Subscribirme";
-  if (data.planAttributes.planName == "NFT Baby Scout") {
+  if (data.id == 9) {
     subscribeText = "Inscribirme a la formación Baby Scout Otoño 2024";
   }
   else if (data.id == 1) {
