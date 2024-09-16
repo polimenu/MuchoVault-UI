@@ -74,8 +74,16 @@ const Subscribe = ({ planId, head, unit, tokenContract, call, precision, decimal
 
   //console.log("Decimals:"); console.log(decimals);
   const allowance = useGetAllowance(tokenContract.contract, decimals, badge_config.MuchoNFTFetcher, chainId);
-  const allowanceAmount = amount;// + 3;
+  let allowanceAmount = amount;// + 3;
   //console.log("Allowance:"); console.log(allowance);
+
+  //Special cases
+  if (planId == 8 && amount < 100) {
+    allowanceAmount += 1;
+  }
+  else if ((planId == 1 && amount < 5500) || (planId == 9 && amount < 4500)) {
+    allowanceAmount += 10;
+  }
 
   const isApproved = gte(Number(allowance), allowanceAmount || '1');
 
@@ -111,7 +119,7 @@ const Subscribe = ({ planId, head, unit, tokenContract, call, precision, decimal
         <BlueBtn
           onClick={() => {
             if (firstName.length > 2 && lastName.length > 2 && email.length > 2 && email.indexOf("@") > 0) {
-              approve(toFixed(((allowanceAmount + (planId == 8 ? 1 : 0)) * 10 ** decimals).toString(), 0), setApprovalState);
+              approve(toFixed((allowanceAmount * 10 ** decimals).toString(), 0), setApprovalState);
             }
             else {
               alert("Por favor rellena todos los campos");
@@ -121,7 +129,7 @@ const Subscribe = ({ planId, head, unit, tokenContract, call, precision, decimal
           isDisabled={isApproved || approveState || state.txnLoading > 1}
           isLoading={state.txnLoading === 1 && approveState}
         >
-          {isApproved && " ✅"} Paso 1 de 2: Autorizar Gasto al Protocolo*
+          {isApproved && " ✅"} Paso 1 de 2: Autorizar Gasto al Protocolo{allowanceAmount > amount ? "*" : ""}
         </BlueBtn>
       </div>
       <div className="flex whitespace-nowrap mt-5">
@@ -141,8 +149,8 @@ const Subscribe = ({ planId, head, unit, tokenContract, call, precision, decimal
           {button}
         </BlueBtn>
       </div>
-      {planId == 8 && <div className="flex mt-5 text-f12">
-        *En el primer paso pedimos autorización por 1 USDC más de lo necesario, ya que cada segundo sube el precio. Se te cobrará lo correcto en el segundo paso.
+      {allowanceAmount > amount && <div className="flex mt-5 text-f12">
+        *En el primer paso pedimos autorización por {allowanceAmount - amount} USDC más de lo necesario, ya que cada segundo sube el precio. Se te cobrará lo correcto en el segundo paso.
       </div>}
     </>
   );
