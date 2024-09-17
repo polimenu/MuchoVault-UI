@@ -50,6 +50,9 @@ export const useOnRampAccounts = (sessionId: string, currency: string, trigger: 
             const account = obj.response.filter(a => a.currency == currency)[0];
             setAccount(account ? account : {});
         }
+        else {
+            setAccount({ uuid: "", iban: "", bic: "", currency, bank_country: "" });
+        }
     }
 
     useEffect(() => {

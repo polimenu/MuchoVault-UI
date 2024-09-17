@@ -85,7 +85,7 @@ const Subscribe = ({ planId, head, unit, tokenContract, call, precision, decimal
     allowanceAmount += 10;
   }
 
-  const isApproved = gte(Number(allowance), allowanceAmount || '1');
+  const isApproved = gte(Number(allowance), amount || '1');
 
   //const [encryptedMD] = useGetEncryptedMetadata(metadata);
   //console.log("encryptedMD", encryptedMD, metadata);
