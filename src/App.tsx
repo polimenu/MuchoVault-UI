@@ -81,6 +81,7 @@ function App() {
         <Route path="/scout" element={<NFTSale nftId={9} title="Baby Scout Otoño 2024" />} />
         <Route path="/membresia" element={<NFTSale nftId={1} title="Membresía Campamento DeFi" />} />
         <Route path="/librodefi" element={<NFTSale nftId={8} title="NFT Libro DeFi" />} />
+        <Route path="/lab" element={<NFTSale nftId={10} title="Laboratorio Baby Scout Otoño 2024" />} />
         {/*<Route path="/metodo" element={<NFTSale nftId={5} title="Método Mucho" />} />*/}
 
 
