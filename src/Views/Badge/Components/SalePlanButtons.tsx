@@ -61,7 +61,7 @@ function SalePlanButtonsNotSubscribed({ data, showSaleText }: { data: IPlanDetai
     subscribeText = "Obtener mi NFT Libro Defi";
   }
 
-  const priceNotStarted = (data.pricing.dateIni.getTime() > ((new Date()).getTime()))
+  const priceNotStarted = (data.pricing.dateIni.getTime() > ((new Date()).getTime())) || !data.planAttributes.enabled;
   const priceEnded = (data.pricing.dateEnd.getTime() < ((new Date()).getTime()))
   return (<>
     <div className={`${btnClasses} flex gap-5 m-auto`}>

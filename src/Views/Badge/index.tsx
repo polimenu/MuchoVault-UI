@@ -62,7 +62,7 @@ export const Badge = () => {
 
 const BadgePage = () => {
   const [, setBadgeData] = useAtom(writeBadgeData);
-  const data = useGetPlans(false);
+  const data = useGetPlans(false).filter(p => p.planAttributes.enabled);
 
   setBadgeData(data);
 

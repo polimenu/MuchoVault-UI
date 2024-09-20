@@ -75,8 +75,8 @@ const PlanInfoUserNotSubscribed = ({ data }: { data: IPlanDetailed }) => {
   }
 
   const now = new Date();
-  const status = data.pricing.dateEnd < now ? PlanStatus.ENDED :
-    (data.pricing.dateIni > now ? PlanStatus.NOT_STARTED : PlanStatus.STARTED);
+  const status = (data.pricing.dateEnd < now) ? PlanStatus.ENDED :
+    ((data.pricing.dateIni > now || !data.planAttributes.enabled) ? PlanStatus.NOT_STARTED : PlanStatus.STARTED);
   //console.log("plan status", data.planAttributes.planName, status);
 
   useEffect(() => {
