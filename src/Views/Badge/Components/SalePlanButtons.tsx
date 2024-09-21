@@ -10,13 +10,11 @@ import { t } from 'i18next';
 import { useWriteCall } from '@Hooks/useWriteCall';
 import { BADGE_CONFIG } from '../Config/BadgeConfig';
 import MuchoNFTFetcherAbi from '../Config/Abis/MuchoNFTFetcher.json';
-import MuchoNFTAbi from '../Config/Abis/MuchoNFT.json';
-import { Divider } from '@Views/Common/Card/Divider';
 
 export const btnClasses = '!w-fit px-4 rounded-sm !h-7 ml-auto !text-[18px]';
 
 
-export function SalePlanButtons({ data, showSaleText }: { data: IPlanDetailed, showSaleText: boolean }) {
+export function SalePlanButtons({ data }: { data: IPlanDetailed }) {
   const { address: account } = useUserAccount();
   let chainId = 42161;
   const badgeContextValue = useContext(BadgeContext);
@@ -38,7 +36,7 @@ export function SalePlanButtons({ data, showSaleText }: { data: IPlanDetailed, s
 
   //console.log("data", data);
   if (data.userBalance == 0) {
-    return <SalePlanButtonsNotSubscribed data={data} showSaleText={showSaleText} />
+    return <SalePlanButtonsNotSubscribed data={data} />
   }
 
   return <SalePlanButtonsSubscribed data={data} />
@@ -46,7 +44,7 @@ export function SalePlanButtons({ data, showSaleText }: { data: IPlanDetailed, s
 }
 
 
-function SalePlanButtonsNotSubscribed({ data, showSaleText }: { data: IPlanDetailed, showSaleText: boolean }) {
+function SalePlanButtonsNotSubscribed({ data }: { data: IPlanDetailed }) {
   const [state, setPageState] = useAtom(badgeAtom);
 
 
@@ -77,38 +75,6 @@ function SalePlanButtonsNotSubscribed({ data, showSaleText }: { data: IPlanDetai
       {priceNotStarted && <BlueBtn className={btnClasses} onClick={() => { }} isDisabled={true}>No disponible todavía</BlueBtn>}
       {priceEnded && <BlueBtn className={btnClasses} onClick={() => { }} isDisabled={true}>{t("airdrop.Sales ended!")}</BlueBtn>}
     </div>
-    {showSaleText && data.id == 1 && <><Divider />
-      <div className={`flex gap-5 mt-[20px] bold !w-full`}>
-        INCLUIDO CON TU COMPRA:
-      </div>
-      <div className={`flex gap-5 mt-[10px] !w-full`}>
-        Acceso a la membresía del Campamento DeFi (12 meses de todas las formaciones impartidas en el Campamento)
-      </div>
-      <div className={`flex gap-5 mt-[20px] !w-full`}>
-        NFT con poderes especiales
-      </div>
-    </>}
-    {showSaleText && data.id == 8 && <><Divider />
-      <div className={`flex gap-5 mt-[20px] bold !w-full text-[20px]`}>
-        El NFT incluye:
-      </div>
-      <div className={`flex gap-5 mt-[10px] !w-full bold pl-[20px] text-[18px]`}>
-        - Descuento en tu subscripción al Baby Scout Otoño o a la Membresía.
-      </div>
-      <div className={` flex gap-5 !w-full pl-[20px]`}>
-        El descuento será de 500 USDC si te subscribes antes del 16/09, y luego irá bajando cada minuto hasta el 20/09, cuando ya no habrá descuento.
-      </div>
-      <div className={` flex gap-5 mt-[15px] !w-full bold pl-[20px] text-[18px]`}>
-        - Airdrop del token mIndex, que te daremos por el mismo valor en USDC que estás comprando tu NFT.
-      </div>
-      <div className={` flex gap-5 mt-[15px] !w-full pl-[20px] text-[18px]`}>
-        - Más sorpresas y regalos inesperados que iremos dando
-      </div>
-      <div className={`flex gap-5 mt-[20px] !w-full text-[16px]`}>
-        Recuerda que este NFT valdrá sólo 1 USDC hasta el día 13/09. A partir de esa fecha, subirá progresivamente hasta los 100 USDC el día 16/09.
-        Después del 20/09, ya no podrás comprarlo.
-      </div>
-    </>}
   </>
   );
 }

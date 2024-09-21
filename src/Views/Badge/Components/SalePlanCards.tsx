@@ -7,6 +7,7 @@ import { useContext, useEffect, useState } from 'react';
 import { t } from 'i18next';
 import { SalePlanButtons } from './SalePlanButtons';
 import { IPlanDetailed } from '../badgeAtom';
+import { Divider } from '@Views/Common/Card/Divider';
 export const keyClasses = '!text-f15 !text-2 !text-left !py-[6px] !pl-[0px]';
 export const valueClasses = '!text-f15 text-1 !text-right !py-[6px] !pr-[0px]';
 export const tooltipKeyClasses = '!text-f14 !text-2 !text-left !py-1 !pl-[0px]';
@@ -56,8 +57,64 @@ const PlanCard = ({ data, isSalePage }: { data: IPlanDetailed, isSalePage: boole
         </>
       }
       bottom={
-        < div className="mt-5" >
-          {<SalePlanButtons data={data} showSaleText={isSalePage} />}
+        <div className="mt-5" >
+          <SalePlanButtons data={data} />
+          {isSalePage && data.id == 1 && <><Divider />
+            <div className={`flex gap-5 mt-[20px] bold !w-full`}>
+              INCLUIDO CON TU COMPRA:
+            </div>
+            <div className={`flex gap-5 mt-[10px] !w-full`}>
+              Acceso a la membresía del Campamento DeFi (12 meses de todas las formaciones impartidas en el Campamento)
+            </div>
+            <div className={`flex gap-5 mt-[20px] !w-full`}>
+              NFT con poderes especiales
+            </div>
+          </>}
+          {isSalePage && data.id == 8 && <><Divider />
+            <div className={`flex gap-5 mt-[20px] bold !w-full text-[20px]`}>
+              El NFT incluye:
+            </div>
+            <div className={`flex gap-5 mt-[10px] !w-full bold pl-[20px] text-[18px]`}>
+              - Descuento en tu subscripción al Baby Scout Otoño o a la Membresía.
+            </div>
+            <div className={` flex gap-5 !w-full pl-[20px]`}>
+              El descuento será de 500 USDC si te subscribes antes del 16/09, y luego irá bajando cada minuto hasta el 20/09, cuando ya no habrá descuento.
+            </div>
+            <div className={` flex gap-5 mt-[15px] !w-full bold pl-[20px] text-[18px]`}>
+              - Airdrop del token mIndex, que te daremos por el mismo valor en USDC que estás comprando tu NFT.
+            </div>
+            <div className={` flex gap-5 mt-[15px] !w-full pl-[20px] text-[18px]`}>
+              - Más sorpresas y regalos inesperados que iremos dando
+            </div>
+            <div className={`flex gap-5 mt-[20px] !w-full text-[16px]`}>
+              Recuerda que este NFT valdrá sólo 1 USDC hasta el día 13/09. A partir de esa fecha, subirá progresivamente hasta los 100 USDC el día 16/09.
+              Después del 20/09, ya no podrás comprarlo.
+            </div>
+          </>}
+          {isSalePage && data.id == 10 && <><Divider />
+            <div className={`flex gap-5 mt-[20px] bold !w-full text-[20px]`}>
+              El NFT te dará acceso al Laboratorio del Baby Scout del Campamento DeFi, donde podrás ver grabaciones de todas las sesiones con los "conejillos de indias" del Baby Scout, en sesiones 1 a 1 con Pepe Díaz, aplicando las estrategias que veremos en el curso:
+            </div>
+            <div className={` flex gap-5 !w-full pl-[20px] text-[18px] mt-[10px]`}>
+              - Verás a un conejillo montar una estrategia para multiplicar x4 los resultados de su cartera en un mercado alcista como el que estamos iniciando.
+            </div>
+            <div className={` flex gap-5 mt-[15px] !w-full pl-[20px] text-[18px]`}>
+              - Verás a otro conejillo montar una estrategia delta neutral.
+            </div>
+            <div className={` flex gap-5 mt-[15px] !w-full pl-[20px] text-[18px]`}>
+              - A otro intentar conseguir rentabilidades de 3 cifras con una de las estrategias que se explican dentro del Baby Scout.
+            </div>
+            <div className={` flex gap-5 mt-[15px] !w-full pl-[20px] text-[18px]`}>
+              - Y muchas estrategias más.
+            </div>
+            <div className={`bold flex gap-5 mt-[15px] !w-full text-[18px]`}>
+              Lo que pagues por acceder al “Laboratorio del Baby Scout” te sirve como pago a cuenta para cuando vuelvan a abrirse las puertas del Baby Scout o de la Membresía.
+            </div>
+            <div className={`flex gap-5 mt-[20px] !w-full text-[18px]`}>
+              Recuerda que estará a la venta pocos días, hasta el 27 de Septiembre.
+              Después de esa fecha, ya no podrás comprarlo.
+            </div>
+          </>}
         </div >
       }
     />
