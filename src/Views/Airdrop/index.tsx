@@ -77,15 +77,15 @@ export const AirdropUserPage = () => {
   return (
     <Styles>
       <AirdropModals data={data} />
-      <Section
+      {false && <Section
         Heading={<div className={topStyles}><EarnIcon className="mr-3" /><MuchoWhite width={120} />
           &nbsp;Airdrop</div>}
         Cards={getMuchoAirdropCards(data ? data : null)}
         subHeading={<><div className={descStyles}>{t("airdrop.hero")}</div></>}
-      />
+      />}
       {data && data.distributions && data.distributions.length > 0 &&
         <Section
-          Heading={<div className={topStyles}>{t("airdrop.Claim your airdrops")}</div>}
+          Heading={<div className={topStyles}><EarnIcon className="mr-3" />{t("airdrop.Claim your airdrops")}</div>}
           subHeading={<><div className={descStyles}>{t("airdrop.Claim here your obtained airdrops. Note once your airdrop is expired, we cannot guarantee you will be able to claim it!")}</div></>}
           Cards={rewCards}
         />
