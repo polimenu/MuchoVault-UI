@@ -84,13 +84,14 @@ export const AirdropUserPage = () => {
           Cards={rewCards}
         />
       }
-      {<Section
-        Heading={<div className={topStyles}><EarnIcon className="mr-3" /><MuchoWhite width={120} />
+      <Section
+        Heading={<div className={topStyles}>
+          <EarnIcon className="mr-3" /><MuchoWhite width={120} />
           &nbsp;Airdrop</div>}
         Cards={getMuchoAirdropCards(data ? data : null)}
         subHeading={<><div className={descStyles}>{t("airdrop.hero")}</div></>}
         className='mt-[100px]'
-      />}
+      />
     </Styles>
   );
 };
