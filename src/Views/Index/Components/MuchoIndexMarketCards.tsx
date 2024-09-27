@@ -250,11 +250,11 @@ const MuchoIndexMarketInfo = ({ data, price }: { data: IMuchoTokenMarketData, pr
               data={100 * data.depositFeeUser}
               unit={"%"}
               precision={2}
-              content={<span>
-                {t("index.DepositFeeReason")}
-                <br /><br />
-                <b>{t("index.FeeDistribution")}</b>
-              </span>}
+            /*content={<span>
+              {t("index.DepositFeeReason")}
+              <br /><br />
+              <b>{t("index.FeeDistribution")}</b>
+            </span>}*/
             />
           </div>
           ,
@@ -265,11 +265,11 @@ const MuchoIndexMarketInfo = ({ data, price }: { data: IMuchoTokenMarketData, pr
               data={100 * data.withdrawFeeUser}
               unit={"%"}
               precision={2}
-              content={<span>
-                {data.withdrawFeeUser < data.withdrawFee && t("index.PremiumFee", { standardFee: data.withdrawFee * 100 })}
-                <br /><br />
-                <b>{t("index.FeeDistribution")}</b>
-              </span>}
+            /*content={<span>
+              {data.withdrawFeeUser < data.withdrawFee && t("index.PremiumFee", { standardFee: data.withdrawFee * 100 })}
+              <br /><br />
+              <b>{t("index.FeeDistribution")}</b>
+            </span>}*/
             />
           </div>
           /*,
