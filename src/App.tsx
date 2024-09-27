@@ -27,6 +27,7 @@ import { PoolDetailPage } from '@Views/Pools/pool';
 import { NFTSale } from '@Views/Badge/sale';
 import { BadgeAdmin } from '@Views/Badge/admin';
 import { IndexAdminPage } from '@Views/Index/admin';
+import { AirdropCheckPage } from '@Views/Airdrop/check';
 
 if (import.meta.env.VITE_MODE === 'production') {
   //console.log(`import.meta.env.SENTRY_DSN: `, import.meta.env.VITE_SENTRY_DSN);
@@ -68,6 +69,7 @@ function App() {
         <Route path="/v2/admin/muchoprotocolgmx2" element={<V2AdminPage pageType={V2AdminContract.MuchoProtocolGmx} version={2} />} />
         {/*<Route path="/swap" element={<SwapPage />} />*/}
         <Route path="/airdrop" element={<AirdropPage />} />
+        <Route path="/airdrop/check" element={<AirdropCheckPage />} />
         <Route path="/airdrop/admin" element={<AdminFarmAirdropPage />} />
         <Route path="/ramp" element={<RampPage />} />
         <Route path="/rampb2b" element={<RampPageB2B />} />

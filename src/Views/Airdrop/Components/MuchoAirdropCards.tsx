@@ -65,6 +65,7 @@ const OldMuchoAirdropCard = ({ data }: { data: IOldAirdropData[] }) => {
 
   return (
     <Card
+
       top={
         <>
           <span className={underLineClass}>{t("airdrop.Finished mAirdrop Token Sales")}</span>

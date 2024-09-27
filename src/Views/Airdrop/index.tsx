@@ -68,7 +68,7 @@ export const AirdropPage = () => {
   );
 };
 
-export const AirdropUserPage = () => {
+const AirdropUserPage = () => {
   const [, setV2AdminData] = useAtom(writeV2AdminData);
   const data: IMuchoAirdropManagerData = useGetMuchoAirdrop();
   setV2AdminData(data);
