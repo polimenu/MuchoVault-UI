@@ -4581,19 +4581,19 @@
             ]
         },
         {
-            "address": "0x2bc048AcC8B737D6e3E2c2014b325191e5deDDb2",
+            "address": "0xCF519335C4e77F82eD0f91917ae963b3eD777E97",
             "assignations": [
                 {
                     "name": "Julio",
-                    "assignation": 0
+                    "assignation": 5
                 },
                 {
                     "name": "Agosto",
-                    "assignation": 0
+                    "assignation": 5
                 },
                 {
                     "name": "Septiembre",
-                    "assignation": 0
+                    "assignation": 5
                 },
                 {
                     "name": "Muchocerdo",
