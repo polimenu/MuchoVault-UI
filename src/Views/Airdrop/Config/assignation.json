@@ -364,15 +364,15 @@
             "assignations": [
                 {
                     "name": "Julio",
-                    "assignation": 0
+                    "assignation": 5
                 },
                 {
                     "name": "Agosto",
-                    "assignation": 0
+                    "assignation": 5
                 },
                 {
                     "name": "Septiembre",
-                    "assignation": 0
+                    "assignation": 5
                 },
                 {
                     "name": "Muchocerdo",
@@ -3766,15 +3766,15 @@
             "assignations": [
                 {
                     "name": "Julio",
-                    "assignation": 0
+                    "assignation": 5
                 },
                 {
                     "name": "Agosto",
-                    "assignation": 0
+                    "assignation": 5
                 },
                 {
                     "name": "Septiembre",
-                    "assignation": 0
+                    "assignation": 5
                 },
                 {
                     "name": "Muchocerdo",
@@ -4081,15 +4081,15 @@
             "assignations": [
                 {
                     "name": "Julio",
-                    "assignation": 0
+                    "assignation": 5
                 },
                 {
                     "name": "Agosto",
-                    "assignation": 0
+                    "assignation": 5
                 },
                 {
                     "name": "Septiembre",
-                    "assignation": 0
+                    "assignation": 5
                 },
                 {
                     "name": "Muchocerdo",
@@ -5140,6 +5140,27 @@
                 {
                     "name": "Septiembre",
                     "assignation": 0
+                },
+                {
+                    "name": "Muchocerdo",
+                    "assignation": 0
+                }
+            ]
+        },
+        {
+            "address": "0x846ce5af49172f356498481d8754999ec2e55b16",
+            "assignations": [
+                {
+                    "name": "Julio",
+                    "assignation": 5
+                },
+                {
+                    "name": "Agosto",
+                    "assignation": 5
+                },
+                {
+                    "name": "Septiembre",
+                    "assignation": 5
                 },
                 {
                     "name": "Muchocerdo",
