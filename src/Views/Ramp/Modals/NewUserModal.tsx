@@ -6,6 +6,7 @@ import { t } from "i18next";
 import { BlueBtn } from "@Views/Common/V2-Button";
 import { CountriesDropDown } from "../Components/CountriesDropDown";
 import { INewUserRequest, useCreateUser } from "../Hooks/user";
+import { filterStrangeCharacters } from "@Views/Common/Utils";
 
 export const NewUserModal = () => {
     const [email, setEmail] = useState('');
@@ -38,7 +39,7 @@ export const NewUserModal = () => {
             </div>
             <div className="flex whitespace-nowrap mt-5">
                 <BlueBtn
-                    onClick={() => { setReq({ email, first_name: firstName, last_name: lastName, country: country.country_code }); }}
+                    onClick={() => { setReq({ email, first_name: filterStrangeCharacters(firstName), last_name: filterStrangeCharacters(lastName), country: country.country_code }); }}
                     className="rounded"
                     isDisabled={state.txnLoading > 1}
                     isLoading={state.txnLoading === 1}

@@ -16,3 +16,8 @@ export const fromDateYYYYMMDDhhmmss = (dt: string) => {
 
 
 export const NULL_ACCOUNT = "0x0000000000000000000000000000000000000000";
+
+export const filterStrangeCharacters = (str: string) => {
+    //all latin letters (A-Z, a-z) and numbers (0-9) - special characters: ./,()'- # and space
+    return str.normalize("NFC").replaceAll(/[^ÁÉÍÓÚÀÈÌÒÙáéíóúàèìòùÏÜïüÑñA-Za-z0-9\.,/()'\-# ]/g, " ");
+}

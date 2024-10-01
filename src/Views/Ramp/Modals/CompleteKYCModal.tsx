@@ -8,6 +8,7 @@ import { BlueBtn } from "@Views/Common/V2-Button";
 import { IKYCRequest, useCreateKYC } from "../Hooks/kyc";
 import { SofDropDown } from "../Components/SofDropDown";
 import { CountriesDropDown } from "../Components/CountriesDropDown";
+import { filterStrangeCharacters } from "@Views/Common/Utils";
 
 export const CompleteKYCModal = () => {
     const [pageState] = useAtom(rampAtom);
@@ -57,7 +58,21 @@ export const CompleteKYCModal = () => {
             </div>
             <div className="flex whitespace-nowrap mt-5">
                 <BlueBtn
-                    onClick={() => { setKycReq({ first_name, last_name, address_line_1, address_line_2, post_code, city, country: country.country_code, date_of_birth, source_of_funds }); }}
+                    onClick={() => {
+                        const req = {
+                            first_name: filterStrangeCharacters(first_name),
+                            last_name: filterStrangeCharacters(last_name),
+                            address_line_1: filterStrangeCharacters(address_line_1),
+                            address_line_2: filterStrangeCharacters(address_line_2),
+                            post_code: filterStrangeCharacters(post_code),
+                            city: filterStrangeCharacters(city),
+                            country: country.country_code,
+                            date_of_birth,
+                            source_of_funds
+                        };
+                        //alert(JSON.stringify(req));
+                        setKycReq(req);
+                    }}
                     className="rounded"
                     isDisabled={state.txnLoading > 1}
                     isLoading={state.txnLoading === 1}
