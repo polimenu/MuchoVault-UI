@@ -121,6 +121,7 @@
 		"Airdrop distribution #": "Airdrop distribuido #"
 	},
 	"ramp": {
+		"IMPORTANT NOTE! TRANSFER MUST BE DONE FROM A BANK ACCOUNT WITH SAME NAME AS KYC. Otherwise will be rejected, or funds can be lost.": "¡AVISO IMPORTANTE! LA TRANSFERENCIA DEBE HACERSE DESDE UNA CUENTA AL MISMO NOMBRE QUE EL KYC. De lo contrario será rechazada y podrían perderse los fondos.",
 		"ScamWarning": "¡CUIDADO CON LAS ESTAFAS!",
 		"ScamWarning2": "   -No continues el proceso de KYC si no eres tú quien ha creado el usuario y la única persona con acceso al e-mail del mismo.",
 		"ScamWarning3": "   -No hagas caso a terceras personas que te indiquen que debas seguir este proceso.",

@@ -99,6 +99,7 @@ export const OnRampModal = () => {
             </div>
             <div className="mt-5" hidden={!visibleAccount}>
                 {inputAccount && inputAccount.iban && <>
+                    <div className="flex mt-5 text-f18 bold">{t("ramp.IMPORTANT NOTE! TRANSFER MUST BE DONE FROM A BANK ACCOUNT WITH SAME NAME AS KYC. Otherwise will be rejected, or funds can be lost.")} </div>
                     <div className="flex whitespace-nowrap mt-5 text-f18 strong">{t("ramp.Next step")}:</div>
                     <div className="flex mt-5 text-f16">{t("ramp.Transfer to the next account and your transaction will be processed shortly.", { amount: val, currency: currency })} </div>
                     <div className="flex mt-5 text-f16">{t("ramp.Note this bank account is a virtual IBAN generated with your name, so the receptor will be yourself, the funds will never be shared with other users.")} </div>
