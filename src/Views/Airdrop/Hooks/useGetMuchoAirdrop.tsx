@@ -270,6 +270,11 @@ export const useGetMuchoAirdrop = () => {
 
 
       distributions: (dist && dist.length > 0) ? dist.filter(d => config.RewardBlacklist.indexOf(d.airdropId) < 0).map(d => {
+        let expDate = Number(d.expirationDate);
+        //Ñapa
+        if ([7, 8].indexOf(Number(d.airdropId)) >= 0) {
+          expDate += 90 * 24 * 60 * 60;
+        }
         return {
           id: d.airdropId,
           token: d.token,
@@ -277,7 +282,7 @@ export const useGetMuchoAirdrop = () => {
           totalTokens: d.normalAmount / 10 ** d.decimals + d.bonusAmount / 10 ** d.decimals,
           userTokensByMAirdrop: d.normalAmount / 10 ** d.decimals,
           userTokensByNFT: d.bonusAmount / 10 ** d.decimals,
-          expirationDate: (new Date(d.expirationDate * 1000)),
+          expirationDate: (new Date(expDate * 1000)),
           precision: 2,
         }
 
