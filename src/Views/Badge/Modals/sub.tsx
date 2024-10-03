@@ -5,6 +5,7 @@ import { BlueBtn } from '@Views/Common/V2-Button';
 import { IPlanDetailed, badgeAtom } from '../badgeAtom';
 import { useTokenIdActionCalls } from '../Hooks/usePlanWriteCalls';
 import { useGlobal } from '@Contexts/Global';
+import { getEncryptedMetadata } from '../Hooks/useGetEncryptedMetadata';
 
 
 
@@ -41,25 +42,15 @@ const SubSub = ({ call, buttonTitle, isBulk }: { call: any, buttonTitle: string,
   const [email, setEmail] = useState("");
   const [discord, setDiscord] = useState("");
 
-  const { state } = useGlobal();
+  const { state, dispatch } = useGlobal();
   //const toastify = useToast();
-  const clickHandler = () => {
-    //const addrs = isBulk ? address.split("\n") : [address];
-    //console.log("addr", addrs);
-    /*for (var i in addrs) {
-      if (!Web3.utils.isAddress(addrs[i])) {
-        toastify({
-          type: 'error',
-          msg: `Please enter a valid address (${addrs[i]})`,
-          id: 'invalidAddress',
-        });
-        return false;
-      }
-    }*/
-    const metaData = { name, surname, email, discord }
-
-    //console.log("Calling"); console.log(planId); console.log(subscriber); console.log(call);
-    call(address, metaData);
+  const clickHandler = async () => {
+    const md = JSON.stringify({ name, surname, email, discord });
+    const encryptedMD = await getEncryptedMetadata(md, dispatch);
+    if (encryptedMD) {
+      //console.log("encryptedMD", encryptedMD);
+      return call(address, encryptedMD);
+    }
   }
 
 

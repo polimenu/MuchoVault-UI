@@ -215,7 +215,7 @@ export const useTokenIdActionCalls = (plan: IPlanDetailed) => {
 
   function subCall(address: string, metadata: any) {
     //console.log("Sending call");
-    writeCall(callBack, "subscribeTo", [address, JSON.stringify(metadata)]);
+    writeCall(callBack, "subscribeTo", [address, metadata]);
   }
 
   function renewCall(tokenId: number) {
