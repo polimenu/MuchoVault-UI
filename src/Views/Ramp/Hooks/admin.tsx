@@ -8,21 +8,116 @@ import { useAtom } from 'jotai';
 
 export const useGetRampAdminData = () => {
     const [rampStateAtom] = useAtom(rampAtom);
-    const rampAdminData: IRampAdminData = { KYCList: [] };
-
-    //Admin data
-    [rampAdminData.KYCList] = useGetKycList(rampStateAtom.sessionId);
-    [rampAdminData.KYBList] = useGetKybList(rampStateAtom.sessionId);
-    //[rampAdminData.OffRampList, rampAdminData.OnRampList] = useGetAllTransactionList(rampStateAtom.sessionId);
-    [rampAdminData.OffRampList] = useGetTransactionList(rampStateAtom.sessionId, "cryptoToFiat");
-    [rampAdminData.OnRampList] = useGetTransactionList(rampStateAtom.sessionId, "fiatToCrypto");
-
-    return useMemo(() => rampAdminData,
-        [rampStateAtom.sessionId, rampAdminData.KYCList, rampAdminData.KYBList, rampAdminData.OffRampList, rampAdminData.OnRampList]);
+    return useGetRampAdminDataByEmail(rampStateAtom.sessionId, "", false);
 }
 
 
-const useGetTransactionList = (session_id: string, type: string) => {
+export const useGetRampAdminDataByEmail = (sessionId: string, email: string, emailMandatory: boolean) => {
+    const rampAdminData: IRampAdminData = { KYCList: [] };
+    console.log("Getting all ramp admin data", sessionId, email);
+
+    //Admin data
+    [rampAdminData.KYCList] = useGetKycList(sessionId, email, emailMandatory);
+    [rampAdminData.KYBList] = useGetKybList(sessionId, email, emailMandatory);
+    //[rampAdminData.OffRampList, rampAdminData.OnRampList] = useGetAllTransactionList(rampStateAtom.sessionId);
+    [rampAdminData.OffRampList] = useGetTransactionList(sessionId, "cryptoToFiat", email, emailMandatory);
+    [rampAdminData.OnRampList] = useGetTransactionList(sessionId, "fiatToCrypto", email, emailMandatory);
+
+    return useMemo(() => rampAdminData, [sessionId
+        , email
+        , JSON.stringify(rampAdminData.KYCList)
+        , JSON.stringify(rampAdminData.KYBList)
+        , JSON.stringify(rampAdminData.OffRampList)
+        , JSON.stringify(rampAdminData.OnRampList)]);
+}
+
+
+export const useGetRampAdminUserData = (session_id: string, email: string) => {
+    const { dispatch } = useGlobal();
+    //console.log("OnRampList updated", onRampList);
+    const [data, setData] = useState<any>();
+
+    const save = (obj: any) => {
+        if (obj.status == "OK") {
+            console.log("Setting user data", obj);
+            setData(obj);
+        }
+    }
+
+    useEffect(() => {
+        if (email.indexOf("@") > 0) {
+            fetchFromRampApi(`/admin/user`, 'GET', { session_id, email }, save, dispatch);
+        }
+    }, [session_id, email]);
+
+    return [data];
+}
+
+export const useGetRampAdminUserBankAccounts = (session_id: string, email: string) => {
+    const { dispatch } = useGlobal();
+    //console.log("OnRampList updated", onRampList);
+    const [data, setData] = useState<any>();
+
+    const save = (obj: any) => {
+        if (obj.status == "OK") {
+            console.log("Setting user bank accounts", obj);
+            setData(obj);
+        }
+    }
+
+    useEffect(() => {
+        if (email.indexOf("@") > 0) {
+            fetchFromRampApi(`/admin/user/onramp/banks`, 'GET', { session_id, email }, save, dispatch);
+        }
+    }, [session_id, email]);
+
+    return [data];
+}
+
+export const useGetRampAdminUserSessions = (session_id: string, email: string) => {
+    const { dispatch } = useGlobal();
+    //console.log("OnRampList updated", onRampList);
+    const [data, setData] = useState<any>();
+
+    const save = (obj: any) => {
+        if (obj.status == "OK") {
+            console.log("Setting user sessions", obj);
+            setData(obj);
+        }
+    }
+
+    useEffect(() => {
+        if (email.indexOf("@") > 0) {
+            fetchFromRampApi(`/admin/sessions`, 'GET', { session_id, email }, save, dispatch);
+        }
+    }, [session_id, email]);
+
+    return [data];
+}
+
+export const useGetRampAdminUserApiTransactions = (session_id: string, user_session_id: string) => {
+    const { dispatch } = useGlobal();
+    //console.log("OnRampList updated", onRampList);
+    const [data, setData] = useState<any>();
+
+    const save = (obj: any) => {
+        if (obj.status == "OK") {
+            console.log("Setting user api transactions", obj);
+            setData(obj.apiTransactions);
+        }
+    }
+
+    useEffect(() => {
+        if (user_session_id.length > 0) {
+            fetchFromRampApi(`/admin/apiTransactions`, 'GET', { session_id, user_session_id }, save, dispatch);
+        }
+    }, [session_id, user_session_id]);
+
+    return [data];
+}
+
+
+const useGetTransactionList = (session_id: string, type: string, email: string, emailMandatory: boolean) => {
     const { dispatch } = useGlobal();
     //console.log("OnRampList updated", onRampList);
     const [trxList, setTrxList] = useState<IRampAdminTransaction[]>([]);
@@ -37,11 +132,14 @@ const useGetTransactionList = (session_id: string, type: string) => {
     }
 
     useEffect(() => {
-        fetchFromRampApi(`/admin/transactionsByType`, 'GET', { session_id, type }, save, dispatch);
-    }, [session_id]);
+        if (!emailMandatory || email) {
+            fetchFromRampApi(`/admin/transactionsByType`, 'GET', { session_id, type, email }, save, dispatch);
+        }
+    }, [session_id, type, email]);
 
     return [trxList];
 }
+
 
 export const useGetTransactionDataById = (session_id: string, transactionId: string) => {
     const { dispatch } = useGlobal();
@@ -65,7 +163,7 @@ export const useGetTransactionDataById = (session_id: string, transactionId: str
 }
 
 
-const useGetKycList = (session_id: string) => {
+const useGetKycList = (session_id: string, email: string, emailMandatory: boolean) => {
     const { dispatch } = useGlobal();
     const [kycList, setKycList] = useState<IRampKYC[]>([]);
 
@@ -78,14 +176,16 @@ const useGetKycList = (session_id: string) => {
     }
 
     useEffect(() => {
-        fetchFromRampApi(`/admin/kycs`, 'GET', { session_id }, save, dispatch);
-    }, [session_id]);
+        if (!emailMandatory || email) {
+            fetchFromRampApi(`/admin/kycs`, 'GET', { session_id, email }, save, dispatch);
+        }
+    }, [session_id, email]);
 
     return [kycList];
 }
 
 
-const useGetKybList = (session_id: string) => {
+const useGetKybList = (session_id: string, email: string, emailMandatory: boolean) => {
     const { dispatch } = useGlobal();
     const [kybList, setKybList] = useState<IRampKYB[]>([]);
 
@@ -98,8 +198,10 @@ const useGetKybList = (session_id: string) => {
     }
 
     useEffect(() => {
-        fetchFromRampApi(`/admin/kybs`, 'GET', { session_id }, save, dispatch);
-    }, [session_id]);
+        if (!emailMandatory || email) {
+            fetchFromRampApi(`/admin/kybs`, 'GET', { session_id, email }, save, dispatch);
+        }
+    }, [session_id, email]);
 
     return [kybList];
 }

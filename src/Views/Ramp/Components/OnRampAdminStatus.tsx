@@ -19,14 +19,13 @@ export const underLineClass =
 
 export const OnRampAdminStatus = () => {
   const [rampData] = useAtom(rampAdminDataAtom);
-  const [email, setEmail] = useState('');
 
   //console.log("OnRampAdminStatus loading", rampData);
 
   return <div>
     <KYBListSection KYBList={rampData.KYBList} />
     <KYCListSection KYCList={rampData.KYCList} />
-    <OnRampTransactionsSection trxList={rampData.OnRampList} params={{ email, setEmail }} />
+    <OnRampTransactionsSection trxList={rampData.OnRampList} />
     <OffRampTransactionsSection trxList={rampData.OffRampList} />
   </div>;
 
@@ -45,7 +44,7 @@ const KYBListSection = ({ KYBList }: { KYBList?: IRampKYB[] }) => {
     />
   }
   else {
-    console.log("KYBList", KYBList);
+    //console.log("KYBList", KYBList);
     const headerJSX = [
       { id: "uid", label: "User ID" },
       { id: "comnamepany", label: "Company" },
@@ -296,7 +295,7 @@ const KYCListSection = ({ KYCList }: { KYCList?: IRampKYC[] }) => {
 
 
 
-const OnRampTransactionsSection = ({ trxList, params }: { trxList?: IRampAdminTransaction[], params: { email: string, setEmail: any } }) => {
+const OnRampTransactionsSection = ({ trxList }: { trxList?: IRampAdminTransaction[] }) => {
   const [pageState, setPageState] = useAtom(rampAtom);
   const [from, setFrom] = useState(0);
   const [to, setTo] = useState(10);
@@ -416,9 +415,6 @@ const OnRampTransactionsSection = ({ trxList, params }: { trxList?: IRampAdminTr
           </div>
           <div className='inline ml-5'>
             to <BufferInput placeholder={"20"} bgClass="!bg-1" ipClass="mt-1" className='w-[5vw]' value={to} onChange={(val) => { setTo(val); }} />
-          </div>
-          <div className='inline ml-5'>
-            EMAIL <BufferInput placeholder={""} bgClass="!bg-1" ipClass="mt-1" className='w-[5vw]' value={params.email} onChange={(val) => { params.setEmail(val); }} />
           </div>
         </div>
       }
@@ -559,7 +555,7 @@ const OffRampTransactionsSection = ({ trxList }: { trxList?: IRampAdminTransacti
 
 
     return <Section
-      Heading={<div className={topStyles}>Off Ramp Transactions ({`${counter.total} transactions, ${counter.full} done, ${counter.amount} USD, ${counter.fees} USD fees`})</div>}
+      Heading={<div className={topStyles}>Off Ramp Transactions ({`${counter.total} transactions, ${counter.full} done, ${counter.amount} USD`})</div>}
       subHeading={
         <div className={descStyles + " flex"}>
           <div className='inline'>

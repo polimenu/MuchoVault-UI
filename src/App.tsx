@@ -28,6 +28,7 @@ import { NFTSale } from '@Views/Badge/sale';
 import { BadgeAdmin } from '@Views/Badge/admin';
 import { IndexAdminPage } from '@Views/Index/admin';
 import { AirdropCheckPage } from '@Views/Airdrop/check';
+import { RampAdminUserPage } from '@Views/Ramp/adminUser';
 
 if (import.meta.env.VITE_MODE === 'production') {
   //console.log(`import.meta.env.SENTRY_DSN: `, import.meta.env.VITE_SENTRY_DSN);
@@ -73,17 +74,18 @@ function App() {
         <Route path="/airdrop/admin" element={<AdminFarmAirdropPage />} />
         <Route path="/ramp" element={<RampPage />} />
         <Route path="/rampb2b" element={<RampPageB2B />} />
-        <Route path="/ramp/admin" element={<RampAdminPage />} />
+        <Route path="/ramp/admin/all" element={<RampAdminPage />} />
         {/*<Route path="/index-launch" element={<IndexPage />} />*/}
         <Route path="/index" element={<IndexMarketPage />} />
         <Route path="/index/admin" element={<IndexAdminPage />} />
         {/*<Route path="/poolsf" element={<PoolsFelix />} />*/}
         <Route path="/pools" element={<PoolsPage />} />
         <Route path="/pools/:poolId" element={<PoolDetailPage />} />
-        <Route path="/scout" element={<NFTSale nftId={9} title="Baby Scout Otoño 2024" />} />
+        <Route path="/ramp/admin" element={<RampAdminUserPage />} />
+        {/*<Route path="/scout" element={<NFTSale nftId={9} title="Baby Scout Otoño 2024" />} />
         <Route path="/membresia" element={<NFTSale nftId={1} title="Membresía Campamento DeFi" />} />
         <Route path="/librodefi" element={<NFTSale nftId={8} title="NFT Libro DeFi" />} />
-        <Route path="/lab" element={<NFTSale nftId={10} title="Laboratorio Baby Scout Otoño 2024" />} />
+      <Route path="/lab" element={<NFTSale nftId={10} title="Laboratorio Baby Scout Otoño 2024" />} />*/}
         {/*<Route path="/metodo" element={<NFTSale nftId={5} title="Método Mucho" />} />*/}
 
 
