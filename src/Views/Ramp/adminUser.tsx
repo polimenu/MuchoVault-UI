@@ -17,6 +17,7 @@ import { OnRampAdminJsonDetails } from './Components/OnRampAdminJsonDetails';
 import BufferInput from '@Views/Common/BufferInput';
 import { BlueBtn } from '@Views/Common/V2-Button';
 import { OnRampAdminStatus } from './Components/OnRampAdminStatus';
+import { RampModals } from './Modals';
 
 const Styles = styled.div`
   width: min(1300px, 100%);
@@ -84,6 +85,7 @@ export const RampAdminUserPage = () => {
             <div className="root w-[100vw]">
               <main className="content-drawer">
                 <Styles>
+                  <RampModals />
                   <Section
                     Heading={<div className={topStyles}>On & Off Ramp Admin - User Details</div>}
                     subHeading={<div className={descStyles}></div>}
