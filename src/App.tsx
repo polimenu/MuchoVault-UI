@@ -29,6 +29,7 @@ import { BadgeAdmin } from '@Views/Badge/admin';
 import { IndexAdminPage } from '@Views/Index/admin';
 import { AirdropCheckPage } from '@Views/Airdrop/check';
 import { RampAdminUserPage } from '@Views/Ramp/adminUser';
+import { UserAdminPage } from '@Views/Users';
 
 if (import.meta.env.VITE_MODE === 'production') {
   //console.log(`import.meta.env.SENTRY_DSN: `, import.meta.env.VITE_SENTRY_DSN);
@@ -82,6 +83,7 @@ function App() {
         <Route path="/pools" element={<PoolsPage />} />
         <Route path="/pools/:poolId" element={<PoolDetailPage />} />
         <Route path="/ramp/admin" element={<RampAdminUserPage />} />
+        <Route path="/users/admin" element={<UserAdminPage />} />
         {/*<Route path="/scout" element={<NFTSale nftId={9} title="Baby Scout Otoño 2024" />} />
         <Route path="/membresia" element={<NFTSale nftId={1} title="Membresía Campamento DeFi" />} />
         <Route path="/librodefi" element={<NFTSale nftId={8} title="NFT Libro DeFi" />} />

@@ -15,6 +15,7 @@ export const useGetRampAdminData = () => {
 export const useGetRampAdminDataByEmail = (sessionId: string, email: string, emailMandatory: boolean) => {
     const rampAdminData: IRampAdminData = { KYCList: [] };
     console.log("Getting all ramp admin data", sessionId, email);
+    const z = 2;
 
     //Admin data
     [rampAdminData.KYCList] = useGetKycList(sessionId, email, emailMandatory);
