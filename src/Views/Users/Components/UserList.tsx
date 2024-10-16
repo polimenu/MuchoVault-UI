@@ -8,7 +8,9 @@ import BufferInput from "@Views/Common/BufferInput";
 import UserTable from "./UserTable";
 import { BlueBtn } from "@Views/Common/V2-Button";
 import { btnClasses } from "@Views/Earn/Components/EarnButtons";
-import { updateLanguageServiceSourceFile } from "typescript";
+import { TableAligner } from "@Views/Common/TableAligner";
+import { tooltipKeyClasses, tooltipValueClasses, wrapperClasses } from "@Views/Earn/Components/EarnCards";
+import { formatDate } from "@Views/Ramp/Utils";
 
 export const UserList = ({ allUserList }: { allUserList?: ILead[] }) => {
     const [pageState, setPageState] = useAtom(usersAtom);
@@ -70,13 +72,40 @@ export const UserList = ({ allUserList }: { allUserList?: ILead[] }) => {
                 name: (t.name ?? " ") + " " + (t.surname ?? " "),
                 email: t.email,
                 mailStatus: t.subscriptionStatus,
-                mailSubscribed: t.subscriptionDate ? t.subscriptionDate.toString() : " ",
+                mailSubscribed: formatDate(t.subscriptionTS),
                 mailUnsubscribed: t.unsubscriptionDate ? t.unsubscriptionDate.toString() : " ",
                 numNfts: t.plans ? t.plans.length : 0,
-                nfts: t.plans ? t.plans.map(p => p.planName).join(", ") : " "
+                nfts: t.plans ? t.plans.map(p => <div className="!justify-start clear-right" key={`planUser_${p.nftAddress}_${t.email}`}>
+                    <Display className="!justify-start" data={p.planName} content={<span>
+                        <TableAligner
+                            keysName={["NFT", "Start", "Expiration"]}
+                            keyStyle={tooltipKeyClasses}
+                            valueStyle={tooltipValueClasses}
+                            values={[<div className={`${wrapperClasses}`}>
+                                <Display
+                                    className="!justify-end"
+                                    data={p.planName}
+                                />
+                            </div>,
+                            <div className={`${wrapperClasses}`}>
+                                <Display
+                                    className="!justify-end"
+                                    data={formatDate(p.startTimeTs)}
+                                />
+                            </div>,
+                            <div className={`${wrapperClasses}`}>
+                                <Display
+                                    className="!justify-end"
+                                    data={formatDate(p.expirationTimeTs)}
+                                />
+                            </div>,]}
+                        ></TableAligner>
+                    </span>} />
+                </div>) : ""
+                //console.log("dashboardData", dashboardData);
             }
         });
-        //console.log("dashboardData", dashboardData);
+
 
         interface ICellContent {
             content: ReactNode[];
@@ -121,7 +150,7 @@ export const UserList = ({ allUserList }: { allUserList?: ILead[] }) => {
                 content={[
                     <Display
                         data={currentData}
-                        className="!justify-start"
+                        className="!justify-start !block"
                     />,
                 ]}
             />;
@@ -145,7 +174,7 @@ export const UserList = ({ allUserList }: { allUserList?: ILead[] }) => {
                         </div>
                     </div>
                     <div className={descStyles + " flex mt-5"}>
-                        {uniquePlans.map(p => <BlueBtn onClick={() => {
+                        {uniquePlans.map(p => <BlueBtn key={`btn_${p?.replaceAll(" ", "")}`} onClick={() => {
                             if (plans.indexOf(p) >= 0) {
                                 setPlans(plans.filter(pl => pl != p));
                             }
@@ -170,7 +199,7 @@ export const UserList = ({ allUserList }: { allUserList?: ILead[] }) => {
                         /*const tid = slicedUserList[idx].transaction_id;
                         setPageState({ ...pageState, isModalOpen: true, activeModal: "ADMIN_TRX_DETAIL", auxModalData: { tid } })*/
                     }}
-                    widths={["15%", "20%", "10%", "15%", "15%", "5%", "20%"]}
+                    widths={["15%", "15%", "10%", "15%", "10%", "5%", "30%"]}
                     shouldShowMobile={true}
                     from={from}
                     to={to}

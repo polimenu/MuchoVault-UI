@@ -24,5 +24,11 @@ export const tokenBeautify = (token: string): string => {
 
 
 export const formatDate = (ts: number) => {
-    return (new Date(ts)).toISOString().replaceAll("T", " ").replaceAll("Z", " ").substring(0, 19);
+    try {
+        return (new Date(Number(ts))).toISOString().replaceAll("T", " ").replaceAll("Z", " ").substring(0, 19);
+    }
+    catch (e) {
+        //console.log("Imposible to parse ts", ts);
+        return "";
+    }
 }

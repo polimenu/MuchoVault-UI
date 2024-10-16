@@ -10,8 +10,20 @@ export const useGetAllLeads = () => {
     const save = (obj: any) => {
         if (obj.status == "OK" && obj.leads) {
             //console.log("Setting latest price", obj);
-            setLeads(obj.leads);
-            //console.log("Set latest price", latestPrice);
+            const lds = obj.leads.map(l => {
+                return {
+                    ...l,
+                    plans: l.plans ? l.plans.map(p => {
+                        return {
+                            ...p,
+                            startTime: new Date(Date.parse(p.startTime)),
+                            expirationTime: new Date(Date.parse(p.expirationTime))
+                        }
+                    }) : undefined
+                }
+            })
+            console.log("leads set", lds);
+            setLeads(lds);
         }
     }
 
