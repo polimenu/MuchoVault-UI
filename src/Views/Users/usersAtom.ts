@@ -1,5 +1,11 @@
 import { atom } from 'jotai';
 
+export interface ILeadStatPeriod {
+    totalLeads: number;
+    totalRevenue: number;
+    revPerLead: number;
+}
+
 export interface ILead {
     email: string;
     moosendId: string;
@@ -12,6 +18,7 @@ export interface ILead {
     lastUpdate: Date;
     lastUpdateTs: number;
     plans?: ILeadPlan[];
+    payments?: IPayment[];
 }
 
 export interface ILeadPlan {
@@ -23,6 +30,19 @@ export interface ILeadPlan {
     expirationTime: Date;
     startTimeTs: number;
     expirationTimeTs: number;
+}
+
+export interface IPayment {
+    gross: number;
+    tpv: number;
+    net: number;
+    currency: string;
+    date: string;
+    paymentType: string;
+    product: string;
+    paymentAccount: string;
+    paymentId: string;
+    address: string;
 }
 
 export interface IUserAtom {

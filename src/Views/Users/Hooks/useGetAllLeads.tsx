@@ -13,6 +13,7 @@ export const useGetAllLeads = () => {
             const lds = obj.leads.map(l => {
                 return {
                     ...l,
+                    subscriptionDate: l.subscriptionTS ? (new Date(l.subscriptionTS)) : "",
                     plans: l.plans ? l.plans.map(p => {
                         return {
                             ...p,

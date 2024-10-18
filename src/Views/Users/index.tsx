@@ -13,6 +13,7 @@ import { OnlyNFT } from '@Views/Common/OnlyNFT';
 import { Chain } from 'wagmi';
 import { useGetAllLeads } from './Hooks/useGetAllLeads';
 import { UserList } from './Components/UserList';
+import { useGetLeadStats } from './Hooks/useGetLeadStats';
 
 const Styles = styled.div`
   width: min(1300px, 100%);
@@ -56,6 +57,7 @@ export const UserAdminPage = () => {
   const { activeChain } = useActiveChain();
   const [state,] = useAtom(usersAtom);
   const [allLeads] = useGetAllLeads();
+  //const [stats] = useGetLeadStats(allLeads);
 
   return (
     <>
