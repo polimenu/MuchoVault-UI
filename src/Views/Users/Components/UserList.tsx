@@ -84,7 +84,7 @@ export const UserList = ({ allUserList }: { allUserList?: ILead[] }) => {
                 const cur = (currencyConversion[c.currency] > 0) ? "eur" : c.currency;
                 const exch = (currencyConversion[c.currency] > 0) ? currencyConversion[c.currency] : 1;
                 const el = p.find(pc => pc.currency == cur);
-                const net = Number(c.net.toString().replace(",", ".")) * exch;
+                const net = (c.net ?? 0) * exch;
                 //console.log("ITERATION", c.currency, p.length, el);
 
                 if (el) {
