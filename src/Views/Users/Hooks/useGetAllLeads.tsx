@@ -17,13 +17,13 @@ export const useGetAllLeads = () => {
                     plans: l.plans ? l.plans.map(p => {
                         return {
                             ...p,
-                            startTime: new Date(Date.parse(p.startTime)),
-                            expirationTime: new Date(Date.parse(p.expirationTime))
+                            startTime: new Date(p.startTimeTs * 1000),
+                            expirationTime: new Date(p.expirationTimeTs * 1000)
                         }
                     }) : undefined
                 }
             })
-            console.log("leads set", lds);
+            //console.log("leads set", lds);
             setLeads(lds);
         }
     }

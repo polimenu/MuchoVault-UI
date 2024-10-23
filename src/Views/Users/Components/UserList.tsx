@@ -129,13 +129,13 @@ export const UserList = ({ allUserList }: { allUserList?: ILead[] }) => {
                             <div className={`${wrapperClasses}`}>
                                 <Display
                                     className="!justify-end"
-                                    data={formatDate(p.startTimeTs)}
+                                    data={formatDate(p.startTimeTs * 1000)}
                                 />
                             </div>,
                             <div className={`${wrapperClasses}`}>
                                 <Display
                                     className="!justify-end"
-                                    data={formatDate(p.expirationTimeTs)}
+                                    data={formatDate(p.expirationTimeTs * 1000)}
                                 />
                             </div>,]}
                         ></TableAligner>
