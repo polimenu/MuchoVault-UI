@@ -19,6 +19,7 @@ export interface ILead {
     lastUpdateTs: number;
     plans?: ILeadPlan[];
     payments?: IPayment[];
+    subscriptions?: IUserSubscription[];
 }
 
 export interface ILeadPlan {
@@ -55,3 +56,11 @@ export const usersAtom = atom<IUserAtom>({
     isModalOpen: false,
     activeModal: "",
 });
+
+export interface IUserSubscription {
+    productCode: string;
+    period: {
+        end: number;
+        start: number;
+    }
+}

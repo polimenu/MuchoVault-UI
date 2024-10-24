@@ -16,10 +16,29 @@ export const UserList = ({ allUserList }: { allUserList?: ILead[] }) => {
     const [currencyConversion, setCurrencyConversion] = useState<{ [currency: string]: number }>({});
     const [from, setFrom] = useState(0);
     const [to, setTo] = useState(10);
-
+    /*const [nftStartDate, setNftStartDate] = useState("Loading...");
+    const [nftExpDate, setNftExpDate] = useState("Loading...");
+    const [tokenIdShowing, setTokenIdShowing] = useState({ tokenId: 0, nftAddress: "" });*/
     const [email, setEmail] = useState("");
+    const [name, setName] = useState("");
     const [plans, setPlans] = useState<string[]>([])
-    let userList = (email && allUserList) ? allUserList.filter(l => l.email.toLowerCase().indexOf(email.toLocaleLowerCase()) >= 0) : allUserList;
+
+    /*useEffect(() => {
+        if (tokenIdShowing.tokenId > 0 && tokenIdShowing.nftAddress) {
+            console.log("finding token id data", tokenIdShowing.tokenId, tokenIdShowing.nftAddress);
+            setNftStartDate("Hola");
+            setNftExpDate("Adios");
+        }
+
+    }, [JSON.stringify(tokenIdShowing)]);*/
+
+    let userList = allUserList;
+    if (userList && email) {
+        userList = userList.filter(l => l.email.toLowerCase().indexOf(email.toLocaleLowerCase()) >= 0);
+    }
+    if (userList && name) {
+        userList = userList.filter(l => ((l.name ?? "") + " " + (l.surname ?? "")).toLowerCase().indexOf(name.toLocaleLowerCase()) >= 0);
+    }
     if (userList && plans.length > 0) {
         userList = userList.filter(u => {
             if (u.plans) {
@@ -50,7 +69,7 @@ export const UserList = ({ allUserList }: { allUserList?: ILead[] }) => {
     //console.log("uniquePlans", uniquePlans);
     //console.log("userList", userList?.length);
     //console.log("allUserList", allUserList?.length);
-    console.log("plans", plans);
+    //console.log("plans", plans);
 
     const topStyles = 'mx-3 text-f22';
     const descStyles = 'mx-3';
@@ -65,13 +84,14 @@ export const UserList = ({ allUserList }: { allUserList?: ILead[] }) => {
     else {
         const headerJSX = [
             { id: "name", label: "Name" },
-            { id: "email", label: "E-mail" },
-            { id: "mailStatus", label: "Newsletter" },
-            { id: "mailSubscribed", label: "Last Subscribed" },
-            { id: "mailUnsubscribed", label: "Last Unsubscribed" },
-            { id: "numNfts", label: "#NFTs" },
+            { id: "email", label: "E-mail", resume: 25 },
+            { id: "mailStatus", label: "Newsletter", orderBy: "mailStatusPlain" },
+            //{ id: "mailSubscribed", label: "Last Subscribed" },
+            //{ id: "mailUnsubscribed", label: "Last Unsubscribed" },
             { id: "paid", label: "Paid", orderBy: "paidPlain" },
-            { id: "nfts", label: "NFTs" },
+            { id: "prods", label: "Products", classes: "text-f12" },
+            //{ id: "numNfts", label: "#NFTs" },
+            { id: "nfts", label: "NFTs", classes: "text-f12 !block" },
         ];
 
 
@@ -80,7 +100,7 @@ export const UserList = ({ allUserList }: { allUserList?: ILead[] }) => {
         //const slicedUserList = userList.slice(from, to);
         const dashboardData = userList.map(t => {
 
-            const paymentsGr: { currency: string; net: number }[] = t.payments ? t.payments.reduce((p, c, i, a) => {
+            const paymentsGr: { currency: string; net: number }[] = t.payments ? t.payments.filter(p => p).reduce((p, c, i, a) => {
                 const cur = (currencyConversion[c.currency] > 0) ? "eur" : c.currency;
                 const exch = (currencyConversion[c.currency] > 0) ? currencyConversion[c.currency] : 1;
                 const el = p.find(pc => pc.currency == cur);
@@ -100,17 +120,62 @@ export const UserList = ({ allUserList }: { allUserList?: ILead[] }) => {
             return {
                 name: (t.name ?? " ") + " " + (t.surname ?? " "),
                 email: t.email,
-                mailStatus: t.subscriptionStatus,
-                mailSubscribed: formatDate(t.subscriptionTS),
-                mailUnsubscribed: t.unsubscriptionDate ? t.unsubscriptionDate.toString() : " ",
-                numNfts: t.plans ? t.plans.length : 0,
-                paid: paymentsGr ? (paymentsGr.map(el => <div className="!justify-start clear-right" key={`paymentUser_${el.currency}_${t.email}`}>
+                mailStatusPlain: t.subscriptionStatus,
+                mailStatus: <div className="!justify-start">
+                    <Display className="!justify-start" data={t.subscriptionStatus} content={<span>
+                        <TableAligner
+                            keysName={["Last Subscribed", "Last Unsubscribed"]}
+                            keyStyle={tooltipKeyClasses}
+                            valueStyle={tooltipValueClasses}
+                            values={[<div className={`${wrapperClasses}`}>
+                                <Display
+                                    className="!justify-end"
+                                    data={formatDate(t.subscriptionTS)}
+                                />
+                            </div>,
+                            <div className={`${wrapperClasses}`}>
+                                <Display
+                                    className="!justify-end"
+                                    data={t.unsubscriptionDate ? t.unsubscriptionDate.toString() : ""}
+                                />
+                            </div>]}
+                        />
+                    </span>} />
+                </div>,
+                //mailSubscribed: formatDate(t.subscriptionTS),
+                //mailUnsubscribed: t.unsubscriptionDate ? t.unsubscriptionDate.toString() : " ",
+                //numNfts: t.plans ? Math.round(t.plans.length).toString() : "0",
+                paid: paymentsGr ? (paymentsGr.map(el => <div className="!justify-start" key={`paymentUser_${el.currency}_${t.email}`}>
                     <Display className="!justify-start" data={el.net} unit={el.currency} precision={0} /></div>)) : "0",
                 paidPlain: paymentsGr ? paymentsGr.map(el => el.net).reduce((p, c) => p + c, 0) : 0,
-                nfts: t.plans ? t.plans.map(p => <div className="!justify-start clear-right" key={`planUser_${p.nftAddress}_${t.email}`}>
-                    <Display className="!justify-start" data={p.planName} content={<span>
+                prods: t.subscriptions ? t.subscriptions.map(s => <div className="!justify-start" key={`subscriptionUser_${s.productCode}_${t.email}`}>
+                    <Display className="!justify-start" data={s.productCode} content={<span>
                         <TableAligner
-                            keysName={["NFT", "Token ID", "Start", "Expiration"]}
+                            keysName={["Start", "Expiration"]}
+                            keyStyle={tooltipKeyClasses}
+                            valueStyle={tooltipValueClasses}
+                            values={[<div className={`${wrapperClasses}`}>
+                                <Display
+                                    className="!justify-end"
+                                    data={s.period && s.period.start ? formatDate(s.period.start * 1000) : "?"}
+                                />
+                            </div>,
+                            <div className={`${wrapperClasses}`}>
+                                <Display
+                                    className="!justify-end"
+                                    data={s.period && s.period.end ? formatDate(s.period.end * 1000) : "?"}
+                                />
+                            </div>]}
+                        ></TableAligner>
+                    </span>} />
+                </div>) : "",
+                nfts: t.plans ? t.plans.map(p => <div className="!justify-start clear-right" key={`planUser_${p.nftAddress}_${t.email}`}>
+                    <Display className="!justify-start" data={p.planName} onOpen={() => {
+                        //setTokenIdShowing({ tokenId: p.tokenId, nftAddress: p.nftAddress });
+                        //return true;
+                    }} content={<span>
+                        <TableAligner
+                            keysName={["NFT", "Token ID", "Address"/*, "Start", "Expiration"*/]}
                             keyStyle={tooltipKeyClasses}
                             valueStyle={tooltipValueClasses}
                             values={[<div className={`${wrapperClasses}`}>
@@ -128,16 +193,23 @@ export const UserList = ({ allUserList }: { allUserList?: ILead[] }) => {
                             </div>,
                             <div className={`${wrapperClasses}`}>
                                 <Display
+                                    className="!justify-end text-f12"
+                                    data={p.userAddress}
+                                    precision={0}
+                                />
+                            </div>, {/*,
+                            <div className={`${wrapperClasses}`}>
+                                <Display
                                     className="!justify-end"
-                                    data={formatDate(p.startTimeTs * 1000)}
+                                    data={nftStartDate}
                                 />
                             </div>,
                             <div className={`${wrapperClasses}`}>
                                 <Display
                                     className="!justify-end"
-                                    data={formatDate(p.expirationTimeTs * 1000)}
+                                    data={nftExpDate}
                                 />
-                            </div>,]}
+                    </div>,*/}]}
                         ></TableAligner>
                     </span>} />
                 </div>) : ""
@@ -191,13 +263,18 @@ export const UserList = ({ allUserList }: { allUserList?: ILead[] }) => {
             sortedData: typeof dashboardData
         ) => {
             //console.log("Showing", row, col, sortedData)
-            const currentData = sortedData && sortedData[row] ? sortedData[row][headerJSX[col].id] : "";
+            const data = sortedData && sortedData[row] ? sortedData[row][headerJSX[col].id] : "";
+            let currentData = data;
+            if (headerJSX[col].resume && currentData.length > headerJSX[col].resume) {
+                currentData = currentData.substring(0, Math.round(headerJSX[col].resume / 2)) + "..." + currentData.substring(currentData.length - Math.round(headerJSX[col].resume / 2 - 1));
+            }
             //console.log("currentData", currentData);
             return <CellContent
                 content={[
                     <Display
                         data={currentData}
-                        className="!justify-start !block"
+                        content={headerJSX[col].resume && data != currentData && data}
+                        className={`!justify-start !left ${headerJSX[col].classes ?? ""}`}
                     />,
                 ]}
             />;
@@ -205,8 +282,8 @@ export const UserList = ({ allUserList }: { allUserList?: ILead[] }) => {
 
         const revPerLead = counter.totalLeads ? counter.totalNet / counter.totalLeads : 0;
         const revPerCustomer = counter.totalCustomers ? counter.totalNet / counter.totalCustomers : 0;
-        console.log("revPerLead", revPerLead)
-        console.log("revPerCustomer", revPerCustomer)
+        //console.log("revPerLead", revPerLead)
+        //console.log("revPerCustomer", revPerCustomer)
 
         return <Section
             Heading={<>
@@ -239,6 +316,10 @@ export const UserList = ({ allUserList }: { allUserList?: ILead[] }) => {
                             Email:
                             <BufferInput placeholder={"a@a.com"} bgClass="!bg-1" ipClass="mt-1" className='w-[15vw]' value={email} onChange={(val) => { setEmail(val) }} />
                         </div>
+                        <div className='inline ml-5'>
+                            Name:
+                            <BufferInput placeholder={"Pepe Diaz"} bgClass="!bg-1" ipClass="mt-1" className='w-[15vw]' value={name} onChange={(val) => { setName(val) }} />
+                        </div>
                     </div>
                     <div className={descStyles + " flex mt-5"}>
                         Filter by NFT:&nbsp;&nbsp;&nbsp;&nbsp;
@@ -267,7 +348,7 @@ export const UserList = ({ allUserList }: { allUserList?: ILead[] }) => {
                         /*const tid = slicedUserList[idx].transaction_id;
                         setPageState({ ...pageState, isModalOpen: true, activeModal: "ADMIN_TRX_DETAIL", auxModalData: { tid } })*/
                     }}
-                    widths={["15%", "15%", "10%", "15%", "10%", "5%", "5%", "25%"]}
+                    widths={["25%", "25%", "10%", "10%", "10%", "20%"]}
                     shouldShowMobile={true}
                     from={from}
                     to={to}

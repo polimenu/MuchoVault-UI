@@ -6,13 +6,15 @@ interface Itooltip {
   children?: any;
   followCursor?: boolean;
   placement?: "top" | "bottom" | "left" | "right";
+  onOpen?: (event: React.SyntheticEvent) => void;
 }
 const NumberTooltip: React.FC<Itooltip> = ({
   content,
   children,
   className,
   followCursor,
-  placement
+  placement,
+  onOpen
 }) => {
   const tooltipStyles = {
     tooltip: "tooltip " + className,
@@ -29,6 +31,7 @@ const NumberTooltip: React.FC<Itooltip> = ({
       classes={tooltipStyles}
       enterTouchDelay={0}
       leaveTouchDelay={10000}
+      onOpen={onOpen}
 
     // disableHoverListener={window.innerWidth < 600}
     >

@@ -14,10 +14,11 @@ interface IDisplayProp {
   content?: ReactNode;
   placement?: 'top' | 'bottom';
   colored?: boolean;
+  onOpen?: (event: React.SyntheticEvent) => void;
 }
 
 export const underLineClass =
-  'underline underline-offset-4 decoration decoration-[#ffffff30]  w-fit ml-auto';
+  'underline underline-offset-4 decoration decoration-[#ffffff30]  w-fit '; //remove ml-auto
 
 const stringify = (num: string | number) => {
   if (typeof num == 'number') {
@@ -34,7 +35,8 @@ export const Display: React.FC<IDisplayProp> = ({
   placement,
   className,
   content,
-  precision = 2
+  precision = 2,
+  onOpen
 }) => {
   const prev = useRef<string | number>();
   if (data == null || data == undefined || data == '') {
@@ -74,7 +76,7 @@ export const Display: React.FC<IDisplayProp> = ({
 
   }
   else {
-    return <NumberTooltip content={tooltipContent} placement={placement}>
+    return <NumberTooltip content={tooltipContent} placement={placement} onOpen={onOpen}>
       <div className={generatedStyles}>
         {label}
         {isNumeric && numberWithCommas(toFixed(data, precision))}
